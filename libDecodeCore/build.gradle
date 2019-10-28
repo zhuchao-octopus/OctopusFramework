@@ -1,0 +1,24 @@
+apply plugin: 'maven'
+configurations.maybeCreate("default")
+artifacts.add("default", file('libvlc-armv7-3.1.0.aar'))
+
+ext {
+    GITHUB_REPO_PATH = 'D:\\MavenLibs\\libs'
+    PUBLISH_GROUP_ID = 'com.zhuchao.android'
+    PUBLISH_ARTIFACT_ID = 'libDecodeCore'
+    PUBLISH_VERSION = '2.0'
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        def deployPath = file(GITHUB_REPO_PATH)
+        repository(url: "file://${deployPath.absolutePath}")
+        pom.project {
+            groupId PUBLISH_GROUP_ID
+            artifactId PUBLISH_ARTIFACT_ID
+            version PUBLISH_VERSION
+        }
+    }
+}
+
+//apply from: '../maven_build.gradle'

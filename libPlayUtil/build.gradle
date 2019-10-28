@@ -1,0 +1,60 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+ext {
+    GITHUB_REPO_PATH = 'D:\\MavenLibs\\libs'
+    PUBLISH_GROUP_ID = 'com.zhuchao.android'
+    PUBLISH_ARTIFACT_ID = 'libPlayUtil'
+    PUBLISH_VERSION = '2.1'
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        def deployPath = file(GITHUB_REPO_PATH)
+        repository(url: "file://${deployPath.absolutePath}")
+        pom.project {
+            groupId PUBLISH_GROUP_ID
+            artifactId PUBLISH_ARTIFACT_ID
+            version PUBLISH_VERSION
+        }
+    }
+}
+
+android {
+    compileSdkVersion 28
+
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+repositories{
+    //flatDir { dirs 'libs','../libPlayerUtil/libs'}
+    maven { url 'https://raw.githubusercontent.com/MackyLee/libs/master'}
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(path: ':libDecodeCore')
+    implementation project(path: ':libCallbackEvent')
+    implementation project(path: ':libDialog')
+    //implementation 'com.zhuchao.android:libDecodeCore:2.0:@aar'
+
+    //implementation 'org.videolan.libvlc.LibVLC:libvlc-armv7:3.1.0:@aar' //本地库依赖
+    //implementation ('com.zhuchao.android:libDecodeCore:2.0')// {transitive = true }
+
+}

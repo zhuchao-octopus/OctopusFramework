@@ -1,0 +1,53 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+ext {
+    GITHUB_REPO_PATH = 'D:\\MavenLibs\\libs'
+    PUBLISH_GROUP_ID = 'com.zhuchao.android'
+    PUBLISH_ARTIFACT_ID = 'libNetUtil'
+    PUBLISH_VERSION = '2.0'
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        def deployPath = file(GITHUB_REPO_PATH)
+        repository(url: "file://${deployPath.absolutePath}")
+        pom.project {
+            groupId PUBLISH_GROUP_ID
+            artifactId PUBLISH_ARTIFACT_ID
+            version PUBLISH_VERSION
+        }
+    }
+}
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(path: ':libfilemanager')
+    implementation project(path: ':libfilemanager')
+}
+
+//apply from: '../maven_build.gradle'
+
+

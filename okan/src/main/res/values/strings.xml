@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">OKan</string>
+    <string name="title_home">电视</string>
+    <string name="title_dashboard">电影</string>
+    <string name="title_notifications">电视剧</string>
+    <string name="textview">TextView</string>
+</resources>

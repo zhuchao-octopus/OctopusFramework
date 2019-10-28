@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT" />
+        </compositeConfiguration>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/libCallbackEvent" />
+            <option value="$PROJECT_DIR$/libDataBaseUtil" />
+            <option value="$PROJECT_DIR$/libDecodeCore" />
+            <option value="$PROJECT_DIR$/libDialog" />
+            <option value="$PROJECT_DIR$/libNetUtil" />
+            <option value="$PROJECT_DIR$/libNotifier" />
+            <option value="$PROJECT_DIR$/libPlaySession" />
+            <option value="$PROJECT_DIR$/libPlayUtil" />
+            <option value="$PROJECT_DIR$/libStatusBar" />
+            <option value="$PROJECT_DIR$/libVideo" />
+            <option value="$PROJECT_DIR$/libfilemanager" />
+            <option value="$PROJECT_DIR$/okan" />
+          </set>
+        </option>
+        <option name="resolveModulePerSourceSet" value="false" />
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
