@@ -1,6 +1,7 @@
 package com.zhuchao.android.video;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.view.SurfaceView;
 import android.view.TextureView;
 
@@ -37,6 +38,12 @@ public class Video implements Serializable {
         this.mMovie = mMovie;
         this.mOptions = mOptions;
         this.mCallback = mCallback;
+    }
+
+    public Video(AssetFileDescriptor afd, ArrayList<String> Options, PlayerCallBackInterface Callback) {
+        this.mOptions = Options;
+        this.mCallback = Callback;
+        //this.mMovie = new Movie(afd);
     }
 
     public Video(String VideoPath, ArrayList<String> Options, PlayerCallBackInterface Callback) {

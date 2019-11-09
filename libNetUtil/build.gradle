@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 
 ext {
-    GITHUB_REPO_PATH = 'D:\\MavenLibs\\libs'
+    GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libNetUtil'
     PUBLISH_VERSION = '2.0'
@@ -24,7 +24,7 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -45,7 +45,11 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':libfilemanager')
-    implementation project(path: ':libfilemanager')
+    implementation project(path: ':libCallbackEvent')
+
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
+    implementation 'me.jessyan:progressmanager:1.5.0'
 }
 
 //apply from: '../maven_build.gradle'

@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 
 ext {
-    GITHUB_REPO_PATH = 'D:\\MavenLibs\\libs'
+    GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libNotifer'
     PUBLISH_VERSION = '2.0'
@@ -40,16 +40,6 @@ android {
         }
     }
 
-}
-
-task copyTask() {
-    //def today = new Date().format('yyyyMMdd_hh');
-    copy{
-        from('build/intermediates/packaged-classes/release/')
-        into('D:/DelphiProjects/zhuchao/ZCKJ_20181225/libs/')
-        include('classes.jar')
-        rename('classes.jar','MyApplication.jar')
-    }
 }
 
 dependencies {

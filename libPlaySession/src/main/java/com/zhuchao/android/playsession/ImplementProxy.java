@@ -10,7 +10,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.zhuchao.android.netutil.HttpResultCallBack;
-import com.zhuchao.android.netutil.HttpUtils;
+import com.zhuchao.android.netutil.MyHttpUtils;
 import com.zhuchao.android.playsession.PaserBean.IdNameBean;
 import com.zhuchao.android.playsession.PaserBean.MovieListBean;
 
@@ -105,7 +105,7 @@ public class ImplementProxy implements HttpResultCallBack {
             Log.d(TAG, "URL 错误为空.");
         } else {
             Log.d(TAG, "performanceUrl = " + url);
-            HttpUtils.doGetAsyn(url, this, sessionId);
+            MyHttpUtils.doGetAsyn(url, sessionId,this);
         }
     }
 

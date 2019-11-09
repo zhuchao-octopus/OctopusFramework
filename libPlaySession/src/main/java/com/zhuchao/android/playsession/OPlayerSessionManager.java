@@ -6,7 +6,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.zhuchao.android.libfilemanager.FileUtils;
-import com.zhuchao.android.netutil.CheckNet;
+import com.zhuchao.android.netutil.NetUtils;
 import com.zhuchao.android.video.Video;
 
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
             public void run() {
                 try {
                     while (true) {
-                        if (CheckNet.isInternetOk()) {
+                        if (NetUtils.isInternetOk()) {
                             initTopSessionContent(); //  初始化线程
                             break;
                         }

@@ -2,6 +2,7 @@ package com.zhuchao.android.playerutil;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Handler;
@@ -105,10 +106,32 @@ public class MyOPlayer {
             media.release();
         if (isExistsFile(url))
             media = new Media(mLibVLC, mUrl);
-        else
-            media = new Media(mLibVLC, Uri.parse(mUrl));
+        else {
+            Uri uri = Uri.parse(mUrl);
+            media = new Media(mLibVLC, uri);
+        }
         media.setHWDecoderEnabled(HWDecoderEnabled, HWDecoderEnabled);
 
+        //media.addOption(":no-audio");
+        media.addOption(":fullscreen");
+        media.addOption(":no-autoscale");
+        media.addOption(":file-caching=10000");//文件缓存
+        media.addOption(":network-caching=10000");//网络缓存
+        media.addOption(":live-caching=10000");//直播缓存
+        media.addOption(":sout-mux-caching=10000");//输出缓存
+
+        mMediaPlayer.setMedia(media);
+        mMediaPlayer.setAspectRatio(null);
+        mMediaPlayer.setScale(0);
+    }
+
+    public void setSourceInfo(AssetFileDescriptor afd) {
+        if (media != null)
+            media.release();
+
+        media = new Media(mLibVLC, afd);
+
+        media.setHWDecoderEnabled(HWDecoderEnabled, HWDecoderEnabled);
         //media.addOption(":no-audio");
         media.addOption(":fullscreen");
         media.addOption(":no-autoscale");
@@ -135,6 +158,7 @@ public class MyOPlayer {
         vlcVout.attachViews();
         mSurfaceView.getHolder().setKeepScreenOn(true);
     }
+
     public void setTextureView(TextureView ViewForShow) {
         if (ViewForShow == null) return;
         if (mTextureView != null)
@@ -179,10 +203,12 @@ public class MyOPlayer {
         mMediaPlayer.play();
         Log.d(TAG, "start to play ----->" + mUrl);
     }
+
     public void rePlay() {
         mMediaPlayer.play();
         Log.d(TAG, "start to  replay ----->" + mUrl);
     }
+
     public void pause() {
         mMediaPlayer.pause();
     }
@@ -202,7 +228,6 @@ public class MyOPlayer {
     }
 
 
-
     private void pauseDetach() {
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
@@ -214,7 +239,7 @@ public class MyOPlayer {
 
     private void resumePlay() {
         if (mSurfaceView != null)
-          vlcVout.setVideoView(mSurfaceView);
+            vlcVout.setVideoView(mSurfaceView);
         if (mTextureView != null)
             vlcVout.setVideoView(mTextureView);
         vlcVout.attachViews();
@@ -306,9 +331,9 @@ public class MyOPlayer {
         public void onSurfacesCreated(IVLCVout ivlcVout) {
             TotalTime = mMediaPlayer.getLength();
             if (mSurfaceView != null)
-               vlcVout.setWindowSize(mSurfaceView.getWidth(), mSurfaceView.getHeight());
+                vlcVout.setWindowSize(mSurfaceView.getWidth(), mSurfaceView.getHeight());
             else if (mTextureView != null)
-               vlcVout.setWindowSize(mTextureView.getWidth(), mTextureView.getHeight());
+                vlcVout.setWindowSize(mTextureView.getWidth(), mTextureView.getHeight());
 
             mMediaPlayer.setAspectRatio(null);
             mMediaPlayer.setScale(0);
