@@ -235,14 +235,14 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 logger.log(headers.name(i) + ": " + headers.value(i));
             }
 
-            if (!logBody || !HttpHeaders.hasBody(response)) {
+            if (!logBody || !HttpHeaders.promisesBody(response)) {
                 logger.log("<-- END HTTP");
             } else if (bodyEncoded(response.headers())) {
                 logger.log("<-- END HTTP (encoded body omitted)");
             } else {
                 BufferedSource source = responseBody.source();
                 source.request(Long.MAX_VALUE); // Buffer the entire body.
-                Buffer buffer = source.buffer();
+                Buffer buffer = source.getBuffer();
 
                 Charset charset = UTF8;
                 MediaType contentType = responseBody.contentType();

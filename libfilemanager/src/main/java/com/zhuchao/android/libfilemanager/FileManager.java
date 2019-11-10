@@ -131,7 +131,7 @@ public class FileManager {
     public Bitmap getVideoThumbnail(int id) {
         Bitmap bitmap = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inDither = false;
+        //options.inDither = false;
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         bitmap = MediaStore.Video.Thumbnails.getThumbnail(mContentResolver, id, MediaStore.Images.Thumbnails.MICRO_KIND, options);
         return bitmap;
@@ -273,7 +273,7 @@ public class FileManager {
             AppInfo appInfo = new AppInfo();
 
             appInfo.setApplicationInfo(packageInfo.applicationInfo);
-            appInfo.setVersionCode(packageInfo.versionCode);
+            appInfo.setVersionCode(packageInfo.getLongVersionCode());
 
             //得到icon
             Drawable drawable = packageInfo.applicationInfo.loadIcon(packageManager);

@@ -5,14 +5,11 @@ import android.content.Context;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
@@ -111,7 +108,7 @@ public class FileUtils {
                 while ((lineTxt = br.readLine()) != null) {
                     if (!"".equals(lineTxt)) {
                         String reds = lineTxt.split("\\+")[0];  //java 正则表达式
-                        newList.add(count, reds);
+                        newList.add(count, reds.toString());
                         count++;
                     }
                 }

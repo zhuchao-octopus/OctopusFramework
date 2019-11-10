@@ -43,22 +43,22 @@
             tools:ignore="MissingConstraints" />
     </FrameLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/nav_view"
         android:layout_below="@id/mFrameLayout"
         android:background="@color/dialog_bg">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/media_list_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="10dp"></android.support.v7.widget.RecyclerView>
-    </android.support.v4.widget.NestedScrollView>
+            android:padding="10dp"></androidx.recyclerview.widget.RecyclerView>
+    </androidx.core.widget.NestedScrollView>
 
 
-    <android.support.design.widget.BottomNavigationView
+    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
         android:layout_height="60dp"

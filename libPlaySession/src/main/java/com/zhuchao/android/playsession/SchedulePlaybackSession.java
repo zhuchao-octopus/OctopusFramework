@@ -10,7 +10,7 @@ import com.google.gson.JsonSyntaxException;
 import com.zhuchao.android.libfilemanager.FileUtils;
 import com.zhuchao.android.playsession.PaserBean.ScheduleVideoBean;
 import com.zhuchao.android.playsession.PaserBean.ScheduleVideoRootBean;
-import com.zhuchao.android.video.ScheduleVideo;
+import com.zhuchao.android.video.ScheduleOMedia;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,10 +20,10 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
     private final String TAG = "SchedulePlaySession-->";
     private SessionCompleteCallback userSessionCallback = null;//会话回调
     //private ImplementProxy Ilpr = null;//new ImplementProxy();执行代理
-    private List<ScheduleVideo> videoList;
+    private List<ScheduleOMedia> videoList;
     //private CountDownTimer mCountDownTimer;
     private boolean mEnableScheduled=true;
-    //private ScheduleVideo mCurrentScheduleVideo =null;
+    //private ScheduleOMedia mCurrentScheduleVideo =null;
     private Context mContext = null;
 
     public SchedulePlaybackSession(Context context,SessionCompleteCallback callback) {
@@ -79,7 +79,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
                     List<ScheduleVideoBean> data = scheduleVideoRootBean.getData();
 
                     for (ScheduleVideoBean scheduleVideoBean : data) {
-                        ScheduleVideo scheduleVideo = new ScheduleVideo(
+                        ScheduleOMedia scheduleVideo = new ScheduleOMedia(
                                 Count,
                                 scheduleVideoBean.getUrl(),
                                 scheduleVideoBean.getStart_date(),
@@ -120,7 +120,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
       for (String str:opf) {
           String[] all=str.split(",");
           if(all.length >= 6) {
-              ScheduleVideo scheduleVideo = new ScheduleVideo(
+              ScheduleOMedia scheduleVideo = new ScheduleOMedia(
                       Count,
                       path + all[0],//scheduleVideoBean.getUrl(),
                       all[1],//scheduleVideoBean.getStart_date(),
@@ -139,7 +139,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
           }
           else if(all.length == 5)
           {
-              ScheduleVideo scheduleVideo = new ScheduleVideo(
+              ScheduleOMedia scheduleVideo = new ScheduleOMedia(
                       Count,
                       path + all[0],//scheduleVideoBean.getUrl(),
                       all[1],//scheduleVideoBean.getStart_date(),
@@ -168,7 +168,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
         for (String str:opf)
         {
             String[] all=str.split(",");
-            ScheduleVideo scheduleVideo = new ScheduleVideo(
+            ScheduleOMedia scheduleVideo = new ScheduleOMedia(
                     Count,
                     path+all[0],//scheduleVideoBean.getUrl(),
                     all[1],//scheduleVideoBean.getStart_date(),
@@ -225,9 +225,9 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
             return false;
     }
 
-    public ScheduleVideo pollingScheudulePlay()
+    public ScheduleOMedia pollingScheudulePlay()
     {
-        for (ScheduleVideo scheduleVideo : videoList)
+        for (ScheduleOMedia scheduleVideo : videoList)
         {
             if (scheduleVideo.isInScheduleDate())
             {
@@ -245,7 +245,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
         }
 
 
-        for (ScheduleVideo scheduleVideo : videoList)
+        for (ScheduleOMedia scheduleVideo : videoList)
         {
             if (scheduleVideo.isInScheduleDate())
             {
@@ -279,7 +279,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
         return sharedPreferences.getString(key,null);
     }
 
-    public List<ScheduleVideo> getVideoList() {
+    public List<ScheduleOMedia> getVideoList() {
         return videoList;
     }
 }

@@ -9,12 +9,10 @@ import com.zhuchao.android.libfilemanager.bean.LMusic;
 import com.zhuchao.android.libfilemanager.bean.LVideo;
 import com.zhuchao.android.playsession.PaserBean.MovieListBean;
 import com.zhuchao.android.video.Movie;
-import com.zhuchao.android.video.Video;
+import com.zhuchao.android.video.OMedia;
 import com.zhuchao.android.video.VideoList;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -156,62 +154,62 @@ public class OPlayerSession implements SessionCompleteCallback {
             this.mVideoList = mVideoList;
     }
     //movie API
-    public Video getVideoById(int videoId) {
-        Video movie = mVideoList.findMoviebyId(videoId);
+    public OMedia getVideoById(int videoId) {
+        OMedia movie = mVideoList.findMoviebyId(videoId);
         return movie;
     }
-    public Video getVideoByIndex(int index) {
-        Video movie = mVideoList.findMoviebyIndex(index);
+    public OMedia getVideoByIndex(int index) {
+        OMedia movie = mVideoList.findMoviebyIndex(index);
         return movie;
     }
 
-    public List<Video> getMovieListByMovieName(String title) {
+    public List<OMedia> getMovieListByMovieName(String title) {
         return mVideoList.findMoviebyMovieName(title);
     }
 
-    public List<Video> getMovieListBySourceId(int sourceId) {
+    public List<OMedia> getMovieListBySourceId(int sourceId) {
         return mVideoList.findMoviebySourceId(sourceId);
     }
 
-    public List<Video> getMovieListByCategory(String categoryName) {
+    public List<OMedia> getMovieListByCategory(String categoryName) {
         return mVideoList.findMoviebyCategory(categoryName);
     }
 
-    public List<Video> getMovieListByType(String typeName) {
+    public List<OMedia> getMovieListByType(String typeName) {
         return mVideoList.findMoviebyTypeName(typeName);
     }
 
-    public List<Video> getMovieListByArea(String area) {
+    public List<OMedia> getMovieListByArea(String area) {
         return mVideoList.findMoviebyArea(area);
     }
 
-    public List<Video> getMovieListByYear(String year) {
+    public List<OMedia> getMovieListByYear(String year) {
         return mVideoList.findMoviebyYear(year);
     }
 
-    public List<Video> getMovieListByActor(String actor) {
+    public List<OMedia> getMovieListByActor(String actor) {
         return mVideoList.findMoviebyActor(actor);
     }
 
-    public List<Video> getMovieListByVip(int vipId) {
+    public List<OMedia> getMovieListByVip(int vipId) {
         return mVideoList.findMoviebyVip(vipId);
     }
 
-    public List<Video> getVideos() {
+    public List<OMedia> getVideos() {
         return mVideoList.getVideos();
     }
 
-    public void addVideos(List<Video> videos)
+    public void addVideos(List<OMedia> oMedias)
     {
-        for (Video video : videos) {
-            mVideoList.addVideo(video);
+        for (OMedia oMedia : oMedias) {
+            mVideoList.addVideo(oMedia);
         }
     }
 
     public void printMovies() {
         //Log.d(TAG,"printMovies mVideoList size =" + mVideoList.getVideos().size());
-        for (Video video : mVideoList.getVideos()) {
-            Log.d(TAG, "vidieId = "+video.getmMovie().getMovieId() + " : videoName = " + video.getmMovie().getMovieName());
+        for (OMedia oMedia : mVideoList.getVideos()) {
+            Log.d(TAG, "vidieId = "+ oMedia.getmMovie().getMovieId() + " : videoName = " + oMedia.getmMovie().getMovieName());
         }
     }
 
@@ -233,8 +231,8 @@ public class OPlayerSession implements SessionCompleteCallback {
             for (LVideo lVideo : lVideos) {
                 Movie movie = new Movie(lVideo.getPath());
                 movie.setMovieName(lVideo.getName());
-                Video video = new Video(movie);
-                mVideoList.addVideo(video);
+                OMedia oMedia = new OMedia(movie);
+                mVideoList.addVideo(oMedia);
             }
         }
         else if(fType == Data.MEDIA_SOURCE_ID_AUDIO) {
@@ -242,8 +240,8 @@ public class OPlayerSession implements SessionCompleteCallback {
             for (LMusic lmusic : lMusics) {
                 Movie movie = new Movie(lmusic.getPath());
                 movie.setMovieName(lmusic.getName());
-                Video video = new Video(movie);
-                mVideoList.addVideo(video);
+                OMedia oMedia = new OMedia(movie);
+                mVideoList.addVideo(oMedia);
             }
         }
 
@@ -252,8 +250,8 @@ public class OPlayerSession implements SessionCompleteCallback {
             for (String img : imgList) {
                 Movie movie = new Movie(img);
                 movie.setMovieName(img);
-                Video video = new Video(movie);
-                mVideoList.addVideo(video);
+                OMedia oMedia = new OMedia(movie);
+                mVideoList.addVideo(oMedia);
             }
         }
 
@@ -266,8 +264,8 @@ public class OPlayerSession implements SessionCompleteCallback {
         {
             Movie movie = new Movie(FileList.get(i));
             movie.setMovieName(movie.getSourceUrl());
-            Video video = new Video(movie);
-            mVideoList.addVideo(video);
+            OMedia oMedia = new OMedia(movie);
+            mVideoList.addVideo(oMedia);
         }
     }
 
@@ -275,8 +273,8 @@ public class OPlayerSession implements SessionCompleteCallback {
         MovieListBean movieListBean = Ilpr.getMovieListBean();
         if (movieListBean != null) {
             for (Movie movie : movieListBean.getList()) {
-                Video video = new Video(movie);
-                mVideoList.addVideo(video);
+                OMedia oMedia = new OMedia(movie);
+                mVideoList.addVideo(oMedia);
             }
             this.mTotalPages = movieListBean.getPages();
         } else {

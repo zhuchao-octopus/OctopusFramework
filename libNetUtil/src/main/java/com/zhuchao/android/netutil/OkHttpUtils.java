@@ -3,9 +3,7 @@ package com.zhuchao.android.netutil;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
 
-import com.google.gson.Gson;
 import com.zhuchao.android.callbackevent.NormalRequestCallBack;
 
 import java.io.FileOutputStream;
@@ -58,17 +56,23 @@ public class OkHttpUtils {
         OkHttpUtils.getInstance().getOkHttpClient().newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.d(TAG, "failed:" + url);
+                Log.d(TAG, "Failed:" + url);
                 normalRequestCallBack.onRequestComplete("", -1);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response != null && response.isSuccessful()) {
-                    Log.d(TAG, "successfully:" + url);
-                    Log.d(TAG, response.toString());
                     String result = response.body().string();
+
+                    Log.d(TAG, "ok:" + url);
+                    Log.d(TAG, result);
                     normalRequestCallBack.onRequestComplete(result, 0);
+                }
+                else
+                {
+                    Log.d(TAG, "failed:" + url);
+                    //normalRequestCallBack.onRequestComplete("", -1);
                 }
             }
         });
@@ -86,7 +90,7 @@ public class OkHttpUtils {
                 {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.d(TAG, "Download failed from :" + url);
+                Log.d(TAG, "Download Failed From :" + url);
                 normalRequestCallBack.onRequestComplete("", -1);
             }
 
@@ -111,7 +115,7 @@ public class OkHttpUtils {
 
                 } else {
                     Log.d(TAG, "download failed from :" + url);
-                    normalRequestCallBack.onRequestComplete("", -1);
+                    //normalRequestCallBack.onRequestComplete("", -1);
                 }
             }
         });

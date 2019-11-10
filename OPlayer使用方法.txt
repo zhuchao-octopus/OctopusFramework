@@ -51,10 +51,10 @@ allprojects {
   A:利用 OPlayer  播放单个的视频非常的简单，首先定义
   
     private SurfaceView mSurfaceView;
-    private Video video;
+    private Video oMedia;
 	
-    video = new Video("http://192.168.5.101/cc.mp4", null, null);//最后一个参数是个回调接口，可以获得播放器进度信息
-    video.with(this).playInto(mSurfaceView);
+    oMedia = new Video("http://192.168.5.101/cc.mp4", null, null);//最后一个参数是个回调接口，可以获得播放器进度信息
+    oMedia.with(this).playInto(mSurfaceView);
 	
   B:利用OPlayer 生成播放列表，OPlayer可以根据网络、本地、USB、FTP、生成复杂的播放列表。
   

@@ -1,7 +1,5 @@
 package com.zhuchao.android.databaseutil;
 
-import android.content.Context;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;

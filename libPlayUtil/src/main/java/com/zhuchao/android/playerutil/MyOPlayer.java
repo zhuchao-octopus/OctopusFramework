@@ -1,29 +1,24 @@
 package com.zhuchao.android.playerutil;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.Configuration;
 import android.net.Uri;
-import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.zhuchao.android.callbackevent.PlayerCallBackInterface;
-import com.zhuchao.android.shapeloading.ShapeLoadingDialog;
 
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
-//import org.videolan.libvlc.MediaPlayCallback;
 import org.videolan.libvlc.MediaPlayer;
 
 import java.io.File;
 import java.util.ArrayList;
+
+//import org.videolan.libvlc.MediaPlayCallback;
 
 public class MyOPlayer {
     private String TAG = "My OPlayer";

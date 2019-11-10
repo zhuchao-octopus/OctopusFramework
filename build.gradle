@@ -27,6 +27,11 @@ allprojects {
         //maven { url 'https://raw.githubusercontent.com/MackyLee/libs/master'}
         //flatDir { dirs 'libs','../libPlayerUtil/libs'}
     }
+    gradle.projectsEvaluated {
+        //tasks.withType(JavaCompile) {
+        //    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        //}
+    }
 }
 
 task clean(type: Delete) {

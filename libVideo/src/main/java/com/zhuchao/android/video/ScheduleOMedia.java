@@ -5,7 +5,7 @@ import com.zhuchao.android.netutil.TimeDateUtils;
 
 import java.util.ArrayList;
 
-public class ScheduleVideo extends Video  {
+public class ScheduleOMedia extends OMedia {
     private int mID=0;
     private String mStartDate = null;
     private String mEndDate = null;
@@ -14,23 +14,23 @@ public class ScheduleVideo extends Video  {
     private String mLast =null;
     private int mStatus = 0;
 
-    public ScheduleVideo(Movie mMovie) {
+    public ScheduleOMedia(Movie mMovie) {
         super(mMovie);
     }
 
-    public ScheduleVideo(ArrayList<String> Options, PlayerCallBackInterface Callback) {
+    public ScheduleOMedia(ArrayList<String> Options, PlayerCallBackInterface Callback) {
         super(Options, Callback);
     }
 
-    public ScheduleVideo(Movie mMovie, ArrayList<String> mOptions, PlayerCallBackInterface mCallback) {
+    public ScheduleOMedia(Movie mMovie, ArrayList<String> mOptions, PlayerCallBackInterface mCallback) {
         super(mMovie, mOptions, mCallback);
     }
 
-    public ScheduleVideo(String VideoPath, ArrayList<String> Options, PlayerCallBackInterface Callback) {
+    public ScheduleOMedia(String VideoPath, ArrayList<String> Options, PlayerCallBackInterface Callback) {
         super(VideoPath, Options, Callback);
     }
 
-    public ScheduleVideo(int ID,String VideoPath, String StartDateTime, String EndDateTime, String PlayTime, String StopTime,String Last, int Status, ArrayList<String> Options, PlayerCallBackInterface Callback) {
+    public ScheduleOMedia(int ID, String VideoPath, String StartDateTime, String EndDateTime, String PlayTime, String StopTime, String Last, int Status, ArrayList<String> Options, PlayerCallBackInterface Callback) {
         super(VideoPath, Options, Callback);
         this.mID = ID;
         this.mStartDate = StartDateTime;

@@ -118,11 +118,11 @@ public class NetUtils {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         intentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
-        mContext.registerReceiver(netReceiver, intentFilter);
+        mContext.registerReceiver(NetworkChangedReceiver, intentFilter);
     }
 
     public void unRegisterNetReceiver() {
-        mContext.unregisterReceiver(netReceiver);
+        mContext.unregisterReceiver(NetworkChangedReceiver);
     }
 
     public boolean isNetCanConnect()
@@ -133,10 +133,11 @@ public class NetUtils {
 
         return true;
     }
-    private BroadcastReceiver netReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver NetworkChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
+            final String action =intent.getAction();
+            Log.d(TAG,"Got Action>>>>>>>:"+action);
             new Thread() {
                 public void run() {
                     if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
@@ -168,9 +169,17 @@ public class NetUtils {
                 IP0 = "";
                 Location = "";
             }
-            if (mNetChangedCallBack != null) {
-                mNetChangedCallBack.onNetStateChanged(NetStatus, NetType, MAC, WMAC, IP0, IP1, Location);
-            }
+
+        } else
+        {
+            MAC = "";
+            WMAC = "";
+            IP1 = "";
+            IP0 = "";
+            Location = "";
+        }
+        if (mNetChangedCallBack != null) {
+            mNetChangedCallBack.onNetStateChanged(NetStatus, NetType, MAC, WMAC, IP0, IP1, Location);
         }
     }
 
@@ -450,6 +459,7 @@ public class NetUtils {
 
                     } else {
                         IP0 = "";
+                        Location="";
                     }
                     if (mNetChangedCallBack != null) {
                         mNetChangedCallBack.onNetStateChanged(NetStatus, NetType, MAC, WMAC, IP0, IP1, Location);
@@ -464,7 +474,7 @@ public class NetUtils {
         return IP0;
     }
 
-    public String getLocalIpAddress() {
+    public static String getLocalIpAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
                 NetworkInterface intf = en.nextElement();
@@ -484,74 +494,75 @@ public class NetUtils {
 
     //把拼音的省份改成中文
     public String getChineseRegion(String province) {
+        province = province.trim();
         String region = "";
-        if (province.equals("Guangdong")) {
+        if (province.equalsIgnoreCase("Guangdong")) {
             region = "广东省";
-        } else if (province.equals("Guangxi")) {
+        } else if (province.equalsIgnoreCase("Guangxi")) {
             region = "广西壮族自治区";
-        } else if (province.equals("Hainan")) {
+        } else if (province.equalsIgnoreCase("Hainan")) {
             region = "海南省";
-        } else if (province.equals("Beijing")) {
+        } else if (province.equalsIgnoreCase("Beijing")) {
             region = "北京市";
-        } else if (province.equals("Tianjin")) {
+        } else if (province.equalsIgnoreCase("Tianjin")) {
             region = "天津市";
-        } else if (province.equals("Shanghai")) {
+        } else if (province.equalsIgnoreCase("Shanghai")) {
             region = "上海市";
-        } else if (province.equals("Chongqing")) {
+        } else if (province.equalsIgnoreCase("Chongqing")) {
             region = "重庆市";
-        } else if (province.equals("Hebei")) {
+        } else if (province.equalsIgnoreCase("Hebei")) {
             region = "河北省";
-        } else if (province.equals("Henan")) {
+        } else if (province.equalsIgnoreCase("Henan")) {
             region = "河南省";
-        } else if (province.equals("Yunan")) {
+        } else if (province.equalsIgnoreCase("Yunan")) {
             region = "云南省";
-        } else if (province.equals("Liaoning")) {
+        } else if (province.equalsIgnoreCase("Liaoning")) {
             region = "辽宁省";
-        } else if (province.equals("Heilongjiang")) {
+        } else if (province.equalsIgnoreCase("Heilongjiang")) {
             region = "黑龙江省";
-        } else if (province.equals("Hunan")) {
+        } else if (province.equalsIgnoreCase("Hunan")) {
             region = "湖南省";
-        } else if (province.equals("Anhui")) {
+        } else if (province.equalsIgnoreCase("Anhui")) {
             region = "安徽省";
-        } else if (province.equals("Shandong")) {
+        } else if (province.equalsIgnoreCase("Shandong")) {
             region = "山东省";
-        } else if (province.equals("Xinjiang")) {
+        } else if (province.equalsIgnoreCase("Xinjiang")) {
             region = "新疆维吾尔族自治区";
-        } else if (province.equals("Jiangsu")) {
+        } else if (province.equalsIgnoreCase("Jiangsu")) {
             region = "江苏省";
-        } else if (province.equals("Zhejiang")) {
+        } else if (province.equalsIgnoreCase("Zhejiang")) {
             region = "浙江省";
-        } else if (province.equals("Jiangxi")) {
+        } else if (province.equalsIgnoreCase("Jiangxi")) {
             region = "江西省";
-        } else if (province.equals("Hubei")) {
+        } else if (province.equalsIgnoreCase("Hubei")) {
             region = "湖北省";
-        } else if (province.equals("Gansu")) {
+        } else if (province.equalsIgnoreCase("Gansu")) {
             region = "甘肃省";
-        } else if (province.equals("Shanxi")) {
+        } else if (province.equalsIgnoreCase("Shanxi")) {
             region = "山西省";
-        } else if (province.equals("Shanxi")) {
+        } else if (province.equalsIgnoreCase("Shanxi")) {
             region = "陕西省";
-        } else if (province.equals("Neimenggu")) {
+        } else if (province.equalsIgnoreCase("Neimenggu")) {
             region = "内蒙古蒙古族自治区";
-        } else if (province.equals("Jilin")) {
+        } else if (province.equalsIgnoreCase("Jilin")) {
             region = "吉林省";
-        } else if (province.equals("Fujian")) {
+        } else if (province.equalsIgnoreCase("Fujian")) {
             region = "福建省";
-        } else if (province.equals("Guizhou")) {
+        } else if (province.equalsIgnoreCase("Guizhou")) {
             region = "贵州省";
-        } else if (province.equals("Qinghai")) {
+        } else if (province.equalsIgnoreCase("Qinghai")) {
             region = "青海省";
-        } else if (province.equals("Sichuan")) {
+        } else if (province.equalsIgnoreCase("Sichuan")) {
             region = "四川省";
-        } else if (province.equals("Xizang")) {
+        } else if (province.equalsIgnoreCase("Xizang")) {
             region = "西藏藏族自治区";
-        } else if (province.equals("Ningxia")) {
+        } else if (province.equalsIgnoreCase("Ningxia")) {
             region = "宁夏回族自治区";
-        } else if (province.equals("Taiwan")) {
+        } else if (province.equalsIgnoreCase("Taiwan")) {
             region = "台湾省";
-        } else if (province.equals("Hong Kong")) {
+        } else if (province.equalsIgnoreCase("Hong Kong")) {
             region = "香港特别行政区";
-        } else if (province.equals("Macao")) {
+        } else if (province.equalsIgnoreCase("Macao")) {
             region = "澳门特别行政区";
         }
         return region;

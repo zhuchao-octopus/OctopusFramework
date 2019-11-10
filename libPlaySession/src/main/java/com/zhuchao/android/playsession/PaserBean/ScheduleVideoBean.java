@@ -3,8 +3,6 @@
  */
 package com.zhuchao.android.playsession.PaserBean;
 
-import java.util.Date;
-
 /**
  * Auto-generated: 2019-04-20 17:47:10
  *

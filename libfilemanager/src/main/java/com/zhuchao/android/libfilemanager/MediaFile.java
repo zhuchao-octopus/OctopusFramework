@@ -15,14 +15,11 @@
  */
 package com.zhuchao.android.libfilemanager;
 
-import android.util.Log;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Utility class for media file judge, base on android.media.MediaFile.java

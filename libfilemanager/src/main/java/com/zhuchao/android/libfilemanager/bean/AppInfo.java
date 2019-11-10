@@ -9,7 +9,7 @@ import android.graphics.drawable.Drawable;
 public class AppInfo {
 
     private ApplicationInfo applicationInfo;
-    private int versionCode = 0;
+    private long versionCode = 0;
     /**
      * 图片的icon
      */
@@ -98,11 +98,11 @@ public class AppInfo {
         this.applicationInfo = applicationInfo;
     }
 
-    public int getVersionCode() {
+    public long getVersionCode() {
         return versionCode;
     }
 
-    public void setVersionCode(int versionCode) {
+    public void setVersionCode(long versionCode) {
         this.versionCode = versionCode;
     }
 }

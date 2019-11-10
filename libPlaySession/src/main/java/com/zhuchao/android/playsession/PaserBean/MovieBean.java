@@ -14,9 +14,6 @@
 
 package com.zhuchao.android.playsession.PaserBean;
 
-import android.content.Context;
-import android.widget.ImageView;
-
 /*
  * Movie class represents video entity with videoName, description, image thumbs and video url.
  */

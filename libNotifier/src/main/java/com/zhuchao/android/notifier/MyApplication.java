@@ -24,7 +24,7 @@ public class MyApplication extends Application {
                 //SNBarUtil.init(mCurrentActivity);
                 //SNBarUtil.setStatusBarColor(mCurrentActivity,0x00400005,0xFFffffff);
                 //SNBarUtil.setNavBarColor(mCurrentActivity,0x0ffffffff);
-                StatusBarUtil.mTransparentStatusBar(mCurrentActivity);
+                //StatusBarUtil.mTransparentStatusBar(mCurrentActivity);
             }
 
             @Override
@@ -34,13 +34,13 @@ public class MyApplication extends Application {
                 //SNBarUtil.setNavBarColor(mCurrentActivity,0x0ffffffff);
                 //Util.setStatusBarNavigateBarTransparentBySID(mCurrentActivity, R.color.DeepSkyBlue,  R.color.White);
                 //Util.setStatusBarNavigateBarTransparentByColor(mCurrentActivity,0x0000BFFF,0xFFffffff);
-                StatusBarUtil.mTransparentStatusBar(mCurrentActivity);
+                //StatusBarUtil.mTransparentStatusBar(mCurrentActivity);
             }
 
             @Override
             public void onActivityResumed(Activity activity) {
                 mCurrentActivity = activity;
-                StatusBarUtil.mTransparentStatusBar(mCurrentActivity);
+                //StatusBarUtil.mTransparentStatusBar(mCurrentActivity);
             }
 
             @Override

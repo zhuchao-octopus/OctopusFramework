@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.zhuchao.android.libfilemanager.FileUtils;
 import com.zhuchao.android.netutil.NetUtils;
-import com.zhuchao.android.video.Video;
+import com.zhuchao.android.video.OMedia;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -285,15 +285,15 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
         }*/
     }
 
-    public List<Video> getAllVideoList() {
-        List<Video> allVideos = new ArrayList<>();
+    public List<OMedia> getAllVideoList() {
+        List<OMedia> allOMedia = new ArrayList<>();
         for (Map.Entry<Integer, OPlayerSession> entry : mSessions.entrySet()) {
             Log.d(TAG, "printSessionsVideoList " + entry.getKey() + " : " + entry.getValue().getmVideoCategoryNameList().get(entry.getKey())
                     + " Movies Count =" + entry.getValue().getVideos().size());
             entry.getValue().getVideos();
-            allVideos.addAll(entry.getValue().getVideos());
+            allOMedia.addAll(entry.getValue().getVideos());
         }
-        return allVideos;
+        return allOMedia;
     }
 
     @Override

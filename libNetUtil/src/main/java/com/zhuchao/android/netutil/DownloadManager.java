@@ -3,7 +3,6 @@ package com.zhuchao.android.netutil;
 import android.content.Context;
 import android.os.Environment;
 import android.os.Looper;
-import android.os.Message;
 
 import com.zhuchao.android.libfilemanager.FileUtils;
 

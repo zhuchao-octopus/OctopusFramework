@@ -16,56 +16,56 @@ import java.util.ArrayList;
  *
  * */
 
-public class Video implements Serializable {
+public class OMedia implements Serializable {
     static final long serialVersionUID = 727566175075960653L;
     private Movie mMovie = null;
     private MyOPlayer mOPlayer = null; //单例
     private ArrayList<String> mOptions = null;
     private PlayerCallBackInterface mCallback = null;
-    private Video mPreVideo = null;
-    private Video mNextVideo = null;
+    private OMedia mPreOMedia = null;
+    private OMedia mNextOMedia = null;
 
-    public Video(Movie mMovie) {
+    public OMedia(Movie mMovie) {
         this.mMovie = mMovie;
     }
 
-    public Video(ArrayList<String> Options, PlayerCallBackInterface Callback) {
+    public OMedia(ArrayList<String> Options, PlayerCallBackInterface Callback) {
         this.mOptions = Options;
         this.mCallback = Callback;
     }
 
-    public Video(Movie mMovie, ArrayList<String> mOptions, PlayerCallBackInterface mCallback) {
+    public OMedia(Movie mMovie, ArrayList<String> mOptions, PlayerCallBackInterface mCallback) {
         this.mMovie = mMovie;
         this.mOptions = mOptions;
         this.mCallback = mCallback;
     }
 
-    public Video(AssetFileDescriptor afd, ArrayList<String> Options, PlayerCallBackInterface Callback) {
+    public OMedia(AssetFileDescriptor afd, ArrayList<String> Options, PlayerCallBackInterface Callback) {
         this.mOptions = Options;
         this.mCallback = Callback;
         //this.mMovie = new Movie(afd);
     }
 
-    public Video(String VideoPath, ArrayList<String> Options, PlayerCallBackInterface Callback) {
+    public OMedia(String VideoPath, ArrayList<String> Options, PlayerCallBackInterface Callback) {
         this.mOptions = Options;
         this.mCallback = Callback;
         this.mMovie = new Movie(VideoPath);
     }
 
-    public Video getmPreVideo() {
-        return mPreVideo;
+    public OMedia getmPreOMedia() {
+        return mPreOMedia;
     }
 
-    public void setmPreVideo(Video mPreVideo) {
-        this.mPreVideo = mPreVideo;
+    public void setmPreOMedia(OMedia mPreOMedia) {
+        this.mPreOMedia = mPreOMedia;
     }
 
-    public Video getmNextVideo() {
-        return mNextVideo;
+    public OMedia getmNextOMedia() {
+        return mNextOMedia;
     }
 
-    public void setmNextVideo(Video mNextVideo) {
-        this.mNextVideo = mNextVideo;
+    public void setmNextOMedia(OMedia mNextOMedia) {
+        this.mNextOMedia = mNextOMedia;
     }
 
     public Movie getmMovie() {
@@ -94,7 +94,7 @@ public class Video implements Serializable {
             mOPlayer.setCallback(this.mCallback);
     }
 
-    public Video with(Context mContext) {
+    public OMedia with(Context mContext) {
         mOPlayer = OplayerUtil.getOPlayer(mContext, mOptions, mCallback);
         return this;
     }
@@ -103,7 +103,7 @@ public class Video implements Serializable {
         setCallback(mCallback);
     }
 
-    public Video playInto(SurfaceView playView) {
+    public OMedia playInto(SurfaceView playView) {
         mOPlayer.setSurfaceView(playView);
         if (mMovie != null)
             if (mMovie.getSourceUrl() != null)
@@ -111,7 +111,7 @@ public class Video implements Serializable {
         return this;
     }
 
-    public Video playOn(SurfaceView playView) {
+    public OMedia playOn(SurfaceView playView) {
         mOPlayer.setSurfaceView(playView);
         if (mMovie != null)
             if (mMovie.getSourceUrl() != null)
@@ -119,7 +119,7 @@ public class Video implements Serializable {
         return this;
     }
 
-    public Video playOn(TextureView playView) {
+    public OMedia playOn(TextureView playView) {
         mOPlayer.setTextureView(playView);
         if (mMovie != null)
             if (mMovie.getSourceUrl() != null)

@@ -3,11 +3,6 @@ package com.zhuchao.android.okan;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.BottomNavigationView;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,11 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.zhuchao.android.callbackevent.PlayerCallBackInterface;
 import com.zhuchao.android.playsession.OPlayerSessionManager;
 import com.zhuchao.android.playsession.SessionCompleteCallback;
-import com.zhuchao.android.statusbar.StatusBarUtil;
-import com.zhuchao.android.video.Video;
+import com.zhuchao.android.video.OMedia;
 
 import java.util.List;
 
@@ -28,14 +27,14 @@ import java.util.List;
 public class MainActivity extends Activity implements SessionCompleteCallback, PlayerCallBackInterface {
     private RecyclerView mVideoListInDetailRv;
     private VideoListAdapter mVideoListInDetailAdapter;
-    private List<Video> mMediaList = null;
+    private List<OMedia> mMediaList = null;
     private int mCurrentVideoPosition = -1;
 
     private OPlayerSessionManager mSessionManager;// = new OPlayerSessionManager(this.getApplicationContext(),null,null);
 
     private TextView mTextMessage;
     private SurfaceView mSurfaceView;
-    private Video video;
+    private OMedia oMedia;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -59,7 +58,7 @@ public class MainActivity extends Activity implements SessionCompleteCallback, P
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        StatusBarUtil.mTransparentStatusBar(MainActivity.this);
+        //StatusBarUtil.mTransparentStatusBar(MainActivity.this);
         mVideoListInDetailRv = (RecyclerView) findViewById(R.id.media_list_rv);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         mSurfaceView = findViewById(R.id.surfaceView);
@@ -67,8 +66,8 @@ public class MainActivity extends Activity implements SessionCompleteCallback, P
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        //video = new Video("http://ivi.bupt.edu.cn/hls/cctv10.m3u8",null,null);
-        //video.with(this).playInto(mSurfaceView);
+        //OMedia = new OMedia("http://ivi.bupt.edu.cn/hls/cctv10.m3u8",null,null);
+        //OMedia.with(this).playInto(mSurfaceView);
 
 
         mVideoListInDetailRv.setHasFixedSize(true);
@@ -102,10 +101,10 @@ public class MainActivity extends Activity implements SessionCompleteCallback, P
     }
 
     private void videoSelected(int position) {
-        Video video = null;
+        OMedia OMedia = null;
         if (position >= 0 && position < mMediaList.size()) {
-            video = mMediaList.get(position);
-            video.with(this).playInto(mSurfaceView).getmOPlayer().setCallback(this);
+            OMedia = mMediaList.get(position);
+            OMedia.with(this).playInto(mSurfaceView).getmOPlayer().setCallback(this);
         } else {
             return;
         }
@@ -127,7 +126,7 @@ public class MainActivity extends Activity implements SessionCompleteCallback, P
         private static final int LIST_IN_PLAYER = 1;
         private static final int LIST_IN_DETAIL = 2;
         private int mListType;
-        private List<Video> mData;
+        private List<OMedia> mData;
         private RecyclerView mRecyclerView;
 
         public VideoListAdapter(RecyclerView view, int type) {
@@ -155,7 +154,7 @@ public class MainActivity extends Activity implements SessionCompleteCallback, P
         @Override
         public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
             final VideoViewHolder myHolder = (VideoViewHolder) holder;
-            Video itemData = mData.get(position);
+            OMedia itemData = mData.get(position);
             if (myHolder.mItemTv != null) {
                 myHolder.mItemTv.setText(itemData.getmMovie().getMovieName());
             }
@@ -179,7 +178,7 @@ public class MainActivity extends Activity implements SessionCompleteCallback, P
             return mData == null ? 0 : mData.size();
         }
 
-        public void setData(List<Video> data) {
+        public void setData(List<OMedia> data) {
             this.mData = data;
         }
     }
