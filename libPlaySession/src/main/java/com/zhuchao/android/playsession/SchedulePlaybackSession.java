@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.zhuchao.android.libfilemanager.FileUtils;
+import com.zhuchao.android.libfilemanager.FilesManager;
 import com.zhuchao.android.playsession.PaserBean.ScheduleVideoBean;
 import com.zhuchao.android.playsession.PaserBean.ScheduleVideoRootBean;
 import com.zhuchao.android.video.ScheduleOMedia;
@@ -115,7 +115,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
     public void initFromExternalStorageDirectoryFile()
     {
       String path = getExternalStorageDirectoryDownloadCacheDir(mContext);
-      List<String> opf = FileUtils.ReadTxtFile(path+"/SchedulePlay.text");
+      List<String> opf = FilesManager.ReadTxtFile(path+"/SchedulePlay.text");
       int Count =0;
       for (String str:opf) {
           String[] all=str.split(",");
@@ -163,7 +163,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
 
     public void initFromDirectoryFile(String path)
     {
-        List<String> opf = FileUtils.ReadTxtFile(path+"/SchedulePlay.text");
+        List<String> opf = FilesManager.ReadTxtFile(path+"/SchedulePlay.text");
         int Count=0;
         for (String str:opf)
         {
@@ -191,18 +191,18 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
     }
     public void copySchedulePlay(String SourDir,String DesDir)
     {
-        if(!FileUtils.isExists(SourDir+"/SchedulePlay.text")) return;
+        if(!FilesManager.isExists(SourDir+"/SchedulePlay.text")) return;
         File file = new File(DesDir);
         if (!file.exists())
             file.mkdir();
 
-        List<String> npf = FileUtils.ReadTxtFile(SourDir+"/SchedulePlay.text");
-        FileUtils.copyFile(SourDir+"/SchedulePlay.text",DesDir+"/SchedulePlay.text");
+        List<String> npf = FilesManager.ReadTxtFile(SourDir+"/SchedulePlay.text");
+        FilesManager.copyFile(SourDir+"/SchedulePlay.text",DesDir+"/SchedulePlay.text");
 
         for (String str:npf)
         {
             String[] all=str.split(",");
-            FileUtils.copyFile(SourDir+"/"+all[0],DesDir+"/"+all[0]);
+            FilesManager.copyFile(SourDir+"/"+all[0],DesDir+"/"+all[0]);
         }
 
     }

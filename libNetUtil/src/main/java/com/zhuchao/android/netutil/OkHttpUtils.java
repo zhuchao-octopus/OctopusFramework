@@ -57,6 +57,7 @@ public class OkHttpUtils {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d(TAG, "Failed:" + url);
+                if(normalRequestCallBack != null)
                 normalRequestCallBack.onRequestComplete("", -1);
             }
 
@@ -66,7 +67,8 @@ public class OkHttpUtils {
                     String result = response.body().string();
 
                     Log.d(TAG, "ok:" + url);
-                    Log.d(TAG, result);
+                    Log.d(TAG, "gt:" + result);
+                    if(normalRequestCallBack != null)
                     normalRequestCallBack.onRequestComplete(result, 0);
                 }
                 else
@@ -91,6 +93,7 @@ public class OkHttpUtils {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d(TAG, "Download Failed From :" + url);
+                if(normalRequestCallBack != null)
                 normalRequestCallBack.onRequestComplete("", -1);
             }
 
@@ -98,21 +101,28 @@ public class OkHttpUtils {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response != null && response.isSuccessful())
                 {
-                    String result = response.body().string();
+                    //String result = response.body().string();
+                    Log.d(TAG, "Download from:" + url+" to "+toPath);
+
                     InputStream inputStream = response.body().byteStream();
                     FileOutputStream fos = new FileOutputStream(toPath);
-
+                    long tlen = response.body().contentLength();
+                    long sum = 0;
                     int len = 0;
                     byte[] buffer = new byte[1024 * 10];
                     while ((len = inputStream.read(buffer)) != -1) {
                         fos.write(buffer, 0, len);
+                        sum += len;
+                        Log.d(TAG, "Downloading:" + sum+"/"+tlen);
                     }
                     fos.flush();
                     fos.close();
                     inputStream.close();
-                    Log.d(TAG, "Download successfully from:" + url);
-                    normalRequestCallBack.onRequestComplete(result, 0);
 
+                    Log.d(TAG, "Download successfully from:" + url);
+                    Log.d(TAG, "Saved    successfully to:" + toPath);
+                    if(normalRequestCallBack != null)
+                    normalRequestCallBack.onRequestComplete("success", 0);
                 } else {
                     Log.d(TAG, "download failed from :" + url);
                     //normalRequestCallBack.onRequestComplete("", -1);

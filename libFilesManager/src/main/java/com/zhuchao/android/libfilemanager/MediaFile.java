@@ -335,7 +335,7 @@ public class MediaFile {
           MediaFile.MediaFileType mm = MediaFile.getFileType(filePathName);
 
           if(file.getName().equals("oplayer.m")){
-            List<String> opf = FileUtils.ReadTxtFile(filePathName);
+            List<String> opf = FilesManager.ReadTxtFile(filePathName);
             for (String str:opf) {
                 if (!FileList.contains(str))
                    FileList.add(str);

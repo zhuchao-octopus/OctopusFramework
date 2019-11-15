@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.os.Looper;
 
-import com.zhuchao.android.libfilemanager.FileUtils;
+import com.zhuchao.android.libfilemanager.FilesManager;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -92,7 +92,7 @@ public class DownloadManager {
         mRemouteFileUrl = url;
         //File file0 = new File(mRemouteFileUrl);
 
-        mLocalFilePath = getDownloadCacheDir(mcontext) + stringToMD5(url) + FileUtils.getExtFromFileFullName(url);     // ".mp4";
+        mLocalFilePath = getDownloadCacheDir(mcontext) + stringToMD5(url) + FilesManager.getExtFromFileFullName(url);     // ".mp4";
         File file = new File(mLocalFilePath);
 
         if (!file.exists()) {
@@ -202,7 +202,7 @@ public class DownloadManager {
     }
 
     public Boolean ExistsLocalCacheFile(String url) {
-        String fileName = getDownloadCacheDir(mcontext) + stringToMD5(url) + FileUtils.getExtFromFileFullName(url);//".mp4";
+        String fileName = getDownloadCacheDir(mcontext) + stringToMD5(url) + FilesManager.getExtFromFileFullName(url);//".mp4";
         File file = new File(fileName);
         if (!file.exists())
             return false;
@@ -211,7 +211,7 @@ public class DownloadManager {
     }
 
     public String GetLocalCacheFile(String url) {
-        String fileName = getDownloadCacheDir(mcontext) + stringToMD5(url) + FileUtils.getExtFromFileFullName(url);//".mp4";
+        String fileName = getDownloadCacheDir(mcontext) + stringToMD5(url) + FilesManager.getExtFromFileFullName(url);//".mp4";
         return fileName;
     }
 

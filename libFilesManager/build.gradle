@@ -4,8 +4,8 @@ apply plugin: 'maven'
 ext {
     GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
-    PUBLISH_ARTIFACT_ID = 'libFileManager'
-    PUBLISH_VERSION = '1.1'
+    PUBLISH_ARTIFACT_ID = 'libFilesManager'
+    PUBLISH_VERSION = '1.2'
 }
 
 uploadArchives {
@@ -25,10 +25,10 @@ android {
 
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 21
         targetSdkVersion 28
-        versionCode 11
-        versionName "1.1"
+        versionCode 12
+        versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -40,7 +40,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
+        }
+    }
 
+}
+
+
+task copyJniLibs(type: Copy) {
+    from fileTree(dir: file('build/intermediates/ndkbuild/debug/obj/local'), include: '*/*.so')
+    into file('src/main/jniLibs')
 }
 
 dependencies {

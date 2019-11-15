@@ -73,9 +73,13 @@ public class NetUtils {
         registerNetReceiver();
     }
 
-    public void Free(Context context) {
-        mContext = context;
-        unRegisterNetReceiver();
+    public void Free() {
+        try {
+            mContext = null;
+            unRegisterNetReceiver();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static String getTAG() {
@@ -122,7 +126,10 @@ public class NetUtils {
     }
 
     public void unRegisterNetReceiver() {
-        mContext.unregisterReceiver(NetworkChangedReceiver);
+        if(NetworkChangedReceiver !=null) {
+            mContext.unregisterReceiver(NetworkChangedReceiver);
+            NetworkChangedReceiver=null;
+        }
     }
 
     public boolean isNetCanConnect()
@@ -160,8 +167,8 @@ public class NetUtils {
                 //if (isInternetOk())
                 IP0 = GetInternetIp();
                 IP1 = getLocalIpAddress();
-                MAC = this.getLanMac();
-                WMAC = this.getWifiMac(mContext);
+                MAC = getEthernetMacAddress();//this.getLanMac();
+                WMAC = getWiFiMacAddress();//this.getWifiMac();
             } else {
                 MAC = "";
                 WMAC = "";
@@ -195,44 +202,40 @@ public class NetUtils {
         }
     }
 
-    public boolean isLocalNetConnected(Context context) {
-        if (context != null) {
+    public boolean isLocalNetConnected() {
             NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
             if (mNetworkInfo != null) {
-                return mNetworkInfo.isAvailable();
+                return mNetworkInfo.isConnected();
             }
-        }
+
         return false;
     }
 
-    public boolean isWifiConnected(Context context) {
-        if (context != null) {
+    public boolean isWifiConnected() {
             NetworkInfo mWiFiNetworkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             if (mWiFiNetworkInfo != null) {
-                return mWiFiNetworkInfo.isAvailable();
+                return mWiFiNetworkInfo.isConnected();
             }
-        }
+
         return false;
     }
 
-    public boolean isMobileConnected(Context context) {
-        if (context != null) {
+    public boolean isMobileConnected() {
 
             NetworkInfo mMobileNetworkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
             if (mMobileNetworkInfo != null) {
-                return mMobileNetworkInfo.isAvailable();
+                return mMobileNetworkInfo.isConnected();
             }
-        }
+
         return false;
     }
 
-    public int getConnectedType(Context context) {
-        if (context != null) {
+    public int getConnectedType() {
             NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
             if (mNetworkInfo != null && mNetworkInfo.isAvailable()) {
                 return mNetworkInfo.getType();
             }
-        }
+
         return -1;
     }
 
@@ -279,9 +282,9 @@ public class NetUtils {
 
 
     public String getDeviceID() {
-        String devID = MAC;
+        String devID = getLanMac();
         if (TextUtils.isEmpty(devID)) {
-            devID = WMAC;
+            devID = getWifiMac();
         }
         return devID;
     }
@@ -290,7 +293,6 @@ public class NetUtils {
     public static String getLanMac() {
         String mac = null;
         try {
-
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
                 NetworkInterface networkInterface = interfaces.nextElement();
@@ -324,22 +326,22 @@ public class NetUtils {
         return "00:00:00:00:00:00";
     }
 
-    public static String getWifiMac(Context context) {
+    public String getWifiMac() {
 
-        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        //WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-        boolean wifiInitState = wifiManager.isWifiEnabled();
+        boolean wifiInitState = mWifiManager.isWifiEnabled();
 
         String mac = null;
 
         try {
 
             if (!wifiInitState) {
-                boolean openWifi = wifiManager.setWifiEnabled(true);
+                boolean openWifi = mWifiManager.setWifiEnabled(true);
             }
 
             for (int i = 0; i < 10; i++) {
-                if (wifiManager.isWifiEnabled()) {
+                if (mWifiManager.isWifiEnabled()) {
                     break;
                 }
                 Thread.sleep(1000);
@@ -376,7 +378,7 @@ public class NetUtils {
         } finally {
             if (!wifiInitState) {
                 Log.d(TAG, "wifi close");
-                wifiManager.setWifiEnabled(false);
+                mWifiManager.setWifiEnabled(false);
             }
         }
 
@@ -416,9 +418,9 @@ public class NetUtils {
     }
 
     // 从系统文件中获取WIFI MAC地址
-    public static String getWiFiMacAddress(Context context) {
-        WifiManager my_wifiManager = ((WifiManager) context.getSystemService(Context.WIFI_SERVICE));
-        WifiInfo wifiInfo = my_wifiManager.getConnectionInfo();
+    public String getWiFiMacAddress() {
+        //WifiManager my_wifiManager = ((WifiManager) context.getSystemService(Context.WIFI_SERVICE));
+        WifiInfo wifiInfo = mWifiManager.getConnectionInfo();
         return wifiInfo.getMacAddress();
     }
 
@@ -474,7 +476,7 @@ public class NetUtils {
         return IP0;
     }
 
-    public static String getLocalIpAddress() {
+    public String getLocalIpAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
                 NetworkInterface intf = en.nextElement();

@@ -3,7 +3,7 @@ package com.zhuchao.android.playsession;
 import android.content.Context;
 import android.util.Log;
 
-import com.zhuchao.android.libfilemanager.FileManager;
+import com.zhuchao.android.libfilemanager.FilesManager;
 import com.zhuchao.android.libfilemanager.MediaFile;
 import com.zhuchao.android.libfilemanager.bean.LMusic;
 import com.zhuchao.android.libfilemanager.bean.LVideo;
@@ -227,7 +227,7 @@ public class OPlayerSession implements SessionCompleteCallback {
     {
         if(fType == Data.MEDIA_SOURCE_ID_VIDEO)
         {
-            List<LVideo> lVideos = FileManager.getInstance(context).getVideos();
+            List<LVideo> lVideos = FilesManager.getVideos(context);
             for (LVideo lVideo : lVideos) {
                 Movie movie = new Movie(lVideo.getPath());
                 movie.setMovieName(lVideo.getName());
@@ -236,7 +236,7 @@ public class OPlayerSession implements SessionCompleteCallback {
             }
         }
         else if(fType == Data.MEDIA_SOURCE_ID_AUDIO) {
-            List<LMusic> lMusics = FileManager.getInstance(context).getMusics();
+            List<LMusic> lMusics = FilesManager.getMusics(context);
             for (LMusic lmusic : lMusics) {
                 Movie movie = new Movie(lmusic.getPath());
                 movie.setMovieName(lmusic.getName());
@@ -246,7 +246,7 @@ public class OPlayerSession implements SessionCompleteCallback {
         }
 
        if(fType == Data.MEDIA_SOURCE_ID_PIC) {
-            List<String> imgList = FileManager.getInstance(context).getLocalImageList();
+            List<String> imgList = FilesManager.getLocalImageList();
             for (String img : imgList) {
                 Movie movie = new Movie(img);
                 movie.setMovieName(img);

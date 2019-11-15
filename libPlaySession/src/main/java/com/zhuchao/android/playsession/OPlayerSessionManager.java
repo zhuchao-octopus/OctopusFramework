@@ -5,7 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.zhuchao.android.libfilemanager.FileUtils;
+import com.zhuchao.android.libfilemanager.FilesManager;
 import com.zhuchao.android.netutil.NetUtils;
 import com.zhuchao.android.video.OMedia;
 
@@ -123,7 +123,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
 
         new Thread() {
             public void run() {
-                MobileDiscs = FileUtils.getUDiscName(mContext);
+                MobileDiscs = FilesManager.getUDiscName(mContext);
 
                 //for (Map.Entry<Integer, OPlayerSession> entry : mSessions.entrySet())
                 //{

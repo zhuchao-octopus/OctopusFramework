@@ -44,7 +44,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(path: ':libfilemanager')
+    implementation project(path: ':libFilesManager')
     implementation project(path: ':libCallbackEvent')
 
     implementation 'me.jessyan:progressmanager:1.5.0'
