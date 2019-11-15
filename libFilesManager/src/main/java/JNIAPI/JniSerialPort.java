@@ -99,7 +99,7 @@ public class JniSerialPort {
 
     static {
         try {
-            System.loadLibrary("MySerialPort");
+            System.loadLibrary("jhzserialport");
         }catch (UnsatisfiedLinkError e) {
 
         }
