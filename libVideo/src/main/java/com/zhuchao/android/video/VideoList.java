@@ -32,13 +32,13 @@ public class VideoList {
         if(oMedia != null)
         {
             OMedia lvideo = findMoviebyIndex(list.size()-1);
-            if(lvideo != null) lvideo.setmNextOMedia(oMedia);
-            oMedia.setmPreOMedia(lvideo);
+            if(lvideo != null) lvideo.setNextOMedia(oMedia);
+            oMedia.setPreOMedia(lvideo);
             list.add(oMedia);
             OMedia fvideo = findMoviebyIndex(0);
 
-            fvideo.setmPreOMedia(oMedia);
-            oMedia.setmNextOMedia(fvideo);
+            fvideo.setPreOMedia(oMedia);
+            oMedia.setNextOMedia(fvideo);
         }
     }
     void removeVideo(OMedia oMedia)
@@ -55,7 +55,7 @@ public class VideoList {
         for(int i =0;i< list.size();i++)
         {
             OMedia movie = (OMedia)list.get(i);
-            if(movie.getmMovie().getMovieId() == movieId)
+            if(movie.getMovie().getMovieId() == movieId)
                 return movie;
         }
         return null;
@@ -83,7 +83,7 @@ public class VideoList {
         List<OMedia> movies = new ArrayList<>();
         for(int i =0;i< list.size();i++)
         {
-            Movie movie = (Movie)list.get(i).getmMovie();
+            Movie movie = (Movie)list.get(i).getMovie();
             if(movie.getSourceId() == sourceId)
                 movies.add(list.get(i));
         }
@@ -94,7 +94,7 @@ public class VideoList {
         List<OMedia> movies = new ArrayList<>();
         for(int i =0;i< list.size();i++)
         {
-            Movie movie = (Movie)list.get(i).getmMovie();
+            Movie movie = (Movie)list.get(i).getMovie();
             if(movie.getMovieName().contains(typeName))
                 movies.add(list.get(i));
         }
@@ -105,7 +105,7 @@ public class VideoList {
         List<OMedia> movies = new ArrayList<>();
         for(int i =0;i< list.size();i++)
         {
-            Movie movie = (Movie)list.get(i).getmMovie();
+            Movie movie = (Movie)list.get(i).getMovie();
             if(movie.getCategory().contains(CategoryName))
                 movies.add(list.get(i));
         }
@@ -116,7 +116,7 @@ public class VideoList {
         List<OMedia> movies = new ArrayList<>();
         for(int i =0;i< list.size();i++)
         {
-            Movie movie = (Movie)list.get(i).getmMovie();
+            Movie movie = (Movie)list.get(i).getMovie();
             if(movie.getRegion() == area)
                 movies.add(list.get(i));
         }
@@ -127,7 +127,7 @@ public class VideoList {
         List<OMedia> movies = new ArrayList<>();
         for(int i =0;i< list.size();i++)
         {
-            Movie movie = (Movie)list.get(i).getmMovie();
+            Movie movie = (Movie)list.get(i).getMovie();
             if(movie.getActor().contains(actor))
                 movies.add(list.get(i));
         }
@@ -138,7 +138,7 @@ public class VideoList {
         List<OMedia> movies = new ArrayList<>();
         for(int i =0;i< list.size();i++)
         {
-            Movie movie = (Movie)list.get(i).getmMovie();
+            Movie movie = (Movie)list.get(i).getMovie();
             if(movie.getMovieName().contains(movieName))
                 movies.add(list.get(i));
         }
@@ -149,7 +149,7 @@ public class VideoList {
         List<OMedia> movies = new ArrayList<>();
         for(int i =0;i< list.size();i++)
         {
-            Movie movie = (Movie)list.get(i).getmMovie();
+            Movie movie = (Movie)list.get(i).getMovie();
             if(movie.getYear().contains(year))
                 movies.add(list.get(i));
         }
@@ -160,7 +160,7 @@ public class VideoList {
         List<OMedia> movies = new ArrayList<>();
         for(int i =0;i< list.size();i++)
         {
-            Movie movie = (Movie)list.get(i).getmMovie();
+            Movie movie = (Movie)list.get(i).getMovie();
             if(movie.getVipLevel() <= vipId && movie.getVipLevel() >= -1 )
                 movies.add(list.get(i));
         }

@@ -21,7 +21,7 @@ import java.util.ArrayList;
  *
  * */
 
-public class OMedia implements Serializable {
+public class OMediax implements Serializable {
     static final long serialVersionUID = 727566175075960653L;
     private Movie mMovie = new Movie(null);
     private OPlayer mOPlayer = null; //单例
@@ -29,12 +29,12 @@ public class OMedia implements Serializable {
     private OMedia mPreOMedia = null;
     private OMedia mNextOMedia = null;
 
-    public OMedia(Movie movie) {
-        if(movie != null)
-        this.mMovie = movie;
+    public OMediax(Movie movie) {
+        if (movie != null)
+            this.mMovie = movie;
     }
 
-    public OMedia(String path) {
+    public OMediax(String path) {
         this.mMovie = new Movie(path);
     }
 
@@ -43,56 +43,58 @@ public class OMedia implements Serializable {
         return;
     }
 
-    public OMedia with(Context context) {
-        mOPlayer = PlayerUtil.getSingleOPlayer(context, mCallback);
+    public OMediax with(Context context) {
+        if (mOPlayer == null)
+            mOPlayer = PlayerUtil.getMultiOPlayer(context, mCallback);
         return this;
     }
 
-    public OMedia with(Context context, ArrayList<String> options) {
-        mOPlayer = PlayerUtil.getSingleOPlayer(context, options, mCallback);
+    public OMediax with(Context context, ArrayList<String> options) {
+        if (mOPlayer == null)
+            mOPlayer = PlayerUtil.getMultiOPlayer(context, options, mCallback);
         return this;
     }
 
-    public OMedia play() {
+    public OMediax play() {
         mOPlayer.setSource(mMovie.getSourceUrl());
         mOPlayer.play();
         return this;
     }
 
-    public OMedia play(String path) {
+    public OMediax play(String path) {
         mMovie.setSourceUrl(path);
         mOPlayer.setSource(path);
         mOPlayer.play();
         return this;
     }
 
-    public OMedia play(Uri uri) {
+    public OMediax play(Uri uri) {
         mMovie.setSourceUrl(uri.getPath());
         mOPlayer.setSource(uri);
         mOPlayer.play();
         return this;
     }
 
-    public OMedia play(FileDescriptor fd) {
+    public OMediax play(FileDescriptor fd) {
         mOPlayer.setSource(fd);
         mOPlayer.play();
         return this;
     }
 
-    public OMedia play(AssetFileDescriptor afd) {
+    public OMediax play(AssetFileDescriptor afd) {
         mOPlayer.setSource(afd);
         mOPlayer.play();
         return this;
     }
 
-    public OMedia playOn(SurfaceView playView) {
+    public OMediax playOn(SurfaceView playView) {
         mOPlayer.setSurfaceView(playView);
         mOPlayer.setSource(mMovie.getSourceUrl());
         mOPlayer.play();
         return this;
     }
 
-    public OMedia playOn(TextureView playView) {
+    public OMediax playOn(TextureView playView) {
         mOPlayer.setTextureView(playView);
         mOPlayer.setSource(mMovie.getSourceUrl());
         mOPlayer.play();
@@ -100,10 +102,9 @@ public class OMedia implements Serializable {
     }
 
 
-
-    public void stopPlayer() {
+    public void free() {
         if (mOPlayer != null) {
-            PlayerUtil.FreeSingle();
+            mOPlayer.free();
             mOPlayer = null;
         }
     }

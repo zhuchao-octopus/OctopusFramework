@@ -1,11 +1,11 @@
 package com.zhuchao.android.video;
 
-import com.zhuchao.android.callbackevent.PlayerCallBackInterface;
+import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.netutil.TimeDateUtils;
 
 import java.util.ArrayList;
 
-public class ScheduleOMedia extends OMedia {
+public class ScheduleMedia extends OMedia {
     private int mID=0;
     private String mStartDate = null;
     private String mEndDate = null;
@@ -14,24 +14,16 @@ public class ScheduleOMedia extends OMedia {
     private String mLast =null;
     private int mStatus = 0;
 
-    public ScheduleOMedia(Movie mMovie) {
+    public ScheduleMedia(Movie mMovie) {
         super(mMovie);
     }
 
-    public ScheduleOMedia(ArrayList<String> Options, PlayerCallBackInterface Callback) {
-        super(Options, Callback);
+    public ScheduleMedia(String VideoPath) {
+        super(VideoPath);
     }
 
-    public ScheduleOMedia(Movie mMovie, ArrayList<String> mOptions, PlayerCallBackInterface mCallback) {
-        super(mMovie, mOptions, mCallback);
-    }
-
-    public ScheduleOMedia(String VideoPath, ArrayList<String> Options, PlayerCallBackInterface Callback) {
-        super(VideoPath, Options, Callback);
-    }
-
-    public ScheduleOMedia(int ID, String VideoPath, String StartDateTime, String EndDateTime, String PlayTime, String StopTime, String Last, int Status, ArrayList<String> Options, PlayerCallBackInterface Callback) {
-        super(VideoPath, Options, Callback);
+    public ScheduleMedia(int ID, String VideoPath, String StartDateTime, String EndDateTime, String PlayTime, String StopTime, String Last, int Status) {
+        super(VideoPath);
         this.mID = ID;
         this.mStartDate = StartDateTime;
         this.mEndDate = EndDateTime;

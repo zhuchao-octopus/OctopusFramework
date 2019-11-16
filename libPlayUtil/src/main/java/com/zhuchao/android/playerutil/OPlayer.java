@@ -8,28 +8,28 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 
-import com.zhuchao.android.callbackevent.PlayerCallBackInterface;
+import com.zhuchao.android.callbackevent.PlayerCallback;
 
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 
-import java.io.File;
+import java.io.FileDescriptor;
 import java.util.ArrayList;
 
 //import org.videolan.libvlc.MediaPlayCallback;
 
-public class MyOPlayer {
+public class OPlayer {
     private String TAG = "My OPlayer";
     private Context mContext;
-    private String mUrl;
+    //private String mUrl;
     private MediaPlayer mMediaPlayer = null;
     private Media media = null;
     private LibVLC mLibVLC = null;
     private IVLCVout vlcVout;
     private IVLCVoutCallBack mIVLCVoutCallBack;
-    private PlayerCallBackInterface mOnPlayerEventCallBack = null;
+    private PlayerCallback mOnPlayerEventCallBack = null;
     //private SurfaceView msView = null;
     //private TextureView mtView = null;
     private TextureView mTextureView = null;
@@ -51,14 +51,15 @@ public class MyOPlayer {
     private static final int SURFACE_ORIGINAL = 5;
     private static final int SURFACE_FIXFRAME = 6;
     //private static int mWrapMod = SURFACE_FILL;
-
-    private static int mPlayMode = 1;
+    //private static int mPlayMode = 1;
 
     private View.OnLayoutChangeListener onLayoutChangeListener = null;
     //private FrameLayout mFrameLayout = null;
     //private Handler handler = new Handler();
-    private ArrayList<String> mOptions = new ArrayList<String>();
+    //private ArrayList<String> mOptions = new ArrayList<String>();
     //private PlaybackEvent mPlaybackEvent= new PlaybackEvent();
+
+
     private MediaPlayer.EventListener mEventListener = new MediaPlayer.EventListener() {
         @Override
         public void onEvent(MediaPlayer.Event event) {
@@ -77,34 +78,51 @@ public class MyOPlayer {
         }
     };
 
-    public MyOPlayer(Context context, ArrayList<String> Options, PlayerCallBackInterface callback) {
-        mIVLCVoutCallBack = new IVLCVoutCallBack();
+    public OPlayer(Context context, PlayerCallback callback) {
         mContext = context;
+        mIVLCVoutCallBack = new IVLCVoutCallBack();
         mOnPlayerEventCallBack = callback;
-        mOptions.clear();
-        mOptions.add("--file-caching=1500");//文件缓存
-        mOptions.add("--network-caching=10000");//网络缓存
-        mOptions.add("--live-caching=10000");//直播缓存
-        mOptions.add("--sout-mux-caching=1500");//输出缓存
-        if (Options != null) mOptions = Options;
-        //获取单例播放器
-        mLibVLC = OplayerUtil.getLibVLC(mContext, mOptions);//new LibVLC(mContext, args);
+
+        mLibVLC = new LibVLC(mContext);
         mMediaPlayer = new MediaPlayer(mLibVLC);
+
         mMediaPlayer.setEventListener(mEventListener);
         vlcVout = mMediaPlayer.getVLCVout();
         vlcVout.addCallback(mIVLCVoutCallBack);
     }
 
-    public void setSourceInfo(String url) {
-        this.mUrl = url;
-        if (media != null)
+    public OPlayer(Context context, ArrayList<String> options, PlayerCallback callback) {
+        mContext = context;
+        ArrayList<String> Options = new ArrayList<String>();
+        mIVLCVoutCallBack = new IVLCVoutCallBack();
+        mOnPlayerEventCallBack = callback;
+
+        Options.clear();
+        Options.add("--file-caching=1500");//文件缓存
+        Options.add("--network-caching=10000");//网络缓存
+        Options.add("--live-caching=10000");//直播缓存
+        Options.add("--sout-mux-caching=1500");//输出缓存
+
+        if (options == null)
+            options = Options;
+
+        mLibVLC = new LibVLC(mContext, options);
+        mMediaPlayer = new MediaPlayer(mLibVLC);
+
+        mMediaPlayer.setEventListener(mEventListener);
+        vlcVout = mMediaPlayer.getVLCVout();
+        vlcVout.addCallback(mIVLCVoutCallBack);
+    }
+
+
+    public boolean setSource(String path) {
+        if (media != null) {
             media.release();
-        if (isExistsFile(url))
-            media = new Media(mLibVLC, mUrl);
-        else {
-            Uri uri = Uri.parse(mUrl);
-            media = new Media(mLibVLC, uri);
+            media = null;
         }
+        if (path == null) return false;
+
+        media = new Media(mLibVLC, path);
         media.setHWDecoderEnabled(HWDecoderEnabled, HWDecoderEnabled);
 
         //media.addOption(":no-audio");
@@ -118,11 +136,39 @@ public class MyOPlayer {
         mMediaPlayer.setMedia(media);
         mMediaPlayer.setAspectRatio(null);
         mMediaPlayer.setScale(0);
+        return true;
     }
 
-    public void setSourceInfo(AssetFileDescriptor afd) {
-        if (media != null)
+    public boolean setSource(Uri uri) {
+        if (media != null) {
             media.release();
+            media = null;
+        }
+        if (uri == null) return false;
+
+        media = new Media(mLibVLC, uri);
+        media.setHWDecoderEnabled(HWDecoderEnabled, HWDecoderEnabled);
+
+        //media.addOption(":no-audio");
+        media.addOption(":fullscreen");
+        media.addOption(":no-autoscale");
+        media.addOption(":file-caching=10000");//文件缓存
+        media.addOption(":network-caching=10000");//网络缓存
+        media.addOption(":live-caching=10000");//直播缓存
+        media.addOption(":sout-mux-caching=10000");//输出缓存
+
+        mMediaPlayer.setMedia(media);
+        mMediaPlayer.setAspectRatio(null);
+        mMediaPlayer.setScale(0);
+        return true;
+    }
+
+    public boolean setSource(AssetFileDescriptor afd) {
+        if (media != null) {
+            media.release();
+            media = null;
+        }
+        if (afd == null) return false;
 
         media = new Media(mLibVLC, afd);
 
@@ -138,6 +184,31 @@ public class MyOPlayer {
         mMediaPlayer.setMedia(media);
         mMediaPlayer.setAspectRatio(null);
         mMediaPlayer.setScale(0);
+        return true;
+    }
+
+    public boolean setSource(FileDescriptor fd) {
+        if (media != null) {
+            media.release();
+            media = null;
+        }
+        if (fd == null) return false;
+
+        media = new Media(mLibVLC, fd);
+
+        media.setHWDecoderEnabled(HWDecoderEnabled, HWDecoderEnabled);
+        //media.addOption(":no-audio");
+        media.addOption(":fullscreen");
+        media.addOption(":no-autoscale");
+        media.addOption(":file-caching=10000");//文件缓存
+        media.addOption(":network-caching=10000");//网络缓存
+        media.addOption(":live-caching=10000");//直播缓存
+        media.addOption(":sout-mux-caching=10000");//输出缓存
+
+        mMediaPlayer.setMedia(media);
+        mMediaPlayer.setAspectRatio(null);
+        mMediaPlayer.setScale(0);
+        return true;
     }
 
     public void setSurfaceView(SurfaceView ViewForShow) {
@@ -166,46 +237,25 @@ public class MyOPlayer {
         vlcVout.attachViews();
     }
 
-    public void setSourceOption(String option) {
-        this.media.addOption(option);
-        mMediaPlayer.setMedia(media);
-    }
-
-    public void setCallback(PlayerCallBackInterface callback) {
-        this.mOnPlayerEventCallBack = callback;
-    }
-
-    public int getPlayMode() {
-        return mPlayMode;
-    }
-
-    public void setPlayMode(int mPlayMode) {
-        MyOPlayer.mPlayMode = mPlayMode;
-    }
-
-    //播放控制
-    public Boolean isPlaying() {
-        return mMediaPlayer.isPlaying();
-    }
-
-    public void play(String url) {
-        if (url == null) return;
-        setSourceInfo(url);
-        play();
-    }
-
     public void play() {
+        if (media == null) return;
         mMediaPlayer.play();
-        Log.d(TAG, "start to play ----->" + mUrl);
+        Log.d(TAG, "start to play ----->" + media.getUri());
     }
 
-    public void rePlay() {
-        mMediaPlayer.play();
-        Log.d(TAG, "start to  replay ----->" + mUrl);
-    }
 
     public void pause() {
+        if (media == null) return;
         mMediaPlayer.pause();
+        Log.d(TAG, "start to pause ----->" + media.getUri());
+    }
+
+    public void stop() {
+        if (media == null) return;
+        mMediaPlayer.stop();
+        mMediaPlayer.getVLCVout().detachViews();
+        mOnPlayerEventCallBack = null;
+        Log.d(TAG, "start to stop ----->" + media.getUri());
     }
 
     public void playPause() {
@@ -216,13 +266,6 @@ public class MyOPlayer {
         }
     }
 
-    public void stop() {
-        mMediaPlayer.stop();
-        mMediaPlayer.getVLCVout().detachViews();
-        mOnPlayerEventCallBack = null;
-    }
-
-
     private void pauseDetach() {
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
@@ -232,81 +275,40 @@ public class MyOPlayer {
         mMediaPlayer.setEventListener(null);
     }
 
-    private void resumePlay() {
+    private void resumeAttach() {
         if (mSurfaceView != null)
             vlcVout.setVideoView(mSurfaceView);
         if (mTextureView != null)
             vlcVout.setVideoView(mTextureView);
         vlcVout.attachViews();
         vlcVout.addCallback(mIVLCVoutCallBack);
+        mMediaPlayer.play();
     }
 
-    public boolean isSeekable() {
-        return mMediaPlayer.isSeekable();
-    }
-
-    public void setPlayTime(long l) {
-        mMediaPlayer.setTime(l);
-    }
-
-    public void setVolume(int var1) {
-        mMediaPlayer.setVolume(var1);
-    }
-
-    public int getVolume() {
-        return mMediaPlayer.getVolume();
-    }
-
-    public Long getCurrentTime() {
-        return mMediaPlayer.getTime();
-    }
-
-    public long getLength() {
-        return mMediaPlayer.getLength();
-    }
-
-    public long getTotalTime() {
-        return TotalTime;
-    }
-
-    public int getPlayerState() {
-        ////Media.State.Ended
-        return mMediaPlayer.getPlayerState();
-    }
-
-    public boolean isExistsFile(String pathname) {
+    public void free() {
         try {
-            File f = new File(pathname);
-            if (f.exists())
-                return true;
-            else
-                return false;
-
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    void Free() {
-        try {
-            vlcVout.removeCallback(mIVLCVoutCallBack);
-            if (mMediaPlayer != null)
+            if (vlcVout != null) {
+                vlcVout.removeCallback(mIVLCVoutCallBack);
+                vlcVout = null;
+            }
+            if (mMediaPlayer != null) {
                 mMediaPlayer.release();
-            if (media != null)
+                mMediaPlayer = null;
+            }
+            if (media != null) {
                 media.release();
-            mMediaPlayer = null;
+                media = null;
+            }
+            if (mLibVLC != null) {
+                mLibVLC.release();
+                mLibVLC = null;
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void sleep(int millisecond) {
-        try {
-            Thread.sleep(millisecond);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     class IVLCVoutCallBack implements IVLCVout.Callback, IVLCVout.OnNewVideoLayoutListener {
 
@@ -339,6 +341,60 @@ public class MyOPlayer {
         public void onSurfacesDestroyed(IVLCVout ivlcVout) {
             Log.d(TAG, "IVLCVoutCallBack ---> onSurfacesDestroyed");
         }
+    }
+
+    public void setNoAudio() {
+        media.addOption(":no-audio");
+        return;
+    }
+
+    public void setSourceOption(String option) {
+        this.media.addOption(option);
+        mMediaPlayer.setMedia(media);
+    }
+
+    public void setCallback(PlayerCallback callback) {
+        this.mOnPlayerEventCallBack = callback;
+    }
+
+    public Boolean isPlaying() {
+        return mMediaPlayer.isPlaying();
+    }
+
+    public boolean isSeekable() {
+        return mMediaPlayer.isSeekable();
+    }
+
+    public void setPlayTime(long l) {
+        mMediaPlayer.setTime(l);
+    }
+
+    public void setVolume(int var1) {
+        mMediaPlayer.setVolume(var1);
+    }
+
+    public int getVolume() {
+        return mMediaPlayer.getVolume();
+    }
+
+    public Long getCurrentTime() {
+        return mMediaPlayer.getTime();
+    }
+
+    public long getLength() {
+        return mMediaPlayer.getLength();
+    }
+
+    public long getTotalTime() {
+        return TotalTime;
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mMediaPlayer;
+    }
+
+    public int getPlayerState() {
+        return mMediaPlayer.getPlayerState();
     }
 
 }

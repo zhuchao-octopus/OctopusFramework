@@ -33,7 +33,8 @@ public class MyAppsManager {
     public static final String SCANING_COMPLETE_ACTION = "com.zhuchao.android.tianpu.action.SCANING_COMPLETE";
     public static final String ADDTOMYAPPS_ACTION = "com.zhuchao.android.tianpu.action.ADDTOMYAPPS";
     public static final String DELFROMMYAPPS_ACTION = "com.zhuchao.android.tianpu.action.DELFROMMYAPPS";
-    public static final String USEED_ACTION = "com.zhuchao.android.tianpu.action.USEED";
+    public static final String USED_HISTORY_ACTION = "com.zhuchao.android.tianpu.action.USED_HISTORY";
+    public static final String HOT_CLEAR_ACTION = "com.zhuchao.android.tianpu.action.HOT_CLEAR";
 
     //private static MyAppsManager mInstance;
     private static Context mContext;
@@ -299,13 +300,13 @@ public class MyAppsManager {
     private void addToUsed(AppInfor infor) {
         RecentlyUsed.add(infor.getPackageName());
         if (mAppsChangedCallback != null)
-            mAppsChangedCallback.OnAppsChanged(USEED_ACTION, infor);
+            mAppsChangedCallback.OnAppsChanged(USED_HISTORY_ACTION, infor);
     }
 
     private void addToUsed(String pkg) {
         RecentlyUsed.add(pkg);
         if (mAppsChangedCallback != null)
-            mAppsChangedCallback.OnAppsChanged(USEED_ACTION, getAppInfor(pkg));
+            mAppsChangedCallback.OnAppsChanged(USED_HISTORY_ACTION, getAppInfor(pkg));
     }
 
     public boolean startTheApp(AppInfor infor) {

@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.zhuchao.android.callbackevent.PlayerCallBackInterface;
+import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.playsession.OPlayerSessionManager;
 import com.zhuchao.android.playsession.SessionCompleteCallback;
 import com.zhuchao.android.video.OMedia;
@@ -24,7 +24,7 @@ import com.zhuchao.android.video.OMedia;
 import java.util.List;
 
 
-public class MainActivity extends Activity implements SessionCompleteCallback, PlayerCallBackInterface {
+public class MainActivity extends Activity implements SessionCompleteCallback, PlayerCallback {
     private RecyclerView mVideoListInDetailRv;
     private VideoListAdapter mVideoListInDetailAdapter;
     private List<OMedia> mMediaList = null;
@@ -104,7 +104,7 @@ public class MainActivity extends Activity implements SessionCompleteCallback, P
         OMedia OMedia = null;
         if (position >= 0 && position < mMediaList.size()) {
             OMedia = mMediaList.get(position);
-            OMedia.with(this).playInto(mSurfaceView).getmOPlayer().setCallback(this);
+            OMedia.with(this).playOn(mSurfaceView).callback(this);
         } else {
             return;
         }
@@ -156,7 +156,7 @@ public class MainActivity extends Activity implements SessionCompleteCallback, P
             final VideoViewHolder myHolder = (VideoViewHolder) holder;
             OMedia itemData = mData.get(position);
             if (myHolder.mItemTv != null) {
-                myHolder.mItemTv.setText(itemData.getmMovie().getMovieName());
+                myHolder.mItemTv.setText(itemData.getMovie().getMovieName());
             }
             boolean isSelected = position == mCurrentVideoPosition;
             myHolder.itemView.setSelected(isSelected);

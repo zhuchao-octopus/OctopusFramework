@@ -209,7 +209,7 @@ public class OPlayerSession implements SessionCompleteCallback {
     public void printMovies() {
         //Log.d(TAG,"printMovies mVideoList size =" + mVideoList.getVideos().size());
         for (OMedia oMedia : mVideoList.getVideos()) {
-            Log.d(TAG, "vidieId = "+ oMedia.getmMovie().getMovieId() + " : videoName = " + oMedia.getmMovie().getMovieName());
+            Log.d(TAG, "vidieId = "+ oMedia.getMovie().getMovieId() + " : videoName = " + oMedia.getMovie().getMovieName());
         }
     }
 

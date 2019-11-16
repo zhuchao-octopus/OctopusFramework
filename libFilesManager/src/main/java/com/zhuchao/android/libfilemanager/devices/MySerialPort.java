@@ -3,7 +3,6 @@ package com.zhuchao.android.libfilemanager.devices;
 import android.content.Context;
 import android.util.Log;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,25 +14,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import JNIAPI.JniSerialPort;
 
 import static com.zhuchao.android.libfilemanager.devices.TypeTool.ByteArrToHex;
+import static com.zhuchao.android.libfilemanager.devices.TypeTool.ByteArrToHexStr;
 
 
 public class MySerialPort {
 
-    private final String TAG = "MySerialPort";
-    private String DevicePath = "/dev/ttyS0";
-    private int Baudrate = 9600;
-    private Context mContext;
-    //public boolean PortStatus = false; //是否打开串口标志
-    //public String data_;
-    private boolean threadStatus = false; //线程状态，为了安全终止线程
-
-    private JniSerialPort serialPort = null;
-    private InputStream inputStream = null;
-    private OutputStream outputStream = null;
-    private TypeTool typeTool = new TypeTool();
-
-    //add by cvte start >>>
-    private final ConcurrentLinkedQueue<Byte> mDataQueue = new ConcurrentLinkedQueue<>();
     private final static int SLEEP_TIMEOUT = 30;
     private final static int STATE_PRODUCT_CODE = 1;
     private final static int STATE_MSG_ID = 2;
@@ -42,13 +27,43 @@ public class MySerialPort {
     private final static int STATE_DATA = 5;
     private final static int STATE_CHECKSUM = 6;
     private final static int STATE_END = 7;
-
+    private final static int STATE_RESTART = 8;
+    private final String TAG = "MySerialPort";
+    //add by cvte start >>>
+    private final ConcurrentLinkedQueue<Byte> mDataQueue = new ConcurrentLinkedQueue<>();
+    public OnDataReceiveListener onDataReceiveListener = null;
+    private String DevicePath = "/dev/ttyS0";
+    private int Baudrate = 9600;
+    private Context mContext;
+    //public boolean PortStatus = false; //是否打开串口标志
+    //public String data_;
+    private boolean threadStatus = false; //线程状态，为了安全终止线程
+    private JniSerialPort serialPort = null;
+    private InputStream inputStream = null;
+    private OutputStream outputStream = null;
+    private TypeTool typeTool = new TypeTool();
     private int mState = STATE_PRODUCT_CODE;
     private boolean IsDecode = false;
 
-
     public MySerialPort(Context context) {
         this.mContext = context;
+    }
+
+    /**
+     * byte数组中取int数值，本方法适用于(低位在前，高位在后)的顺序。
+     *
+     * @param ary    byte数组
+     * @param offset 从数组的第offset位开始
+     * @return int数值
+     */
+    public static int bytesToInt(byte[] ary, int offset) {
+        int value;
+        value = (ary[offset] & 0xFF)
+                | ((ary[offset + 1] << 8) & 0xFF00)
+                | ((ary[offset + 2] << 16) & 0xFF0000)
+                | ((ary[offset + 3] << 24) & 0xFF000000);
+
+        return value;
     }
 
     /**
@@ -148,41 +163,33 @@ public class MySerialPort {
         }
     }
 
-
-    /**
-     * byte数组中取int数值，本方法适用于(低位在前，高位在后)的顺序。
-     *
-     * @param ary    byte数组
-     * @param offset 从数组的第offset位开始
-     * @return int数值
-     */
-    public static int bytesToInt(byte[] ary, int offset) {
-        int value;
-        value = (int) ((ary[offset] & 0xFF)
-                | ((ary[offset + 1] << 8) & 0xFF00)
-                | ((ary[offset + 2] << 16) & 0xFF0000)
-                | ((ary[offset + 3] << 24) & 0xFF000000));
-
-        return value;
+    public void setOnDataReceiveListener(OnDataReceiveListener dataReceiveListener) {
+        onDataReceiveListener = dataReceiveListener;
     }
 
+    public interface OnDataReceiveListener {
+        void onDataReceive(Context context, byte[] buffer, int size);
+    }
 
     /**
      * 单开一线程，来读数据
      */
 
     private class ReadThread extends Thread {
+
+        private byte[] buffer = new byte[512];
+        private int size; //读取数据的大小
+
         @Override
         public void run() {
             super.run();
             //判断进程是否在运行，更安全的结束进程
             while (threadStatus) {
-                byte[] buffer = new byte[32];
-                int size; //读取数据的大小
                 try {
                     size = inputStream.read(buffer);
                     if (size > 0) {
-                        //Log.e(TAG, "ReadThread: 收到数据："+String.valueOf(size)+"|" + ByteArrToHex(buffer));
+
+                        //Log.e(TAG, "ReadThread: 收到数据：" + size + "|" + ByteArrToHexStr(buffer, 0, size));
 
                         if (IsDecode) {
                             for (int i = 0; i < size; i++)
@@ -190,23 +197,22 @@ public class MySerialPort {
                         } else {
                             onDataReceiveListener.onDataReceive(mContext, buffer, size);
                         }
-
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "数据读取异常：" + e.toString());
                 }
             }
-
         }
     }
 
-    //add by cvte
     private class DeccodeThread extends Thread {
+        private final int TIMEOUTCOUNT = 2;
+
         @Override
         public void run() {
             super.run();
             byte mCurrentByte;
-            int len = 0;
+            int len = 0, timeout = 0;
             List<Byte> byteArrayList = new ArrayList<>();
             while (true) {
                 switch (mState) {
@@ -231,8 +237,16 @@ public class MySerialPort {
                                 }
                             }
                         } else {
+                            if (timeout >= TIMEOUTCOUNT) {
+                                timeout = 0;
+                                mState = STATE_PRODUCT_CODE;
+                                mDataQueue.clear();
+                                byteArrayList.clear();
+                                break;
+                            }
                             try {
                                 sleep(SLEEP_TIMEOUT);
+                                timeout++;
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -249,7 +263,15 @@ public class MySerialPort {
                             mState++;
                         } else {
                             try {
+                                if (timeout >= TIMEOUTCOUNT) {
+                                    timeout = 0;
+                                    mState = STATE_PRODUCT_CODE;
+                                    mDataQueue.clear();
+                                    byteArrayList.clear();
+                                    break;
+                                }
                                 sleep(SLEEP_TIMEOUT);
+                                timeout++;
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -262,7 +284,15 @@ public class MySerialPort {
                             mState++;
                         } else {
                             try {
+                                if (timeout >= TIMEOUTCOUNT) {
+                                    timeout = 0;
+                                    mState = STATE_PRODUCT_CODE;
+                                    mDataQueue.clear();
+                                    byteArrayList.clear();
+                                    break;
+                                }
                                 sleep(SLEEP_TIMEOUT);
+                                timeout++;
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -281,7 +311,15 @@ public class MySerialPort {
                             mState++;
                         } else {
                             try {
+                                if (timeout >= TIMEOUTCOUNT) {
+                                    timeout = 0;
+                                    mState = STATE_PRODUCT_CODE;
+                                    mDataQueue.clear();
+                                    byteArrayList.clear();
+                                    break;
+                                }
                                 sleep(SLEEP_TIMEOUT);
+                                timeout++;
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -296,7 +334,15 @@ public class MySerialPort {
                             mState++;
                         } else {
                             try {
+                                if (timeout >= TIMEOUTCOUNT) {
+                                    timeout = 0;
+                                    mState = STATE_PRODUCT_CODE;
+                                    mDataQueue.clear();
+                                    byteArrayList.clear();
+                                    break;
+                                }
                                 sleep(SLEEP_TIMEOUT);
+                                timeout++;
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -321,7 +367,15 @@ public class MySerialPort {
                             }
                         } else {
                             try {
+                                if (timeout >= TIMEOUTCOUNT) {
+                                    timeout = 0;
+                                    mState = STATE_PRODUCT_CODE;
+                                    mDataQueue.clear();
+                                    byteArrayList.clear();
+                                    break;
+                                }
                                 sleep(SLEEP_TIMEOUT);
+                                timeout++;
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -336,8 +390,8 @@ public class MySerialPort {
                                 for (int i = 0; i < cmd_len; i++) {
                                     cmd_pkt[i] = byteArrayList.get(i);
                                 }
-                                // TODO: 2019/6/19 process data here.
-                                Log.i(TAG, "Dispatch Command: " + ByteArrToHex(cmd_pkt));
+
+                                Log.i(TAG, "Got Data: " + ByteArrToHex(cmd_pkt));
                                 onDataReceiveListener.onDataReceive(mContext, cmd_pkt, cmd_len);
                             } else {
                                 len = 0;
@@ -346,7 +400,16 @@ public class MySerialPort {
                             mState = STATE_PRODUCT_CODE;
                         } else {
                             try {
+                                if (timeout >= TIMEOUTCOUNT) {
+                                    timeout = 0;
+                                    mState = STATE_PRODUCT_CODE;
+                                    mDataQueue.clear();
+                                    byteArrayList.clear();
+                                    //Log.i(TAG, "Got Data: " + ByteArrToHex(cmd_pkt));
+                                    break;
+                                }
                                 sleep(SLEEP_TIMEOUT);
+                                timeout++;
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -355,16 +418,6 @@ public class MySerialPort {
                 }
             }
         }
-    }
-
-    public OnDataReceiveListener onDataReceiveListener = null;
-
-    public static interface OnDataReceiveListener {
-        public void onDataReceive(Context context, byte[] buffer, int size);
-    }
-
-    public void setOnDataReceiveListener(OnDataReceiveListener dataReceiveListener) {
-        onDataReceiveListener = dataReceiveListener;
     }
 
 }
