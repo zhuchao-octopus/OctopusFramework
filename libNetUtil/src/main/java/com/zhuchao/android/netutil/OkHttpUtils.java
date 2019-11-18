@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.zhuchao.android.callbackevent.NormalRequestCallBack;
+import com.zhuchao.android.callbackevent.NormalRequestCallback;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -52,7 +52,7 @@ public class OkHttpUtils {
     }
 
     //异步请求
-    public static void request(final String url, final NormalRequestCallBack normalRequestCallBack) {
+    public static void request(final String url, final NormalRequestCallback normalRequestCallBack) {
         OkHttpUtils.getInstance().getOkHttpClient().newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -80,7 +80,7 @@ public class OkHttpUtils {
         });
     }
 
-    public static void Download(final String url,final String toPath,String tag, final NormalRequestCallBack normalRequestCallBack) {
+    public static void Download(final String url,final String toPath,String tag, final NormalRequestCallback normalRequestCallBack) {
         OkHttpUtils.getInstance()
                 .getOkHttpClient()
                 .newCall(new Request.Builder()

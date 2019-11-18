@@ -14,11 +14,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import JNIAPI.JniSerialPort;
 
 import static com.zhuchao.android.libfilemanager.devices.TypeTool.ByteArrToHex;
-import static com.zhuchao.android.libfilemanager.devices.TypeTool.ByteArrToHexStr;
 
 
 public class MySerialPort {
-
     private final static int SLEEP_TIMEOUT = 30;
     private final static int STATE_PRODUCT_CODE = 1;
     private final static int STATE_MSG_ID = 2;
@@ -35,13 +33,11 @@ public class MySerialPort {
     private String DevicePath = "/dev/ttyS0";
     private int Baudrate = 9600;
     private Context mContext;
-    //public boolean PortStatus = false; //是否打开串口标志
-    //public String data_;
+
     private boolean threadStatus = false; //线程状态，为了安全终止线程
     private JniSerialPort serialPort = null;
     private InputStream inputStream = null;
     private OutputStream outputStream = null;
-    private TypeTool typeTool = new TypeTool();
     private int mState = STATE_PRODUCT_CODE;
     private boolean IsDecode = false;
 
@@ -66,11 +62,6 @@ public class MySerialPort {
         return value;
     }
 
-    /**
-     * 打开串口
-     *
-     * @return serialPort串口对象
-     */
     public boolean openPort(String DevicePath, int Baudrate, boolean IsDecode) {
         this.DevicePath = DevicePath;
         this.Baudrate = Baudrate;
@@ -97,7 +88,7 @@ public class MySerialPort {
             return false;
         }
 
-        Log.d(TAG, "成功打开串口>>>>>>>>>");
+        Log.d(TAG, "成功打开串口>>>>>>>>>"+this.DevicePath+",Baudrate:"+this.Baudrate);
         threadStatus = true; //线程状态
         return true;
     }
@@ -110,7 +101,6 @@ public class MySerialPort {
             inputStream.close();
             outputStream.close();
 
-            //this.PortStatus = false;
             this.threadStatus = false; //线程状态
             this.IsDecode = false;
             serialPort.close();
@@ -118,17 +108,10 @@ public class MySerialPort {
             //Log.e(TAG, "closePort: 关闭串口异常：" + e.toString());
             return;
         }
-        //Log.d(TAG, "closePort: 关闭串口成功");
     }
 
-    /**
-     * 发送串口指令（字符串）
-     *
-     * @param data String数据指令
-     */
-    public void sendSerialPort(String data) {
-        Log.d(TAG, "sendSerialPort: 发送数据");
-
+    public void sendString(String data) {
+        //Log.d(TAG, "sendSerialPort: 发送数据");
         try {
             byte[] sendData = data.getBytes(); //string转byte[]
             //this.data_ = new String(sendData); //byte[]转string
@@ -137,29 +120,21 @@ public class MySerialPort {
                 outputStream.write('\n');
                 //outputStream.write('\r'+'\n');
                 outputStream.flush();
-                Log.d(TAG, "sendSerialPort: 串口数据发送成功");
+                //Log.d(TAG, "sendSerialPort: 串口数据发送成功");
             }
         } catch (IOException e) {
-            //Log.e(TAG, "sendSerialPort: 串口数据发送失败：" + e.toString());
+            Log.e(TAG, "sendString fail：" + e.toString());
         }
 
     }
 
-    /**
-     * 发送串口指令（字节数组）
-     */
     public void sendBuffer(byte[] data) {
-
-        //Log.d(TAG, "sendSerialPort: 发送数据"+ByteArrToHexStr(data,0,bytesToInt(Count,0)));
         try {
             byte[] sendData = data;  //string转byte[]
-            //if (bytesToInt(Count,0) > 0) {
             outputStream.write(sendData);
             outputStream.flush();
-            //Log.e(TAG, "sendSerialPort: 串口数据发送成功");
-            //}
         } catch (IOException e) {
-            Log.e(TAG, "sendSerialPort: 串口数据发送失败：" + e.toString());
+            Log.e(TAG, "sendBuffer fail：" + e.toString());
         }
     }
 
@@ -206,7 +181,7 @@ public class MySerialPort {
     }
 
     private class DeccodeThread extends Thread {
-        private final int TIMEOUTCOUNT = 2;
+        private final int TIMEOUTCOUNT = 10;
 
         @Override
         public void run() {
@@ -420,4 +395,11 @@ public class MySerialPort {
         }
     }
 
+    public String getDevicePath() {
+        return DevicePath;
+    }
+
+    public int getBaudrate() {
+        return Baudrate;
+    }
 }

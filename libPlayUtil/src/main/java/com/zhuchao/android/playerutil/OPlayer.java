@@ -21,44 +21,45 @@ import java.util.ArrayList;
 //import org.videolan.libvlc.MediaPlayCallback;
 
 public class OPlayer {
-    private String TAG = "My OPlayer";
+    private String TAG = "OPlayer>>>";
     private Context mContext;
-    //private String mUrl;
     private MediaPlayer mMediaPlayer = null;
     private Media media = null;
     private LibVLC mLibVLC = null;
     private IVLCVout vlcVout;
     private IVLCVoutCallBack mIVLCVoutCallBack;
     private PlayerCallback mOnPlayerEventCallBack = null;
-    //private SurfaceView msView = null;
-    //private TextureView mtView = null;
     private TextureView mTextureView = null;
     private SurfaceView mSurfaceView = null;
     private Boolean HWDecoderEnabled = true;
     private long TotalTime = 0;
-    private int mVideoHeight = 0;
-    private int mVideoWidth = 0;
-    private int mVideoVisibleHeight = 0;
-    private int mVideoVisibleWidth = 0;
-    private int mVideoSarNum = 0;
-    private int mVideoSarDen = 0;
 
-    private static final int SURFACE_BEST_FIT = 0;
-    private static final int SURFACE_FIT_SCREEN = 1;
-    private static final int SURFACE_FILL = 2;
-    private static final int SURFACE_16_9 = 3;
-    private static final int SURFACE_4_3 = 4;
-    private static final int SURFACE_ORIGINAL = 5;
-    private static final int SURFACE_FIXFRAME = 6;
+    //private int mVideoHeight = 0;
+    //private int mVideoWidth = 0;
+    //private int mVideoVisibleHeight = 0;
+    //private int mVideoVisibleWidth = 0;
+    //private int mVideoSarNum = 0;
+    //private int mVideoSarDen = 0;
+
+    //private static final int SURFACE_BEST_FIT = 0;
+    //private static final int SURFACE_FIT_SCREEN = 1;
+    //private static final int SURFACE_FILL = 2;
+    //private static final int SURFACE_16_9 = 3;
+    //private static final int SURFACE_4_3 = 4;
+    //private static final int SURFACE_ORIGINAL = 5;
+    //private static final int SURFACE_FIXFRAME = 6;
     //private static int mWrapMod = SURFACE_FILL;
     //private static int mPlayMode = 1;
 
-    private View.OnLayoutChangeListener onLayoutChangeListener = null;
-    //private FrameLayout mFrameLayout = null;
-    //private Handler handler = new Handler();
-    //private ArrayList<String> mOptions = new ArrayList<String>();
-    //private PlaybackEvent mPlaybackEvent= new PlaybackEvent();
-
+    // mMediaPlayer.getPlayerState()
+    //int libvlc_NothingSpecial=0;
+    //int libvlc_Opening=1;
+    //int libvlc_Buffering=2;
+    //int libvlc_Playing=3;
+    //int libvlc_Paused=4;
+    //int libvlc_Stopped=5;
+    //int libvlc_Ended=6;
+    //int libvlc_Error=7;
 
     private MediaPlayer.EventListener mEventListener = new MediaPlayer.EventListener() {
         @Override
@@ -315,12 +316,12 @@ public class OPlayer {
         @Override
         public void onNewVideoLayout(IVLCVout vlcVout, int width, int height, int visibleWidth,
                                      int visibleHeight, int sarNum, int sarDen) {
-            mVideoWidth = width;
-            mVideoHeight = height;
-            mVideoVisibleWidth = visibleWidth;
-            mVideoVisibleHeight = visibleHeight;
-            mVideoSarNum = sarNum;
-            mVideoSarDen = sarDen;
+            //mVideoWidth = width;
+            //mVideoHeight = height;
+            //mVideoVisibleWidth = visibleWidth;
+            //mVideoVisibleHeight = visibleHeight;
+            //mVideoSarNum = sarNum;
+            //mVideoSarDen = sarDen;
             Log.d(TAG, "IVLCVoutCallBack ---> onNewVideoLayout");
         }
 

@@ -23,8 +23,14 @@ public  class PlaybackEvent  {
     public static final int ESSelected = 278;
 
 
-    private static int mStatus;
-    private static long mStatusValue;
+    public static final int OPLAYER_NothingSpecial=0;
+    public static final int OPLAYER_Opening=1;
+    public static final int OPLAYER_Buffering=2;
+    public static final int OPLAYER_Playing=3;
+    public static final int OPLAYER_Paused=4;
+    public static final int OPLAYER_Stopped=5;
+    public static final int OPLAYER_Ended=6;
+    public static final int OPLAYER_Error=7;
 
 
 }

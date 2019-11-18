@@ -29,9 +29,12 @@ public class OMedia implements Serializable {
     private OMedia mPreOMedia = null;
     private OMedia mNextOMedia = null;
 
+    public OMedia() {
+    }
+
     public OMedia(Movie movie) {
-        if(movie != null)
-        this.mMovie = movie;
+        if (movie != null)
+            this.mMovie = movie;
     }
 
     public OMedia(String path) {
@@ -99,14 +102,26 @@ public class OMedia implements Serializable {
         return this;
     }
 
-
-
-    public void stopPlayer() {
-        if (mOPlayer != null) {
-            PlayerUtil.FreeSingle();
-            mOPlayer = null;
-        }
+    public void playPause() {
+        mOPlayer.playPause();
     }
+
+    public void pause() {
+        mOPlayer.pause();
+    }
+
+    public void stop() {
+        mOPlayer.stop();
+    }
+
+    public void setNoAudio() {
+        mOPlayer.setNoAudio();
+    }
+
+    public void setVolume(int var1) {
+        mOPlayer.setVolume(var1);
+    }
+
 
     public boolean isPlaying() {
         if (mOPlayer != null)
@@ -114,7 +129,7 @@ public class OMedia implements Serializable {
         return false;
     }
 
-    public int getOPlayState() {
+    public int getPlayState() {
         if (mOPlayer != null)
             return mOPlayer.getPlayerState();
         else
@@ -152,7 +167,7 @@ public class OMedia implements Serializable {
         this.mMovie = mMovie;
     }
 
-    public OPlayer getOPlayer() {
+    private OPlayer getOPlayer() {
         return mOPlayer;
     }
 

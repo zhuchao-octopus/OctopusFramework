@@ -1,6 +1,6 @@
 package com.zhuchao.android.callbackevent;
 
-public interface NormalRequestCallBack {
+public interface NormalRequestCallback {
 
       void onRequestComplete(String result, int resultIndex);
 

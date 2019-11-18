@@ -29,6 +29,9 @@ public class OMediax implements Serializable {
     private OMedia mPreOMedia = null;
     private OMedia mNextOMedia = null;
 
+    public OMediax() {
+    }
+
     public OMediax(Movie movie) {
         if (movie != null)
             this.mMovie = movie;
@@ -101,13 +104,26 @@ public class OMediax implements Serializable {
         return this;
     }
 
-
-    public void free() {
-        if (mOPlayer != null) {
-            mOPlayer.free();
-            mOPlayer = null;
-        }
+    public void playPause() {
+        mOPlayer.playPause();
     }
+
+    public void pause() {
+        mOPlayer.pause();
+    }
+
+    public void stop() {
+        mOPlayer.stop();
+    }
+
+    public void setNoAudio() {
+        mOPlayer.setNoAudio();
+    }
+
+    public void setVolume(int var1) {
+        mOPlayer.setVolume(var1);
+    }
+
 
     public boolean isPlaying() {
         if (mOPlayer != null)
@@ -115,11 +131,19 @@ public class OMediax implements Serializable {
         return false;
     }
 
-    public int getOPlayState() {
+    public int getPlayState() {
         if (mOPlayer != null)
             return mOPlayer.getPlayerState();
         else
             return 0;
+    }
+
+
+    public void free() {
+        if (mOPlayer != null) {
+            mOPlayer.free();
+            mOPlayer = null;
+        }
     }
 
 
@@ -153,8 +177,8 @@ public class OMediax implements Serializable {
         this.mMovie = mMovie;
     }
 
-    public OPlayer getOPlayer() {
-        return mOPlayer;
-    }
+    //public OPlayer getOPlayer() {
+    //     return mOPlayer;
+    //}
 
 }

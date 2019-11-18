@@ -52,8 +52,8 @@ dependencies {
     implementation project(path: ':libDecodeCore')
     implementation project(path: ':libCallbackEvent')
     implementation project(path: ':libDialog')
-    //implementation 'com.zhuchao.android:libDecodeCore:2.0:@aar'
 
+    //implementation 'com.zhuchao.android:libDecodeCore:2.0:@aar'
     //implementation 'org.videolan.libvlc.LibVLC:libvlc-armv7:3.1.0:@aar' //本地库依赖
     //implementation ('com.zhuchao.android:libDecodeCore:2.0')// {transitive = true }
 
