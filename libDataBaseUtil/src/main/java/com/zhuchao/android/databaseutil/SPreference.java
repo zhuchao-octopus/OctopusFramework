@@ -12,7 +12,7 @@ public class SPreference {
         editor.putString(key,value);
         editor.commit();
     }
-    public static void ClearSharedPreferences(Context mContext,String name)
+    public static void clearSharedPreferences(Context mContext,String name)
     {
         android.content.SharedPreferences sharedPreferences= mContext.getSharedPreferences(name,Context.MODE_PRIVATE);
         android.content.SharedPreferences.Editor editor = sharedPreferences.edit();

@@ -2,6 +2,7 @@ package com.zhuchao.android.playerutil;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -32,8 +33,8 @@ public class OPlayer {
     private TextureView mTextureView = null;
     private SurfaceView mSurfaceView = null;
     private Boolean HWDecoderEnabled = true;
-    private long TotalTime = 0;
-
+    //private long TotalTime = 0;
+    private String mURL = "";
     //private int mVideoHeight = 0;
     //private int mVideoWidth = 0;
     //private int mVideoVisibleHeight = 0;
@@ -84,7 +85,7 @@ public class OPlayer {
         mIVLCVoutCallBack = new IVLCVoutCallBack();
         mOnPlayerEventCallBack = callback;
 
-        mLibVLC = new LibVLC(mContext);
+        mLibVLC = PlayerUtil.getSingleLibVLC(mContext, null);//new LibVLC(mContext);
         mMediaPlayer = new MediaPlayer(mLibVLC);
 
         mMediaPlayer.setEventListener(mEventListener);
@@ -107,7 +108,7 @@ public class OPlayer {
         if (options == null)
             options = Options;
 
-        mLibVLC = new LibVLC(mContext, options);
+        mLibVLC = PlayerUtil.getSingleLibVLC(mContext, options);//new LibVLC(mContext, options);
         mMediaPlayer = new MediaPlayer(mLibVLC);
 
         mMediaPlayer.setEventListener(mEventListener);
@@ -117,12 +118,20 @@ public class OPlayer {
 
 
     public boolean setSource(String path) {
+
         if (media != null) {
             media.release();
             media = null;
         }
-        if (path == null) return false;
+        //if(FilesManager.isExists(path))
+        if (path.startsWith("http") || path.startsWith("ftp")) {
+            Uri uri = Uri.parse(path);
+            setSource(uri);
+            return true;
+        }
 
+        if (path == null) return false;
+        mURL = path;
         media = new Media(mLibVLC, path);
         media.setHWDecoderEnabled(HWDecoderEnabled, HWDecoderEnabled);
 
@@ -133,7 +142,7 @@ public class OPlayer {
         media.addOption(":network-caching=10000");//网络缓存
         media.addOption(":live-caching=10000");//直播缓存
         media.addOption(":sout-mux-caching=10000");//输出缓存
-
+        mMediaPlayer.stop();
         mMediaPlayer.setMedia(media);
         mMediaPlayer.setAspectRatio(null);
         mMediaPlayer.setScale(0);
@@ -146,7 +155,7 @@ public class OPlayer {
             media = null;
         }
         if (uri == null) return false;
-
+        mURL = uri.toString();
         media = new Media(mLibVLC, uri);
         media.setHWDecoderEnabled(HWDecoderEnabled, HWDecoderEnabled);
 
@@ -158,6 +167,7 @@ public class OPlayer {
         media.addOption(":live-caching=10000");//直播缓存
         media.addOption(":sout-mux-caching=10000");//输出缓存
 
+        mMediaPlayer.stop();
         mMediaPlayer.setMedia(media);
         mMediaPlayer.setAspectRatio(null);
         mMediaPlayer.setScale(0);
@@ -170,7 +180,7 @@ public class OPlayer {
             media = null;
         }
         if (afd == null) return false;
-
+        mURL = afd.toString();
         media = new Media(mLibVLC, afd);
 
         media.setHWDecoderEnabled(HWDecoderEnabled, HWDecoderEnabled);
@@ -181,7 +191,7 @@ public class OPlayer {
         media.addOption(":network-caching=10000");//网络缓存
         media.addOption(":live-caching=10000");//直播缓存
         media.addOption(":sout-mux-caching=10000");//输出缓存
-
+        mMediaPlayer.stop();
         mMediaPlayer.setMedia(media);
         mMediaPlayer.setAspectRatio(null);
         mMediaPlayer.setScale(0);
@@ -194,7 +204,7 @@ public class OPlayer {
             media = null;
         }
         if (fd == null) return false;
-
+        mURL = fd.toString();
         media = new Media(mLibVLC, fd);
 
         media.setHWDecoderEnabled(HWDecoderEnabled, HWDecoderEnabled);
@@ -205,7 +215,7 @@ public class OPlayer {
         media.addOption(":network-caching=10000");//网络缓存
         media.addOption(":live-caching=10000");//直播缓存
         media.addOption(":sout-mux-caching=10000");//输出缓存
-
+        mMediaPlayer.stop();
         mMediaPlayer.setMedia(media);
         mMediaPlayer.setAspectRatio(null);
         mMediaPlayer.setScale(0);
@@ -241,22 +251,38 @@ public class OPlayer {
     public void play() {
         if (media == null) return;
         mMediaPlayer.play();
-        Log.d(TAG, "start to play ----->" + media.getUri());
+        Log.d(TAG, "start to play ----->" + mURL);
     }
 
 
     public void pause() {
         if (media == null) return;
         mMediaPlayer.pause();
-        Log.d(TAG, "start to pause ----->" + media.getUri());
+        Log.d(TAG, "start to pause ----->" + mURL);
     }
 
-    public void stop() {
-        if (media == null) return;
-        mMediaPlayer.stop();
-        mMediaPlayer.getVLCVout().detachViews();
-        mOnPlayerEventCallBack = null;
-        Log.d(TAG, "start to stop ----->" + media.getUri());
+    public void fastForward(float x) {
+        mMediaPlayer.setRate(x);
+    }
+
+    public void fastBack(float x) {
+        mMediaPlayer.setRate(x);
+    }
+
+
+    public void fastForward(int x) {
+        mMediaPlayer.setPosition(mMediaPlayer.getPosition() + x);
+
+    }
+    public void fastBack(int x) {
+        mMediaPlayer.setPosition(mMediaPlayer.getPosition() - x);
+    }
+
+    public void fastForward(long x) {
+        mMediaPlayer.setTime(mMediaPlayer.getTime()+x);
+    }
+    public void fastBack(long x) {
+        mMediaPlayer.setTime(mMediaPlayer.getTime()-x);
     }
 
     public void playPause() {
@@ -286,20 +312,47 @@ public class OPlayer {
         mMediaPlayer.play();
     }
 
-    public void free() {
+    public void stop() {
         try {
             if (vlcVout != null) {
                 vlcVout.removeCallback(mIVLCVoutCallBack);
-                vlcVout = null;
+                vlcVout.detachViews();
             }
-            if (mMediaPlayer != null) {
-                mMediaPlayer.release();
-                mMediaPlayer = null;
-            }
+
             if (media != null) {
                 media.release();
                 media = null;
             }
+
+            if (mMediaPlayer != null) {
+                mMediaPlayer.stop();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "start to stop ----->" + mURL);
+    }
+
+    public void free() {
+        try {
+
+            if (vlcVout != null) {
+                vlcVout.removeCallback(mIVLCVoutCallBack);
+                vlcVout.detachViews();
+            }
+
+            if (mMediaPlayer != null) {
+                mMediaPlayer.setEventListener(null);
+                mMediaPlayer.release();
+                mMediaPlayer = null;
+            }
+
+            if (media != null) {
+                media.release();
+                media = null;
+            }
+
             if (mLibVLC != null) {
                 mLibVLC.release();
                 mLibVLC = null;
@@ -327,14 +380,17 @@ public class OPlayer {
 
         @Override
         public void onSurfacesCreated(IVLCVout ivlcVout) {
-            TotalTime = mMediaPlayer.getLength();
-            if (mSurfaceView != null)
+            if (mSurfaceView != null) {
+                //mSurfaceView.setVisibility(View.VISIBLE);
                 vlcVout.setWindowSize(mSurfaceView.getWidth(), mSurfaceView.getHeight());
-            else if (mTextureView != null)
+            }
+            else if (mTextureView != null) {
                 vlcVout.setWindowSize(mTextureView.getWidth(), mTextureView.getHeight());
-
+            }
             mMediaPlayer.setAspectRatio(null);
             mMediaPlayer.setScale(0);
+
+
             Log.d(TAG, "IVLCVoutCallBack ---> onSurfacesCreated");
         }
 
@@ -382,13 +438,14 @@ public class OPlayer {
         return mMediaPlayer.getTime();
     }
 
+    public float getCurrentPosition() {
+        return mMediaPlayer.getPosition();
+    }
+
     public long getLength() {
         return mMediaPlayer.getLength();
     }
 
-    public long getTotalTime() {
-        return TotalTime;
-    }
 
     public MediaPlayer getMediaPlayer() {
         return mMediaPlayer;
@@ -396,6 +453,10 @@ public class OPlayer {
 
     public int getPlayerState() {
         return mMediaPlayer.getPlayerState();
+    }
+    public void setRate(float v)
+    {
+        mMediaPlayer.setRate(v);
     }
 
 }

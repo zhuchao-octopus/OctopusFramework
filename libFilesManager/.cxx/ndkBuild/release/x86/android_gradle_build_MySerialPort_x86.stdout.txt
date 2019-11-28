@@ -1,0 +1,2 @@
+[x86] Compile        : MySerialPort <= SerialPort.c
+[x86] SharedLibrary  : libMySerialPort.so

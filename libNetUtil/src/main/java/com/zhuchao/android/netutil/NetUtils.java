@@ -68,15 +68,15 @@ public class NetUtils {
         IP1 = "";
         IP0 = "";
         Location = "";
-        NetStatus =false;
+        NetStatus = false;
         NetType = -1;
         registerNetReceiver();
     }
 
     public void Free() {
         try {
-            mContext = null;
             unRegisterNetReceiver();
+            mContext = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -126,25 +126,27 @@ public class NetUtils {
     }
 
     public void unRegisterNetReceiver() {
-        if(NetworkChangedReceiver !=null) {
+        if (NetworkChangedReceiver != null) {
             mContext.unregisterReceiver(NetworkChangedReceiver);
-            NetworkChangedReceiver=null;
+            NetworkChangedReceiver = null;
         }
     }
 
-    public boolean isNetCanConnect()
-    {
-        if(TextUtils.isEmpty(IP0)) return false;
-        if(TextUtils.isEmpty(IP1)) return false;
-        if(TextUtils.isEmpty(MAC)) return false;
+    public boolean isNetCanConnect() {
+
+        if (TextUtils.isEmpty(IP0) || TextUtils.isEmpty(IP1) || TextUtils.isEmpty(MAC)) {
+            if (isInternetOk()) return true;
+            return false;
+        }
 
         return true;
     }
+
     private BroadcastReceiver NetworkChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final String action =intent.getAction();
-            Log.d(TAG,"Got Action>>>>>>>:"+action);
+            final String action = intent.getAction();
+            Log.d(TAG, "Got Action>>>>>>>:" + action);
             new Thread() {
                 public void run() {
                     if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
@@ -177,8 +179,7 @@ public class NetUtils {
                 Location = "";
             }
 
-        } else
-        {
+        } else {
             MAC = "";
             WMAC = "";
             IP1 = "";
@@ -203,38 +204,38 @@ public class NetUtils {
     }
 
     public boolean isLocalNetConnected() {
-            NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
-            if (mNetworkInfo != null) {
-                return mNetworkInfo.isConnected();
-            }
+        NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+        if (mNetworkInfo != null) {
+            return mNetworkInfo.isConnected();
+        }
 
         return false;
     }
 
     public boolean isWifiConnected() {
-            NetworkInfo mWiFiNetworkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            if (mWiFiNetworkInfo != null) {
-                return mWiFiNetworkInfo.isConnected();
-            }
+        NetworkInfo mWiFiNetworkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (mWiFiNetworkInfo != null) {
+            return mWiFiNetworkInfo.isConnected();
+        }
 
         return false;
     }
 
     public boolean isMobileConnected() {
 
-            NetworkInfo mMobileNetworkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-            if (mMobileNetworkInfo != null) {
-                return mMobileNetworkInfo.isConnected();
-            }
+        NetworkInfo mMobileNetworkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (mMobileNetworkInfo != null) {
+            return mMobileNetworkInfo.isConnected();
+        }
 
         return false;
     }
 
     public int getConnectedType() {
-            NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
-            if (mNetworkInfo != null && mNetworkInfo.isAvailable()) {
-                return mNetworkInfo.getType();
-            }
+        NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+        if (mNetworkInfo != null && mNetworkInfo.isAvailable()) {
+            return mNetworkInfo.getType();
+        }
 
         return -1;
     }
@@ -461,15 +462,17 @@ public class NetUtils {
 
                     } else {
                         IP0 = "";
-                        Location="";
+                        Location = "";
                     }
                     if (mNetChangedCallBack != null) {
                         mNetChangedCallBack.onNetStateChanged(NetStatus, NetType, MAC, WMAC, IP0, IP1, Location);
                     }
                 } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
+                    Log.d(TAG,"GetInternetIp" + e.toString());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
+                    Log.d(TAG,"GetInternetIp" + e.toString());
                 }
             }
         }.start();
@@ -497,7 +500,8 @@ public class NetUtils {
     //把拼音的省份改成中文
     public String getChineseRegion(String province) {
         province = province.trim();
-        String region = "";
+        String region = province;
+
         if (province.equalsIgnoreCase("Guangdong")) {
             region = "广东省";
         } else if (province.equalsIgnoreCase("Guangxi")) {
@@ -567,6 +571,7 @@ public class NetUtils {
         } else if (province.equalsIgnoreCase("Macao")) {
             region = "澳门特别行政区";
         }
+
         return region;
     }
 

@@ -1,0 +1,60 @@
+{
+  "variant": {
+    "module": {
+      "rootBuildGradleFolder": "D:\\AndroidStudioProjects\\OctopusFramework",
+      "sdkFolder": "D:\\android-studio\\AndroidSDK",
+      "isNativeCompilerSettingsCacheEnabled": false,
+      "isBuildOnlyTargetAbiEnabled": true,
+      "splitsAbiFilterSet": [],
+      "intermediatesFolder": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\build\\intermediates",
+      "gradleModulePathName": ":libFilesManager",
+      "moduleRootFolder": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager",
+      "makeFile": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\src\\main\\jni\\Android.mk",
+      "buildSystem": "NDK_BUILD",
+      "compilerSettingsCacheFolder": "D:\\AndroidStudioProjects\\OctopusFramework\\.cxx",
+      "cxxFolder": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\.cxx",
+      "ndkFolder": "D:\\android-studio\\AndroidSDK\\ndk\\20.0.5594570",
+      "ndkVersion": "20.0.5594570",
+      "ndkSupportedAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkDefaultAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "cmakeToolchainFile": "."
+    },
+    "buildSystemArgumentList": [],
+    "cFlagList": [],
+    "cppFlagsList": [],
+    "variantName": "debug",
+    "soFolder": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\build\\intermediates\\ndkBuild\\debug\\lib",
+    "objFolder": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\build\\intermediates\\ndkBuild\\debug\\obj\\local",
+    "jsonFolder": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\.cxx\\ndkBuild\\debug",
+    "gradleBuildOutputFolder": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\.cxx\\cxx\\debug",
+    "isDebuggableEnabled": true,
+    "validAbiList": [
+      "ARMEABI_V7A",
+      "ARM64_V8A",
+      "X86",
+      "X86_64"
+    ],
+    "buildTargetSet": []
+  },
+  "abi": "ARMEABI_V7A",
+  "abiPlatformVersion": 21,
+  "cxxBuildFolder": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\.cxx\\ndkBuild\\debug\\armeabi-v7a",
+  "jsonFile": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\.cxx\\ndkBuild\\debug\\armeabi-v7a\\android_gradle_build.json",
+  "gradleBuildOutputFolder": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\.cxx\\cxx\\debug\\armeabi-v7a",
+  "objFolder": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\build\\intermediates\\ndkBuild\\debug\\obj\\local\\armeabi-v7a",
+  "buildCommandFile": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\.cxx\\ndkBuild\\debug\\armeabi-v7a\\build_command.txt",
+  "buildOutputFile": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\.cxx\\ndkBuild\\debug\\armeabi-v7a\\build_output.txt",
+  "modelOutputFile": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\.cxx\\ndkBuild\\debug\\armeabi-v7a\\build_model.json",
+  "jsonGenerationLoggingRecordFile": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\.cxx\\ndkBuild\\debug\\armeabi-v7a\\json_generation_record.json",
+  "compileCommandsJsonFile": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\.cxx\\ndkBuild\\debug\\armeabi-v7a\\compile_commands.json"
+}

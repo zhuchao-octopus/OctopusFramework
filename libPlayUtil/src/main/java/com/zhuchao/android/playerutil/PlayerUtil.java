@@ -13,7 +13,7 @@ public class PlayerUtil {
     private static LibVLC libVLC = null;
     private static OPlayer mOPlayer = null;
 
-    private synchronized static LibVLC getSingleLibVLC(Context context, ArrayList<String> options) throws IllegalStateException {
+    public synchronized static LibVLC getSingleLibVLC(Context context, ArrayList<String> options) throws IllegalStateException {
         if (libVLC == null) {
             if (options == null) {
                 libVLC = new LibVLC(context);
@@ -60,10 +60,14 @@ public class PlayerUtil {
         return mOPlayer;
     }
 
-    public synchronized static void FreeSingle() {
+    public synchronized static void FreeSinglePlayer() {
         if (mOPlayer != null)
             mOPlayer.free();
         mOPlayer = null;
     }
-
+    public synchronized static void FreeSingleVLC() {
+        if (libVLC != null)
+            libVLC.release();
+        libVLC = null;
+    }
 }

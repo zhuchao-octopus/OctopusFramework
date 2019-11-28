@@ -24,12 +24,20 @@ import java.util.ArrayList;
 public class OMedia implements Serializable {
     static final long serialVersionUID = 727566175075960653L;
     private Movie mMovie = new Movie(null);
-    private OPlayer mOPlayer = null; //单例
+    //private OPlayer mOPlayer = null; //单例
     private PlayerCallback mCallback = null;
     private OMedia mPreOMedia = null;
     private OMedia mNextOMedia = null;
+    private Context mContext = null;
+    private ArrayList<String> mOptions = null;
+    private float mPlayRate = 1;
+    private int  PlayOrder=0;
 
     public OMedia() {
+    }
+
+    public OMedia(Context context) {
+        mContext = context;
     }
 
     public OMedia(Movie movie) {
@@ -47,100 +55,135 @@ public class OMedia implements Serializable {
     }
 
     public OMedia with(Context context) {
-        mOPlayer = PlayerUtil.getSingleOPlayer(context, mCallback);
+        mContext = context;
+        //PlayerUtil.getSingleOPlayer(context, mCallback);
         return this;
     }
 
     public OMedia with(Context context, ArrayList<String> options) {
-        mOPlayer = PlayerUtil.getSingleOPlayer(context, options, mCallback);
+        mContext = context;
+        mOptions = options;
+        //PlayerUtil.getSingleOPlayer(context, options, mCallback);
         return this;
     }
 
     public OMedia play() {
-        mOPlayer.setSource(mMovie.getSourceUrl());
-        mOPlayer.play();
+        PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+        getOPlayer().setSource(mMovie.getSourceUrl());
+        getOPlayer().play();
         return this;
     }
 
     public OMedia play(String path) {
+        PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
         mMovie.setSourceUrl(path);
-        mOPlayer.setSource(path);
-        mOPlayer.play();
+        getOPlayer().setSource(path);
+        getOPlayer().play();
         return this;
     }
 
     public OMedia play(Uri uri) {
+        PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
         mMovie.setSourceUrl(uri.getPath());
-        mOPlayer.setSource(uri);
-        mOPlayer.play();
+        getOPlayer().setSource(uri);
+        getOPlayer().play();
         return this;
     }
 
     public OMedia play(FileDescriptor fd) {
-        mOPlayer.setSource(fd);
-        mOPlayer.play();
+        PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+        getOPlayer().setSource(fd);
+        getOPlayer().play();
         return this;
     }
 
     public OMedia play(AssetFileDescriptor afd) {
-        mOPlayer.setSource(afd);
-        mOPlayer.play();
+        PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+        getOPlayer().setSource(afd);
+        getOPlayer().play();
         return this;
     }
 
     public OMedia playOn(SurfaceView playView) {
-        mOPlayer.setSurfaceView(playView);
-        mOPlayer.setSource(mMovie.getSourceUrl());
-        mOPlayer.play();
+        PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+        getOPlayer().setSurfaceView(playView);
+        getOPlayer().setSource(mMovie.getSourceUrl());
+        getOPlayer().play();
         return this;
     }
 
     public OMedia playOn(TextureView playView) {
-        mOPlayer.setTextureView(playView);
-        mOPlayer.setSource(mMovie.getSourceUrl());
-        mOPlayer.play();
+        PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+        getOPlayer().setTextureView(playView);
+        getOPlayer().setSource(mMovie.getSourceUrl());
+        getOPlayer().play();
         return this;
     }
 
     public void playPause() {
-        mOPlayer.playPause();
+        getOPlayer().playPause();
     }
 
     public void pause() {
-        mOPlayer.pause();
+        getOPlayer().pause();
     }
 
     public void stop() {
-        mOPlayer.stop();
+
+        try {
+            getOPlayer().stop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setNoAudio() {
-        mOPlayer.setNoAudio();
+        getOPlayer().setNoAudio();
     }
 
     public void setVolume(int var1) {
-        mOPlayer.setVolume(var1);
+        getOPlayer().setVolume(var1);
+    }
+
+    public void fastForward(int x) {
+        getOPlayer().fastForward(x);
+    }
+
+    public void fastBack(int x) {
+        getOPlayer().fastBack(x);
+    }
+
+    public void fastForward(long x) {
+        getOPlayer().fastForward(x);
+    }
+
+    public void fastBack(long x) {
+        getOPlayer().fastBack(x);
     }
 
 
+    public void fastForward() {
+        mPlayRate = mPlayRate + 0.1f;
+        getOPlayer().setRate(mPlayRate);
+    }
+    public void fastBack() {
+        mPlayRate = mPlayRate - 0.1f;
+        if(mPlayRate<=0) mPlayRate =1;
+        getOPlayer().setRate(mPlayRate);
+    }
+
     public boolean isPlaying() {
-        if (mOPlayer != null)
-            return mOPlayer.isPlaying();
-        return false;
+        return getOPlayer().isPlaying();
     }
 
     public int getPlayState() {
-        if (mOPlayer != null)
-            return mOPlayer.getPlayerState();
-        else
-            return 0;
+        return getOPlayer().getPlayerState();
     }
 
 
-    public void setCallback(PlayerCallback callBack) {
+    private void setCallback(PlayerCallback callBack) {
         this.mCallback = callBack;
-        if (mOPlayer != null)
-            mOPlayer.setCallback(this.mCallback);
+        getOPlayer().setCallback(this.mCallback);
     }
 
     public OMedia getPreOMedia() {
@@ -168,7 +211,34 @@ public class OMedia implements Serializable {
     }
 
     private OPlayer getOPlayer() {
-        return mOPlayer;
+
+        return PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
     }
+
+    public float getPosition() {
+        return getOPlayer().getCurrentPosition();
+    }
+
+    public long getLength() {
+        return getOPlayer().getLength();
+    }
+
+    public void setNormalRage()
+    {
+        mPlayRate =1;
+        getOPlayer().setRate(mPlayRate);
+    }
+
+    public int getPlayOrder() {
+        return PlayOrder;
+    }
+
+    public OMedia setPlayOrder(int playOrder) {
+        PlayOrder = playOrder;
+        return this;
+    }
+    //public void setRate(float v) {
+    //    getOPlayer().setRate(v);
+    //}
 
 }

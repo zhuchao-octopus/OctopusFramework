@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import JNIAPI.JniSerialPort;
 
 import static com.zhuchao.android.libfilemanager.devices.TypeTool.ByteArrToHex;
+import static com.zhuchao.android.libfilemanager.devices.TypeTool.ByteArrToHexStr;
 
 
 public class MySerialPort {
@@ -150,8 +151,8 @@ public class MySerialPort {
      * 单开一线程，来读数据
      */
 
-    private class ReadThread extends Thread {
-
+    private class ReadThread extends Thread
+    {
         private byte[] buffer = new byte[512];
         private int size; //读取数据的大小
 
@@ -163,8 +164,7 @@ public class MySerialPort {
                 try {
                     size = inputStream.read(buffer);
                     if (size > 0) {
-
-                        //Log.e(TAG, "ReadThread: 收到数据：" + size + "|" + ByteArrToHexStr(buffer, 0, size));
+                        //Log.i(TAG, DevicePath+" Read File:" + size + "|" + ByteArrToHexStr(buffer, 0, size));
 
                         if (IsDecode) {
                             for (int i = 0; i < size; i++)
@@ -182,14 +182,14 @@ public class MySerialPort {
 
     private class DeccodeThread extends Thread {
         private final int TIMEOUTCOUNT = 10;
-
+        private byte mCurrentByte;
+        private int len = 0, timeout = 0;
+        private List<Byte> byteArrayList = new ArrayList<>();
         @Override
         public void run() {
-            super.run();
-            byte mCurrentByte;
-            int len = 0, timeout = 0;
-            List<Byte> byteArrayList = new ArrayList<>();
+
             while (true) {
+
                 switch (mState) {
                     case STATE_PRODUCT_CODE: //0x01, 0x01
                         if (mDataQueue.size() >= 2) {

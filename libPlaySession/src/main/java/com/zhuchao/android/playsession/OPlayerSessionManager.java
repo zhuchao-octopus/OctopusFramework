@@ -123,7 +123,12 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
 
         new Thread() {
             public void run() {
-                MobileDiscs = FilesManager.getUDiscName(mContext);
+                try {
+                    MobileDiscs = FilesManager.getUDiscName(mContext);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
+                }
 
                 //for (Map.Entry<Integer, OPlayerSession> entry : mSessions.entrySet())
                 //{
@@ -193,12 +198,18 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
     }
 
     private void initPlaySessionContent() {
-        for (Map.Entry<Integer, OPlayerSession> entry : mSessions.entrySet()) {
-            Log.d(TAG, "initPlaySessionContent = " + entry.getKey());
-            entry.getValue().doUpdateSession(entry.getKey());
+        try {
+            for (Map.Entry<Integer, OPlayerSession> entry : mSessions.entrySet()) {
+                Log.d(TAG, "initPlaySessionContent = " + entry.getKey());
+                entry.getValue().doUpdateSession(entry.getKey());
+            }
+            mIniType = 3;
+            Log.d(TAG, "initPlaySessionContent mIniType = " + mIniType);
+        } catch (Exception e) {
+            Log.d(TAG, "initPlaySessionContent fail mIniType = " + mIniType+":"+e.toString());
+            //e.printStackTrace();
         }
-        mIniType = 3;
-        Log.d(TAG, "initPlaySessionContent mIniType = " + mIniType);
+
     }
 
     private synchronized void addOtherSeesionToSessions(int SessionID,String name,OPlayerSession Session)
@@ -334,6 +345,19 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
                 break;
         }
         Log.d(TAG, "OnSessionComplete mIniType = " + mIniType + ",  sessionId=" + sessionId);
+    }
+
+    public void free()
+    {
+       if(!isInitComplete())  return;
+
+      this.mIniType =0;
+      this.mLocalSession.getVideos().clear();
+      this.mMobileSession.getVideos().clear();
+      this.mMomileTFSession.getVideos().clear();
+      this.MobileDiscs.clear();
+      mTopSession.getVideos().clear();
+      mSessions.clear();
     }
 
     private Handler myHandler = new Handler() {

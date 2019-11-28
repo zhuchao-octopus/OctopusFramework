@@ -16,6 +16,7 @@ import android.util.Log;
 
 import androidx.core.content.FileProvider;
 
+import com.zhuchao.android.databaseutil.SPreference;
 import com.zhuchao.android.libfilemanager.bean.AppInfor;
 
 import java.io.File;
@@ -90,6 +91,10 @@ public class MyAppsManager {
         return AllAppInfors;
     }
 
+    public MyAppsManager setmAppsChangedCallback(AppsChangedCallback mAppsChangedCallback) {
+        this.mAppsChangedCallback = mAppsChangedCallback;
+        return this;
+    }
 
     /**
      * 获取已安装apk的列表
@@ -179,11 +184,10 @@ public class MyAppsManager {
             }
             if (cached == false) {
                 Intent intent = mPackageManager.getLaunchIntentForPackage(appInfor.getPackageName());
-                if(intent != null)
-                   UserAppInfors.add(appInfor);
+                if (intent != null)
+                    UserAppInfors.add(appInfor);
             }
         }//for
-
 
 
         //int i = 0;
@@ -191,6 +195,11 @@ public class MyAppsManager {
         //    Log.d(TAG, "Apps[" + i + "]:" + Info.toString());
         //    i++;
         //}
+        String myapp = SPreference.getSharedPreferences(mContext, "MyAppInfors", "MyAppInfors");
+
+        AppInfor appInfor = getAppInfor(myapp);
+        if (appInfor != null)
+            addToMyApp(appInfor);
 
         if ((mAppsChangedCallback != null) && size0 != AllAppInfors.size()) {
             Runnable runnable = new Runnable() {
@@ -280,19 +289,29 @@ public class MyAppsManager {
         return null;
     }
 
+    public List<AppInfor> getMyAppInfors() {
+        return MyAppInfors;
+    }
 
     public List<AppInfor> getUserApps() {
+        ;
         return UserAppInfors;
     }
 
     public void addToMyApp(AppInfor infor) {
-        AllAppInfors.add(infor);
+
+        MyAppInfors.add(infor);
+        SPreference.saveSharedPreferences(mContext, "MyAppInfors", "MyAppInfors", infor.getPackageName());
+
         if (mAppsChangedCallback != null)
             mAppsChangedCallback.OnAppsChanged(ADDTOMYAPPS_ACTION, infor);
     }
 
     public void delFromMyApp(AppInfor infor) {
-        AllAppInfors.remove(infor);
+        MyAppInfors.remove(infor);
+        MyAppInfors.clear();
+        //SPreference.clearSharedPreferences(mContext,"MyAppInfors");
+        SPreference.saveSharedPreferences(mContext, "MyAppInfors", "MyAppInfors", "");
         if (mAppsChangedCallback != null)
             mAppsChangedCallback.OnAppsChanged(DELFROMMYAPPS_ACTION, infor);
     }
@@ -415,6 +434,20 @@ public class MyAppsManager {
             file.mkdirs();
         }
         return path;
+    }
+
+    public static Drawable getDrawable (Context context,String pkgName)
+    {
+        PackageManager mPm = context.getPackageManager();
+        try {
+            ApplicationInfo info = mContext.getPackageManager().getApplicationInfo(pkgName, 0);
+            //String label = (String)info.loadLabel(mPm);//应用名
+            Drawable icon = info.loadIcon(mPm);//应用icon
+            return icon;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

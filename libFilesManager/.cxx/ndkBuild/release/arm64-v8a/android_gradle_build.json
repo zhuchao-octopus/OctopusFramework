@@ -1,0 +1,34 @@
+{
+  "buildFiles": [
+    "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\src\\main\\jni\\Android.mk",
+    "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\src\\main\\jni\\Application.mk"
+  ],
+  "cleanCommands": [
+    "D:\\android-studio\\AndroidSDK\\ndk\\20.0.5594570\\ndk-build.cmd NDK_PROJECT_PATH\u003dnull APP_BUILD_SCRIPT\u003dD:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\src\\main\\jni\\Android.mk NDK_APPLICATION_MK\u003dD:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\src\\main\\jni\\Application.mk APP_ABI\u003darm64-v8a NDK_ALL_ABIS\u003darm64-v8a NDK_DEBUG\u003d0 APP_PLATFORM\u003dandroid-21 NDK_OUT\u003dD:/AndroidStudioProjects/OctopusFramework/libFilesManager/build/intermediates/ndkBuild/release/obj NDK_LIBS_OUT\u003dD:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\build\\intermediates\\ndkBuild\\release\\lib clean"
+  ],
+  "buildTargetsCommand": "D:\\android-studio\\AndroidSDK\\ndk\\20.0.5594570\\ndk-build.cmd NDK_PROJECT_PATH\u003dnull APP_BUILD_SCRIPT\u003dD:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\src\\main\\jni\\Android.mk NDK_APPLICATION_MK\u003dD:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\src\\main\\jni\\Application.mk APP_ABI\u003darm64-v8a NDK_ALL_ABIS\u003darm64-v8a NDK_DEBUG\u003d0 APP_PLATFORM\u003dandroid-21 NDK_OUT\u003dD:/AndroidStudioProjects/OctopusFramework/libFilesManager/build/intermediates/ndkBuild/release/obj NDK_LIBS_OUT\u003dD:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\build\\intermediates\\ndkBuild\\release\\lib {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "jhzserialport-release-arm64-v8a": {
+      "buildCommand": "D:\\android-studio\\AndroidSDK\\ndk\\20.0.5594570\\ndk-build.cmd NDK_PROJECT_PATH\u003dnull APP_BUILD_SCRIPT\u003dD:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\src\\main\\jni\\Android.mk NDK_APPLICATION_MK\u003dD:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\src\\main\\jni\\Application.mk APP_ABI\u003darm64-v8a NDK_ALL_ABIS\u003darm64-v8a NDK_DEBUG\u003d0 APP_PLATFORM\u003dandroid-21 NDK_OUT\u003dD:/AndroidStudioProjects/OctopusFramework/libFilesManager/build/intermediates/ndkBuild/release/obj NDK_LIBS_OUT\u003dD:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\build\\intermediates\\ndkBuild\\release\\lib D:/AndroidStudioProjects/OctopusFramework/libFilesManager/build/intermediates/ndkBuild/release/obj/local/arm64-v8a/libjhzserialport.so",
+      "toolchain": "toolchain-arm64-v8a",
+      "abi": "arm64-v8a",
+      "artifactName": "jhzserialport",
+      "files": [
+        {
+          "src": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\src\\main\\jni\\SerialPort.c",
+          "flags": "-target aarch64-none-linux-android21 -fdata-sections -ffunction-sections -fstack-protector-strong -funwind-tables -no-canonical-prefixes --sysroot D:/android-studio/AndroidSDK/ndk/20.0.5594570/build//../toolchains/llvm/prebuilt/windows-x86_64/sysroot -g -Wno-invalid-command-line-argument -Wno-unused-command-line-argument -fno-addrsig -fpic -O2 -DNDEBUG -ID:/AndroidStudioProjects/OctopusFramework/libFilesManager/src/main/jni -DANDROID -Wa,--noexecstack -Wformat -Werror\u003dformat-security"
+        }
+      ],
+      "output": "D:\\AndroidStudioProjects\\OctopusFramework\\libFilesManager\\build\\intermediates\\ndkBuild\\release\\obj\\local\\arm64-v8a\\libjhzserialport.so"
+    }
+  },
+  "toolchains": {
+    "toolchain-arm64-v8a": {
+      "cCompilerExecutable": "D:\\android-studio\\AndroidSDK\\ndk\\20.0.5594570\\build\\..\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe"
+    }
+  },
+  "cFileExtensions": [
+    "c"
+  ],
+  "cppFileExtensions": []
+}

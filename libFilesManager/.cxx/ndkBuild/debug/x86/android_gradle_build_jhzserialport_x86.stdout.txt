@@ -1,0 +1,2 @@
+[x86] Compile        : jhzserialport <= SerialPort.c
+[x86] SharedLibrary  : libjhzserialport.so

@@ -96,12 +96,12 @@ JNIEXPORT jobject JNICALL Java_JNIAPI_JniSerialPort_open
 		const char *path_utf = (*env)->GetStringUTFChars(env, path, &iscopy);
 		LOGD("Opening serial port %s with flags 0x%x", path_utf, O_RDWR | flags);
 		fd = open(path_utf, O_RDWR | flags);
-		LOGD("open() fd = %d", fd);
+		//LOGD("open() fd = %d", fd);
 		(*env)->ReleaseStringUTFChars(env, path, path_utf);
 		if (fd == -1)
 		{
 			/* Throw an exception */
-			LOGE("Cannot open port");
+			//LOGE("Cannot open port");
 			/* TODO: throw an exception */
 			return NULL;
 		}
@@ -110,7 +110,7 @@ JNIEXPORT jobject JNICALL Java_JNIAPI_JniSerialPort_open
 	/* Configure device */
 	{
 		struct termios cfg;
-		LOGD("Configuring serial port");
+		//LOGD("Configuring serial port");
 		if (tcgetattr(fd, &cfg))
 		{
 			LOGE("tcgetattr() failed");

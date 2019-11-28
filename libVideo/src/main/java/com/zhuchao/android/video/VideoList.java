@@ -31,14 +31,26 @@ public class VideoList {
         //if(findMoviebyId(oMedia.getmMovie().getMovieId()) == null)
         if(oMedia != null)
         {
-            OMedia lvideo = findMoviebyIndex(list.size()-1);
-            if(lvideo != null) lvideo.setNextOMedia(oMedia);
-            oMedia.setPreOMedia(lvideo);
-            list.add(oMedia);
             OMedia fvideo = findMoviebyIndex(0);
+            OMedia lvideo = findMoviebyIndex(list.size()-1);
 
-            fvideo.setPreOMedia(oMedia);
-            oMedia.setNextOMedia(fvideo);
+
+            if(lvideo != null) {
+                lvideo.setNextOMedia(oMedia);
+                oMedia.setPreOMedia(lvideo);
+            }
+            else
+            {
+                oMedia.setPreOMedia(oMedia);
+                oMedia.setNextOMedia(oMedia);
+            }
+
+            if(fvideo != null) {
+                fvideo.setPreOMedia(oMedia);
+                oMedia.setNextOMedia(fvideo);
+            }
+
+            list.add(oMedia);
         }
     }
     void removeVideo(OMedia oMedia)

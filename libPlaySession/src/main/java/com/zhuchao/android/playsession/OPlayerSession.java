@@ -311,9 +311,4 @@ public class OPlayerSession implements SessionCompleteCallback {
             userSessionCallback.OnSessionComplete(sessionId, result);
     }
 
-
-    public void play()
-    {
-
-    }
 }
