@@ -245,7 +245,7 @@ public class MyAppsManager {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.e(TAG, intent.getAction());
+            Log.e(TAG, "BroadcastReceiver:"+intent.getAction());
 
             if (action.equals(Intent.ACTION_PACKAGE_ADDED)) {
                 UpdateAppsInfor();

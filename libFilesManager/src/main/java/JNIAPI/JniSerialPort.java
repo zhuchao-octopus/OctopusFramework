@@ -63,7 +63,8 @@ public class JniSerialPort {
         try {
             mFd = open(device.getAbsolutePath(), baudrate, flags);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            Log.e(TAG, "native open fail:"+e.toString());
         }
 
         if (mFd == null) {
