@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.zhuchao.android.libfilemanager.bean.FileBean;
@@ -32,6 +33,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FilesManager {
-
+    private final static String TAG = "FilesManager";
     /**
      * 文档类型
      */
@@ -55,15 +59,89 @@ public class FilesManager {
     public static final int TYPE_ZIP = 2;
 
 
-    /**
-     * 判断文件是否存在
-     *
-     * @param path 文件的路径
-     * @return
-     */
     public static boolean isExists(String path) {
         File file = new File(path);
         return file.exists();
+    }
+    public static String getFileName(String filePath) {
+        File file = new File(filePath);
+        if(file.exists())
+            return file.getName();
+        else
+            return null;
+    }
+    public static boolean deleteFile(String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) file.delete();
+        return true;
+    }
+
+    public static boolean deleteFiles(String filePath) {
+        List<File> files = getFile(new File(filePath));
+        if (files.size() != 0) {
+            for (int i = 0; i < files.size(); i++) {
+                File file = files.get(i);
+
+                /**  如果是文件则删除  如果都删除可不必判断  */
+                //if (file.isFile()) {
+                file.delete();
+                //}
+
+            }
+        }
+        return true;
+    }
+
+    public static void renameFile(String oldPath, String newPath) {
+        File oleFile = new File(oldPath);
+        File newFile = new File(newPath);
+        //执行重命名
+        oleFile.renameTo(newFile);
+    }
+
+    public static void copyFile(String oldPath, String newPath) {
+        try {
+            int bytesum = 0;
+            int byteread = 0;
+            File oldfile = new File(oldPath);
+            if (oldfile.exists()) { //文件存在时
+                Log.d("FilesManager", oldPath + "---->" + newPath);
+
+                InputStream inStream = new FileInputStream(oldPath); //读入原文件
+                FileOutputStream fs = new FileOutputStream(newPath);
+                byte[] buffer = new byte[1444];
+                int length;
+                while ((byteread = inStream.read(buffer)) != -1) {
+                    bytesum += byteread; //字节数 文件大小
+                    //System.out.println(bytesum);
+                    fs.write(buffer, 0, byteread);
+                }
+                inStream.close();
+                fs.close();
+            }
+        } catch (Exception e) {
+            System.out.println("复制单个文件操作出错");
+            e.printStackTrace();
+
+        }
+
+    }
+
+    public static List<File> getFile(File file) {
+        List<File> list = new ArrayList<>();
+        File[] fileArray = file.listFiles();
+        if (fileArray == null) {
+            return null;
+        } else {
+            for (File f : fileArray) {
+                if (f.isFile()) {
+                    list.add(0, f);
+                } else {
+                    getFile(f);
+                }
+            }
+        }
+        return list;
     }
 
     public static int getFileType(String path) {
@@ -109,10 +187,7 @@ public class FilesManager {
      */
     public static boolean isPicFile(String path) {
         path = path.toLowerCase();
-        if (path.endsWith(".jpg") || path.endsWith(".jpeg") || path.endsWith(".png")) {
-            return true;
-        }
-        return false;
+        return path.endsWith(".jpg") || path.endsWith(".jpeg") || path.endsWith(".png");
     }
 
 
@@ -120,12 +195,8 @@ public class FilesManager {
      * 判断SD卡是否挂载
      */
     public static boolean isSDCardAvailable() {
-        if (Environment.MEDIA_MOUNTED.equals(Environment
-                .getExternalStorageState())) {
-            return true;
-        } else {
-            return false;
-        }
+        return Environment.MEDIA_MOUNTED.equals(Environment
+                .getExternalStorageState());
     }
 
     /**
@@ -137,7 +208,7 @@ public class FilesManager {
     public static String getExtFromFileFullName(String filename) {
         int dotPosition = filename.lastIndexOf('.');
         if (dotPosition != -1) {
-            return filename.substring(dotPosition + 1, filename.length());
+            return filename.substring(dotPosition + 1);
         }
         return "";
     }
@@ -194,6 +265,7 @@ public class FilesManager {
                     String p1 = (String) getBestVolumeDescription.invoke(mStorageManager, vol);
                     String p2 = path2.getPath();
                     USBDiscs.put(p1, p2);
+                    Log.i(TAG, "getUDiscName DeviceName = " + p1 + ":" + p2);
                 }
             }
         } catch (Exception ex) {
@@ -202,35 +274,44 @@ public class FilesManager {
         return USBDiscs;
     }
 
-
-    public static void copyFile(String oldPath, String newPath) {
+    public static String getUDiscPath(Context c) {
+        StorageManager mStorageManager;
+        Map<String, String> USBDiscs = new HashMap<String, String>();
+        Class<?> volumeInfoClazz = null;
+        Method getDescriptionComparator = null;
+        Method getBestVolumeDescription = null;
+        Method getVolumes = null;
+        Method isMountedReadable = null;
+        Method getType = null;
+        Method getPath = null;
+        List<?> volumes = null;
+        String rpath = null;
         try {
-            int bytesum = 0;
-            int byteread = 0;
-            File oldfile = new File(oldPath);
-            if (oldfile.exists()) { //文件存在时
-                Log.d("FilesManager", oldPath + "---->" + newPath);
-
-                InputStream inStream = new FileInputStream(oldPath); //读入原文件
-                FileOutputStream fs = new FileOutputStream(newPath);
-                byte[] buffer = new byte[1444];
-                int length;
-                while ((byteread = inStream.read(buffer)) != -1) {
-                    bytesum += byteread; //字节数 文件大小
-                    //System.out.println(bytesum);
-                    fs.write(buffer, 0, byteread);
+            mStorageManager = (StorageManager) c.getSystemService(Activity.STORAGE_SERVICE);
+            volumeInfoClazz = Class.forName("android.os.storage.VolumeInfo");
+            getDescriptionComparator = volumeInfoClazz.getMethod("getDescriptionComparator");
+            getBestVolumeDescription = StorageManager.class.getMethod("getBestVolumeDescription", volumeInfoClazz);
+            getVolumes = StorageManager.class.getMethod("getVolumes");
+            isMountedReadable = volumeInfoClazz.getMethod("isMountedReadable");
+            getType = volumeInfoClazz.getMethod("getType");
+            getPath = volumeInfoClazz.getMethod("getPath");
+            volumes = (List<?>) getVolumes.invoke(mStorageManager);
+            for (Object vol : volumes) {
+                if (vol != null && (boolean) isMountedReadable.invoke(vol) && (int) getType.invoke(vol) == 0) {
+                    File path2 = (File) getPath.invoke(vol);
+                    String p1 = (String) getBestVolumeDescription.invoke(mStorageManager, vol);
+                    String p2 = path2.getPath();
+                    USBDiscs.put(p1, p2);
+                    rpath = p2;
+                    Log.i(TAG, "getUDiscName DeviceName = " + p1 + ":" + p2);
                 }
-                inStream.close();
-                fs.close();
             }
-        } catch (Exception e) {
-            System.out.println("复制单个文件操作出错");
-            e.printStackTrace();
 
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-
+        return rpath;
     }
-
 
     /**
      * 获取本机音乐列表
@@ -392,10 +473,7 @@ public class FilesManager {
                 int count = parentFile.list(new FilenameFilter() {
                     @Override
                     public boolean accept(File dir, String filename) {
-                        if (filename.endsWith(".jpeg") || filename.endsWith(".jpg") || filename.endsWith(".png")) {
-                            return true;
-                        }
-                        return false;
+                        return filename.endsWith(".jpeg") || filename.endsWith(".jpg") || filename.endsWith(".png");
                     }
                 }).length;
 
@@ -454,8 +532,12 @@ public class FilesManager {
         }
     }
 
-    public static String getDownloadDir() {
+    public static String getDownloadDir(String downloadDir) {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyDownload/";
+        if (!TextUtils.isEmpty(downloadDir))
+        {
+            path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"+downloadDir+"/";
+        }
         File file = new File(path);
         if (!file.exists()) {
             file.mkdirs();
@@ -475,7 +557,7 @@ public class FilesManager {
                 while ((lineTxt = br.readLine()) != null) {
                     if (!"".equals(lineTxt)) {
                         String reds = lineTxt.split("\\+")[0];  //java 正则表达式
-                        newList.add(count, reds.toString());
+                        newList.add(count, reds);
                         count++;
                     }
                 }
@@ -707,4 +789,50 @@ public class FilesManager {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
+    public static String md5(String string) {
+        if (TextUtils.isEmpty(string)) {
+            return "";
+        }
+        MessageDigest md5 = null;
+        try {
+            md5 = MessageDigest.getInstance("MD5");
+            byte[] bytes = md5.digest(string.getBytes());
+            String result = "";
+            for (byte b : bytes) {
+                String temp = Integer.toHexString(b & 0xff);
+                if (temp.length() == 1) {
+                    temp = "0" + temp;
+                }
+                result += temp;
+            }
+            return result;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static String getMD5(File f) {
+        BigInteger bi = null;
+        try {
+            byte[] buffer = new byte[8192];
+            int len = 0;
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            FileInputStream fis = new FileInputStream(f);
+            while ((len = fis.read(buffer)) != -1) {
+                md.update(buffer, 0, len);
+            }
+            fis.close();
+            byte[] b = md.digest();
+            bi = new BigInteger(1, b);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (bi != null)
+            return bi.toString(16);
+        else
+            return "";
+    }
 }

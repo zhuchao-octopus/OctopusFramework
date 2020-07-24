@@ -1,9 +1,9 @@
 package com.zhuchao.android.callbackevent;
 
 
-public abstract interface PlayerCallback {
-    public abstract void OnEventCallBack(int EventType,long TimeChanged,long LengthChanged,float PositionChanged,
-                                         int outCount,int ChangedType,int ChangedID,float Buffering,long Length);
+public interface PlayerCallback {
+    void OnEventCallBack(int EventType, long TimeChanged, long LengthChanged, float PositionChanged,
+                         int OutCount, int ChangedType, int ChangedID, float Buffering, long Length);
 
 
 

@@ -1,1 +1,2 @@
-make: Nothing to be done for `jhzserialport'.
+[armeabi-v7a] Compile thumb  : jhzserialport <= SerialPort.c
+[armeabi-v7a] SharedLibrary  : libjhzserialport.so

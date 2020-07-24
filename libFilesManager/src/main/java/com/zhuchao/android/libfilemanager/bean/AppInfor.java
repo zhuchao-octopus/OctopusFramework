@@ -66,6 +66,7 @@ public class AppInfor  {
     }
 
     public Drawable getIcon() {
+        if (this == null) return null;
         return Icon;
     }
 

@@ -43,7 +43,7 @@ public class TypeTool {
     //-------------------------------------------------------
     //1字节转2个Hex字符
     public static String Byte2Hex(Byte inByte) {
-        return String.format("%02x", new Object[]{inByte}).toUpperCase();
+        return String.format("%02x", inByte).toUpperCase();
     }
 
     public static byte BytesAdd(byte[] inBytArr,int count)

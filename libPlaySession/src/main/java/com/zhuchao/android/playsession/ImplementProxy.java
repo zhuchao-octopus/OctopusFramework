@@ -15,6 +15,7 @@ import com.zhuchao.android.playsession.PaserBean.IdNameBean;
 import com.zhuchao.android.playsession.PaserBean.MovieListBean;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -72,7 +73,7 @@ public class ImplementProxy implements HttpResultCallBack {
     public String MapToJson(Map<Integer, String> map) {
         Gson gson = new GsonBuilder().serializeNulls().disableHtmlEscaping().create();
         try {
-            return gson.toJson(map).toString();
+            return gson.toJson(map);
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
         }
@@ -82,11 +83,8 @@ public class ImplementProxy implements HttpResultCallBack {
     public String stringToMD5(String string) {
         byte[] hash;
         try {
-            hash = MessageDigest.getInstance("MD5").digest(string.getBytes("UTF-8"));
+            hash = MessageDigest.getInstance("MD5").digest(string.getBytes(StandardCharsets.UTF_8));
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return null;
         }

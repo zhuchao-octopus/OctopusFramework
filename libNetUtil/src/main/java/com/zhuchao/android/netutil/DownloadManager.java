@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -183,11 +184,8 @@ public class DownloadManager {
     public static String stringToMD5(String string) {
         byte[] hash;
         try {
-            hash = MessageDigest.getInstance("MD5").digest(string.getBytes("UTF-8"));
+            hash = MessageDigest.getInstance("MD5").digest(string.getBytes(StandardCharsets.UTF_8));
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return null;
         }
@@ -204,10 +202,7 @@ public class DownloadManager {
     public Boolean ExistsLocalCacheFile(String url) {
         String fileName = getDownloadCacheDir(mcontext) + stringToMD5(url) + FilesManager.getExtFromFileFullName(url);//".mp4";
         File file = new File(fileName);
-        if (!file.exists())
-            return false;
-        else
-            return true;
+        return file.exists();
     }
 
     public String GetLocalCacheFile(String url) {

@@ -62,12 +62,13 @@ public class MySerialPort {
         this.Decoding = IsDecode;
         ThreadRunning = true; //线程状态
 
+
         try {
             serialPort = new JniSerialPort(new File(this.DevicePath), this.Baudrate, 0);
-        } catch (IOException e) {
-            Log.e(TAG, "串口打开失败>>>>>>>JniSerialPort fail:" + e.toString());
-            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
 
         if (serialPort.isDeviceReady()) {
             inputStream = serialPort.getInputStream();
@@ -227,7 +228,7 @@ public class MySerialPort {
                 }
                 else
                 {
-                    Log.e(TAG, "invalid product code: "+Byte2Hex((byte)b0)+"/"+Byte2Hex(b1));
+                    Log.e(TAG, "invalid product code: "+Byte2Hex(b0)+"/"+Byte2Hex(b1));
                     return false;
                 }
             }
@@ -344,7 +345,7 @@ public class MySerialPort {
                                 if(onDataReceiveCallback != null)
                                    onDataReceiveCallback.onDataReceive(mContext, cmd_pkt, cmd_len);
                             } else {
-                                Log.e(TAG, "invalid end flag: "+Byte2Hex((byte)mCurrentByte));
+                                Log.e(TAG, "invalid end flag: "+Byte2Hex(mCurrentByte));
                                 length = 0;
                                 byteArrayList.clear();
                             }

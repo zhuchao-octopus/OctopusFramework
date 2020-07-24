@@ -9,6 +9,7 @@ import com.zhuchao.android.callbackevent.NormalRequestCallback;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import me.jessyan.progressmanager.BuildConfig;
@@ -23,7 +24,7 @@ import okhttp3.Response;
  * Created by ZTZ on 2018/3/20.
  */
 
-public class OkHttpUtils {
+public class OkHttpUtils  {
     private static final String TAG = "OkHttpUtils>>>>>";
     private OkHttpClient okHttpClient;
     private Handler mHandler;
@@ -57,8 +58,12 @@ public class OkHttpUtils {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d(TAG, "Failed:" + url);
-                if(normalRequestCallBack != null)
-                normalRequestCallBack.onRequestComplete("", -1);
+                try {
+                    if(normalRequestCallBack != null)
+                    normalRequestCallBack.onRequestComplete("", -1);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
 
             @Override
@@ -113,14 +118,14 @@ public class OkHttpUtils {
                     while ((len = inputStream.read(buffer)) != -1) {
                         fos.write(buffer, 0, len);
                         sum += len;
-                        Log.d(TAG, "Downloading:" + sum+"/"+tlen);
+                        //Log.d(TAG, "Downloading:" + sum+"/"+tlen);
                     }
                     fos.flush();
                     fos.close();
                     inputStream.close();
 
-                    Log.d(TAG, "Download successfully from:" + url);
-                    Log.d(TAG, "Saved    successfully to:" + toPath);
+                    Log.d(TAG, "Download successfully from:" + url+" to: " + toPath);
+                    //Log.d(TAG, "Saved    successfully to:" + toPath);
                     if(normalRequestCallBack != null)
                     normalRequestCallBack.onRequestComplete("success", 0);
                 } else {

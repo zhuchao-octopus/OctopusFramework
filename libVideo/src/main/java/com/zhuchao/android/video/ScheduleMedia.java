@@ -40,10 +40,7 @@ public class ScheduleMedia extends OMedia {
         a = TimeDateUtils.compare_date(TimeDateUtils.getCurrentDateStr("yyyy-MM-dd"), mStartDate,"yyyy-MM-dd");
         b = TimeDateUtils.compare_date(TimeDateUtils.getCurrentDateStr("yyyy-MM-dd"), mEndDate,"yyyy-MM-dd");
 
-        if ((a >= 0) && ( b <= 0))
-            return true;
-        else
-            return false;
+        return (a >= 0) && (b <= 0);
     }
 
 
@@ -54,18 +51,12 @@ public class ScheduleMedia extends OMedia {
         a = TimeDateUtils.compare_date(TimeDateUtils.getCurrentDateStr("HH:mm"), mPlayTime,"HH:mm");
         b = TimeDateUtils.compare_date(TimeDateUtils.getCurrentDateStr("HH:mm"), mStopTime,"HH:mm");
 
-        if ((a >= 0) && ( b < 0))
-            return true;
-        else
-            return false;
+        return (a >= 0) && (b < 0);
     }
 
     public boolean isStopScheduled() {
         if (mStopTime == null) return false;
-        if (TimeDateUtils.compare_date(TimeDateUtils.getCurrentDateStr("HH:mm"), mStopTime,"HH:mm") == 0)
-            return true;
-        else
-            return false;
+        return TimeDateUtils.compare_date(TimeDateUtils.getCurrentDateStr("HH:mm"), mStopTime, "HH:mm") == 0;
     }
 
     public int getID() {

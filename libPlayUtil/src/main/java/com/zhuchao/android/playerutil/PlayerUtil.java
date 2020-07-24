@@ -55,6 +55,13 @@ public class PlayerUtil {
         return mOPlayer;
     }
 
+    public static  boolean isOplayerReady()
+    {
+        if (mOPlayer == null) return false;
+        else
+            return true;
+    }
+
     public synchronized static OPlayer getMultiOPlayer(Context context, ArrayList<String> options, PlayerCallback callback) {
         OPlayer mOPlayer = new OPlayer(context, options, callback);
         return mOPlayer;

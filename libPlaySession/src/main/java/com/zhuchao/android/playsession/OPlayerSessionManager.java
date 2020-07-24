@@ -1,8 +1,14 @@
 package com.zhuchao.android.playsession;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.hardware.usb.UsbManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.zhuchao.android.libfilemanager.FilesManager;
@@ -31,17 +37,21 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
     private int mIniType = 0;//0 从网络， 1 //从本地, >=3 已经初始化完成
     private SessionCompleteCallback userSessionCallback = null;
 
-    private OPlayerSession  mLocalSession = new OPlayerSession(null);
+    private OPlayerSession mLocalSession = new OPlayerSession(null);
     private OPlayerSession mMobileSession = new OPlayerSession(null);
-    private OPlayerSession  mMomileTFSession = new OPlayerSession(null);
+    private OPlayerSession mMomileTFSession = new OPlayerSession(null);
+    private USBReceiver usbReceiver = new USBReceiver();
+    private boolean mThreadLock1 = false;
+    private boolean mThreadLock2 = false;
+    private boolean mThreadLock3 = false;
 
-    public OPlayerSessionManager(Context context, String hostPath, SessionCompleteCallback userSessionCallback) {
-        this.userSessionCallback = userSessionCallback;
-        this.mContext = context;
+    public OPlayerSessionManager(Context context, String hostPath, SessionCompleteCallback SessionCallback) {
+        this.userSessionCallback = SessionCallback;
+        mContext = context;
+        registBroadcast();
         Data.setOplayerSessionRootUrl(hostPath);
-
         mTopSession = new OPlayerSession(Data.SESSION_TYPE_MANAGER, this);
-        //mLocalSession = new OPlayerSession(ScheduleVideoBean.SESSION_TYPE_LOCALMEDIA, this);
+
         mSessions = new TreeMap<Integer, OPlayerSession>(new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
@@ -49,19 +59,40 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
             }
         });
 
-        try {
-            initSessionsFromInternet();
-            initLocalSessionContent();
 
-            initSessionFromMobileDisc();
-            initSessionFromMobileTFDisc("/storage/card/");
+        try {
+            //initSessionsFromInternet();
+            //initLocalSessionContent();
+            //initSessionFromMobileDisc();//usb
+            //initSessionFromMobileTFDisc("/storage/");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    private void  registBroadcast()
+    {
+        try {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction("android.intent.action.MEDIA_MOUNTED");
+            filter.addAction("android.intent.action.MEDIA_UNMOUNTED");
+            filter.addAction("android.intent.action.MEDIA_REMOVED");
+            filter.addAction("com.zhuchao.android.MEDIAFILEA_SCAN_ACTION");
+            filter.addAction("android.hardware.usb.action.USB_STATE");
+            filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+            filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+            filter.addAction(UsbManager.ACTION_USB_ACCESSORY_ATTACHED);
+            filter.addAction(UsbManager.ACTION_USB_ACCESSORY_DETACHED);
+            filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+            filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+            mContext.registerReceiver(usbReceiver, filter);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void initSessionsFromInternet()
-    {
+    private void initSessionsFromInternet() {
         mIniType = 0;
         new Thread() {
             public void run() {
@@ -91,30 +122,36 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
     private void initLocalSessionContent() {
         new Thread() {
             public void run() {
+                mThreadLock1 = true;
                 Log.d(TAG, "initLocalSessionContent 本地媒体库 mIniType= " + mIniType);
-                OPlayerSession   LocalSession = null;
+                OPlayerSession LocalSession = null;
 
                 LocalSession = new OPlayerSession(OPlayerSessionManager.this);
-                LocalSession.initMediasFromLocal(mContext,Data.MEDIA_SOURCE_ID_VIDEO);
-                if(LocalSession.getVideos().size() > 0)
-                addOtherSeesionToSessions(mMoBileSessionId, "本地视频",LocalSession);
+                LocalSession.initMediasFromLocal(mContext, Data.MEDIA_SOURCE_ID_VIDEO);
+                if (LocalSession.getVideos().size() > 0)
+                    addOtherSeesionToSessions(mMoBileSessionId, "本地视频", LocalSession);
                 mLocalSession.addVideos(LocalSession.getVideos());
 
                 LocalSession = new OPlayerSession(OPlayerSessionManager.this);
-                LocalSession.initMediasFromLocal(mContext,Data.MEDIA_SOURCE_ID_AUDIO);
-                if(LocalSession.getVideos().size() > 0)
-                addOtherSeesionToSessions(mMoBileSessionId,"本地音乐",LocalSession);
+                LocalSession.initMediasFromLocal(mContext, Data.MEDIA_SOURCE_ID_AUDIO);
+                if (LocalSession.getVideos().size() > 0)
+                    addOtherSeesionToSessions(mMoBileSessionId, "本地音乐", LocalSession);
                 mLocalSession.addVideos(LocalSession.getVideos());
 
-                LocalSession = new OPlayerSession(OPlayerSessionManager.this);
-                LocalSession.initMediasFromLocal(mContext,Data.MEDIA_SOURCE_ID_PIC);
-                if(LocalSession.getVideos().size() > 0)
-                addOtherSeesionToSessions(mMoBileSessionId,"本地图片",LocalSession);
-                mLocalSession.addVideos(LocalSession.getVideos());
+                //LocalSession = new OPlayerSession(OPlayerSessionManager.this);
+                //LocalSession.initMediasFromLocal(mContext, Data.MEDIA_SOURCE_ID_PIC);
+                //if (LocalSession.getVideos().size() > 0)
+                //    addOtherSeesionToSessions(mMoBileSessionId, "本地图片", LocalSession);
+                //mLocalSession.addVideos(LocalSession.getVideos());
+
+
                 //mTopSession.printCategory();//mLocalSession.printCategory();
                 //printSessionsInManager();
+                if( mLocalSession.getVideos().size()<=0) return;
                 if (userSessionCallback != null)
                     userSessionCallback.OnSessionComplete(Data.SESSION_TYPE_LOCALMEDIA, LocalSession.toString());
+
+                mThreadLock1 = false;
             }
         }.start();
     }
@@ -123,33 +160,36 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
 
         new Thread() {
             public void run() {
-                try {
-                    MobileDiscs = FilesManager.getUDiscName(mContext);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                mThreadLock2 = true;
+
+                MobileDiscs = FilesManager.getUDiscName(mContext);
+                if (!MobileDiscs.isEmpty()) {
+                    //for (Map.Entry<Integer, OPlayerSession> entry : mSessions.entrySet())
+                    //{
+                    //    if(entry.getKey() > 0 && entry.getKey() < Data.SESSION_TYPE_LOCALMEDIA)
+                    //        mSessions.remove(entry.getKey());
+                    //}
+
+                    Iterator it = mSessions.entrySet().iterator();
+                    while (it.hasNext()) {
+                        Map.Entry<Integer, OPlayerSession> entry = (Map.Entry<Integer, OPlayerSession>) it.next();
+                        if (entry.getKey() < Data.SESSION_TYPE_LOCALMEDIA)
+                            it.remove();
+                    }
+
+                    for (Map.Entry<String, String> entry : MobileDiscs.entrySet()) {
+                        initMobileSessionContent(entry.getKey(), entry.getValue());
+                    }
+                } else {
+                    Log.d(TAG, " no device found ");
                     return;
                 }
 
-                //for (Map.Entry<Integer, OPlayerSession> entry : mSessions.entrySet())
-                //{
-                //    if(entry.getKey() > 0 && entry.getKey() < Data.SESSION_TYPE_LOCALMEDIA)
-                //        mSessions.remove(entry.getKey());
-                //}
-
-                Iterator it = mSessions.entrySet().iterator();
-                while(it.hasNext()) {
-                    Map.Entry<Integer, OPlayerSession> entry = (Map.Entry<Integer, OPlayerSession>) it.next();
-                    if(entry.getKey() > 0 && entry.getKey() < Data.SESSION_TYPE_LOCALMEDIA)
-                    it.remove();
-                }
-
-                for (Map.Entry<String, String> entry : MobileDiscs.entrySet()) {
-                    initMobileSessionContent(entry.getKey(), entry.getValue());
-                }
-
+                if( mMobileSession.getVideos().size()<=0) return;
                 //printSessionsInManager();
                 if (userSessionCallback != null)
                     userSessionCallback.OnSessionComplete(Data.SESSION_TYPE_MOBILEMEDIA9, MobileDiscs.toString());
+                mThreadLock2 = false;
             }
         }.start();
     }
@@ -158,71 +198,82 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
 
         new Thread() {
             public void run() {
-                if(TFPath != null) {
+                mThreadLock3 = true;
+                if (TFPath != null) {
                     mMomileTFSession.getVideos().clear();
-                    mMomileTFSession.initMediasFromPath(TFPath, Data.MEDIA_SOURCE_ID_AllMEDIA);
+                    mMomileTFSession.initMediasFromPath(mContext, TFPath, Data.MEDIA_SOURCE_ID_AllMEDIA);
+
+                    if( mMomileTFSession.getVideos().size()<=0) return;
+
+                    if (userSessionCallback != null)
+                        userSessionCallback.OnSessionComplete(Data.MEDIA_SOURCE_ID_AllMEDIA, MobileDiscs.toString());
                 }
+                mThreadLock3 = false;
             }
         }.start();
     }
+
     private void initMobileSessionContent(final String DeviceName, final String DevicePath) {
+
         Log.d(TAG, "initMobileSessionContent DeviceName = " + DevicePath);
         if (DeviceName == null) return;
-        OPlayerSession   MoBileSession;
+        //mMobileSession.initMediasFromPath(mContext,DevicePath,Data.MEDIA_SOURCE_ID_AllMEDIA);
+
+        OPlayerSession MoBileSession;
         mMobileSession.getVideos().clear();
 
         MoBileSession = new OPlayerSession(OPlayerSessionManager.this);
-        MoBileSession.initMediasFromPath(DevicePath,Data.MEDIA_SOURCE_ID_VIDEO);
-        if(MoBileSession.getVideos().size() > 0)
-        addOtherSeesionToSessions(mMoBileSessionId,DeviceName+"视频",MoBileSession);
+        MoBileSession.initMediasFromPath(mContext, DevicePath, Data.MEDIA_SOURCE_ID_VIDEO);
 
-        if(!DevicePath.contains("SD") || !DevicePath.contains("TF"))
-        mMobileSession.addVideos(MoBileSession.getVideos());
+        if (MoBileSession.getVideos().size() > 0)
+            addOtherSeesionToSessions(mMoBileSessionId, DeviceName + "视频", MoBileSession);
 
-        MoBileSession = new OPlayerSession(OPlayerSessionManager.this);
-        MoBileSession.initMediasFromPath(DevicePath,Data.MEDIA_SOURCE_ID_AUDIO);
-        if(MoBileSession.getVideos().size() > 0)
-        addOtherSeesionToSessions(mMoBileSessionId,DeviceName+"音乐",MoBileSession);
-
-        if(!DevicePath.contains("SD") || !DevicePath.contains("TF"))
-        mMobileSession.addVideos(MoBileSession.getVideos());
+        if (!DevicePath.contains("SD") && !DevicePath.contains("TF"))
+            mMobileSession.addVideos(MoBileSession.getVideos());
 
         MoBileSession = new OPlayerSession(OPlayerSessionManager.this);
-        MoBileSession.initMediasFromPath(DevicePath,Data.MEDIA_SOURCE_ID_PIC);
-        if(MoBileSession.getVideos().size() > 0)
-        addOtherSeesionToSessions(mMoBileSessionId,DeviceName+"图片",MoBileSession);
+        MoBileSession.initMediasFromPath(mContext, DevicePath, Data.MEDIA_SOURCE_ID_AUDIO);
 
-        if(!DevicePath.contains("SD") || !DevicePath.contains("TF"))
-        mMobileSession.addVideos(MoBileSession.getVideos());
+        if (MoBileSession.getVideos().size() > 0)
+            addOtherSeesionToSessions(mMoBileSessionId, DeviceName + "音乐", MoBileSession);
 
+        if (!DevicePath.contains("SD") && !DevicePath.contains("TF"))
+            mMobileSession.addVideos(MoBileSession.getVideos());
+
+        //MoBileSession = new OPlayerSession(OPlayerSessionManager.this);
+        //MoBileSession.initMediasFromPath(mContext, DevicePath, Data.MEDIA_SOURCE_ID_PIC);
+        //if (MoBileSession.getVideos().size() > 0)
+        //    addOtherSeesionToSessions(mMoBileSessionId, DeviceName + "图片", MoBileSession);
+
+        //if (!DevicePath.contains("SD") && !DevicePath.contains("TF"))
+        //    mMobileSession.addVideos(MoBileSession.getVideos());
     }
 
     private void initPlaySessionContent() {
         try {
             for (Map.Entry<Integer, OPlayerSession> entry : mSessions.entrySet()) {
+
+                if (entry.getKey() <= Data.SESSION_TYPE_LOCALMEDIA) continue; //本地媒体ID
+
                 Log.d(TAG, "initPlaySessionContent = " + entry.getKey());
                 entry.getValue().doUpdateSession(entry.getKey());
             }
             mIniType = 3;
-            Log.d(TAG, "initPlaySessionContent mIniType = " + mIniType);
+            //Log.d(TAG, "initPlaySessionContent mIniType = " + mIniType);
         } catch (Exception e) {
-            Log.d(TAG, "initPlaySessionContent fail mIniType = " + mIniType+":"+e.toString());
+            //Log.d(TAG, "initPlaySessionContent fail mIniType = " + mIniType + ":" + e.toString());
             //e.printStackTrace();
         }
-
     }
 
-    private synchronized void addOtherSeesionToSessions(int SessionID,String name,OPlayerSession Session)
-    {
+    private void addOtherSeesionToSessions(int SessionID, String name, OPlayerSession Session) {
         Session.getmVideoCategoryNameList().put(SessionID, name);
 
-        if(mTopSession.getmVideoCategoryNameList().containsKey(SessionID))
-            mTopSession.getmVideoCategoryNameList().remove(SessionID);
+        mTopSession.getmVideoCategoryNameList().remove(SessionID);
 
         mTopSession.getmVideoCategoryNameList().put(SessionID, name);
 
-        if(mSessions.containsKey(SessionID))
-            mSessions.remove(SessionID);
+        mSessions.remove(SessionID);
 
         mSessions.put(SessionID, Session);
         mMoBileSessionId--;
@@ -231,7 +282,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
     private void initOPlayerSessions() {
         for (Map.Entry<Integer, String> entry : mTopSession.getmVideoCategoryNameList().entrySet()) {
             //String cName = entry.getValue();
-            if(entry.getKey() > Data.SESSION_TYPE_LOCALMEDIA) {
+            if (entry.getKey() > Data.SESSION_TYPE_LOCALMEDIA) {
                 OPlayerSession oPlayerSession = new OPlayerSession(this);
                 oPlayerSession.getmVideoCategoryNameList().put(entry.getKey(), entry.getValue());
                 mSessions.put(entry.getKey(), oPlayerSession);
@@ -240,10 +291,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
     }
 
     public boolean isInitComplete() {
-        if (mIniType >= 3)
-            return true;
-        else
-            return false;
+        return mIniType >= 3;
     }
 
     public OPlayerSession getmTopSession() {
@@ -251,14 +299,24 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
     }
 
     public OPlayerSession getLocalSession() {
-        return mLocalSession;
+        if (mLocalSession.getmVideoList().getMovieCount() <= 0 && mThreadLock1 == false)
+            initLocalSessionContent();
+           return mLocalSession;
     }
 
-    public OPlayerSession getMoBileSession() {
+    public OPlayerSession getMobileSession() {
+        if (mMobileSession.getmVideoList().getMovieCount() <= 0 && mThreadLock2 == false) {
+            Log.d(TAG, "reinitialize MobileSession -----> ");
+            initSessionFromMobileDisc();
+        }
         return mMobileSession;
     }
 
     public OPlayerSession getMomileTFSession() {
+        if (mMomileTFSession.getmVideoList().getMovieCount() <= 0 && mThreadLock2 == false) {
+            //Log.d(TAG, "reinitialize MobileSession -----> ");
+            initSessionFromMobileTFDisc("/storage/");
+        }
         return mMomileTFSession;
     }
 
@@ -323,7 +381,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
             case Data.SESSION_TYPE_GET_MOVIELIST_YEAR:
             case Data.SESSION_TYPE_GET_MOVIELIST_ACTOR:
             case Data.SESSION_TYPE_GET_MOVIELIST_VIP:
-
+            case Data.SESSION_TYPE_GET_MOVIE_TYPE:
                 break;
             case Data.SESSION_TYPE_GET_MOVIE_CATEGORY:
                 if (mTopSession.getmVideoCategoryNameList() != null)
@@ -337,27 +395,28 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
                         mIniType = 1;//从本地初始化
                     }
                 break;
-            case Data.SESSION_TYPE_GET_MOVIE_TYPE:
-                break;
+
             default:
-                msg.what = sessionId;
-                myHandler.sendMessage(msg);
                 break;
         }
-        Log.d(TAG, "OnSessionComplete mIniType = " + mIniType + ",  sessionId=" + sessionId);
+        //Log.d(TAG, "OnSessionComplete mIniType = " + mIniType + ",  sessionId=" + sessionId);
     }
 
-    public void free()
-    {
-       if(!isInitComplete())  return;
+    public void free() {
+        //if (!isInitComplete()) return;
+        try {
+            mContext.unregisterReceiver(usbReceiver);
+            this.mIniType = 0;
+            this.mLocalSession.getVideos().clear();
+            this.mMobileSession.getVideos().clear();
+            this.mMomileTFSession.getVideos().clear();
+            this.MobileDiscs.clear();
+            mTopSession.getVideos().clear();
+            mSessions.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-      this.mIniType =0;
-      this.mLocalSession.getVideos().clear();
-      this.mMobileSession.getVideos().clear();
-      this.mMomileTFSession.getVideos().clear();
-      this.MobileDiscs.clear();
-      mTopSession.getVideos().clear();
-      mSessions.clear();
     }
 
     private Handler myHandler = new Handler() {
@@ -386,8 +445,33 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
                     break;
             }
 
-            if (userSessionCallback != null)
+            Log.d(TAG, "Handler mIniType = " + mIniType + ",  sessionId=" + msg.what + "userSessionCallback=" + userSessionCallback.toString());
+            if (userSessionCallback != null) {
+                //Log.d(TAG, "Handler mIniType = " + mIniType + ",  sessionId=" + msg.what);
                 userSessionCallback.OnSessionComplete(msg.what, null);
+            }
         }
     };
+
+    class USBReceiver extends BroadcastReceiver {
+        //private StorageManager mStorageManager;
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //mStorageManager = (StorageManager) context.getSystemService(Activity.STORAGE_SERVICE);
+            switch (intent.getAction()) {
+                case Intent.ACTION_MEDIA_MOUNTED:
+                case UsbManager.ACTION_USB_DEVICE_ATTACHED:
+                    Uri data = intent.getData();
+                    Log.d(TAG, "USBReceiver path = " + data);
+                    initSessionFromMobileDisc();
+                    break;
+                case UsbManager.ACTION_USB_DEVICE_DETACHED:
+                    //Name of extra for ACTION_USB_DEVICE_ATTACHED and ACTION_USB_DEVICE_DETACHED broadcasts containing the UsbDevice object for the device.
+                    //UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+
+                    break;
+            }
+        }
+    }
 }

@@ -28,14 +28,14 @@ import java.util.concurrent.Executors;
 
 public class MyAppsManager {
     private static final String TAG = "MyAppsManager";
-    public static final String UNINSTALL_ACTION = "com.zhuchao.android.tianpu.action.UNINSTALL";
-    public static final String INSTALL_ACTION = "com.zhuchao.android.tianpu.action.INSTALL";
-    public static final String SCANING_ACTION = "com.zhuchao.android.tianpu.action.SCANING";
-    public static final String SCANING_COMPLETE_ACTION = "com.zhuchao.android.tianpu.action.SCANING_COMPLETE";
-    public static final String ADDTOMYAPPS_ACTION = "com.zhuchao.android.tianpu.action.ADDTOMYAPPS";
-    public static final String DELFROMMYAPPS_ACTION = "com.zhuchao.android.tianpu.action.DELFROMMYAPPS";
-    public static final String USED_HISTORY_ACTION = "com.zhuchao.android.tianpu.action.USED_HISTORY";
-    public static final String HOT_CLEAR_ACTION = "com.zhuchao.android.tianpu.action.HOT_CLEAR";
+    public static final String UNINSTALL_ACTION = "UNINSTALL";
+    public static final String INSTALL_ACTION = "INSTALL";
+    public static final String SCANING_ACTION = "SCANING";
+    public static final String SCANING_COMPLETE_ACTION = "SCANINGCOMPLETE";
+    public static final String ADDTOMYAPPS_ACTION = "ADDTOMYAPPS";
+    public static final String DELFROMMYAPPS_ACTION = "DELFROMMYAPPS";
+    public static final String USED_HISTORY_ACTION = "USEDHISTORY";
+    public static final String HOT_CLEAR_ACTION = "HOTCLEAR";
 
     //private static MyAppsManager mInstance;
     private static Context mContext;
@@ -81,6 +81,7 @@ public class MyAppsManager {
 
     public void Free() {
         unRegAppReceiver();
+        AppChangedReceiver = null;
     }
 
     public List<String> getRecentlyUsed() {
@@ -165,14 +166,10 @@ public class MyAppsManager {
 
             if (!AllAppInfors.contains(appInfor)) {
                 AllAppInfors.add(appInfor);
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mAppsChangedCallback != null)
-                            mAppsChangedCallback.OnAppsChanged(SCANING_ACTION, appInfor);
-                    }
-                };
-                mExecutorService.submit(runnable);
+
+                if (mAppsChangedCallback != null)
+                    mAppsChangedCallback.OnAppsChanged(SCANING_ACTION, appInfor);
+
             }
 
             boolean cached = false;
@@ -188,7 +185,10 @@ public class MyAppsManager {
                     UserAppInfors.add(appInfor);
             }
         }//for
-
+        //&& size0 != AllAppInfors.size()
+        if ((mAppsChangedCallback != null)) {
+            mAppsChangedCallback.OnAppsChanged(SCANING_COMPLETE_ACTION, null);
+        }
 
         //int i = 0;
         //for (AppInfor Info : AllAppInfors) {
@@ -196,21 +196,10 @@ public class MyAppsManager {
         //    i++;
         //}
         String myapp = SPreference.getSharedPreferences(mContext, "MyAppInfors", "MyAppInfors");
-
         AppInfor appInfor = getAppInfor(myapp);
         if (appInfor != null)
             addToMyApp(appInfor);
 
-        if ((mAppsChangedCallback != null) && size0 != AllAppInfors.size()) {
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    if (mAppsChangedCallback != null)
-                        mAppsChangedCallback.OnAppsChanged(SCANING_COMPLETE_ACTION, null);
-                }
-            };
-            mExecutorService.submit(runnable);
-        }
     }
 
     public boolean isTheAppExist(String packageName) {
@@ -225,27 +214,40 @@ public class MyAppsManager {
     }
 
     public void registerAppsReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
-        intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        intentFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
-        intentFilter.addAction(SCANING_COMPLETE_ACTION);
-        intentFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-        intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+        try {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+            intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+            intentFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
+            intentFilter.addAction(SCANING_COMPLETE_ACTION);
+            intentFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+            intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
 
-        intentFilter.addDataScheme("package");
-        mContext.registerReceiver(AppChangedReceiver, intentFilter);
+            intentFilter.addDataScheme("package");
+            mContext.registerReceiver(AppChangedReceiver, intentFilter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void unRegAppReceiver() {
-        mContext.unregisterReceiver(AppChangedReceiver);
+        try {
+            if (AppChangedReceiver != null)
+                if (mContext != null)
+                    mContext.unregisterReceiver(AppChangedReceiver);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private BroadcastReceiver AppChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+
             String action = intent.getAction();
-            Log.e(TAG, "BroadcastReceiver:"+intent.getAction());
+
+            Log.e(TAG, "BroadcastReceiver:" + intent.getAction());
 
             if (action.equals(Intent.ACTION_PACKAGE_ADDED)) {
                 UpdateAppsInfor();
@@ -261,6 +263,8 @@ public class MyAppsManager {
 
     public AppInfor getAppInfor(String packageName) {
         for (AppInfor Info : AllAppInfors) {
+            if (Info == null) continue;
+            if (packageName == null) return null;
             if (packageName.equals(Info.getPackageName()))
                 return Info;
         }
@@ -294,7 +298,6 @@ public class MyAppsManager {
     }
 
     public List<AppInfor> getUserApps() {
-        ;
         return UserAppInfors;
     }
 
@@ -329,6 +332,7 @@ public class MyAppsManager {
     }
 
     public boolean startTheApp(AppInfor infor) {
+
         if (TextUtils.isEmpty(infor.getPackageName())) {
             return false;
         }
@@ -436,8 +440,7 @@ public class MyAppsManager {
         return path;
     }
 
-    public static Drawable getDrawable (Context context,String pkgName)
-    {
+    public static Drawable getDrawable(Context context, String pkgName) {
         PackageManager mPm = context.getPackageManager();
         try {
             ApplicationInfo info = mContext.getPackageManager().getApplicationInfo(pkgName, 0);

@@ -38,8 +38,8 @@ public class JniSerialPort {
     private FileDescriptor mFd=null;
     private FileInputStream mFileInputStream=null;
     private FileOutputStream mFileOutputStream=null;
-
-    public JniSerialPort(File device, int baudrate, int flags) throws SecurityException, IOException {
+   //throws SecurityException, IOException
+    public JniSerialPort(File device, int baudrate, int flags) {
 
         /* Check access permission */
         if (!device.canRead() || !device.canWrite())
@@ -52,10 +52,14 @@ public class JniSerialPort {
                 String cmd = "chmod 666 " + device.getAbsolutePath() + "\n"  + "exit\n";
                 su.getOutputStream().write(cmd.getBytes());
                 if ((su.waitFor() != 0) || !device.canRead() || !device.canWrite()) {
-                    throw new SecurityException();
+                    //throw new SecurityException();
+                    Log.e(TAG, "native open fail,not allow to read and write");
+                    return;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+
+                return;
                 //throw new SecurityException();
             }
         }
@@ -65,11 +69,13 @@ public class JniSerialPort {
         } catch (Exception e) {
             //e.printStackTrace();
             Log.e(TAG, "native open fail:"+e.toString());
+            return;
         }
 
         if (mFd == null) {
             Log.e(TAG, "native open returns null");
             //throw new IOException();
+            return;
         }
         mFileInputStream = new FileInputStream(mFd);
         mFileOutputStream = new FileOutputStream(mFd);
@@ -86,10 +92,7 @@ public class JniSerialPort {
 
     public boolean isDeviceReady()
     {
-        if(mFd!=null && mFileInputStream !=null && mFileOutputStream!=null)
-            return true;
-        else
-            return false;
+        return mFd != null && mFileInputStream != null && mFileOutputStream != null;
     }
 
 

@@ -15,6 +15,7 @@
 package com.zhuchao.android.video;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -50,9 +51,10 @@ import java.io.Serializable;
     private String date;
     private int status;
 
-    public Movie(String sourceUrl) {
+    public Movie(final String sourceUrl) {
         this.sourceUrl = sourceUrl;
-        this.movieName = sourceUrl;
+        if(TextUtils.isEmpty(this.sourceUrl)) return;
+        this.movieName =  this.sourceUrl.substring(this.sourceUrl.lastIndexOf("/") + 1);
     }
 
     public Movie(int movieId, String movieName, String movieType, String year, String region, String actor, String language, String sharpness, String description, String studio, String bgImageUrl, String cardImageUrl, int prePisodeId, int nextPisodeId, int totalPisode, int episodeLast, int reputation, int vipLevel, int sourceId, String sourceUrl, String category, String date, int status) {

@@ -25,6 +25,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -135,11 +136,15 @@ public class NetUtils {
     public boolean isNetCanConnect() {
 
         if (TextUtils.isEmpty(IP0) || TextUtils.isEmpty(IP1) || TextUtils.isEmpty(MAC)) {
-            if (isInternetOk()) return true;
-            return false;
+            return isInternetOk();
         }
 
         return true;
+    }
+
+    public NetUtils setmNetChangedCallBack(NetChangedCallBack mNetChangedCallBack) {
+        this.mNetChangedCallBack = mNetChangedCallBack;
+        return this;
     }
 
     private BroadcastReceiver NetworkChangedReceiver = new BroadcastReceiver() {
@@ -195,7 +200,7 @@ public class NetUtils {
 
         WifiInfo wifiInfo = mWifiManager.getConnectionInfo();
         if (wifiInfo != null && wifiInfo.getBSSID() != null) {
-            WifiLevel = mWifiManager.calculateSignalLevel(wifiInfo.getRssi(), 4);
+            WifiLevel = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), 4);
 
             if (mNetChangedCallBack != null) {
                 mNetChangedCallBack.onWifiLevelChanged(WifiLevel);
@@ -446,7 +451,7 @@ public class NetUtils {
                     int responseCode = httpConnection.getResponseCode();
                     if (responseCode == HttpURLConnection.HTTP_OK) {
                         InputStream inStream = httpConnection.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(inStream, "utf-8"));
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(inStream, StandardCharsets.UTF_8));
                         StringBuilder strber = new StringBuilder();
                         String line = null;
                         while ((line = reader.readLine()) != null)
@@ -467,11 +472,10 @@ public class NetUtils {
                     if (mNetChangedCallBack != null) {
                         mNetChangedCallBack.onNetStateChanged(NetStatus, NetType, MAC, WMAC, IP0, IP1, Location);
                     }
-                } catch (MalformedURLException e) {
-                    //e.printStackTrace();
-                    Log.d(TAG,"GetInternetIp" + e.toString());
-                } catch (IOException e) {
-                    //e.printStackTrace();
+                }  catch (Exception e)
+                {
+                    IP0 = "";
+                    Location = "";
                     Log.d(TAG,"GetInternetIp" + e.toString());
                 }
             }
@@ -487,7 +491,7 @@ public class NetUtils {
                         .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()) {
-                        return inetAddress.getHostAddress().toString();
+                        return inetAddress.getHostAddress();
                     }
                 }
             }

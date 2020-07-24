@@ -27,7 +27,7 @@ public class ShapeLoadingDialog extends Dialog{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_dialog);
 
-        mLoadingView = (LoadingView) findViewById(R.id.loadView);
+        mLoadingView = findViewById(R.id.loadView);
 
         mLoadingView.setDelay(mBuilder.mDelay);
         mLoadingView.setLoadingText(mBuilder.mLoadText);

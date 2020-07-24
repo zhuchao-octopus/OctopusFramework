@@ -1,1 +1,2 @@
-make: Nothing to be done for `jhzserialport'.
+[arm64-v8a] Compile        : jhzserialport <= SerialPort.c
+[arm64-v8a] SharedLibrary  : libjhzserialport.so

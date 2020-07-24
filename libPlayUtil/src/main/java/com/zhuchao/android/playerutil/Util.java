@@ -36,19 +36,19 @@ public class Util {
         //格式化输出，补零操作
         String sHour, sMintue, sSecond;
         if (hour < 10) {
-            sHour = "0" + String.valueOf(hour);
+            sHour = "0" + hour;
         } else {
             sHour = String.valueOf(hour);
         }
 
         if (mintue < 10) {
-            sMintue = "0" + String.valueOf(mintue);
+            sMintue = "0" + mintue;
         } else {
             sMintue = String.valueOf(mintue);
         }
 
         if (second < 10) {
-            sSecond = "0" + String.valueOf(second);
+            sSecond = "0" + second;
         } else {
             sSecond = String.valueOf(second);
         }

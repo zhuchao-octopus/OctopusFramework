@@ -1,6 +1,7 @@
 package com.zhuchao.android.playsession;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.zhuchao.android.libfilemanager.FilesManager;
@@ -12,6 +13,7 @@ import com.zhuchao.android.video.Movie;
 import com.zhuchao.android.video.OMedia;
 import com.zhuchao.android.video.VideoList;
 
+import java.io.File;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +39,7 @@ public class OPlayerSession implements SessionCompleteCallback {
     private SessionCompleteCallback userSessionCallback = null;//会话回调
     private ImplementProxy Ilpr = null;//new ImplementProxy();执行代理
     private VideoList mVideoList = new VideoList();//会话内容
-    private Map<Integer, String> mVideoCategoryNameList = new TreeMap<Integer, String>(new Comparator<Integer>(){
+    private Map<Integer, String> mVideoCategoryNameList = new TreeMap<Integer, String>(new Comparator<Integer>() {
         @Override
         public int compare(Integer o1, Integer o2) {
             return o2.compareTo(o1);
@@ -61,19 +63,19 @@ public class OPlayerSession implements SessionCompleteCallback {
 
     protected void doStart()//处理内置session,Id存储在内部类 网络请求，通过代理实现
     {
-        if(mSessionId <= Data.SESSION_TYPE_LOCALMEDIA) return;
+        if (mSessionId <= Data.SESSION_TYPE_LOCALMEDIA) return;
         switch (mSessionId) {
             case Data.SESSION_TYPE_GET_MOVIELIST_ALLTV:
             case Data.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
             case Data.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
-                Ilpr.performanceUrl(mSessionId, Data.getActionUrl(mSessionId,this.getSessionName(), mPageIndexOrVid));
+                Ilpr.performanceUrl(mSessionId, Data.getActionUrl(mSessionId, this.getSessionName(), mPageIndexOrVid));
                 break;
             case Data.SESSION_TYPE_GET_MOVIE_CATEGORY:
             case Data.SESSION_TYPE_GET_MOVIE_TYPE:
-                Ilpr.performanceUrl(mSessionId, Data.getActionUrl(mSessionId, this.getSessionName(),1));
+                Ilpr.performanceUrl(mSessionId, Data.getActionUrl(mSessionId, this.getSessionName(), 1));
                 break;
             default:
-                Ilpr.performanceUrl(mSessionId, Data.getActionUrl(mSessionId, this.getSessionName(),1));
+                Ilpr.performanceUrl(mSessionId, Data.getActionUrl(mSessionId, this.getSessionName(), 1));
                 break;
         }
     }
@@ -109,15 +111,12 @@ public class OPlayerSession implements SessionCompleteCallback {
         Ilpr.performanceUrl(sessionID, url);
     }
 
-    public void searchVideoById(int videoId)
-    {
-        Ilpr.performanceUrl(Data.SESSION_TYPE_GET_MOVIELIST_VID, Data.getActionUrl(Data.SESSION_TYPE_GET_MOVIELIST_VID, null,videoId));
+    public void searchVideoById(int videoId) {
+        Ilpr.performanceUrl(Data.SESSION_TYPE_GET_MOVIELIST_VID, Data.getActionUrl(Data.SESSION_TYPE_GET_MOVIELIST_VID, null, videoId));
     }
 
-    private String getSessionName()
-    {
-        for (Map.Entry<Integer, String> entry : mVideoCategoryNameList.entrySet())
-        {
+    private String getSessionName() {
+        for (Map.Entry<Integer, String> entry : mVideoCategoryNameList.entrySet()) {
             return entry.getValue();
             //break;
         }
@@ -127,6 +126,7 @@ public class OPlayerSession implements SessionCompleteCallback {
     public void setUserSessionCallback(SessionCompleteCallback userSessionCallback) {
         this.userSessionCallback = userSessionCallback;
     }
+
     public Map<Integer, String> getmVideoCategoryNameList() {
         return mVideoCategoryNameList;
     }
@@ -139,7 +139,7 @@ public class OPlayerSession implements SessionCompleteCallback {
         if (mVideoCategory != null) {
             for (Map.Entry<Integer, String> entry : mVideoCategory.entrySet())
                 if (!this.mVideoCategoryNameList.containsKey(entry.getKey()))
-                    this.mVideoCategoryNameList.put(entry.getKey(),entry.getValue());
+                    this.mVideoCategoryNameList.put(entry.getKey(), entry.getValue());
             //this.mVideoCategoryNameList = mVideoCategory;
         }
     }
@@ -149,15 +149,21 @@ public class OPlayerSession implements SessionCompleteCallback {
             this.mVideoTypeNameList = mVideoTypeNameList;
     }
 
+    public VideoList getmVideoList() {
+        return mVideoList;
+    }
+
     void setmVideoList(VideoList mVideoList) {
         if (mVideoList != null)
             this.mVideoList = mVideoList;
     }
+
     //movie API
     public OMedia getVideoById(int videoId) {
         OMedia movie = mVideoList.findMoviebyId(videoId);
         return movie;
     }
+
     public OMedia getVideoByIndex(int index) {
         OMedia movie = mVideoList.findMoviebyIndex(index);
         return movie;
@@ -199,8 +205,7 @@ public class OPlayerSession implements SessionCompleteCallback {
         return mVideoList.getVideos();
     }
 
-    public void addVideos(List<OMedia> oMedias)
-    {
+    public void addVideos(List<OMedia> oMedias) {
         for (OMedia oMedia : oMedias) {
             mVideoList.addVideo(oMedia);
         }
@@ -209,7 +214,7 @@ public class OPlayerSession implements SessionCompleteCallback {
     public void printMovies() {
         //Log.d(TAG,"printMovies mVideoList size =" + mVideoList.getVideos().size());
         for (OMedia oMedia : mVideoList.getVideos()) {
-            Log.d(TAG, "vidieId = "+ oMedia.getMovie().getMovieId() + " : videoName = " + oMedia.getMovie().getMovieName());
+            Log.d(TAG, "vidieId = " + oMedia.getMovie().getMovieId() + " : videoName = " + oMedia.getMovie().getMovieName());
         }
     }
 
@@ -223,33 +228,52 @@ public class OPlayerSession implements SessionCompleteCallback {
             Log.d(TAG, "id = " + entry.getKey() + ", name = " + entry.getValue());
     }
 
-    public void initMediasFromLocal(Context context,Integer fType)
-    {
-        if(fType == Data.MEDIA_SOURCE_ID_VIDEO)
-        {
+    public String getFileName(String filePath) {
+        File file = new File(filePath);
+        if(file.exists())
+            return file.getName();
+        else
+            return null;
+
+        //int start = filePath.lastIndexOf("/");
+        //int end = filePath.lastIndexOf(".");
+        //if (start != -1 && end != -1) {
+        //    return filePath.substring(start + 1, end);
+        //} else {
+        //    return null;
+        //}
+    }
+
+    public void initMediasFromLocal(Context context, Integer fType) {
+        if (fType == Data.MEDIA_SOURCE_ID_VIDEO) {
             List<LVideo> lVideos = FilesManager.getVideos(context);
             for (LVideo lVideo : lVideos) {
                 Movie movie = new Movie(lVideo.getPath());
-                movie.setMovieName(lVideo.getName());
+                String finame = getFileName(movie.getSourceUrl());
+                if (!TextUtils.isEmpty(finame))
+                    movie.setMovieName(finame);
                 OMedia oMedia = new OMedia(movie);
                 mVideoList.addVideo(oMedia);
             }
-        }
-        else if(fType == Data.MEDIA_SOURCE_ID_AUDIO) {
+        } else if (fType == Data.MEDIA_SOURCE_ID_AUDIO) {
             List<LMusic> lMusics = FilesManager.getMusics(context);
             for (LMusic lmusic : lMusics) {
                 Movie movie = new Movie(lmusic.getPath());
-                movie.setMovieName(lmusic.getName());
+                String finame = getFileName(movie.getSourceUrl());
+                if (!TextUtils.isEmpty(finame))
+                    movie.setMovieName(finame);
                 OMedia oMedia = new OMedia(movie);
                 mVideoList.addVideo(oMedia);
             }
         }
 
-       if(fType == Data.MEDIA_SOURCE_ID_PIC) {
+        if (fType == Data.MEDIA_SOURCE_ID_PIC) {
             List<String> imgList = FilesManager.getLocalImageList();
             for (String img : imgList) {
                 Movie movie = new Movie(img);
-                movie.setMovieName(img);
+                String finame = getFileName(movie.getSourceUrl());
+                if (!TextUtils.isEmpty(finame))
+                    movie.setMovieName(finame);
                 OMedia oMedia = new OMedia(movie);
                 mVideoList.addVideo(oMedia);
             }
@@ -257,13 +281,14 @@ public class OPlayerSession implements SessionCompleteCallback {
 
     }
 
-    public void initMediasFromPath(String FilePath,Integer fType)
-    {
-        List<String> FileList = MediaFile.getMediaFiles(FilePath,fType);
-        for (int i=0;i<FileList.size();i++)
-        {
+    public void initMediasFromPath(Context context, String FilePath, Integer fType) {
+        List<String> FileList = MediaFile.getMediaFiles(context, FilePath, fType);
+
+        for (int i = 0; i < FileList.size(); i++) {
             Movie movie = new Movie(FileList.get(i));
-            movie.setMovieName(movie.getSourceUrl());
+            String finame = getFileName(movie.getSourceUrl());
+            if (!TextUtils.isEmpty(finame))
+                movie.setMovieName(finame);
             OMedia oMedia = new OMedia(movie);
             mVideoList.addVideo(oMedia);
         }

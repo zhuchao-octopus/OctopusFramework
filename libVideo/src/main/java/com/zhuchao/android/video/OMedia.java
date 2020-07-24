@@ -6,13 +6,19 @@ import android.net.Uri;
 import android.view.SurfaceView;
 import android.view.TextureView;
 
+import com.zhuchao.android.callbackevent.NormalRequestCallback;
 import com.zhuchao.android.callbackevent.PlayerCallback;
+import com.zhuchao.android.databaseutil.SPreference;
+import com.zhuchao.android.libfilemanager.FilesManager;
+import com.zhuchao.android.netutil.OkHttpUtils;
 import com.zhuchao.android.playerutil.OPlayer;
 import com.zhuchao.android.playerutil.PlayerUtil;
 
 import java.io.FileDescriptor;
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import static com.zhuchao.android.playerutil.PlayerUtil.isOplayerReady;
 
 /*
  *
@@ -21,9 +27,9 @@ import java.util.ArrayList;
  *
  * */
 
-public class OMedia implements Serializable {
+public class OMedia implements Serializable, PlayerCallback {
     static final long serialVersionUID = 727566175075960653L;
-    private Movie mMovie = new Movie(null);
+    private Movie mMovie = null;//new Movie(null);
     //private OPlayer mOPlayer = null; //单例
     private PlayerCallback mCallback = null;
     private OMedia mPreOMedia = null;
@@ -31,7 +37,8 @@ public class OMedia implements Serializable {
     private Context mContext = null;
     private ArrayList<String> mOptions = null;
     private float mPlayRate = 1;
-    private int  PlayOrder=0;
+    private int mPlayOrder = 0;
+    private long mLastPlayTime = -1;
 
     public OMedia() {
     }
@@ -45,7 +52,8 @@ public class OMedia implements Serializable {
             this.mMovie = movie;
     }
 
-    public OMedia(String path) {
+    public OMedia(final String path) {
+
         this.mMovie = new Movie(path);
     }
 
@@ -67,15 +75,15 @@ public class OMedia implements Serializable {
         return this;
     }
 
-    public OMedia play() {
-        PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
-        getOPlayer().setSource(mMovie.getSourceUrl());
+    public OMedia playCache(String cachDir) {
+        //PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+        getOPlayer().setSource(getAvailablePath(cachDir));
         getOPlayer().play();
         return this;
     }
 
     public OMedia play(String path) {
-        PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+        //PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
         mMovie.setSourceUrl(path);
         getOPlayer().setSource(path);
         getOPlayer().play();
@@ -83,7 +91,7 @@ public class OMedia implements Serializable {
     }
 
     public OMedia play(Uri uri) {
-        PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+        //PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
         mMovie.setSourceUrl(uri.getPath());
         getOPlayer().setSource(uri);
         getOPlayer().play();
@@ -91,99 +99,153 @@ public class OMedia implements Serializable {
     }
 
     public OMedia play(FileDescriptor fd) {
-        PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+        //PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
         getOPlayer().setSource(fd);
         getOPlayer().play();
         return this;
     }
 
     public OMedia play(AssetFileDescriptor afd) {
-        PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+        //PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
         getOPlayer().setSource(afd);
         getOPlayer().play();
         return this;
     }
 
-    public OMedia playOn(SurfaceView playView) {
-        PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+    public OMedia playOn(SurfaceView playView, String CathPath) {
+        //PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+
         getOPlayer().setSurfaceView(playView);
-        getOPlayer().setSource(mMovie.getSourceUrl());
+        getOPlayer().setSource(getAvailablePath(CathPath));
         getOPlayer().play();
         return this;
     }
 
     public OMedia playOn(TextureView playView) {
-        PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+        //PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+        //String sl = getAvailablePath();
+
         getOPlayer().setTextureView(playView);
-        getOPlayer().setSource(mMovie.getSourceUrl());
+        getOPlayer().setSource(getAvailablePath(null));
         getOPlayer().play();
         return this;
     }
 
     public void playPause() {
-        getOPlayer().playPause();
+        if (isOplayerReady())
+            getOPlayer().playPause();
     }
 
     public void pause() {
-        getOPlayer().pause();
+        if (isOplayerReady())
+            getOPlayer().pause();
     }
 
     public void stop() {
-
         try {
-            getOPlayer().stop();
+            if (isOplayerReady()) {
+                mLastPlayTime = gettime();
+                //getOPlayer().stop();
+                PlayerUtil.FreeSinglePlayer();
+                //PlayerUtil.FreeSinglePlayer();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public long getmLastPlayTime() {
+        return mLastPlayTime;
+    }
+
+    public OMedia setmLastPlayTime(long mLastPlayTime) {
+        this.mLastPlayTime = mLastPlayTime;
+        return this;
+    }
+
     public void setNoAudio() {
-        getOPlayer().setNoAudio();
+        if (isOplayerReady())
+            getOPlayer().setNoAudio();
     }
 
     public void setVolume(int var1) {
-        getOPlayer().setVolume(var1);
+        if (isOplayerReady())
+            getOPlayer().setVolume(var1);
     }
 
     public void fastForward(int x) {
-        getOPlayer().fastForward(x);
+        if (isOplayerReady())
+            getOPlayer().fastForward(x);
     }
 
     public void fastBack(int x) {
-        getOPlayer().fastBack(x);
+        if (isOplayerReady())
+            getOPlayer().fastBack(x);
     }
 
     public void fastForward(long x) {
-        getOPlayer().fastForward(x);
+        if (isOplayerReady())
+            getOPlayer().fastForward(x);
     }
 
     public void fastBack(long x) {
-        getOPlayer().fastBack(x);
+        if (isOplayerReady())
+            getOPlayer().fastBack(x);
     }
 
 
     public void fastForward() {
-        mPlayRate = mPlayRate + 0.1f;
-        getOPlayer().setRate(mPlayRate);
+        if (isOplayerReady()) {
+            mPlayRate = mPlayRate + 0.1f;
+            getOPlayer().setRate(mPlayRate);
+        }
     }
+
     public void fastBack() {
-        mPlayRate = mPlayRate - 0.1f;
-        if(mPlayRate<=0) mPlayRate =1;
-        getOPlayer().setRate(mPlayRate);
+        if (isOplayerReady()) {
+            mPlayRate = mPlayRate - 0.1f;
+            if (mPlayRate <= 0) mPlayRate = 1;
+
+            getOPlayer().setRate(mPlayRate);
+        }
     }
 
     public boolean isPlaying() {
-        return getOPlayer().isPlaying();
+        if (isOplayerReady())
+            return getOPlayer().isPlaying();
+        else
+            return false;
     }
 
     public int getPlayState() {
-        return getOPlayer().getPlayerState();
+        if (isOplayerReady())
+            return getOPlayer().getPlayerState();
+        else
+            return 0;
     }
 
+    public void settime(long time) {
+        if (isOplayerReady())
+            getOPlayer().setPlayTime(time);
+    }
+
+    public long gettime() {
+        if (isOplayerReady())
+            return getOPlayer().getCurrentTime();
+        else
+            return -1;
+    }
+
+    public void setView(SurfaceView surfaceView) {
+        if (isOplayerReady())
+            getOPlayer().reAttachSurfaceView(surfaceView);
+    }
 
     private void setCallback(PlayerCallback callBack) {
         this.mCallback = callBack;
-        getOPlayer().setCallback(this.mCallback);
+        if (isOplayerReady())
+            getOPlayer().setCallback(this);
     }
 
     public OMedia getPreOMedia() {
@@ -212,30 +274,155 @@ public class OMedia implements Serializable {
 
     private OPlayer getOPlayer() {
 
-        return PlayerUtil.getSingleOPlayer(mContext, mOptions, mCallback);
+        return PlayerUtil.getSingleOPlayer(mContext, mOptions, this);
     }
 
     public float getPosition() {
-        return getOPlayer().getCurrentPosition();
+        if (isOplayerReady())
+            return getOPlayer().getCurrentPosition();
+        else
+            return -1;
+    }
+
+    public void setPosition(long position) {
+        if (isOplayerReady())
+            getOPlayer().setPosition(position);
     }
 
     public long getLength() {
-        return getOPlayer().getLength();
+        if (isOplayerReady())
+            return getOPlayer().getLength();
+        else
+            return 0;
     }
 
-    public void setNormalRage()
-    {
-        mPlayRate =1;
-        getOPlayer().setRate(mPlayRate);
+    public void setNormalRate() {
+        mPlayRate = 1;
+        if (isOplayerReady())
+            getOPlayer().setRate(mPlayRate);
     }
 
-    public int getPlayOrder() {
-        return PlayOrder;
+    public int getmPlayOrder() {
+        return mPlayOrder;
     }
 
-    public OMedia setPlayOrder(int playOrder) {
-        PlayOrder = playOrder;
+    public OMedia setmPlayOrder(int mPlayOrder) {
+        this.mPlayOrder = mPlayOrder;
         return this;
+    }
+
+    public void download(String dirName) {
+        final String dlpath = FilesManager.getDownloadDir(dirName) + mMovie.getMovieName() + ".d";
+        final String lpath = FilesManager.getDownloadDir(dirName) + mMovie.getMovieName();
+
+        if (FilesManager.isExists(lpath)) {
+            return;
+        }
+        if (FilesManager.isExists(dlpath)) {
+            FilesManager.deleteFile(dlpath);
+        }
+
+        try {
+            OkHttpUtils.Download(mMovie.getSourceUrl(), dlpath, mMovie.getMovieName(), new NormalRequestCallback() {
+                @Override
+                public void onRequestComplete(String result, int resultIndex) {
+                    if (resultIndex >= 0) {
+                        //SPreference.saveSharedPreferences(mContext,mMovie.getMovieName(),"LPath",lpath);
+                        FilesManager.renameFile(dlpath, lpath);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void downloadTo(String toPath) {
+        final String dlpath = toPath + "/" + mMovie.getMovieName() + ".d";
+        final String lpath = toPath + "/" + mMovie.getMovieName() ;
+
+        if (FilesManager.isExists(lpath)) {
+            return;
+        }
+        if (FilesManager.isExists(dlpath)) {
+            FilesManager.deleteFile(dlpath);
+        }
+
+        try {
+            OkHttpUtils.Download(mMovie.getSourceUrl(), dlpath, mMovie.getMovieName(), new NormalRequestCallback() {
+                @Override
+                public void onRequestComplete(String result, int resultIndex) {
+                    if (resultIndex >= 0) {
+                        //SPreference.saveSharedPreferences(mContext,mMovie.getMovieName(),"LPath",lpath);
+                        FilesManager.renameFile(dlpath, lpath);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getDownlaoded(String dirName) {
+        final String lpath = FilesManager.getDownloadDir(dirName) + mMovie.getMovieName();
+        if (!FilesManager.isExists(lpath)) return null;
+        return lpath;
+    }
+
+    public String getAvailablePath(String catchDir) {
+
+        if (FilesManager.isExists(mMovie.getSourceUrl())) {
+            return mMovie.getSourceUrl();
+        }
+
+        return  catchDir + mMovie.getMovieName();
+    }
+
+    public boolean isAvailable(String cachDir) {
+        if (mMovie == null) return false;
+
+        if (FilesManager.isExists(mMovie.getSourceUrl())) {
+            return true;
+        } else if (FilesManager.isExists(cachDir + mMovie.getMovieName())) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void OnEventCallBack(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
+        int ii = getPlayState();
+        switch (ii) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                if (mLastPlayTime > gettime()) {
+                    settime(mLastPlayTime);
+
+                }
+                break;
+            case 5:
+            case 6:
+            case 7:
+                mLastPlayTime = 0;
+                break;
+        }
+
+        if (this.mCallback != null) {
+            mCallback.OnEventCallBack(EventType, TimeChanged, LengthChanged, PositionChanged, OutCount, ChangedType, ChangedID, Buffering
+                    , Length);
+        }
+    }
+
+    public void save() {
+        if (mMovie == null) return;
+
+        String md5 = FilesManager.md5(mMovie.getSourceUrl());
+        SPreference.saveSharedPreferences(mContext, md5, "name", mMovie.getMovieName());
+        SPreference.saveSharedPreferences(mContext, md5, "url", mMovie.getSourceUrl());
+        SPreference.saveSharedPreferences(mContext, md5, "playTime", "" + gettime());
     }
     //public void setRate(float v) {
     //    getOPlayer().setRate(v);

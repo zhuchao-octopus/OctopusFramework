@@ -282,10 +282,7 @@ public class TimeDateUtils {
     public static boolean is24Hour(Context mContext) {
         ContentResolver cv = mContext.getContentResolver();
         String strTimeFormat = android.provider.Settings.System.getString(cv, android.provider.Settings.System.TIME_12_24);
-        if (strTimeFormat != null && strTimeFormat.equals("24"))
-            return true;
-
-        return false;
+        return strTimeFormat != null && strTimeFormat.equals("24");
     }
     public static String getTimeByMillisecond(long millisecond) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.CHINA);
