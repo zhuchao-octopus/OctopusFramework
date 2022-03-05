@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 
 ext {
-    GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
+    GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libPlaySession'
     PUBLISH_VERSION = '2.3'
@@ -21,12 +21,10 @@ uploadArchives {
 }
 
 android {
-    compileSdkVersion 28
-
-
+    compileSdkVersion 32
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 32
         versionCode 22
         versionName "2.2"
 
@@ -45,10 +43,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.code.gson:gson:2.8.8'
     implementation project(path: ':libNetUtil')
     implementation project(path: ':libVideo')
-    implementation project(path: ':libFilesManager')
+    implementation project(path: ':libFileUitls')
     implementation project(path: ':libCallbackEvent')
-
 }

@@ -5,7 +5,7 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="delegatedBuild" value="false" />
-        <option name="testRunner" value="PLATFORM" />
+        <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
@@ -14,15 +14,12 @@
             <option value="$PROJECT_DIR$/libCallbackEvent" />
             <option value="$PROJECT_DIR$/libDataBaseUtil" />
             <option value="$PROJECT_DIR$/libDecodeCore" />
-            <option value="$PROJECT_DIR$/libDialog" />
-            <option value="$PROJECT_DIR$/libFilesManager" />
+            <option value="$PROJECT_DIR$/libFileUitls" />
             <option value="$PROJECT_DIR$/libNetUtil" />
             <option value="$PROJECT_DIR$/libNotifier" />
             <option value="$PROJECT_DIR$/libPlaySession" />
             <option value="$PROJECT_DIR$/libPlayUtil" />
-            <option value="$PROJECT_DIR$/libStatusBar" />
             <option value="$PROJECT_DIR$/libVideo" />
-            <option value="$PROJECT_DIR$/okan" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

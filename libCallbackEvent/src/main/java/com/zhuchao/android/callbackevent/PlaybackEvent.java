@@ -1,9 +1,6 @@
 package com.zhuchao.android.callbackevent;
 
-
 public  class PlaybackEvent  {
-
-
     public static final int MediaChanged = 256;
     public static final int Opening = 258;
     public static final int Buffering = 259;
@@ -22,7 +19,6 @@ public  class PlaybackEvent  {
     public static final int ESDeleted = 277;
     public static final int ESSelected = 278;
 
-
     public static final int OPLAYER_NothingSpecial=0;
     public static final int OPLAYER_Opening=1;
     public static final int OPLAYER_Buffering=2;
@@ -31,6 +27,4 @@ public  class PlaybackEvent  {
     public static final int OPLAYER_Stopped=5;
     public static final int OPLAYER_Ended=6;
     public static final int OPLAYER_Error=7;
-
-
 }

@@ -9,7 +9,7 @@ import android.view.TextureView;
 import com.zhuchao.android.callbackevent.NormalRequestCallback;
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.databaseutil.SPreference;
-import com.zhuchao.android.libfilemanager.FilesManager;
+import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.netutil.OkHttpUtils;
 import com.zhuchao.android.playerutil.OPlayer;
 import com.zhuchao.android.playerutil.PlayerUtil;
@@ -48,7 +48,7 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public OMedia(Movie movie) {
-        if (movie != null)
+        //if (movie != null)
             this.mMovie = movie;
     }
 
@@ -272,7 +272,7 @@ public class OMedia implements Serializable, PlayerCallback {
         this.mMovie = mMovie;
     }
 
-    private OPlayer getOPlayer() {
+    public OPlayer getOPlayer() {
 
         return PlayerUtil.getSingleOPlayer(mContext, mOptions, this);
     }

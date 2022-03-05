@@ -11,7 +11,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.zhuchao.android.libfilemanager.FilesManager;
+import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.netutil.NetUtils;
 import com.zhuchao.android.video.OMedia;
 
@@ -59,17 +59,14 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
             }
         });
 
-
         try {
-            //initSessionsFromInternet();
-            //initLocalSessionContent();
-            //initSessionFromMobileDisc();//usb
-            //initSessionFromMobileTFDisc("/storage/");
+            initSessionsFromInternet();
+            initLocalSessionContent();
+            initSessionFromMobileDisc();//usb
+            initSessionFromMobileTFDisc("/storage/");
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
     private void  registBroadcast()
     {
@@ -469,7 +466,6 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
                 case UsbManager.ACTION_USB_DEVICE_DETACHED:
                     //Name of extra for ACTION_USB_DEVICE_ATTACHED and ACTION_USB_DEVICE_DETACHED broadcasts containing the UsbDevice object for the device.
                     //UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-
                     break;
             }
         }

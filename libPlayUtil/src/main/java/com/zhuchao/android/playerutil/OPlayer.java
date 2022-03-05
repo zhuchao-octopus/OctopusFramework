@@ -85,6 +85,7 @@ public class OPlayer {
 
         mLibVLC = PlayerUtil.getSingleLibVLC(mContext, null);//new LibVLC(mContext);
         mMediaPlayer = new MediaPlayer(mLibVLC);
+        mMediaPlayer.setScale(0);
 
         mMediaPlayer.setEventListener(mEventListener);
         vlcVout = mMediaPlayer.getVLCVout();
@@ -244,6 +245,11 @@ public class OPlayer {
         return this;
     }
 
+    public void setSize(int width,int height) {
+        mMediaPlayer.setAspectRatio("16:9");
+        mMediaPlayer.getVLCVout().setWindowSize(width,height);
+    }
+
     public void setSurfaceView(SurfaceView ViewForShow) {
         //初始化播放mSurfaceView
         if (ViewForShow == null) return;
@@ -257,8 +263,6 @@ public class OPlayer {
         vlcVout.addCallback(mIVLCVoutCallBack);
         vlcVout.setVideoView(mSurfaceView);
         vlcVout.attachViews();
-
-
         mSurfaceView.getHolder().setKeepScreenOn(true);
     }
 
@@ -413,6 +417,8 @@ public class OPlayer {
 
         @Override
         public void onSurfacesCreated(IVLCVout ivlcVout) {
+            Log.d(TAG, "IVLCVoutCallBack ---> onSurfacesCreated"+mSurfaceView);
+
             if (mSurfaceView != null) {
                 //mSurfaceView.setVisibility(View.VISIBLE);
                 vlcVout.setWindowSize(mSurfaceView.getWidth(), mSurfaceView.getHeight());

@@ -2,10 +2,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 
 ext {
-    GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
+    GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libPlayUtil'
-    PUBLISH_VERSION = '2.1'
+    PUBLISH_VERSION = '2.4'
 }
 
 uploadArchives {
@@ -21,12 +21,12 @@ uploadArchives {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 32
 
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 32
         versionCode 21
         versionName "2.1"
 
@@ -43,20 +43,13 @@ android {
 
 }
 repositories{
-    //flatDir { dirs 'libs','../libPlayerUtil/libs'}
-    maven { url 'https://raw.githubusercontent.com/MackyLee/libs/master'}
+    flatDir { dirs 'libs','../libPlayerUtil/libs'}
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':libDecodeCore')
     implementation project(path: ':libCallbackEvent')
-    implementation project(path: ':libDialog')
     implementation project(path: ':libDataBaseUtil')
-    compile project(path: ':libFilesManager')
-
-    //implementation 'com.zhuchao.android:libDecodeCore:2.0:@aar'
-    //implementation 'org.videolan.libvlc.LibVLC:libvlc-armv7:3.1.0:@aar' //本地库依赖
-    //implementation ('com.zhuchao.android:libDecodeCore:2.0')// {transitive = true }
-
+    api project(path: ':libFileUitls')
 }

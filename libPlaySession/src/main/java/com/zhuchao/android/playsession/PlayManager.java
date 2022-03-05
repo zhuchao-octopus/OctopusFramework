@@ -6,16 +6,16 @@ import android.util.Log;
 import android.view.SurfaceView;
 
 import com.zhuchao.android.callbackevent.PlayerCallback;
-import com.zhuchao.android.libfilemanager.FilesManager;
-import com.zhuchao.android.libfilemanager.MediaFile;
+import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.MediaFile;
 import com.zhuchao.android.video.Movie;
 import com.zhuchao.android.video.OMedia;
 import com.zhuchao.android.video.VideoList;
 
 import java.util.List;
 
-import static com.zhuchao.android.libfilemanager.FilesManager.getDownloadDir;
-import static com.zhuchao.android.libfilemanager.FilesManager.getFileName;
+import static com.zhuchao.android.libfileutils.FilesManager.getDownloadDir;
+import static com.zhuchao.android.libfileutils.FilesManager.getFileName;
 
 public class PlayManager implements PlayerCallback, SessionCompleteCallback {
     private final String TAG = "PlayManager ";
@@ -82,9 +82,8 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
     }
 
     public void setmCachePath(String CacheDir) {
-        if (TextUtils.isEmpty(CacheDir)) return;
-
         this.mCachePath = CacheDir;
+        if(mMyVideoList.getMovieCount()>0) return;
 
         if (FilesManager.isExists(mCachePath)) {
             if (mThreandLock) return;
@@ -106,6 +105,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
     }
 
     public void updateCache() {
+        //mMyVideoList.clear();
         getMediasFromPath(mContext, mCachePath, Data.MEDIA_SOURCE_ID_VIDEO);
     }
 
@@ -124,8 +124,8 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
         //   mIsPlaying = true;
         //   return true;
         //}
-
-        if (oMedia.getPlayState() > 0 && oMedia.getPlayState() < 5)
+       int sta= oMedia.getPlayState();
+        if (sta >=1 && sta <=3 )
             mIsPlaying = true;
         else
             mIsPlaying = false;
@@ -143,11 +143,16 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
     }
 
     public void StartPlay(int type) {
-
-
+        
         if (type == 1) {
             if (mMyVideoList.getMovieCount() > 0)
                 oMedia = mMyVideoList.getVideos().get(0);
+            else
+            {
+                updateCache();
+                if (mMyVideoList.getMovieCount() > 0)
+                    oMedia = mMyVideoList.getVideos().get(0);
+            }
         } else if (type == Data.SESSION_TYPE_MOBILEMEDIA9) {
             if (getSessionManager().getMobileSession().getmVideoList().getMovieCount() > 0)
                 oMedia = getSessionManager().getMobileSession().getVideos().get(0);
@@ -258,8 +263,8 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
             case 2:
             case 3:
             case 4:
-                break;
             case 5:
+                break;
             case 6:
             case 7:
 
@@ -269,10 +274,12 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
                         oMedia = oMedia.getNextOMedia();
 
                     oMedia.playCache(mCachePath);
-                } else if (oMedia.getmPlayOrder() == 1)//单次播放，只播放一次
+                }
+                else if (oMedia.getmPlayOrder() == 1)//单次播放，只播放一次
                 {
                     //oMedia.play();
-                } else {
+                }
+                else {
                     oMedia.playCache(mCachePath);
                 }
                 break;
@@ -324,14 +331,16 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
             String finame = getFileName(movie.getSourceUrl());
             if (!TextUtils.isEmpty(finame))
                 movie.setMovieName(finame);
-            OMedia oMedia = new OMedia(movie);
-            mMyVideoList.addVideo(oMedia);
+
+            //OMedia oMedia = ;
+            mMyVideoList.addVideo(new OMedia(movie));
         }
     }
 
     public void Free() {
         try {
-            mSessionManager.free();
+            if(mSessionManager != null)
+               mSessionManager.free();
         } catch (Exception e) {
             e.printStackTrace();
         }

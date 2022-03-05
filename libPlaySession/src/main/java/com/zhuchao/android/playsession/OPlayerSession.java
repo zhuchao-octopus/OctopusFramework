@@ -4,10 +4,10 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.zhuchao.android.libfilemanager.FilesManager;
-import com.zhuchao.android.libfilemanager.MediaFile;
-import com.zhuchao.android.libfilemanager.bean.LMusic;
-import com.zhuchao.android.libfilemanager.bean.LVideo;
+import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.MediaFile;
+import com.zhuchao.android.libfileutils.bean.LMusic;
+import com.zhuchao.android.libfileutils.bean.LVideo;
 import com.zhuchao.android.playsession.PaserBean.MovieListBean;
 import com.zhuchao.android.video.Movie;
 import com.zhuchao.android.video.OMedia;
