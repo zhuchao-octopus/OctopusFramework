@@ -25,5 +25,16 @@ public class SPreference {
         return sharedPreferences.getString(key,null);
     }
 
-
+    public static void putLong(Context mContext,String name,String key ,long value)
+    {
+        android.content.SharedPreferences sharedPreferences= mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+        android.content.SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(key,value);
+        editor.commit();
+    }
+    public static long getLong(Context mContext,String name,String key)
+    {
+        android.content.SharedPreferences sharedPreferences= mContext.getSharedPreferences(name, Context .MODE_PRIVATE);
+        return sharedPreferences.getLong(key,0);
+    }
 }

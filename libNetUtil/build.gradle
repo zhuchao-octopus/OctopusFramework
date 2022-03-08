@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 ext {
     GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
@@ -8,14 +8,21 @@ ext {
     PUBLISH_VERSION = '2.0'
 }
 
-uploadArchives {
-    repositories.mavenDeployer {
-        def deployPath = file(GITHUB_REPO_PATH)
-        repository(url: "file://${deployPath.absolutePath}")
-        pom.project {
-            groupId PUBLISH_GROUP_ID
-            artifactId PUBLISH_ARTIFACT_ID
-            version PUBLISH_VERSION
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+            }
+        }
+        repositories{
+            maven{
+                allowInsecureProtocol true
+                url GITHUB_REPO_PATH
+            }
         }
     }
 }
@@ -25,9 +32,9 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 20
-        versionName "2.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        //versionCode 20
+        //versionName "2.0"
+        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -40,13 +47,12 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':libFileUitls')
     implementation project(path: ':libCallbackEvent')
 
     implementation 'me.jessyan:progressmanager:1.5.0'
     implementation 'com.google.code.gson:gson:2.8.8'
-
     implementation('com.squareup.okhttp3:okhttp:4.9.1')
     implementation ('com.squareup.okio:okio:2.8.0')
     implementation ('com.google.code.findbugs:jsr305:3.0.2')

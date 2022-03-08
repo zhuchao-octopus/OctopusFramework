@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 ext {
     GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
@@ -8,14 +8,25 @@ ext {
     PUBLISH_VERSION = '2.3'
 }
 
-uploadArchives {
-    repositories.mavenDeployer {
-        def deployPath = file(GITHUB_REPO_PATH)
-        repository(url: "file://${deployPath.absolutePath}")
-        pom.project {
-            groupId PUBLISH_GROUP_ID
-            artifactId PUBLISH_ARTIFACT_ID
-            version PUBLISH_VERSION
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+            }
+        }
+        repositories{
+            maven{
+                allowInsecureProtocol true
+                url GITHUB_REPO_PATH
+                //credentials{
+                //    username = "jhz"
+                //    password = "jhz"
+                //}
+            }
         }
     }
 }
@@ -25,11 +36,9 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 22
-        versionName "2.2"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
+        //versionCode 22
+        //versionName "2.2"
+        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -42,8 +51,9 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.google.code.gson:gson:2.8.8'
+    implementation project(path: ':libPlayUtil')
     implementation project(path: ':libNetUtil')
     implementation project(path: ':libVideo')
     implementation project(path: ':libFileUitls')

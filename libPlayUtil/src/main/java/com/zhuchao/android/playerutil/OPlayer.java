@@ -16,6 +16,8 @@ import org.videolan.libvlc.MediaPlayer;
 
 import java.io.FileDescriptor;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 //import org.videolan.libvlc.MediaPlayCallback;
 
@@ -31,24 +33,7 @@ public class OPlayer {
     private TextureView mTextureView = null;
     private SurfaceView mSurfaceView = null;
     private Boolean HWDecoderEnabled = true;
-    //private long TotalTime = 0;
     private String mURL = "";
-    //private int mVideoHeight = 0;
-    //private int mVideoWidth = 0;
-    //private int mVideoVisibleHeight = 0;
-    //private int mVideoVisibleWidth = 0;
-    //private int mVideoSarNum = 0;
-    //private int mVideoSarDen = 0;
-
-    //private static final int SURFACE_BEST_FIT = 0;
-    //private static final int SURFACE_FIT_SCREEN = 1;
-    //private static final int SURFACE_FILL = 2;
-    //private static final int SURFACE_16_9 = 3;
-    //private static final int SURFACE_4_3 = 4;
-    //private static final int SURFACE_ORIGINAL = 5;
-    //private static final int SURFACE_FIXFRAME = 6;
-    //private static int mWrapMod = SURFACE_FILL;
-    //private static int mPlayMode = 1;
 
     // mMediaPlayer.getPlayerState()
     //int libvlc_NothingSpecial=0;
@@ -63,7 +48,6 @@ public class OPlayer {
     private MediaPlayer.EventListener mEventListener = new MediaPlayer.EventListener() {
         @Override
         public void onEvent(MediaPlayer.Event event) {
-
             if (mOnPlayerEventCallBack != null)
                 mOnPlayerEventCallBack.OnEventCallBack(
                         event.type,
@@ -120,24 +104,19 @@ public class OPlayer {
         vlcVout.addCallback(mIVLCVoutCallBack);
     }
 
-
     public boolean setSource(String path) {
-
         if (media != null) {
             media.release();
             media = null;
         }
-
-        if (path.startsWith("http") || path.startsWith("ftp")) {
-            Uri uri = Uri.parse(path);
+        mURL = path;
+        if (mURL.isEmpty()) return false;
+        if (mURL.startsWith("http") || mURL.startsWith("ftp")) {
+            Uri uri = Uri.parse(mURL);
             setSource(uri);
             return true;
         }
-
-        if (path == null) return false;
-        mURL = path;
-        media = new Media(mLibVLC, path);
-
+        media = new Media(mLibVLC, mURL);
         //media.addOption(":no-audio");
         media.addOption(":fullscreen");
         media.addOption(":no-autoscale");
@@ -151,7 +130,6 @@ public class OPlayer {
         mMediaPlayer.setMedia(media);
         mMediaPlayer.setAspectRatio(null);
         mMediaPlayer.setScale(0);
-
         return true;
     }
 
@@ -189,7 +167,6 @@ public class OPlayer {
         mURL = afd.toString();
         media = new Media(mLibVLC, afd);
 
-
         //media.addOption(":no-audio");
         media.addOption(":fullscreen");
         media.addOption(":no-autoscale");
@@ -215,7 +192,6 @@ public class OPlayer {
         mURL = fd.toString();
         media = new Media(mLibVLC, fd);
 
-
         //media.addOption(":no-audio");
         media.addOption(":fullscreen");
         media.addOption(":no-autoscale");
@@ -234,8 +210,7 @@ public class OPlayer {
 
     public OPlayer setHWDecoderEnabled(Boolean HWDecoderEnabled) {
         this.HWDecoderEnabled = HWDecoderEnabled;
-        if(media != null)
-        {
+        if (media != null) {
             try {
                 media.setHWDecoderEnabled(HWDecoderEnabled, HWDecoderEnabled);
             } catch (Exception e) {
@@ -245,9 +220,9 @@ public class OPlayer {
         return this;
     }
 
-    public void setSize(int width,int height) {
+    public void setSize(int width, int height) {
         mMediaPlayer.setAspectRatio("16:9");
-        mMediaPlayer.getVLCVout().setWindowSize(width,height);
+        mMediaPlayer.getVLCVout().setWindowSize(width, height);
     }
 
     public void setSurfaceView(SurfaceView ViewForShow) {
@@ -278,21 +253,32 @@ public class OPlayer {
         vlcVout.attachViews();
     }
 
-    public SurfaceView getmSurfaceView() {
-        return mSurfaceView;
+    public void reAttachSurfaceView(SurfaceView surfaceView) {
+        if (surfaceView == null) return;
+
+        mSurfaceView = surfaceView;
+        if (vlcVout.areViewsAttached())
+            vlcVout.detachViews();
+        vlcVout.removeCallback(mIVLCVoutCallBack);
+        vlcVout.setVideoView(surfaceView);
+        vlcVout.attachViews();
+        vlcVout.addCallback(mIVLCVoutCallBack);
     }
+
+    //public SurfaceView getSurfaceView() {
+    //    return mSurfaceView;
+    //}
 
     public void play() {
         if (media == null) return;
         mMediaPlayer.play();
-        Log.d(TAG, "start to play ----->" + mURL);
+        //Log.d(TAG, "start to play ----->" + mURL);
     }
-
 
     public void pause() {
         if (media == null) return;
         mMediaPlayer.pause();
-        Log.d(TAG, "start to pause ----->" + mURL);
+        //Log.d(TAG, "start to pause ----->" + mURL);
     }
 
     public void fastForward(float x) {
@@ -303,10 +289,8 @@ public class OPlayer {
         mMediaPlayer.setRate(x);
     }
 
-
     public void fastForward(int x) {
         mMediaPlayer.setPosition(mMediaPlayer.getPosition() + x);
-
     }
 
     public void fastBack(int x) {
@@ -338,18 +322,6 @@ public class OPlayer {
         mMediaPlayer.setEventListener(null);
     }
 
-    public void reAttachSurfaceView(SurfaceView surfaceView) {
-        if (surfaceView == null) return;
-
-        mSurfaceView=surfaceView;
-        if(vlcVout.areViewsAttached())
-           vlcVout.detachViews();
-        vlcVout.removeCallback(mIVLCVoutCallBack);
-        vlcVout.setVideoView(surfaceView);
-        vlcVout.attachViews();
-        vlcVout.addCallback(mIVLCVoutCallBack);
-    }
-
     public void stop() {
         try {
             if (vlcVout != null) {
@@ -371,7 +343,7 @@ public class OPlayer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "start to stop ----->" + mURL);
+        //Log.d(TAG, "start to stop ----->" + mURL);
     }
 
     public void free() {
@@ -394,8 +366,6 @@ public class OPlayer {
             }
 
             PlayerUtil.FreeSingleVLC();
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -406,28 +376,19 @@ public class OPlayer {
 
         @Override
         public void onNewVideoLayout(IVLCVout vlcVout, int width, int height, int visibleWidth, int visibleHeight, int sarNum, int sarDen) {
-            //mVideoWidth = width;
-            //mVideoHeight = height;
-            //mVideoVisibleWidth = visibleWidth;
-            //mVideoVisibleHeight = visibleHeight;
-            //mVideoSarNum = sarNum;
-            //mVideoSarDen = sarDen;
             Log.d(TAG, "IVLCVoutCallBack ---> onNewVideoLayout");
         }
 
         @Override
         public void onSurfacesCreated(IVLCVout ivlcVout) {
-            Log.d(TAG, "IVLCVoutCallBack ---> onSurfacesCreated"+mSurfaceView);
-
+            Log.d(TAG, "IVLCVoutCallBack ---> onSurfacesCreated" + mSurfaceView);
             if (mSurfaceView != null) {
-                //mSurfaceView.setVisibility(View.VISIBLE);
                 vlcVout.setWindowSize(mSurfaceView.getWidth(), mSurfaceView.getHeight());
             } else if (mTextureView != null) {
                 vlcVout.setWindowSize(mTextureView.getWidth(), mTextureView.getHeight());
             }
             mMediaPlayer.setAspectRatio(null);
             mMediaPlayer.setScale(0);
-
 
             Log.d(TAG, "IVLCVoutCallBack ---> onSurfacesCreated");
         }
@@ -446,6 +407,27 @@ public class OPlayer {
     public void setSourceOption(String option) {
         this.media.addOption(option);
         mMediaPlayer.setMedia(media);
+    }
+
+    public int getAudioTracksCount() {
+        return mMediaPlayer.getAudioTracksCount();
+    }
+
+    public Map<Integer, String> getAudioTracks() {
+        Map<Integer, String> mtd = new HashMap<Integer, String>();
+        MediaPlayer.TrackDescription[] TrackDescriptions = mMediaPlayer.getAudioTracks();
+        for (MediaPlayer.TrackDescription td : TrackDescriptions) {
+            mtd.put(td.id, td.name);
+        }
+        return mtd;
+    }
+
+    public int getAudioTrack() {
+        return mMediaPlayer.getAudioTrack();
+    }
+
+    public void setAudioTrack(int index) {
+        mMediaPlayer.setAudioTrack(index);
     }
 
     public void setCallback(PlayerCallback callback) {

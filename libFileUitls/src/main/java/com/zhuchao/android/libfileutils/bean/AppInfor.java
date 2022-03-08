@@ -7,7 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
+//import androidx.annotation.NonNull;
 
 public class AppInfor  {
 
@@ -122,7 +122,6 @@ public class AppInfor  {
         SourceDir = sourceDir;
     }
 
-    @NonNull
     @Override
     public String toString() {
         String str = "Name=" + Name +

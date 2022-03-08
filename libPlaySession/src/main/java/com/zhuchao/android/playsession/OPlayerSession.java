@@ -72,8 +72,6 @@ public class OPlayerSession implements SessionCompleteCallback {
                 break;
             case Data.SESSION_TYPE_GET_MOVIE_CATEGORY:
             case Data.SESSION_TYPE_GET_MOVIE_TYPE:
-                Ilpr.performanceUrl(mSessionId, Data.getActionUrl(mSessionId, this.getSessionName(), 1));
-                break;
             default:
                 Ilpr.performanceUrl(mSessionId, Data.getActionUrl(mSessionId, this.getSessionName(), 1));
                 break;
@@ -283,7 +281,6 @@ public class OPlayerSession implements SessionCompleteCallback {
 
     public void initMediasFromPath(Context context, String FilePath, Integer fType) {
         List<String> FileList = MediaFile.getMediaFiles(context, FilePath, fType);
-
         for (int i = 0; i < FileList.size(); i++) {
             Movie movie = new Movie(FileList.get(i));
             String finame = getFileName(movie.getSourceUrl());
@@ -328,7 +325,7 @@ public class OPlayerSession implements SessionCompleteCallback {
                 this.setmVideoTypeNameList(Ilpr.getVideoType());
                 break;
             default: //用户自定义SessionID,由用户自己解析，//默认尝试转化成视频列表
-                this.gernerateAndAppendVideoFromIlpr();
+                //this.gernerateAndAppendVideoFromIlpr();
                 break;
         }
 

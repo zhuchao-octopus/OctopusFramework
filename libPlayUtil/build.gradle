@@ -1,37 +1,37 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 ext {
     GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libPlayUtil'
-    PUBLISH_VERSION = '2.4'
+    PUBLISH_VERSION = '2.1'
 }
 
-uploadArchives {
-    repositories.mavenDeployer {
-        def deployPath = file(GITHUB_REPO_PATH)
-        repository(url: "file://${deployPath.absolutePath}")
-        pom.project {
-            groupId PUBLISH_GROUP_ID
-            artifactId PUBLISH_ARTIFACT_ID
-            version PUBLISH_VERSION
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+            }
+        }
+        repositories{
+            maven{
+                allowInsecureProtocol true
+                url GITHUB_REPO_PATH
+            }
         }
     }
 }
 
 android {
     compileSdkVersion 32
-
-
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 21
-        versionName "2.1"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -42,14 +42,9 @@ android {
     }
 
 }
-repositories{
-    flatDir { dirs 'libs','../libPlayerUtil/libs'}
-}
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':libDecodeCore')
     implementation project(path: ':libCallbackEvent')
-    implementation project(path: ':libDataBaseUtil')
-    api project(path: ':libFileUitls')
 }

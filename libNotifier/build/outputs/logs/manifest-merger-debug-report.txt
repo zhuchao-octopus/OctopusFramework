@@ -3,24 +3,12 @@ manifest
 ADDED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml:1:1-52
 INJECTED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml:1:1-52
 INJECTED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml:1:1-52
-INJECTED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml:1:1-52
-INJECTED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml:1:1-52
-INJECTED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml:1:1-52
-INJECTED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml:1:1-52
 	package
 		ADDED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml:1:11-49
 		INJECTED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml
 		INJECTED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml
-	android:versionName
-		INJECTED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml
-		ADDED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml:1:1-52
-		INJECTED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml:1:1-52
-	android:versionCode
-		INJECTED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml
-		ADDED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml:1:1-52
-		INJECTED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml
 uses-sdk
 INJECTED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from F:\StudioProjects\OctopusFramework\libNotifier\src\main\AndroidManifest.xml

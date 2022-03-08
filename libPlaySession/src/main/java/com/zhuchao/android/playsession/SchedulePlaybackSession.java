@@ -95,7 +95,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
                             videoList.add(scheduleVideo);
                         }
 
-                        Log.d(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getmLastPlayTime() +","+
+                        Log.d(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getLastPlayTime() +","+
                                 scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getSourceUrl());
                         Count ++;
                     }
@@ -133,7 +133,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
               if (!videoList.contains(scheduleVideo)) {
                   videoList.add(scheduleVideo);
               }
-              Log.d(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getmLastPlayTime() +","+
+              Log.d(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getLastPlayTime() +","+
                       scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getSourceUrl());
               Count ++;
           }
@@ -152,7 +152,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
               if (!videoList.contains(scheduleVideo)) {
                   videoList.add(scheduleVideo);
               }
-              Log.d(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getmLastPlayTime() +","+
+              Log.d(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getLastPlayTime() +","+
                       scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getSourceUrl());
               Count ++;
           }
@@ -183,7 +183,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
                 videoList.add(scheduleVideo);
             }
 
-            Log.d(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getmLastPlayTime() +","+
+            Log.d(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getLastPlayTime() +","+
                     scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getSourceUrl());
             Count++;
         }

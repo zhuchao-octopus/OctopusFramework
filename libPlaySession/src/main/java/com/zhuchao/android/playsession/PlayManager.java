@@ -1,261 +1,162 @@
 package com.zhuchao.android.playsession;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.libfileutils.FilesManager;
-import com.zhuchao.android.libfileutils.MediaFile;
+import com.zhuchao.android.playerutil.PlayerUtil;
 import com.zhuchao.android.video.Movie;
 import com.zhuchao.android.video.OMedia;
 import com.zhuchao.android.video.VideoList;
 
-import java.util.List;
+import java.io.FileDescriptor;
 
 import static com.zhuchao.android.libfileutils.FilesManager.getDownloadDir;
 import static com.zhuchao.android.libfileutils.FilesManager.getFileName;
 
 public class PlayManager implements PlayerCallback, SessionCompleteCallback {
-    private final String TAG = "PlayManager ";
-    private Context mContext;
-    private SurfaceView mSurfaceView;
-    private VideoList mMyVideoList = new VideoList();
-    private OPlayerSessionManager mSessionManager = null;
+    private final String TAG = "PlayManager";
+    private Context context;
+    private SurfaceView surfaceView;
+    private VideoList playingList = new VideoList();
+    private OPlayerSessionManager sessionManager = null;
     private OMedia oMedia = null;
-    private int mPlayType = 1;
-    private boolean mIsPlaying = false;
-    private PlayerCallback mCallback = null;
-    private String mCachePath = getDownloadDir(null);
-    private boolean mThreandLock = false;
-
-    private synchronized OPlayerSessionManager getSessionManager() {//通过上下文得到实例，用实例去调用非静态方法
-        if (mSessionManager == null)
-            mSessionManager = new OPlayerSessionManager(mContext, null, this);
-        return mSessionManager;
-    }
+    private boolean isPlaying = false;
+    private PlayerCallback callback = null;
+    private String cachePath = getDownloadDir(null);
+    private boolean threadLock = false;
+    private int playOrder = 0;
+    private int autoPlaySource = 1;
 
     public PlayManager(Context mContext, SurfaceView mSurfaceView) {
-        this.mContext = mContext;
-        this.mSurfaceView = mSurfaceView;
-        //getSessionManager();
-
-        //getMediasFromPath(mContext, getDownloadDir(null), Data.MEDIA_SOURCE_ID_VIDEO);
+        this.context = mContext;
+        this.surfaceView = mSurfaceView;
     }
 
-    public PlayManager(Context mContext, SurfaceView mSurfaceView, OPlayerSessionManager mSessionManager) {
-        this.mContext = mContext;
-        this.mSurfaceView = mSurfaceView;
-        this.mSessionManager = mSessionManager;
-        //getMediasFromPath(mContext, getDownloadDir(null), Data.MEDIA_SOURCE_ID_VIDEO);
+    public void setSessionManager(OPlayerSessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+        this.sessionManager.setUserSessionCallback(this);
     }
 
-    public PlayManager setSessionManager(OPlayerSessionManager mSessionManager) {
-        this.mSessionManager = mSessionManager;
-        return this;
+    public VideoList getPlayingList() {
+        return playingList;
     }
 
-    public VideoList getmMyVideoList() {
-        return mMyVideoList;
+    public void setPlayingList(VideoList playingList) {
+        this.playingList = playingList;
     }
 
-    public SurfaceView getmSurfaceView() {
-        return mSurfaceView;
-    }
-
-    public PlayManager setmSurfaceView(SurfaceView mSurfaceView) {
-        this.mSurfaceView = mSurfaceView;
-        return this;
-    }
-
-    public OMedia getoMedia() {
+    public OMedia getPlayingMedia() {
         return oMedia;
     }
 
-    public int getmType() {
-        return mPlayType;
+    public String getCachePath() {
+        return cachePath;
     }
 
-    public String getmCachePath() {
-        return mCachePath;
+    public int getPlayOrder() {
+        return playOrder;
     }
 
-    public void setmCachePath(String CacheDir) {
-        this.mCachePath = CacheDir;
-        if(mMyVideoList.getMovieCount()>0) return;
-
-        if (FilesManager.isExists(mCachePath)) {
-            if (mThreandLock) return;
-            new Thread() {     //不可在主线程中调用
-                public void run() {
-                    mThreandLock = true;
-                    try {
-                        getMediasFromPath(mContext, mCachePath, Data.MEDIA_SOURCE_ID_VIDEO);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                    }
-                    mThreandLock = false;
-                }
-
-            }.start();
-        }
-
-    }
-
-    public void updateCache() {
-        //mMyVideoList.clear();
-        getMediasFromPath(mContext, mCachePath, Data.MEDIA_SOURCE_ID_VIDEO);
-    }
-
-    public PlayManager setmType(int mType) {
-        this.mPlayType = mType;
-        return this;
+    public void setPlayOrder(int playOrder) {
+        this.playOrder = playOrder;
     }
 
     public boolean isPlaying() {
         if (oMedia == null) {
-            mIsPlaying = false;
-            return mIsPlaying;
+            isPlaying = false;
+            return false;
         }
-
-        //if (oMedia.isPlaying()) {
-        //   mIsPlaying = true;
-        //   return true;
-        //}
-       int sta= oMedia.getPlayState();
-        if (sta >=1 && sta <=3 )
-            mIsPlaying = true;
+        int sta = oMedia.getPlayState();
+        if (sta >= 1 && sta <= 3)
+            isPlaying = true;
         else
-            mIsPlaying = false;
-
-        return mIsPlaying;
+            isPlaying = false;
+        return isPlaying;
     }
 
-    public PlayManager Callback(PlayerCallback mCallback) {
-        this.mCallback = mCallback;
+    public PlayManager callback(PlayerCallback mCallback) {
+        this.callback = mCallback;
         return this;
     }
 
-    public boolean hasUSBMedias() {
-        return getSessionManager().getMobileSession().getVideos().size() > 0;
-    }
-
-    public void StartPlay(int type) {
-        
-        if (type == 1) {
-            if (mMyVideoList.getMovieCount() > 0)
-                oMedia = mMyVideoList.getVideos().get(0);
-            else
-            {
-                updateCache();
-                if (mMyVideoList.getMovieCount() > 0)
-                    oMedia = mMyVideoList.getVideos().get(0);
-            }
-        } else if (type == Data.SESSION_TYPE_MOBILEMEDIA9) {
-            if (getSessionManager().getMobileSession().getmVideoList().getMovieCount() > 0)
-                oMedia = getSessionManager().getMobileSession().getVideos().get(0);
-        } else if (type == Data.SESSION_TYPE_LOCALMEDIA) {
-            if (getSessionManager().getLocalSession().getmVideoList().getMovieCount() > 0)
-                oMedia = getSessionManager().getLocalSession().getVideos().get(0);
-        } else if (type == Data.MEDIA_SOURCE_ID_AllMEDIA) {
-            if (getSessionManager().getMomileTFSession().getmVideoList().getMovieCount() > 0)
-                oMedia = getSessionManager().getMomileTFSession().getVideos().get(0);
-        } else {
-            if (mMyVideoList.getMovieCount() > 0)
-                oMedia = mMyVideoList.getVideos().get(0);
-            else if (getSessionManager().getMobileSession().getmVideoList().getMovieCount() > 0)
-                oMedia = getSessionManager().getMobileSession().getVideos().get(0);
-            else if (getSessionManager().getLocalSession().getmVideoList().getMovieCount() > 0)
-                oMedia = getSessionManager().getLocalSession().getVideos().get(0);
-            else if (getSessionManager().getMomileTFSession().getmVideoList().getMovieCount() > 0)
-                oMedia = getSessionManager().getMomileTFSession().getVideos().get(0);
-            else
-                oMedia = null;
+    public void startPlay(OMedia oMedia) {
+        if(surfaceView == null) {
+            Log.d(TAG, "no surfaceView ！！！！！！");
+                return;
         }
-
-        if (oMedia == null) {
-            Log.d(TAG, "StartPlay but no media !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! type = " + type);
-
-        } else {
-            StartPlay(oMedia);
-        }
-    }
-
-    public void StartPlay(String url, long postion) {
-
-        oMedia = mMyVideoList.findMovieByPath(url);
-        if (oMedia == null) {
-            oMedia = new OMedia(url);
-        }
-
-        oMedia.setmLastPlayTime(postion);
-        StartPlay(oMedia);
-    }
-
-    public void StartPlay(OMedia oMedia) {
-
         if (oMedia != null) {
-            if (!oMedia.isAvailable(mCachePath)) {
-                Log.d(TAG, "not exit " + oMedia.getMovie().getSourceUrl());
+            if (!oMedia.isAvailable(cachePath)) {
+                Log.d(TAG, "not found " + oMedia.getMovie().getSourceUrl());
                 return;
             }
             this.oMedia = oMedia;
         }
-
         if (this.oMedia == null) {
-            Log.d(TAG, "invalid media !!!!!!!!!!!!!!!!!!!!!!");
+            Log.d(TAG, "invalid media ！！！！！！");
             return;
         }
-        //if(mSurfaceView != null) mSurfaceView.setVisibility(View.VISIBLE);
 
-        Log.d(TAG, "StartPlay ----> " + oMedia.getMovie().getSourceUrl() + " : " + oMedia.getmLastPlayTime());
-
-        this.oMedia.with(mContext);
+        Log.d(TAG, "StartPlay ----> " + oMedia.getMovie().getSourceUrl() + " : " + oMedia.getLastPlayTime());
+        this.oMedia.with(context);
         this.oMedia.setNormalRate();
         this.oMedia.callback(this);
-
-        this.oMedia.playOn(mSurfaceView, mCachePath);
-        mIsPlaying = true;
+        this.oMedia.onView(surfaceView);
+        this.oMedia.playCache(cachePath);
+        isPlaying = true;
     }
 
-    public void StopPlay() {
+    public void startPlay(String url) {
+        oMedia = playingList.findMovieByPath(url);
+        if (oMedia == null) {
+            oMedia = new OMedia(url);
+        }
+        startPlay(oMedia);
+    }
+
+    public void startPlay(int Index) {
+        oMedia = getMedia(Index);
+        if (oMedia != null) {
+            startPlay(oMedia);
+        }
+    }
+
+    public void stopPlay() {
         if (oMedia != null)
             oMedia.stop();
     }
 
-    public void PausePlay() {
+    public void playPause() {
         if (oMedia != null)
             oMedia.playPause();
     }
 
-    public void PlayNext() {
+    public void playNext() {
         if (oMedia != null)
-            StartPlay(oMedia.getNextOMedia());
+            startPlay(oMedia.getNext());
     }
 
-    public void PlayPre() {
+    public void playPre() {
         if (oMedia != null)
-            StartPlay(oMedia.getPreOMedia());
-    }
-
-    public OMedia GetMyOMedia(String url) {
-        OMedia oo = mMyVideoList.findMovieByPath(oMedia.getMovie().getSourceUrl());
-        return oo;
+            startPlay(oMedia.getPre());
     }
 
     @Override
     public void OnEventCallBack(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
-        // mMediaPlayer.getPlayerState()
-        //int libvlc_NothingSpecial=0;
-        //int libvlc_Opening=1;
-        //int libvlc_Buffering=2;
-        //int libvlc_Playing=3;
-        //int libvlc_Paused=4;
-        //int libvlc_Stopped=5;
-        //int libvlc_Ended=6;
-        //int libvlc_Error=7;
+        //mMediaPlayer.getPlayerState()
+        //int NothingSpecial=0;
+        //int Opening=1;
+        //int Buffering=2;
+        //int Playing=3;
+        //int Paused=4;
+        //int Stopped=5;
+        //int Ended=6;
+        //int Error=7;
         int ii = oMedia.getPlayState();
         switch (ii) {
             case 0:
@@ -267,82 +168,159 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
                 break;
             case 6:
             case 7:
-
-                if (oMedia.getmPlayOrder() == 0) //列表循环
+                if (playOrder == 0) //列表循环
                 {
-                    if (oMedia.getNextOMedia() != null)
-                        oMedia = oMedia.getNextOMedia();
-
-                    oMedia.playCache(mCachePath);
-                }
-                else if (oMedia.getmPlayOrder() == 1)//单次播放，只播放一次
+                    if (oMedia.getNext() != null)
+                        oMedia = oMedia.getNext();
+                    oMedia.playCache(cachePath);
+                } else if (playOrder == 1)//单次播放，只播放一次
                 {
                     //oMedia.play();
-                }
-                else {
-                    oMedia.playCache(mCachePath);
+                } else//单曲循环
+                {
+                    oMedia.playCache(cachePath);
                 }
                 break;
         }
 
-        if (this.mCallback != null)
-            this.mCallback.OnEventCallBack(EventType, TimeChanged, LengthChanged, PositionChanged, OutCount, ChangedType, ChangedID, Buffering, Length);
-
+        if (this.callback != null)
+            this.callback.OnEventCallBack(EventType, TimeChanged, LengthChanged, PositionChanged, OutCount, ChangedType, ChangedID, Buffering, Length);
     }
 
-    //public static final int SESSION_TYPE_MOBILEMEDIA9 = 9;
+    public void setCachePath(String CacheDir) {
+        this.cachePath = CacheDir;
+        if (playingList.getCount() > 0) return;
+        if (FilesManager.isExists(cachePath)) {
+            if (threadLock) return;
+            new Thread() {     //不可在主线程中调用
+                public void run() {
+                    threadLock = true;
+                    try {
+                        playingList.loadFromDir(context, cachePath, Data.MEDIA_SOURCE_ID_VIDEO);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    threadLock = false;
+                }
+
+            }.start();
+        }
+    }
+
+    public void updatePlayList() {
+        playingList.clear();
+        playingList.loadFromDir(context, cachePath, Data.MEDIA_SOURCE_ID_VIDEO);
+    }
+
+    public void addSource(String Url) {
+        Movie movie = new Movie(Url);
+        String filename = getFileName(movie.getSourceUrl());
+        if (!TextUtils.isEmpty(filename))
+            movie.setMovieName(filename);
+        playingList.addVideo(new OMedia(movie));
+    }
+
+    public void addSource(FileDescriptor FD) {
+        if (FD != null)
+            playingList.addVideo(new OMedia(FD));
+    }
+
+    public void addSource(AssetFileDescriptor AFD) {
+        if (AFD != null)
+            playingList.addVideo(new OMedia(AFD));
+    }
+
+    public void addSource(Uri uri) {
+        if (uri != null)
+            playingList.addVideo(new OMedia(uri));
+    }
+
+    public OMedia getMedia(String url) {
+        OMedia oo = playingList.findMovieByPath(oMedia.getMovie().getSourceUrl());
+        return oo;
+    }
+
+    public OMedia getMedia(int Index) {
+        if (playingList.getCount() <= 0)
+            return null;
+        return playingList.getVideos().get(Index);
+    }
+
+    public void free() {
+        try {
+            playingList.clear();
+            playingList = null;
+            PlayerUtil.FreeSinglePlayer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void autoPlay(int autoPlaySource) {
+        this.autoPlaySource = autoPlaySource;
+        if (autoPlaySource == 1) {
+            if (playingList.getCount() > 0)
+                oMedia = playingList.getVideos().get(0);
+            else {
+                playingList.loadFromDir(context, cachePath, Data.MEDIA_SOURCE_ID_VIDEO);
+                if (playingList.getCount() > 0)
+                    oMedia = playingList.getVideos().get(0);
+            }
+        } else if (autoPlaySource == Data.SESSION_TYPE_MOBILEMEDIA9) {
+            if (sessionManager != null)
+                if (sessionManager.getMobileSession().getmVideoList().getCount() > 0)
+                    oMedia = sessionManager.getMobileSession().getVideos().get(0);
+        } else if (autoPlaySource == Data.SESSION_TYPE_LOCALMEDIA) {
+            if (sessionManager != null)
+                if (sessionManager.getLocalSession().getmVideoList().getCount() > 0)
+                    oMedia = sessionManager.getLocalSession().getVideos().get(0);
+        } else if (autoPlaySource == Data.MEDIA_SOURCE_ID_AllMEDIA) {
+            if (sessionManager != null)
+                if (sessionManager.getMobileTFSession().getmVideoList().getCount() > 0)
+                    oMedia = sessionManager.getMobileTFSession().getVideos().get(0);
+        } else {
+            if (playingList.getCount() > 0)
+                oMedia = playingList.getVideos().get(0);
+            else if (sessionManager != null) {
+                if (sessionManager.getMobileSession().getmVideoList().getCount() > 0)
+                    oMedia = sessionManager.getMobileSession().getVideos().get(0);
+                else if (sessionManager.getLocalSession().getmVideoList().getCount() > 0)
+                    oMedia = sessionManager.getLocalSession().getVideos().get(0);
+                else if (sessionManager.getMobileTFSession().getmVideoList().getCount() > 0)
+                    oMedia = sessionManager.getMobileTFSession().getVideos().get(0);
+                else oMedia = null;
+            } else oMedia = null;
+        }
+
+        if (oMedia == null) {
+            Log.d(TAG, "StartPlay but no media !!!!, autoPlaySource = " + autoPlaySource);
+        } else {
+            startPlay(oMedia);
+        }
+    }
+
     //public static final int SESSION_TYPE_LOCALMEDIA = 10; //本地媒体
     @Override
     public void OnSessionComplete(int sessionId, String result) {
-        //Log.d(TAG, "OnSessionComplete " + "sessionId = " + sessionId + " result = " + result);
+        Log.d(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + " result = " + result);
+        Log.d(TAG, "OnSessionComplete: " + "autoPlaySource = " + autoPlaySource);
         if (sessionId == Data.SESSION_TYPE_MOBILEMEDIA9) {
-
-            if (isPlaying() == false && mPlayType == Data.SESSION_TYPE_MOBILEMEDIA9) {
-                Log.d(TAG, "OnSessionComplete play  sessionId =" + sessionId);
-                StartPlay(sessionId);
+            if (isPlaying() == false && autoPlaySource == Data.SESSION_TYPE_MOBILEMEDIA9) {
+                startPlay(sessionId);
             }
-            // Log.d(TAG, "OnSessionComplete count = " + getSessionManager().getMobileSession().getmVideoList().getMovieCount());
+            Log.d(TAG, "OnSessionComplete count = " + sessionManager.getMobileSession().getmVideoList().getCount());
         }
         if (sessionId == Data.SESSION_TYPE_LOCALMEDIA) {
-
-            if (isPlaying() == false && mPlayType == Data.SESSION_TYPE_LOCALMEDIA) {
-                Log.d(TAG, "OnSessionComplete play  sessionId =" + sessionId);
-                StartPlay(sessionId);
+            if (isPlaying() == false && autoPlaySource == Data.SESSION_TYPE_LOCALMEDIA) {
+                startPlay(sessionId);
             }
-            // Log.d(TAG, "OnSessionComplete count = " + getSessionManager().getLocalSession().getmVideoList().getMovieCount());
+            Log.d(TAG, "OnSessionComplete count = " + sessionManager.getLocalSession().getmVideoList().getCount());
         }
-
         if (sessionId == Data.MEDIA_SOURCE_ID_AllMEDIA) {
-
-            if (isPlaying() == false && mPlayType == Data.MEDIA_SOURCE_ID_AllMEDIA) {
-                Log.d(TAG, "OnSessionComplete play  sessionId =" + sessionId);
-                StartPlay(sessionId);
+            if (isPlaying() == false && autoPlaySource == Data.MEDIA_SOURCE_ID_AllMEDIA) {
+                startPlay(sessionId);
             }
-            //Log.d(TAG, "OnSessionComplete count = " + getSessionManager().getMomileTFSession().getmVideoList().getMovieCount());
-        }
-
-    }
-
-    public void getMediasFromPath(Context context, String FilePath, Integer fType) {
-        List<String> FileList = MediaFile.getMediaFiles(context, FilePath, fType);
-
-        for (int i = 0; i < FileList.size(); i++) {
-            Movie movie = new Movie(FileList.get(i));
-            String finame = getFileName(movie.getSourceUrl());
-            if (!TextUtils.isEmpty(finame))
-                movie.setMovieName(finame);
-
-            //OMedia oMedia = ;
-            mMyVideoList.addVideo(new OMedia(movie));
-        }
-    }
-
-    public void Free() {
-        try {
-            if(mSessionManager != null)
-               mSessionManager.free();
-        } catch (Exception e) {
-            e.printStackTrace();
+            Log.d(TAG, "OnSessionComplete count = " + sessionManager.getMobileTFSession().getmVideoList().getCount());
         }
     }
 }

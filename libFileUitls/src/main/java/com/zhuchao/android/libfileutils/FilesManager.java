@@ -1,5 +1,6 @@
 package com.zhuchao.android.libfileutils;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -164,21 +165,7 @@ public class FilesManager {
      */
     public static int getFileIconByPath(String path) {
         path = path.toLowerCase();
-        //int iconId = R.mipmap.unknow_file_icon;
         int iconId = 0;//R.mipmap.ic_launcher;
-        /*if (path.endsWith(".txt")){
-            iconId = R.mipmap.type_txt;
-        }else if(path.endsWith(".doc") || path.endsWith(".docx")){
-            iconId = R.mipmap.type_doc;
-        }else if(path.endsWith(".xls") || path.endsWith(".xlsx")){
-            iconId = R.mipmap.type_xls;
-        }else if(path.endsWith(".ppt") || path.endsWith(".pptx")){
-            iconId = R.mipmap.type_ppt;
-        }else if(path.endsWith(".xml")){
-            iconId = R.mipmap.type_xml;
-        }else if(path.endsWith(".htm") || path.endsWith(".html")){
-            iconId = R.mipmap.type_html;
-        }*/
         return iconId;
     }
 
@@ -455,7 +442,7 @@ public class FilesManager {
                     new String[]{"image/jpeg", "image/png"}, MediaStore.Images.Media.DATE_MODIFIED);
             List<String> mDirs = new ArrayList<String>();//用于保存已经添加过的文件夹目录
             while (c.moveToNext()) {
-                String path = c.getString(c.getColumnIndex(MediaStore.Images.Media.DATA));// 路径
+                @SuppressLint("Range") String path = c.getString(c.getColumnIndex(MediaStore.Images.Media.DATA));// 路径
                 File parentFile = new File(path).getParentFile();
                 if (parentFile == null)
                     continue;

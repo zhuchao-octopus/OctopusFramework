@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 
 ext {
@@ -8,27 +8,31 @@ ext {
     PUBLISH_ARTIFACT_ID = 'libCallbackEvent'
     PUBLISH_VERSION = '1.0'
 }
-
-uploadArchives {
-    repositories.mavenDeployer {
-        def deployPath = file(GITHUB_REPO_PATH)
-        repository(url: "file://${deployPath.absolutePath}")
-        pom.project {
-            groupId PUBLISH_GROUP_ID
-            artifactId PUBLISH_ARTIFACT_ID
-            version PUBLISH_VERSION
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+            }
+        }
+        repositories{
+            maven{
+                allowInsecureProtocol true
+                url GITHUB_REPO_PATH}
         }
     }
 }
 
 android {
-
     compileSdkVersion 32
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 10
-        versionName "1.0"
+        //versionCode 10
+        //versionName "1.0"
     }
 
     buildTypes {
@@ -41,5 +45,5 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //implementation fileTree(dir: 'libs', include: ['*.jar'])
 }

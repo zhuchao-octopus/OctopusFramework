@@ -14,6 +14,13 @@
 
 package com.zhuchao.android.video;
 
+import static com.zhuchao.android.libfileutils.FilesManager.getFileName;
+
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.zhuchao.android.libfileutils.MediaFile;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,29 +34,25 @@ public class VideoList {
 
     public void addVideo(OMedia oMedia)
     {
-        //if(list.contains(oMedia)) return;
-
         if(findMovieByPath(oMedia.getMovie().getSourceUrl()) != null) return;
-
         if(oMedia != null)
         {
             OMedia fvideo = findMoviebyIndex(0);
             OMedia lvideo = findMoviebyIndex(list.size()-1);
 
-
             if(lvideo != null) {
-                lvideo.setNextOMedia(oMedia);
-                oMedia.setPreOMedia(lvideo);
+                lvideo.setNext(oMedia);
+                oMedia.setPre(lvideo);
             }
             else
             {
-                oMedia.setPreOMedia(oMedia);
-                oMedia.setNextOMedia(oMedia);
+                oMedia.setPre(oMedia);
+                oMedia.setNext(oMedia);
             }
 
             if(fvideo != null) {
-                fvideo.setPreOMedia(oMedia);
-                oMedia.setNextOMedia(fvideo);
+                fvideo.setPre(oMedia);
+                oMedia.setNext(fvideo);
             }
 
             list.add(oMedia);
@@ -93,7 +96,7 @@ public class VideoList {
         return list;
     }
 
-    public  int getMovieCount()
+    public  int getCount()
     {
        return list.size();
     }
@@ -208,5 +211,16 @@ public class VideoList {
                 return oMedia;
         }
         return null;
+    }
+
+    public void loadFromDir(Context context, String FilePath, Integer fType) {
+        List<String> FileList = MediaFile.getMediaFiles(context, FilePath, fType);
+        for (int i = 0; i < FileList.size(); i++) {
+            Movie movie = new Movie(FileList.get(i));
+            String filename = getFileName(movie.getSourceUrl());
+            if (!TextUtils.isEmpty(filename))
+                movie.setMovieName(filename);
+            addVideo(new OMedia(movie));
+        }
     }
 }

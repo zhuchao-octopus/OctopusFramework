@@ -15,8 +15,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.core.content.FileProvider;
-
-import com.zhuchao.android.databaseutil.SPreference;
+//import com.zhuchao.android.databaseutil.SPreference;
 import com.zhuchao.android.libfileutils.bean.AppInfor;
 
 import java.io.File;
@@ -26,7 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class MyAppsManager {
+public class AppsManager {
     private static final String TAG = "MyAppsManager";
     public static final String UNINSTALL_ACTION = "UNINSTALL";
     public static final String INSTALL_ACTION = "INSTALL";
@@ -36,20 +35,17 @@ public class MyAppsManager {
     public static final String DELFROMMYAPPS_ACTION = "DELFROMMYAPPS";
     public static final String USED_HISTORY_ACTION = "USEDHISTORY";
     public static final String HOT_CLEAR_ACTION = "HOTCLEAR";
-
     //private static MyAppsManager mInstance;
     private static Context mContext;
     //private static Object mLock = new Object();
-    private AppsChangedCallback mAppsChangedCallback = null;
+    private AppsCallback mAppsCallback = null;
     private ExecutorService mExecutorService;
     private PackageManager mPackageManager;
 
     private List<AppInfor> AllAppInfors = new ArrayList<AppInfor>();
     private List<AppInfor> UserAppInfors = new ArrayList<AppInfor>();
-    private List<AppInfor> MyAppInfors = new ArrayList<AppInfor>();
-
-    private List<String> RecentlyUsed = new ArrayList<String>();
-
+    //private List<AppInfor> MyAppInfors = new ArrayList<AppInfor>();
+    //private List<String> RecentlyUsed = new ArrayList<String>();
     private List<String> Filter = new ArrayList<String>();
 
 //    public static MyAppsManager getInstance(Context context){
@@ -64,9 +60,9 @@ public class MyAppsManager {
 //        return mInstance;
 //    }
 
-    public MyAppsManager(Context context, AppsChangedCallback appsChangedCallback) {
+    public AppsManager(Context context, AppsCallback appsCallback) {
         mContext = context;
-        mAppsChangedCallback = appsChangedCallback;
+        mAppsCallback = appsCallback;
         mPackageManager = mContext.getPackageManager();
         mExecutorService = Executors.newSingleThreadExecutor();
 
@@ -84,16 +80,16 @@ public class MyAppsManager {
         AppChangedReceiver = null;
     }
 
-    public List<String> getRecentlyUsed() {
-        return RecentlyUsed;
-    }
+    //public List<String> getRecentlyUsed() {
+    //    return RecentlyUsed;
+    //}
 
     public List<AppInfor> getAllAppInfors() {
         return AllAppInfors;
     }
 
-    public MyAppsManager setmAppsChangedCallback(AppsChangedCallback mAppsChangedCallback) {
-        this.mAppsChangedCallback = mAppsChangedCallback;
+    public AppsManager setmAppsChangedCallback(AppsCallback mAppsCallback) {
+        this.mAppsCallback = mAppsCallback;
         return this;
     }
 
@@ -167,8 +163,8 @@ public class MyAppsManager {
             if (!AllAppInfors.contains(appInfor)) {
                 AllAppInfors.add(appInfor);
 
-                if (mAppsChangedCallback != null)
-                    mAppsChangedCallback.OnAppsChanged(SCANING_ACTION, appInfor);
+                if (mAppsCallback != null)
+                    mAppsCallback.OnAppsChanged(SCANING_ACTION, appInfor);
 
             }
 
@@ -186,8 +182,8 @@ public class MyAppsManager {
             }
         }//for
         //&& size0 != AllAppInfors.size()
-        if ((mAppsChangedCallback != null)) {
-            mAppsChangedCallback.OnAppsChanged(SCANING_COMPLETE_ACTION, null);
+        if ((mAppsCallback != null)) {
+            mAppsCallback.OnAppsChanged(SCANING_COMPLETE_ACTION, null);
         }
 
         //int i = 0;
@@ -195,12 +191,11 @@ public class MyAppsManager {
         //    Log.d(TAG, "Apps[" + i + "]:" + Info.toString());
         //    i++;
         //}
-        String myapp = SPreference.getSharedPreferences(mContext, "MyAppInfors", "MyAppInfors");
-        AppInfor appInfor = getAppInfor(myapp);
-        if (appInfor != null) {
-            addToMyApp(appInfor);
-        }
-
+        //String myapp = SPreference.getSharedPreferences(mContext, "MyAppInfors", "MyAppInfors");
+        //AppInfor appInfor = getAppInfor(myapp);
+        //if (appInfor != null) {
+        //    addToMyApp(appInfor);
+        //}
     }
 
     public boolean isTheAppExist(String packageName) {
@@ -294,49 +289,6 @@ public class MyAppsManager {
         return null;
     }
 
-    public List<AppInfor> getMyAppInfors() {
-        return MyAppInfors;
-    }
-
-    public List<AppInfor> getUserApps() {
-        return UserAppInfors;
-    }
-
-    public AppInfor getMyApp()
-    {
-     String str= SPreference.getSharedPreferences(mContext,"MyAppInfors","MyAppInfors") ;
-     return this.getAppInfor(str);
-    }
-    public void addToMyApp(AppInfor infor) {
-
-        MyAppInfors.add(infor);
-        SPreference.saveSharedPreferences(mContext, "MyAppInfors", "MyAppInfors", infor.getPackageName());
-
-        if (mAppsChangedCallback != null)
-            mAppsChangedCallback.OnAppsChanged(ADDTOMYAPPS_ACTION, infor);
-    }
-
-    public void delFromMyApp(AppInfor infor) {
-        MyAppInfors.remove(infor);
-        MyAppInfors.clear();
-        //SPreference.clearSharedPreferences(mContext,"MyAppInfors");
-        SPreference.saveSharedPreferences(mContext, "MyAppInfors", "MyAppInfors", "");
-        if (mAppsChangedCallback != null)
-            mAppsChangedCallback.OnAppsChanged(DELFROMMYAPPS_ACTION, infor);
-    }
-
-    private void addToUsed(AppInfor infor) {
-        RecentlyUsed.add(infor.getPackageName());
-        if (mAppsChangedCallback != null)
-            mAppsChangedCallback.OnAppsChanged(USED_HISTORY_ACTION, infor);
-    }
-
-    private void addToUsed(String pkg) {
-        RecentlyUsed.add(pkg);
-        if (mAppsChangedCallback != null)
-            mAppsChangedCallback.OnAppsChanged(USED_HISTORY_ACTION, getAppInfor(pkg));
-    }
-
     public boolean startTheApp(AppInfor infor) {
 
         if (TextUtils.isEmpty(infor.getPackageName())) {
@@ -347,7 +299,6 @@ public class MyAppsManager {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-            addToUsed(infor);
             Log.d(TAG, "LaunchApp>>>>" + infor.getPackageName());
             return true;
         } else {
@@ -356,17 +307,14 @@ public class MyAppsManager {
         }
     }
 
-
     public boolean startTheApp(String packageName) {
         if (TextUtils.isEmpty(packageName)) {
             return false;
         }
-
         Intent intent = mPackageManager.getLaunchIntentForPackage(packageName);
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-            addToUsed(packageName);
             Log.d(TAG, "LaunchApp>>>>" + packageName);
             return true;
         } else {
@@ -390,7 +338,6 @@ public class MyAppsManager {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-            addToUsed(packageName);
             Log.d(TAG, "LaunchApp>>>>" + packageName);
             return true;
         } else {
@@ -409,7 +356,6 @@ public class MyAppsManager {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-            addToUsed(packageName);
             Log.d(TAG, "LaunchApp>>>>" + packageName);
             return true;
         } else {

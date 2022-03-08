@@ -15,11 +15,13 @@
 package com.zhuchao.android.video;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
+import java.io.FileDescriptor;
 import java.io.Serializable;
 
 /*

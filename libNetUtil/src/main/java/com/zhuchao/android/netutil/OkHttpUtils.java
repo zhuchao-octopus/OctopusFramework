@@ -20,12 +20,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/**
- * Created by ZTZ on 2018/3/20.
- */
-
 public class OkHttpUtils  {
-    private static final String TAG = "OkHttpUtils>>>>>";
+    private static final String TAG = "OkHttpUtils";
     private OkHttpClient okHttpClient;
     private Handler mHandler;
 
