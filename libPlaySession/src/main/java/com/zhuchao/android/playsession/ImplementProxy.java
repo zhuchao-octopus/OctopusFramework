@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ImplementProxy implements HttpResultCallBack {
-    public final String TAG = "ImplementProxy ---> ";
+    public final String TAG = "ImplementProxy";
     private SessionCompleteCallback SessionCallback = null;
 
     private Map<Integer, String> mVideoCategory = null;// = new HashMap<Integer, String>();
@@ -45,10 +45,10 @@ public class ImplementProxy implements HttpResultCallBack {
         return mMovieListBean;
     }
 
-    public Map<Integer, String> JsonToMap(String Jsonstr) {
+    public Map<Integer, String> JsonToMap(String JsonStr) {
         Gson gson = new GsonBuilder().serializeNulls().disableHtmlEscaping().create();
         try {
-            return gson.fromJson(Jsonstr, new TypeToken<Map<Integer, String>>() {
+            return gson.fromJson(JsonStr, new TypeToken<Map<Integer, String>>() {
             }.getType());
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
@@ -131,22 +131,18 @@ public class ImplementProxy implements HttpResultCallBack {
             case Data.SESSION_TYPE_GET_MOVIELIST_YEAR:
             case Data.SESSION_TYPE_GET_MOVIELIST_ACTOR:
             case Data.SESSION_TYPE_GET_MOVIELIST_VIP:
+            case Data.SESSION_TYPE_GET_MOVIE_TYPE:
                 mMovieListBean = parseJSonToMovieListBean(result);
                 break;
             case Data.SESSION_TYPE_GET_MOVIE_CATEGORY:
                 mVideoCategory = jsonIdNameArrayToMap(result);
                 break;
-            case Data.SESSION_TYPE_GET_MOVIE_TYPE:
-                mVideoCategory = jsonIdNameArrayToMap(result);
-                break;
             case Data.SESSION_TYPE_SCHEDULEPLAYBACK:
-
                 break;
             default://默认尝试转化成视频列表
-                mMovieListBean = parseJSonToMovieListBean(result);
+               // mMovieListBean = parseJSonToMovieListBean(result);
                 break;
         }
-
 
         if (SessionCallback != null)
             SessionCallback.OnSessionComplete(resultIndex, result);

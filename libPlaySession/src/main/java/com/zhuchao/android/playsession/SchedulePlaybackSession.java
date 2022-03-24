@@ -96,7 +96,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
                         }
 
                         Log.d(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getLastPlayTime() +","+
-                                scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getSourceUrl());
+                                scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
                         Count ++;
                     }
 
@@ -134,7 +134,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
                   videoList.add(scheduleVideo);
               }
               Log.d(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getLastPlayTime() +","+
-                      scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getSourceUrl());
+                      scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
               Count ++;
           }
           else if(all.length == 5)
@@ -153,7 +153,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
                   videoList.add(scheduleVideo);
               }
               Log.d(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getLastPlayTime() +","+
-                      scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getSourceUrl());
+                      scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
               Count ++;
           }
 
@@ -184,7 +184,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
             }
 
             Log.d(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getLastPlayTime() +","+
-                    scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getSourceUrl());
+                    scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
             Count++;
         }
 
@@ -197,12 +197,12 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
             file.mkdir();
 
         List<String> npf = FilesManager.ReadTxtFile(SourDir+"/SchedulePlay.text");
-        FilesManager.copyFile(SourDir+"/SchedulePlay.text",DesDir+"/SchedulePlay.text");
+        FilesManager.copy(SourDir+"/SchedulePlay.text",DesDir+"/SchedulePlay.text");
 
         for (String str:npf)
         {
             String[] all=str.split(",");
-            FilesManager.copyFile(SourDir+"/"+all[0],DesDir+"/"+all[0]);
+            FilesManager.copy(SourDir+"/"+all[0],DesDir+"/"+all[0]);
         }
 
     }
@@ -235,7 +235,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
                    saveDataToSharedPreferences("EndDate",scheduleVideo.getmEndDate());
                    saveDataToSharedPreferences("PlayTime",scheduleVideo.getmPlayTime());
                    saveDataToSharedPreferences("StopTime",scheduleVideo.getmStopTime());
-                   saveDataToSharedPreferences("SourceUrl",scheduleVideo.getMovie().getSourceUrl());
+                   saveDataToSharedPreferences("SourceUrl",scheduleVideo.getMovie().getsUrl());
                    //DownloadManager.getInstance().with(mContext).downloadFrom(scheduleVideo.getmMovie().getSourceUrl());
                    return scheduleVideo;
                 }

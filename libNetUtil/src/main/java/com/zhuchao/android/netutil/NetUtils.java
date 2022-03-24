@@ -250,8 +250,8 @@ public class NetUtils {
 
     private synchronized final static boolean ping() {
         String result = null;
+        String ip = "www.baidu.com";
         try {
-            String ip = "www.baidu.com";
             Process p = Runtime.getRuntime().exec("ping -c 3 -w 100 " + ip);// ping网址3次
             // 读取ping的内容，可以不加
             InputStream input = p.getInputStream();
@@ -261,12 +261,12 @@ public class NetUtils {
             while ((content = in.readLine()) != null) {
                 stringBuffer.append(content);
             }
-            Log.d("NetUtils -->", stringBuffer.toString());
+            Log.d(TAG,"ping IP:"+ip+" "+stringBuffer.toString());
             // ping的状态
             int status = p.waitFor();
             if (status == 0) {
                 result = "success";
-                Log.d("NetUtils -->", result);
+                Log.d(TAG,"ping IP:"+ip+" "+result);
                 return true;
             } else {
                 result = "failed";
@@ -276,9 +276,8 @@ public class NetUtils {
         } catch (InterruptedException e) {
             result = "InterruptedException";
         } finally {
-            //Log.d("----result---", "result = " + result);
         }
-        Log.d("NetUtils -->", result);
+        Log.d(TAG,"ping IP:"+ip+" "+result);
         return false;
     }
 

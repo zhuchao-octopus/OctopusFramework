@@ -17,6 +17,7 @@ package com.zhuchao.android.libfileutils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -315,63 +316,124 @@ public class MediaFile {
      * @param path file path
      * @return return mime type if exist , or null
      */
-    public static String getMimeTypeForFile(String path) {
+    public static String getFileTypeForFile(String path) {
         MediaFileType mediaFileType = getFileType(path);
         return (mediaFileType == null ? null : mediaFileType.mimeType);
     }
 
+    public static boolean isImageFile(String fileName) {
+        MediaFile.MediaFileType ft = MediaFile.getFileType(fileName);
+        if (ft == null)
+            return false;
+        else
+            return isImageFileType(ft.fileType);
+    }
 
-    public static List<String> getMediaFiles(String FilePath) {
+    public static boolean isVideoFile(String fileName) {
+        MediaFile.MediaFileType ft = MediaFile.getFileType(fileName);
+        if (ft == null)
+            return false;
+        else
+            return isVideoFileType(ft.fileType);
+    }
+
+    public static boolean isAudioFile(String fileName) {
+        MediaFile.MediaFileType ft = MediaFile.getFileType(fileName);
+        if (ft == null)
+            return false;
+        else
+            return isAudioFileType(ft.fileType);
+    }
+
+    public static boolean isMediaFile(String fileName) {
+        MediaFile.MediaFileType ft = MediaFile.getFileType(fileName);
+        if (ft == null)
+            return false;
+        else
+            return isMimeTypeMedia(ft.mimeType);
+    }
+
+    public static List<String> getMediaFiles(String FilePath, int fileType) {
         List<String> FileList = new ArrayList<String>();
-        File path = new File(FilePath);//外置U盘路径
+        File path = new File(FilePath);
         File[] files = path.listFiles();// 读取
-        getMediaFileName(files, FileList, 100);
+        getMediaFileName(files, FileList, fileType);
         return FileList;
+    }
+
+    private static void getMediaFileName(File[] files, List<String> FileList, int fileType) {
+        if (files == null) return;  // 先判断目录是否为空，否则会报空指针
+        String filePathName = null;
+        for (File file : files)
+        {
+            if (file.isDirectory())
+            {
+                getMediaFileName(file.listFiles(), FileList, fileType);
+            }
+            else
+            {
+                filePathName = file.getPath();// +"  "+ file.getName() ;
+                MediaFile.MediaFileType mm = MediaFile.getFileType(filePathName);
+                if (mm != null)
+                {
+                    if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == 100)) {
+                        FileList.add(filePathName);//所有的媒体文件
+                    } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == 101)) {
+                        FileList.add(filePathName);
+                    } else if (MediaFile.isAudioFileType(mm.fileType) && (fileType == 102)) {
+                        FileList.add(filePathName);
+                    } else if ((MediaFile.isVideoFileType(mm.fileType) || isPlayListFileType(mm.fileType)) && (fileType == 103)) {
+                        FileList.add(filePathName);
+                    } else if ((MediaFile.isVideoFileType(mm.fileType) || MediaFile.isAudioFileType(mm.fileType)) && (fileType == 104)) {
+                        FileList.add(filePathName);
+                    } else if (fileType == 99) {
+                        FileList.add(filePathName);//所有的文件
+                    }
+                }
+            }
+        }
     }
 
     public static List<String> getMediaFiles(Context context, String FilePath, int fileType) {
         List<String> FileList = new ArrayList<String>();
-        File path = new File(FilePath);//外置U盘路径
-        File[] files = path.listFiles();// 读取
-        getMediaFileName(context,files, FileList, fileType);
-
+        File path = new File(FilePath);
+        File[] files = path.listFiles();
+        getMediaFileName(context, files, FileList, fileType);
         return FileList;
     }
 
-    public static void getMediaFileName(File[] files, List<String> FileList, int fileType) {
-        if (files != null)
-        {// 先判断目录是否为空，否则会报空指针
+    private static void getMediaFileName(Context context, File[] files, List<String> FileList, int fileType) {
+        if (files != null) {// 先判断目录是否为空，否则会报空指针
             String filePathName = null;
             for (File file : files) {
                 if (file.isDirectory()) {
-                    getMediaFileName(file.listFiles(), FileList, fileType);
+                    getMediaFileName(context, file.listFiles(), FileList, fileType);
                 } else {
                     filePathName = file.getPath();// +"  "+ file.getName() ;
                     MediaFile.MediaFileType mm = MediaFile.getFileType(filePathName);
-
-                    if (file.getName().equals("oplayer.m")) {
-                        List<String> opf = FilesManager.ReadTxtFile(filePathName);
-                        for (String str : opf) {
-                            if (!FileList.contains(str))
-                                FileList.add(str);
-                        }
-                    }
-
                     if (mm != null) {
                         if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == 100)) {
-                            //Log.d("getMediaFileName--->",fileName);
+                            //Log.d("getMediaFileName--->",fileName);//所有的媒体文件
                             FileList.add(filePathName);
+                            sendProgressMessage(context, filePathName);
                         } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == 101)) {
                             //Log.d("getMediaFileName--->",fileName);
                             FileList.add(filePathName);
+                            sendProgressMessage(context, filePathName);
                         } else if (MediaFile.isAudioFileType(mm.fileType) && (fileType == 102)) {
                             //Log.d("getMediaFileName--->",fileName);
                             FileList.add(filePathName);
+                            sendProgressMessage(context, filePathName);
                         } else if ((MediaFile.isVideoFileType(mm.fileType) || isPlayListFileType(mm.fileType)) && (fileType == 103)) {
-                            //Log.d("getMediaFileName--->",fileName);
                             FileList.add(filePathName);
+                            sendProgressMessage(context, filePathName);
+                        } else if ((MediaFile.isVideoFileType(mm.fileType) || MediaFile.isAudioFileType(mm.fileType)) && (fileType == 104)) {
+                            //Log.d("getMediaFileName--->",filePathName);
+                            FileList.add(filePathName);
+                            sendProgressMessage(context, filePathName);
                         } else {
-
+                            //FileList.add(filePathName);
+                            //sendProgressMessage(context, filePathName);
                         }
                     }
                 }
@@ -379,50 +441,11 @@ public class MediaFile {
         }
     }
 
-    public static void getMediaFileName(Context context, File[] files, List<String> FileList, int fileType) {
-        if (files != null)
-        {// 先判断目录是否为空，否则会报空指针
-            String filePathName = null;
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    getMediaFileName(file.listFiles(), FileList, fileType);
-                } else {
-                    filePathName = file.getPath();// +"  "+ file.getName() ;
-                    MediaFile.MediaFileType mm = MediaFile.getFileType(filePathName);
-
-                    if (file.getName().equals("oplayer.m")) {
-                        List<String> opf = FilesManager.ReadTxtFile(filePathName);
-                        for (String str : opf) {
-                            if (!FileList.contains(str))
-                                FileList.add(str);
-                        }
-                    }
-
-                    if(context != null) {
-                        //Intent i = new Intent("com.zhuchao.android.MEDIAFILEA_SCAN_ACTION");
-                        //i.putExtra("FileName", filePathName);
-                        //context.sendBroadcast(i);
-                    }
-
-                    if (mm != null) {
-                        if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == 100)) {
-                            //Log.d("getMediaFileName--->",fileName);
-                            FileList.add(filePathName);
-                        } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == 101)) {
-                            //Log.d("getMediaFileName--->",fileName);
-                            FileList.add(filePathName);
-                        } else if (MediaFile.isAudioFileType(mm.fileType) && (fileType == 102)) {
-                            //Log.d("getMediaFileName--->",fileName);
-                            FileList.add(filePathName);
-                        } else if ((MediaFile.isVideoFileType(mm.fileType)) && (fileType == 103)) {
-                            //Log.d("getMediaFileName--->",fileName);
-                            FileList.add(filePathName);
-                        } else {
-                            //FileList.add(filePathName);
-                        }
-                    }
-                }
-            }
+    private static void sendProgressMessage(Context context, String msg) {
+        if (context != null) {
+            Intent i = new Intent("com.zhuchao.android.MEDIAFILE_SCAN_ACTION");
+            i.putExtra("FileName", msg);
+            context.sendBroadcast(i);
         }
     }
 }

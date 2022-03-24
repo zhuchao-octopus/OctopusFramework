@@ -15,13 +15,11 @@
 package com.zhuchao.android.video;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
-import java.io.FileDescriptor;
 import java.io.Serializable;
 
 /*
@@ -29,9 +27,11 @@ import java.io.Serializable;
  */
  public class Movie implements Serializable {
     //static final long serialVersionUID = 727566175075960653L;
-    private int movieId;
-    private String movieName;
-    private String movieType;
+    private int mId;
+    private int sId;
+    private int status;
+    private String mName;
+    private String mType;
     private String year;
     private String region;
     private String actor;
@@ -41,28 +41,20 @@ import java.io.Serializable;
     private String studio;
     private String bgImageUrl;
     private String cardImageUrl;
-    private int prePisodeId;
-    private int nextPisodeId;
-    private int totalPisode;
-    private int episodeLast;
-    private int reputation;
-    private int vipLevel;
-    private int sourceId;
-    private String sourceUrl;
     private String category;
     private String date;
-    private int status;
+    private String sUrl;
 
     public Movie(final String sourceUrl) {
-        this.sourceUrl = sourceUrl;
-        if(TextUtils.isEmpty(this.sourceUrl)) return;
-        this.movieName =  this.sourceUrl.substring(this.sourceUrl.lastIndexOf("/") + 1);
+        this.sUrl = sourceUrl;
+        if(TextUtils.isEmpty(this.sUrl)) return;
+        this.mName =  this.sUrl.substring(this.sUrl.lastIndexOf("/") + 1);
     }
 
-    public Movie(int movieId, String movieName, String movieType, String year, String region, String actor, String language, String sharpness, String description, String studio, String bgImageUrl, String cardImageUrl, int prePisodeId, int nextPisodeId, int totalPisode, int episodeLast, int reputation, int vipLevel, int sourceId, String sourceUrl, String category, String date, int status) {
-        this.movieId = movieId;
-        this.movieName = movieName;
-        this.movieType = movieType;
+    public Movie(int movieId, String movieName, String movieType, String year, String region, String actor, String language, String sharpness, String description, String studio, String bgImageUrl, String cardImageUrl,int sourceId, String sourceUrl, String category, String date, int status) {
+        this.mId = movieId;
+        this.mName = movieName;
+        this.mType = movieType;
         this.year = year;
         this.region = region;
         this.actor = actor;
@@ -72,41 +64,27 @@ import java.io.Serializable;
         this.studio = studio;
         this.bgImageUrl = bgImageUrl;
         this.cardImageUrl = cardImageUrl;
-        this.prePisodeId = prePisodeId;
-        this.nextPisodeId = nextPisodeId;
-        this.totalPisode = totalPisode;
-        this.episodeLast = episodeLast;
-        this.reputation = reputation;
-        this.vipLevel = vipLevel;
-        this.sourceId = sourceId;
-        this.sourceUrl = sourceUrl;
+        this.sId = sourceId;
+        this.sUrl = sourceUrl;
         this.category = category;
         this.date = date;
         this.status = status;
     }
 
-    public int getMovieId() {
-        return movieId;
+    public int getId() {
+        return mId;
     }
 
-    void setMovieId(int movieId) {
-        this.movieId = movieId;
+    void setId(int mId) {
+        this.mId = mId;
     }
 
-    public String getMovieName() {
-        return movieName;
+    public String getName() {
+        return mName;
     }
 
-    public void setMovieName(String movieName) {
-        this.movieName = movieName;
-    }
-
-    public String getMovieType() {
-        return movieType;
-    }
-
-    public void setMovieType(String movieType) {
-        this.movieType = movieType;
+    public void setName(String mName) {
+        this.mName = mName;
     }
 
     public String getYear() {
@@ -181,68 +159,20 @@ import java.io.Serializable;
         this.cardImageUrl = cardImageUrl;
     }
 
-    public int getPrePisodeId() {
-        return prePisodeId;
+    public int getsId() {
+        return sId;
     }
 
-    public void setPrePisodeId(int prePisodeId) {
-        this.prePisodeId = prePisodeId;
+    public void setsId(int sId) {
+        this.sId = sId;
     }
 
-    public int getNextPisodeId() {
-        return nextPisodeId;
+    public String getsUrl() {
+        return sUrl;
     }
 
-    public void setNextPisodeId(int nextPisodeId) {
-        this.nextPisodeId = nextPisodeId;
-    }
-
-    public int getTotalPisode() {
-        return totalPisode;
-    }
-
-    public void setTotalPisode(int totalPisode) {
-        this.totalPisode = totalPisode;
-    }
-
-    public int getEpisodeLast() {
-        return episodeLast;
-    }
-
-    public void setEpisodeLast(int episodeLast) {
-        this.episodeLast = episodeLast;
-    }
-
-    public int getReputation() {
-        return reputation;
-    }
-
-    public void setReputation(int reputation) {
-        this.reputation = reputation;
-    }
-
-    public int getVipLevel() {
-        return vipLevel;
-    }
-
-    public void setVipLevel(int vipLevel) {
-        this.vipLevel = vipLevel;
-    }
-
-    public int getSourceId() {
-        return sourceId;
-    }
-
-    public void setSourceId(int sourceId) {
-        this.sourceId = sourceId;
-    }
-
-    public String getSourceUrl() {
-        return sourceUrl;
-    }
-
-    public void setSourceUrl(String sourceUrl) {
-        this.sourceUrl = sourceUrl;
+    public void setsUrl(String sUrl) {
+        this.sUrl = sUrl;
     }
 
     public String getCategory() {

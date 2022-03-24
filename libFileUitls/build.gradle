@@ -5,7 +5,7 @@ ext {
     GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libFileUtils'
-    PUBLISH_VERSION = '1.2'
+    PUBLISH_VERSION = '1.3'
 }
 
 afterEvaluate {
@@ -30,7 +30,7 @@ afterEvaluate {
 android {
     compileSdkVersion 32
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 32
     }
 
@@ -47,7 +47,6 @@ android {
     }
 
 }
-
 
 task copyJniLibs(type: Copy) {
     //from fileTree(dir: file('build/intermediates/ndkbuild/debug/obj/local'), include: '*/*.so')

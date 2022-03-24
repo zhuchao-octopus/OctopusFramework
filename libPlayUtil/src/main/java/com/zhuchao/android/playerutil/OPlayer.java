@@ -22,7 +22,7 @@ import java.util.Map;
 //import org.videolan.libvlc.MediaPlayCallback;
 
 public class OPlayer {
-    private String TAG = "OPlayer>>>";
+    private String TAG = "oPlayer>>>";
     private Context mContext;
     private MediaPlayer mMediaPlayer = null;
     private Media media = null;
@@ -83,11 +83,10 @@ public class OPlayer {
         mOnPlayerEventCallBack = callback;
 
         Options.clear();
-        Options.add("--file-caching=1500");//文件缓存
+        Options.add("--file-caching=10000");//文件缓存
         Options.add("--network-caching=10000");//网络缓存
         Options.add("--live-caching=10000");//直播缓存
         Options.add("--sout-mux-caching=1500");//输出缓存
-
         if (options == null)
             options = Options;
 
@@ -96,9 +95,7 @@ public class OPlayer {
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
-
         mMediaPlayer = new MediaPlayer(mLibVLC);
-
         mMediaPlayer.setEventListener(mEventListener);
         vlcVout = mMediaPlayer.getVLCVout();
         vlcVout.addCallback(mIVLCVoutCallBack);
@@ -111,7 +108,7 @@ public class OPlayer {
         }
         mURL = path;
         if (mURL.isEmpty()) return false;
-        if (mURL.startsWith("http") || mURL.startsWith("ftp")) {
+        if (mURL.startsWith("http") || mURL.startsWith("ftp") || mURL.startsWith("file")) {
             Uri uri = Uri.parse(mURL);
             setSource(uri);
             return true;
@@ -124,6 +121,7 @@ public class OPlayer {
         media.addOption(":network-caching=10000");//网络缓存
         media.addOption(":live-caching=10000");//直播缓存
         media.addOption(":sout-mux-caching=10000");//输出缓存
+        setHWDecoderEnabled(true);
         if (mMediaPlayer == null)
             mMediaPlayer = new MediaPlayer(mLibVLC);
         mMediaPlayer.stop();
@@ -149,6 +147,7 @@ public class OPlayer {
         media.addOption(":network-caching=10000");//网络缓存
         media.addOption(":live-caching=10000");//直播缓存
         media.addOption(":sout-mux-caching=10000");//输出缓存
+        setHWDecoderEnabled(true);
         if (mMediaPlayer == null)
             mMediaPlayer = new MediaPlayer(mLibVLC);
         mMediaPlayer.stop();
@@ -174,6 +173,7 @@ public class OPlayer {
         media.addOption(":network-caching=10000");//网络缓存
         media.addOption(":live-caching=10000");//直播缓存
         media.addOption(":sout-mux-caching=10000");//输出缓存
+        setHWDecoderEnabled(true);
         if (mMediaPlayer == null)
             mMediaPlayer = new MediaPlayer(mLibVLC);
         mMediaPlayer.stop();
@@ -199,6 +199,7 @@ public class OPlayer {
         media.addOption(":network-caching=10000");//网络缓存
         media.addOption(":live-caching=10000");//直播缓存
         media.addOption(":sout-mux-caching=10000");//输出缓存
+        setHWDecoderEnabled(true);
         if (mMediaPlayer == null)
             mMediaPlayer = new MediaPlayer(mLibVLC);
         mMediaPlayer.stop();
@@ -208,66 +209,63 @@ public class OPlayer {
         return true;
     }
 
-    public OPlayer setHWDecoderEnabled(Boolean HWDecoderEnabled) {
-        this.HWDecoderEnabled = HWDecoderEnabled;
-        if (media != null) {
-            try {
-                media.setHWDecoderEnabled(HWDecoderEnabled, HWDecoderEnabled);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return this;
-    }
-
-    public void setSize(int width, int height) {
-        mMediaPlayer.setAspectRatio("16:9");
-        mMediaPlayer.getVLCVout().setWindowSize(width, height);
-    }
-
-    public void setSurfaceView(SurfaceView ViewForShow) {
-        //初始化播放mSurfaceView
-        if (ViewForShow == null) return;
+    public void setSurfaceView(SurfaceView surfaceView) {
+        vlcVout = this.mMediaPlayer.getVLCVout();
+        if (surfaceView == null) return;
         if (mSurfaceView != null)
-            if (mSurfaceView.equals(ViewForShow)) return;
-
-        mSurfaceView = ViewForShow;
+            if (mSurfaceView.equals(surfaceView)) return;
 
         if (vlcVout.areViewsAttached())
             vlcVout.detachViews();
         vlcVout.addCallback(mIVLCVoutCallBack);
-        vlcVout.setVideoView(mSurfaceView);
+        vlcVout.setVideoView(surfaceView);
         vlcVout.attachViews();
+        mTextureView = null;
+        mSurfaceView = surfaceView;
         mSurfaceView.getHolder().setKeepScreenOn(true);
     }
 
-    public void setTextureView(TextureView ViewForShow) {
-        if (ViewForShow == null) return;
+    public void setTextureView(TextureView textureView) {
+        if (textureView == null) return;
         if (mTextureView != null)
-            if (mTextureView.equals(ViewForShow)) return;
+            if (mTextureView.equals(textureView)) return;
 
-        mTextureView = ViewForShow;
         if (vlcVout.areViewsAttached())
             vlcVout.detachViews();
-        vlcVout.setVideoView(mTextureView);
+        vlcVout.addCallback(mIVLCVoutCallBack);
+        vlcVout.setVideoView(textureView);
         vlcVout.attachViews();
+        mSurfaceView = null;
+        mTextureView = textureView;
     }
 
     public void reAttachSurfaceView(SurfaceView surfaceView) {
-        if (surfaceView == null) return;
-
-        mSurfaceView = surfaceView;
+        vlcVout = mMediaPlayer.getVLCVout();
+        if (surfaceView == null) {
+            if (vlcVout.areViewsAttached())
+                vlcVout.detachViews();
+            return;
+        }
         if (vlcVout.areViewsAttached())
             vlcVout.detachViews();
-        vlcVout.removeCallback(mIVLCVoutCallBack);
         vlcVout.setVideoView(surfaceView);
         vlcVout.attachViews();
-        vlcVout.addCallback(mIVLCVoutCallBack);
+        //vlcVout.removeCallback(mIVLCVoutCallBack);
+        //vlcVout.addCallback(mIVLCVoutCallBack);
+        mSurfaceView = surfaceView;
+        mTextureView = null;
     }
 
-    //public SurfaceView getSurfaceView() {
-    //    return mSurfaceView;
-    //}
+    public void reAttachSurfaceView(TextureView textureView) {
+        if (textureView == null) return;
+        mTextureView = textureView;
+        if (vlcVout.areViewsAttached())
+            vlcVout.detachViews();
+        //vlcVout.removeCallback(mIVLCVoutCallBack);
+        vlcVout.setVideoView(mTextureView);
+        vlcVout.attachViews();
+        //vlcVout.addCallback(mIVLCVoutCallBack);
+    }
 
     public void play() {
         if (media == null) return;
@@ -313,47 +311,30 @@ public class OPlayer {
         }
     }
 
-    private void pauseDetach() {
-        if (mMediaPlayer.isPlaying()) {
-            mMediaPlayer.pause();
-        }
-        vlcVout.detachViews();
-        vlcVout.removeCallback(mIVLCVoutCallBack);
-        mMediaPlayer.setEventListener(null);
-    }
-
     public void stop() {
         try {
-            if (vlcVout != null) {
-                vlcVout.removeCallback(mIVLCVoutCallBack);
-                vlcVout.detachViews();
-            }
-
-            if (media != null) {
-                media.release();
-                media = null;
-            }
-
             if (mMediaPlayer != null) {
+                if(mMediaPlayer.getPlayerState() != Media.State.Stopped)
                 mMediaPlayer.stop();
-                mMediaPlayer.release();
-                mMediaPlayer = null;
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         //Log.d(TAG, "start to stop ----->" + mURL);
     }
 
+    public void resume() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.play();
+        }
+    }
+
     public void free() {
         try {
-
             if (vlcVout != null) {
                 vlcVout.removeCallback(mIVLCVoutCallBack);
                 vlcVout.detachViews();
             }
-
             if (mMediaPlayer != null) {
                 mMediaPlayer.setEventListener(null);
                 mMediaPlayer.stop();
@@ -364,38 +345,9 @@ public class OPlayer {
                 media.release();
                 media = null;
             }
-
             PlayerUtil.FreeSingleVLC();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-
-    class IVLCVoutCallBack implements IVLCVout.Callback, IVLCVout.OnNewVideoLayoutListener {
-
-        @Override
-        public void onNewVideoLayout(IVLCVout vlcVout, int width, int height, int visibleWidth, int visibleHeight, int sarNum, int sarDen) {
-            Log.d(TAG, "IVLCVoutCallBack ---> onNewVideoLayout");
-        }
-
-        @Override
-        public void onSurfacesCreated(IVLCVout ivlcVout) {
-            Log.d(TAG, "IVLCVoutCallBack ---> onSurfacesCreated" + mSurfaceView);
-            if (mSurfaceView != null) {
-                vlcVout.setWindowSize(mSurfaceView.getWidth(), mSurfaceView.getHeight());
-            } else if (mTextureView != null) {
-                vlcVout.setWindowSize(mTextureView.getWidth(), mTextureView.getHeight());
-            }
-            mMediaPlayer.setAspectRatio(null);
-            mMediaPlayer.setScale(0);
-
-            Log.d(TAG, "IVLCVoutCallBack ---> onSurfacesCreated");
-        }
-
-        @Override
-        public void onSurfacesDestroyed(IVLCVout ivlcVout) {
-            Log.d(TAG, "IVLCVoutCallBack ---> onSurfacesDestroyed");
         }
     }
 
@@ -404,7 +356,7 @@ public class OPlayer {
         return;
     }
 
-    public void setSourceOption(String option) {
+    public void setOption(String option) {
         this.media.addOption(option);
         mMediaPlayer.setMedia(media);
     }
@@ -415,6 +367,7 @@ public class OPlayer {
 
     public Map<Integer, String> getAudioTracks() {
         Map<Integer, String> mtd = new HashMap<Integer, String>();
+        if (mMediaPlayer == null) return mtd;
         MediaPlayer.TrackDescription[] TrackDescriptions = mMediaPlayer.getAudioTracks();
         for (MediaPlayer.TrackDescription td : TrackDescriptions) {
             mtd.put(td.id, td.name);
@@ -454,11 +407,11 @@ public class OPlayer {
         return mMediaPlayer.getVolume();
     }
 
-    public Long getCurrentTime() {
+    public Long getTime() {
         return mMediaPlayer.getTime();
     }
 
-    public float getCurrentPosition() {
+    public float getPosition() {
         return mMediaPlayer.getPosition();
     }
 
@@ -470,11 +423,6 @@ public class OPlayer {
         return mMediaPlayer.getLength();
     }
 
-
-    public MediaPlayer getMediaPlayer() {
-        return mMediaPlayer;
-    }
-
     public int getPlayerState() {
         return mMediaPlayer.getPlayerState();
     }
@@ -483,5 +431,53 @@ public class OPlayer {
         mMediaPlayer.setRate(v);
     }
 
+    public void setWindowSize(int width, int height) {
+        mMediaPlayer.getVLCVout().setWindowSize(width, height);
+    }
+
+    public void setAspectRatio(String aspect) {
+        mMediaPlayer.setAspectRatio(aspect);
+    }
+
+    public void setScale(float scale) {
+        mMediaPlayer.setScale(scale);
+    }
+
+    public OPlayer setHWDecoderEnabled(Boolean HWDecoderEnabled) {
+        this.HWDecoderEnabled = HWDecoderEnabled;
+        if (media != null) {
+            try {
+                media.setHWDecoderEnabled(HWDecoderEnabled, HWDecoderEnabled);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return this;
+    }
+
+    class IVLCVoutCallBack implements IVLCVout.Callback, IVLCVout.OnNewVideoLayoutListener {
+        @Override
+        public void onNewVideoLayout(IVLCVout vlcVout, int width, int height, int visibleWidth, int visibleHeight, int sarNum, int sarDen) {
+            Log.d(TAG, "IVLCVoutCallBack ---> width=" + width + ",height=" + height + ",visibleWidth=" + visibleWidth + ",visibleHeight=" + visibleHeight
+                    + ",sarNum=" + sarNum + ",sarDen=" + sarDen);
+        }
+
+        @Override
+        public void onSurfacesCreated(IVLCVout ivlcVout) {
+            Log.d(TAG, "IVLCVoutCallBack ---> onSurfacesCreated");
+            if (mSurfaceView != null) {
+                vlcVout.setWindowSize(mSurfaceView.getWidth(), mSurfaceView.getHeight());
+            } else if (mTextureView != null) {
+                vlcVout.setWindowSize(mTextureView.getWidth(), mTextureView.getHeight());
+            }
+            //mMediaPlayer.setAspectRatio(null);
+            //mMediaPlayer.setScale(0);
+        }
+
+        @Override
+        public void onSurfacesDestroyed(IVLCVout ivlcVout) {
+            //Log.d(TAG, "IVLCVoutCallBack ---> onSurfacesDestroyed");
+        }
+    }
 }
 

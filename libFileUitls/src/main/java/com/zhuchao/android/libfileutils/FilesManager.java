@@ -1,21 +1,27 @@
 package com.zhuchao.android.libfileutils;
 
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.zhuchao.android.libfileutils.bean.FileBean;
 import com.zhuchao.android.libfileutils.bean.ImgFolderBean;
@@ -26,6 +32,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -35,11 +42,18 @@ import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.nio.channels.FileChannel;
+import java.nio.channels.WritableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,13 +78,15 @@ public class FilesManager {
         File file = new File(path);
         return file.exists();
     }
+
     public static String getFileName(String filePath) {
         File file = new File(filePath);
-        if(file.exists())
+        if (file.exists())
             return file.getName();
         else
             return null;
     }
+
     public static boolean deleteFile(String filePath) {
         File file = new File(filePath);
         if (file.exists()) file.delete();
@@ -78,16 +94,14 @@ public class FilesManager {
     }
 
     public static boolean deleteFiles(String filePath) {
-        List<File> files = getFile(new File(filePath));
+        List<File> files = getFiles(filePath);
         if (files.size() != 0) {
             for (int i = 0; i < files.size(); i++) {
                 File file = files.get(i);
-
                 /**  如果是文件则删除  如果都删除可不必判断  */
                 //if (file.isFile()) {
                 file.delete();
                 //}
-
             }
         }
         return true;
@@ -100,35 +114,73 @@ public class FilesManager {
         oleFile.renameTo(newFile);
     }
 
-    public static void copyFile(String oldPath, String newPath) {
+    public static void copy(String FromFile, String ToFile) {
+        //int bytesum = 0;
+        int byteread = 0;
         try {
-            int bytesum = 0;
-            int byteread = 0;
-            File oldfile = new File(oldPath);
-            if (oldfile.exists()) { //文件存在时
-                Log.d("FilesManager", oldPath + "---->" + newPath);
-
-                InputStream inStream = new FileInputStream(oldPath); //读入原文件
-                FileOutputStream fs = new FileOutputStream(newPath);
-                byte[] buffer = new byte[1444];
-                int length;
-                while ((byteread = inStream.read(buffer)) != -1) {
-                    bytesum += byteread; //字节数 文件大小
-                    //System.out.println(bytesum);
-                    fs.write(buffer, 0, byteread);
+            File fFile = new File(FromFile);
+            if (fFile.exists()) { //文件存在时
+                InputStream fStream = new FileInputStream(FromFile); //读入原文件
+                FileOutputStream tStream = new FileOutputStream(ToFile);
+                byte[] buffer = new byte[1024];
+                //int length;
+                while ((byteread = fStream.read(buffer)) != -1) {
+                    //bytesum += byteread; //字节数 文件大小
+                    tStream.write(buffer, 0, byteread);
                 }
-                inStream.close();
-                fs.close();
+                fStream.close();
+                tStream.close();
             }
         } catch (Exception e) {
-            System.out.println("复制单个文件操作出错");
             e.printStackTrace();
-
         }
-
     }
 
-    public static List<File> getFile(File file) {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static boolean pathCopy(String fromFile, String toFile) {
+        final Path ff = Paths.get(fromFile);
+        final Path tf = Paths.get(toFile);
+        try {
+            Files.copy(ff, tf, NOFOLLOW_LINKS);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static boolean channelTransferTo(String fromFile, String toFile) {
+        final Path ff = Paths.get(fromFile);
+        final Path tf = Paths.get(toFile);
+        try {
+            FileChannel fileChannel_f = (FileChannel.open(ff, EnumSet.of(StandardOpenOption.READ)));
+            FileChannel fileChannel_t = (FileChannel.open(tf, EnumSet.of(StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)));
+            fileChannel_f.transferTo(0L, fileChannel_f.size(), fileChannel_t);
+            return true;
+        } catch (IOException ex) {
+            System.err.println(ex);
+            return false;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static long channelTransferFrom(String fromFile, String toFile) {
+        final Path ff = Paths.get(fromFile);
+        final Path tf = Paths.get(toFile);
+        long l = 0;
+        try {
+            FileChannel fileChannel_f = (FileChannel.open(ff, EnumSet.of(StandardOpenOption.READ)));
+            FileChannel fileChannel_t = (FileChannel.open(tf, EnumSet.of(StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)));
+            l = fileChannel_t.transferFrom(fileChannel_f, 0L, fileChannel_f.size());
+        } catch (IOException ex) {
+            System.err.println(ex);
+        }
+        return l;
+    }
+
+    public static List<File> getFiles(String filePath) {
+        File file = new File(filePath);
         List<File> list = new ArrayList<>();
         File[] fileArray = file.listFiles();
         if (fileArray == null) {
@@ -138,7 +190,7 @@ public class FilesManager {
                 if (f.isFile()) {
                     list.add(0, f);
                 } else {
-                    getFile(f);
+                    getFiles(f.getAbsolutePath());
                 }
             }
         }
@@ -159,7 +211,6 @@ public class FilesManager {
         }
     }
 
-
     /**
      * 通过文件名获取文件图标
      */
@@ -176,7 +227,6 @@ public class FilesManager {
         path = path.toLowerCase();
         return path.endsWith(".jpg") || path.endsWith(".jpeg") || path.endsWith(".png");
     }
-
 
     /**
      * 判断SD卡是否挂载
@@ -229,30 +279,34 @@ public class FilesManager {
         StorageManager mStorageManager;
         Map<String, String> USBDiscs = new HashMap<String, String>();
         Class<?> volumeInfoClazz = null;
-        Method getDescriptionComparator = null;
+        //Method getDescriptionComparator = null;
         Method getBestVolumeDescription = null;
         Method getVolumes = null;
         Method isMountedReadable = null;
         Method getType = null;
         Method getPath = null;
         List<?> volumes = null;
+        String p1 = "";
+        String p2 = "";
         try {
             mStorageManager = (StorageManager) c.getSystemService(Activity.STORAGE_SERVICE);
             volumeInfoClazz = Class.forName("android.os.storage.VolumeInfo");
-            getDescriptionComparator = volumeInfoClazz.getMethod("getDescriptionComparator");
+            //getDescriptionComparator = volumeInfoClazz.getMethod("getDescriptionComparator");
             getBestVolumeDescription = StorageManager.class.getMethod("getBestVolumeDescription", volumeInfoClazz);
             getVolumes = StorageManager.class.getMethod("getVolumes");
             isMountedReadable = volumeInfoClazz.getMethod("isMountedReadable");
+
             getType = volumeInfoClazz.getMethod("getType");
             getPath = volumeInfoClazz.getMethod("getPath");
             volumes = (List<?>) getVolumes.invoke(mStorageManager);
-            for (Object vol : volumes) {
+            for (Object vol : volumes)
+            {
                 if (vol != null && (boolean) isMountedReadable.invoke(vol) && (int) getType.invoke(vol) == 0) {
                     File path2 = (File) getPath.invoke(vol);
-                    String p1 = (String) getBestVolumeDescription.invoke(mStorageManager, vol);
-                    String p2 = path2.getPath();
+                    p1 = (String) getBestVolumeDescription.invoke(mStorageManager, vol);
+                    p2 = path2.getPath();
                     USBDiscs.put(p1, p2);
-                    Log.i(TAG, "getUDiscName DeviceName = " + p1 + ":" + p2);
+                    //Log.i(TAG, "getUDiscName DeviceName = " + p1 + ":" + p2);
                 }
             }
         } catch (Exception ex) {
@@ -265,7 +319,7 @@ public class FilesManager {
         StorageManager mStorageManager;
         Map<String, String> USBDiscs = new HashMap<String, String>();
         Class<?> volumeInfoClazz = null;
-        Method getDescriptionComparator = null;
+        //Method getDescriptionComparator = null;
         Method getBestVolumeDescription = null;
         Method getVolumes = null;
         Method isMountedReadable = null;
@@ -276,13 +330,14 @@ public class FilesManager {
         try {
             mStorageManager = (StorageManager) c.getSystemService(Activity.STORAGE_SERVICE);
             volumeInfoClazz = Class.forName("android.os.storage.VolumeInfo");
-            getDescriptionComparator = volumeInfoClazz.getMethod("getDescriptionComparator");
+            //getDescriptionComparator = volumeInfoClazz.getMethod("getDescriptionComparator");
             getBestVolumeDescription = StorageManager.class.getMethod("getBestVolumeDescription", volumeInfoClazz);
             getVolumes = StorageManager.class.getMethod("getVolumes");
             isMountedReadable = volumeInfoClazz.getMethod("isMountedReadable");
             getType = volumeInfoClazz.getMethod("getType");
             getPath = volumeInfoClazz.getMethod("getPath");
             volumes = (List<?>) getVolumes.invoke(mStorageManager);
+
             for (Object vol : volumes) {
                 if (vol != null && (boolean) isMountedReadable.invoke(vol) && (int) getType.invoke(vol) == 0) {
                     File path2 = (File) getPath.invoke(vol);
@@ -290,7 +345,7 @@ public class FilesManager {
                     String p2 = path2.getPath();
                     USBDiscs.put(p1, p2);
                     rpath = p2;
-                    Log.i(TAG, "getUDiscName DeviceName = " + p1 + ":" + p2);
+                    //Log.i(TAG, "getUDiscPath DeviceName = " + p1 + ":" + p2);
                 }
             }
 
@@ -348,7 +403,6 @@ public class FilesManager {
      * @return
      */
     public static List<LVideo> getVideos(Context context) {
-
         List<LVideo> videos = new ArrayList<LVideo>();
         ContentResolver mContentResolver = context.getContentResolver();
         Cursor c = null;
@@ -474,7 +528,6 @@ public class FilesManager {
                 c.close();
             }
         }
-
         return folders;
     }
 
@@ -509,7 +562,6 @@ public class FilesManager {
         return AllImageList;
     }
 
-
     public static String getDiskCachePath(Context context) {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                 || !Environment.isExternalStorageRemovable()) {
@@ -521,9 +573,8 @@ public class FilesManager {
 
     public static String getDownloadDir(String downloadDir) {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyDownload/";
-        if (!TextUtils.isEmpty(downloadDir))
-        {
-            path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"+downloadDir+"/";
+        if (!TextUtils.isEmpty(downloadDir)) {
+            path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + downloadDir + "/";
         }
         File file = new File(path);
         if (!file.exists()) {
@@ -559,7 +610,6 @@ public class FilesManager {
     }
 
     public static void writeFile(String filePath, String data, boolean append) {
-
         FileOutputStream out;
         BufferedWriter writer = null;
         //String Path = getDiskCachePath(context) + "/" + fileName + ".xml";
@@ -588,7 +638,6 @@ public class FilesManager {
         }
     }
 
-
     // 将字符串写入到文本文件中
     public static void writeTxtToFile(String strcontent, String filePath, String fileName) {
         //生成文件夹之后，再生成文件，不然会出错
@@ -615,7 +664,7 @@ public class FilesManager {
 
     private static File makeFilePath(String filePath, String fileName) {
         File file = null;
-        makeRootDirectory(filePath);
+        makeDirectory(filePath);
         try {
             file = new File(filePath + fileName);
             if (!file.exists()) {
@@ -627,8 +676,7 @@ public class FilesManager {
         return file;
     }
 
-
-    private static void makeRootDirectory(String filePath) {
+    private static void makeDirectory(String filePath) {
         File file = null;
         try {
             file = new File(filePath);
@@ -657,14 +705,12 @@ public class FilesManager {
                     if (index > -1) {
                         data = cursor.getString(index);
                     }
-
                 }
                 cursor.close();
             }
             if (data == null) {
                 data = getImageAbsolutePath(context, uri);
             }
-
         }
         return data;
     }
@@ -673,14 +719,6 @@ public class FilesManager {
         return Uri.fromFile(new File(filePath));
     }
 
-    /**
-     * 根据Uri获取图片绝对路径，解决Android4.4以上版本Uri转换
-     *
-     * @param context
-     * @param imageUri
-     * @author yaoxing
-     * @date 2014-10-12
-     */
     @TargetApi(19)
     public static String getImageAbsolutePath(Context context, Uri imageUri) {
         if (context == null || imageUri == null)
@@ -744,38 +782,6 @@ public class FilesManager {
         return null;
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is ExternalStorageProvider.
-     */
-    public static boolean isExternalStorageDocument(Uri uri) {
-        return "com.android.externalstorage.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is DownloadsProvider.
-     */
-    public static boolean isDownloadsDocument(Uri uri) {
-        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is MediaProvider.
-     */
-    public static boolean isMediaDocument(Uri uri) {
-        return "com.android.providers.media.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is Google Photos.
-     */
-    public static boolean isGooglePhotosUri(Uri uri) {
-        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
-    }
-
     public static String md5(String string) {
         if (TextUtils.isEmpty(string)) {
             return "";
@@ -822,4 +828,69 @@ public class FilesManager {
         else
             return "";
     }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is Google Photos.
+     */
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
+
+
+    public static void getFiles(Context context, String FilePath, List<String> FileList) {
+        //List<String> FileList = new ArrayList<String>();
+        File path = new File(FilePath);
+        File[] files = path.listFiles();
+        getFileList(context, files, FileList);
+        //return FileList;
+    }
+
+    private static void getFileList(Context context, File[] files, List<String> FileList) {
+        if (files != null) {// 先判断目录是否为空，否则会报空指针
+            String filePathName = null;
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    getFileList(context, file.listFiles(), FileList);
+                } else {
+                    filePathName = file.getPath();// +"  "+ file.getName() ;
+                    FileList.add(filePathName);
+                    sendProgressMessage(context, filePathName);
+                }
+            }
+        }
+    }
+
+    private static void sendProgressMessage(Context context, String msg) {
+        if (context != null) {
+            Intent i = new Intent("com.zhuchao.android.FILE_SCAN_ACTION");
+            i.putExtra("FileName", msg);
+            context.sendBroadcast(i);
+        }
+    }
+
 }

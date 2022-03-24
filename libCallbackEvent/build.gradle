@@ -29,7 +29,7 @@ afterEvaluate {
 android {
     compileSdkVersion 32
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 32
         //versionCode 10
         //versionName "1.0"

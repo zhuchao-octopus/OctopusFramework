@@ -55,13 +55,6 @@ public class PlayerUtil {
         return mOPlayer;
     }
 
-    public static  boolean isOplayerReady()
-    {
-        if (mOPlayer == null) return false;
-        else
-            return true;
-    }
-
     public synchronized static OPlayer getMultiOPlayer(Context context, ArrayList<String> options, PlayerCallback callback) {
         OPlayer mOPlayer = new OPlayer(context, options, callback);
         return mOPlayer;
@@ -72,9 +65,17 @@ public class PlayerUtil {
             mOPlayer.free();
         mOPlayer = null;
     }
+
     public synchronized static void FreeSingleVLC() {
         if (libVLC != null)
             libVLC.release();
         libVLC = null;
     }
+
+    public synchronized static void FreePlayer() {
+        if (mOPlayer != null)
+            mOPlayer.free();
+        mOPlayer = null;
+    }
+
 }

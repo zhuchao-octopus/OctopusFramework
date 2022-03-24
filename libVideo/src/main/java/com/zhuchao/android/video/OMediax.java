@@ -59,20 +59,20 @@ public class OMediax implements Serializable {
     }
 
     public OMediax play() {
-        mOPlayer.setSource(mMovie.getSourceUrl());
+        mOPlayer.setSource(mMovie.getsUrl());
         mOPlayer.play();
         return this;
     }
 
     public OMediax play(String path) {
-        mMovie.setSourceUrl(path);
+        mMovie.setsUrl(path);
         mOPlayer.setSource(path);
         mOPlayer.play();
         return this;
     }
 
     public OMediax play(Uri uri) {
-        mMovie.setSourceUrl(uri.getPath());
+        mMovie.setsUrl(uri.getPath());
         mOPlayer.setSource(uri);
         mOPlayer.play();
         return this;
@@ -92,14 +92,14 @@ public class OMediax implements Serializable {
 
     public OMediax playOn(SurfaceView playView) {
         mOPlayer.setSurfaceView(playView);
-        mOPlayer.setSource(mMovie.getSourceUrl());
+        mOPlayer.setSource(mMovie.getsUrl());
         mOPlayer.play();
         return this;
     }
 
     public OMediax playOn(TextureView playView) {
         mOPlayer.setTextureView(playView);
-        mOPlayer.setSource(mMovie.getSourceUrl());
+        mOPlayer.setSource(mMovie.getsUrl());
         mOPlayer.play();
         return this;
     }

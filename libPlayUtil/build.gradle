@@ -5,7 +5,7 @@ ext {
     GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libPlayUtil'
-    PUBLISH_VERSION = '2.1'
+    PUBLISH_VERSION = '2.2'
 }
 
 afterEvaluate {
@@ -30,7 +30,7 @@ afterEvaluate {
 android {
     compileSdkVersion 32
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 32
     }
 

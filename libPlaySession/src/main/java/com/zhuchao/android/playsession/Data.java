@@ -9,35 +9,30 @@ public class Data {
     public static final int DEFAULT_PREVIEW_WIDTH = 800;
     public static final int DEFAULT_PREVIEW_HEIGHT = 654;
 
-    public static final int SESSION_MANAGER_COMPLETE = 3;
-
-    public static final int MEDIA_SOURCE_ID_AllMEDIA = 100;
-    public static final int MEDIA_SOURCE_ID_PIC = 101;
-    public static final int MEDIA_SOURCE_ID_AUDIO = 102;
-    public static final int MEDIA_SOURCE_ID_VIDEO = 103;
-
-    public static final int MEDIA_SOURCE_ID_OPLAYER = 110;
-    public static final int MEDIA_SOURCE_ID_BEE = 111;//蜜蜂视频
+    public static final int MEDIA_TYPE_ID_AllFILE = 99;
+    public static final int MEDIA_TYPE_ID_AllMEDIA = 100;
+    public static final int MEDIA_TYPE_ID_PIC = 101;
+    public static final int MEDIA_TYPE_ID_AUDIO = 102;
+    public static final int MEDIA_TYPE_ID_VIDEO = 103;
+    public static final int MEDIA_TYPE_ID_AUDIO_VIDEO = 104;
+    public static final int MEDIA_TYPE_ID_OTHERS = MEDIA_TYPE_ID_AUDIO_VIDEO+1;
 
     //////////////////////////////////////////////////////////////////////
-    public static final int SESSION_TYPE_MOBILEMEDIA1 = 1;
-    public static final int SESSION_TYPE_MOBILEMEDIA2 = 2;
-    public static final int SESSION_TYPE_MOBILEMEDIA3 = 3;
-    public static final int SESSION_TYPE_MOBILEMEDIA4 = 4;
-    public static final int SESSION_TYPE_MOBILEMEDIA5 = 5;
-    public static final int SESSION_TYPE_MOBILEMEDIA6 = 6;
-    public static final int SESSION_TYPE_MOBILEMEDIA7 = 7;
-    public static final int SESSION_TYPE_MOBILEMEDIA8 = 8;
-    public static final int SESSION_TYPE_MOBILEMEDIA9 = 9;
-    public static final int SESSION_TYPE_LOCALMEDIA = 10; //本地媒体
-    //
-    public static final int SESSION_TYPE_MANAGER = 11; //
+    public static final int SESSION_SOURCE_NONE = -1; //
+    public static final int SESSION_SOURCE_ALL = 0; //
+    public static final int SESSION_SOURCE_PATH = 1; //
+
+
+    public static final int SESSION_SOURCE_LOCAL_INTERNAL = 10; //本地媒体
+    public static final int SESSION_SOURCE_MOBILE_USB = 11;
+    public static final int SESSION_SOURCE_EXTERNAL = 12;
+
     //获取分类的ID
-    public static final int SESSION_TYPE_GET_MOVIE_CATEGORY = 12;//版面分类
-    public static final int SESSION_TYPE_GET_MOVIE_TYPE = 13;//视屏分类
+    public static final int SESSION_TYPE_GET_MOVIE_CATEGORY = 20;//版面分类
+    public static final int SESSION_TYPE_GET_MOVIE_TYPE = 21;//视屏分类
 
     //获取视频列表的ID
-    public static final int SESSION_TYPE_GET_MOVIELIST_ALL = 14;//所有视频列表
+    public static final int SESSION_TYPE_GET_MOVIELIST_ALL = 22;//所有视频列表
     public static final int SESSION_TYPE_GET_MOVIELIST_VID = SESSION_TYPE_GET_MOVIELIST_ALL+1;
     public static final int SESSION_TYPE_GET_MOVIELIST_VNAME = SESSION_TYPE_GET_MOVIELIST_VID+1;
     public static final int SESSION_TYPE_GET_MOVIELIST_AREA = SESSION_TYPE_GET_MOVIELIST_VNAME + 1;

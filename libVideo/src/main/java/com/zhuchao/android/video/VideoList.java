@@ -16,211 +16,128 @@ package com.zhuchao.android.video;
 
 import static com.zhuchao.android.libfileutils.FilesManager.getFileName;
 
-import android.content.Context;
 import android.text.TextUtils;
 
+import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.libfileutils.MediaFile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public class VideoList {
-
-    private  List<OMedia> list;
+    //private List<OMedia> list;
+    public HashMap<String, Object> hashMap;
 
     public VideoList() {
-        this.list = new ArrayList<>();
+        this.hashMap = new HashMap();
     }
 
-    public void addVideo(OMedia oMedia)
-    {
-        if(findMovieByPath(oMedia.getMovie().getSourceUrl()) != null) return;
-        if(oMedia != null)
-        {
-            OMedia fvideo = findMoviebyIndex(0);
-            OMedia lvideo = findMoviebyIndex(list.size()-1);
+    public void add(OMedia oMedia) {
+        if (oMedia == null) return;
+        if (findByPath(oMedia.getMovie().getsUrl()) != null) return;
 
-            if(lvideo != null) {
-                lvideo.setNext(oMedia);
-                oMedia.setPre(lvideo);
-            }
-            else
-            {
-                oMedia.setPre(oMedia);
-                oMedia.setNext(oMedia);
-            }
+        OMedia fvideo = findByIndex(0);
+        OMedia lvideo = findByIndex(hashMap.size() - 1);
 
-            if(fvideo != null) {
-                fvideo.setPre(oMedia);
-                oMedia.setNext(fvideo);
-            }
-
-            list.add(oMedia);
+        if (lvideo != null) {
+            lvideo.setNext(oMedia);
+            oMedia.setPre(lvideo);
+        } else {
+            oMedia.setPre(oMedia);
+            oMedia.setNext(oMedia);
         }
-    }
 
-    public void addVideo(String url)
-    {
-        OMedia oMedia = new OMedia(url);
-        addVideo(oMedia);
-    }
-
-    void removeVideo(OMedia oMedia)
-    {
-        list.remove(oMedia);
-    }
-    public void clear()
-    {
-         list.clear();
-    }
-    public OMedia findMoviebyId(int movieId)
-    {
-        for(int i =0;i< list.size();i++)
-        {
-            OMedia movie = list.get(i);
-            if(movie.getMovie().getMovieId() == movieId)
-                return movie;
+        if (fvideo != null) {
+            fvideo.setPre(oMedia);
+            oMedia.setNext(fvideo);
         }
-        return null;
+        //if(TextUtils.isEmpty(oMedia.getName()))
+        hashMap.put(oMedia.md5(), oMedia);
+        //else
+        //  hashMap.put(oMedia.getName(), oMedia);
     }
 
-    public OMedia findMoviebyIndex(int index)
-    {
-        OMedia movie =null;
-        if(index >=0 && index < list.size())
-            movie = list.get(index);
-        return movie;
+    public void add(String key, Object value) {
+        hashMap.put(key, value);
     }
 
-    public  List<OMedia> getVideos() {
-        return list;
+    public int getCount() {
+        return hashMap.size();
     }
 
-    public  int getCount()
-    {
-       return list.size();
+    public void delete(OMedia oMedia) {
+        if (oMedia == null) return;
+        OMedia oPre = oMedia.getPre();
+        OMedia oNext = oMedia.getNext();
+        if (oPre != null)
+            oPre.setNext(oNext);
+        if (oNext != null)
+            oNext.setPre(oPre);
+        hashMap.remove(oMedia);
     }
 
-    public List<OMedia> findMoviebySourceId(int sourceId)
-    {
+    public void delete(String fileName) {
+        OMedia ob = findByPath(fileName);
+        if (ob != null)
+            delete(ob);
+    }
+
+    public void clear() {
+        hashMap.clear();
+    }
+
+    public OMedia findByIndex(int index) {
+        int i = 0;
+        if (index < 0 || index >= hashMap.size()) return null;
+        Object[] array = hashMap.values().toArray();
+        if (array == null) return null;
+        return (OMedia) array[index];
+    }
+
+    public OMedia findAny() {
+        Random generator = new Random();
+        Object[] values = hashMap.values().toArray();
+        Object randomValue = values[generator.nextInt(values.length)];
+        return (OMedia) randomValue;
+    }
+
+    public List<OMedia> findsByName(String fileName) {
         List<OMedia> movies = new ArrayList<>();
-        for(int i =0;i< list.size();i++)
-        {
-            Movie movie = list.get(i).getMovie();
-            if(movie.getSourceId() == sourceId)
-                movies.add(list.get(i));
+        for (HashMap.Entry<String, Object> m : hashMap.entrySet()) {
+            OMedia oMedia = (OMedia) m.getValue();
+            if (fileName.equals(oMedia.getMovie().getName()))
+                movies.add(oMedia);
         }
         return movies;
     }
 
-    public List<OMedia> findMoviebyTypeName(String typeName)
-    {
-        List<OMedia> movies = new ArrayList<>();
-        for(int i =0;i< list.size();i++)
-        {
-            Movie movie = list.get(i).getMovie();
-            if(movie.getMovieName().contains(typeName))
-                movies.add(list.get(i));
-        }
-        return movies;
-    }
-
-    public OMedia findMoviebyeName(String Name)
-    {
-        for(int i =0;i< list.size();i++)
-        {
-            Movie movie = list.get(i).getMovie();
-            if(movie.getMovieName().equals(Name))
-               return list.get(i);
-        }
-        return null;
-    }
-
-    public List<OMedia> findMoviebyCategory(String CategoryName)
-    {
-        List<OMedia> movies = new ArrayList<>();
-        for(int i =0;i< list.size();i++)
-        {
-            Movie movie = list.get(i).getMovie();
-            if(movie.getCategory().contains(CategoryName))
-                movies.add(list.get(i));
-        }
-        return movies;
-    }
-    public List<OMedia> findMoviebyArea(String area)
-    {
-        List<OMedia> movies = new ArrayList<>();
-        for(int i =0;i< list.size();i++)
-        {
-            Movie movie = list.get(i).getMovie();
-            if(movie.getRegion() == area)
-                movies.add(list.get(i));
-        }
-        return movies;
-    }
-    public List<OMedia> findMoviebyActor(String actor)
-    {
-        List<OMedia> movies = new ArrayList<>();
-        for(int i =0;i< list.size();i++)
-        {
-            Movie movie = list.get(i).getMovie();
-            if(movie.getActor().contains(actor))
-                movies.add(list.get(i));
-        }
-        return movies;
-    }
-    public List<OMedia> findMoviebyMovieName(String movieName)
-    {
-        List<OMedia> movies = new ArrayList<>();
-        for(int i =0;i< list.size();i++)
-        {
-            Movie movie = list.get(i).getMovie();
-            if(movie.getMovieName().contains(movieName))
-                movies.add(list.get(i));
-        }
-        return movies;
-    }
-    public List<OMedia> findMoviebyYear(String year)
-    {
-        List<OMedia> movies = new ArrayList<>();
-        for(int i =0;i< list.size();i++)
-        {
-            Movie movie = list.get(i).getMovie();
-            if(movie.getYear().contains(year))
-                movies.add(list.get(i));
-        }
-        return movies;
-    }
-    public List<OMedia> findMoviebyVip(int vipId)
-    {
-        List<OMedia> movies = new ArrayList<>();
-        for(int i =0;i< list.size();i++)
-        {
-            Movie movie = list.get(i).getMovie();
-            if(movie.getVipLevel() <= vipId && movie.getVipLevel() >= -1 )
-                movies.add(list.get(i));
-        }
-        return movies;
-    }
-    public OMedia findMovieByPath(String path)
-    {
-        for(int i =0;i< list.size();i++)
-        {
-            OMedia oMedia = list.get(i);
-            if(oMedia.getMovie().getSourceUrl().equals(path) )
+    public OMedia findByName(String fileName) {
+        for (HashMap.Entry<String, Object> m : hashMap.entrySet()) {
+            OMedia oMedia = (OMedia) m.getValue();
+            if (fileName.equals(oMedia.getMovie().getName()))
                 return oMedia;
         }
         return null;
     }
 
-    public void loadFromDir(Context context, String FilePath, Integer fType) {
-        List<String> FileList = MediaFile.getMediaFiles(context, FilePath, fType);
-        for (int i = 0; i < FileList.size(); i++) {
+    public OMedia findByPath(String fileName) {
+        String md5 = FilesManager.md5(fileName);
+        return (OMedia) hashMap.get(md5);
+    }
+
+    //com.zhuchao.android.MEDIAFILEA_SCAN_ACTION
+    public void loadFromDir(String FilePath, int FileType)
+    {
+        List<String> FileList = MediaFile.getMediaFiles(FilePath, FileType);
+        for (int i = 0; i < FileList.size(); i++)
+        {
             Movie movie = new Movie(FileList.get(i));
-            String filename = getFileName(movie.getSourceUrl());
+            String filename = getFileName(movie.getsUrl());
             if (!TextUtils.isEmpty(filename))
-                movie.setMovieName(filename);
-            addVideo(new OMedia(movie));
+                movie.setName(filename);
+            add(new OMedia(movie));
         }
     }
 }

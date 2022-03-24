@@ -205,6 +205,7 @@ public class AppsManager {
             ApplicationInfo info = mContext.getPackageManager().getApplicationInfo(packageName, 0);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
             return false;
         }
     }
