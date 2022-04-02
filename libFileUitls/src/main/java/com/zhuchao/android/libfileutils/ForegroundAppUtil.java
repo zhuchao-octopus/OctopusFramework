@@ -35,7 +35,7 @@ public class ForegroundAppUtil {
             if (initStat != null)
             {
                 topClassName = initStat.getPackageName();
-                Log.d(TAG,"getForegroundUsageStats topClassName="+topClassName);
+                Log.d(TAG,"getForegroundActivityName topClassName="+topClassName);
             }
         }
         if(TextUtils.isEmpty(topClassName))
