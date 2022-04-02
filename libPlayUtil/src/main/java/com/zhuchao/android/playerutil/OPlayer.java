@@ -26,15 +26,14 @@ public class OPlayer {
     private Context mContext;
     private MediaPlayer mMediaPlayer = null;
     private Media media = null;
-    private LibVLC mLibVLC = null;
+    private LibVLC FLibVLC = null;
     private IVLCVout vlcVout;
     private IVLCVoutCallBack mIVLCVoutCallBack;
     private PlayerCallback mOnPlayerEventCallBack = null;
     private TextureView mTextureView = null;
     private SurfaceView mSurfaceView = null;
     private Boolean HWDecoderEnabled = true;
-    private String mURL = "";
-
+    private int volumeVaule=30;
     // mMediaPlayer.getPlayerState()
     //int libvlc_NothingSpecial=0;
     //int libvlc_Opening=1;
@@ -66,14 +65,17 @@ public class OPlayer {
         mContext = context;
         mIVLCVoutCallBack = new IVLCVoutCallBack();
         mOnPlayerEventCallBack = callback;
-
-        mLibVLC = PlayerUtil.getSingleLibVLC(mContext, null);//new LibVLC(mContext);
-        mMediaPlayer = new MediaPlayer(mLibVLC);
+        try {
+            FLibVLC = new LibVLC(mContext);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mMediaPlayer = new MediaPlayer(FLibVLC);
         mMediaPlayer.setScale(0);
-
         mMediaPlayer.setEventListener(mEventListener);
         vlcVout = mMediaPlayer.getVLCVout();
         vlcVout.addCallback(mIVLCVoutCallBack);
+        mMediaPlayer.setVolume(volumeVaule);
     }
 
     public OPlayer(Context context, ArrayList<String> options, PlayerCallback callback) {
@@ -81,7 +83,6 @@ public class OPlayer {
         ArrayList<String> Options = new ArrayList<String>();
         mIVLCVoutCallBack = new IVLCVoutCallBack();
         mOnPlayerEventCallBack = callback;
-
         Options.clear();
         Options.add("--file-caching=10000");//文件缓存
         Options.add("--network-caching=10000");//网络缓存
@@ -89,31 +90,30 @@ public class OPlayer {
         Options.add("--sout-mux-caching=1500");//输出缓存
         if (options == null)
             options = Options;
-
         try {
-            mLibVLC = PlayerUtil.getSingleLibVLC(mContext, options);//new LibVLC(mContext, options);
+            FLibVLC = new LibVLC(mContext, options);
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
-        mMediaPlayer = new MediaPlayer(mLibVLC);
+        mMediaPlayer = new MediaPlayer(FLibVLC);
         mMediaPlayer.setEventListener(mEventListener);
         vlcVout = mMediaPlayer.getVLCVout();
         vlcVout.addCallback(mIVLCVoutCallBack);
+        mMediaPlayer.setVolume(volumeVaule);
     }
 
-    public boolean setSource(String path) {
+    public boolean setSource(String pathName) {
         if (media != null) {
             media.release();
             media = null;
         }
-        mURL = path;
-        if (mURL.isEmpty()) return false;
-        if (mURL.startsWith("http") || mURL.startsWith("ftp") || mURL.startsWith("file")) {
-            Uri uri = Uri.parse(mURL);
+        if (pathName.isEmpty()) return false;
+        if (pathName.startsWith("http") || pathName.startsWith("ftp") || pathName.startsWith("file")) {
+            Uri uri = Uri.parse(pathName);
             setSource(uri);
             return true;
         }
-        media = new Media(mLibVLC, mURL);
+        media = new Media(FLibVLC, pathName);
         //media.addOption(":no-audio");
         media.addOption(":fullscreen");
         media.addOption(":no-autoscale");
@@ -122,12 +122,11 @@ public class OPlayer {
         media.addOption(":live-caching=10000");//直播缓存
         media.addOption(":sout-mux-caching=10000");//输出缓存
         setHWDecoderEnabled(true);
-        if (mMediaPlayer == null)
-            mMediaPlayer = new MediaPlayer(mLibVLC);
         mMediaPlayer.stop();
         mMediaPlayer.setMedia(media);
         mMediaPlayer.setAspectRatio(null);
         mMediaPlayer.setScale(0);
+        mMediaPlayer.setVolume(volumeVaule);
         return true;
     }
 
@@ -137,9 +136,7 @@ public class OPlayer {
             media = null;
         }
         if (uri == null) return false;
-        mURL = uri.toString();
-        media = new Media(mLibVLC, uri);
-
+        media = new Media(FLibVLC, uri);
         //media.addOption(":no-audio");
         media.addOption(":fullscreen");
         media.addOption(":no-autoscale");
@@ -148,12 +145,12 @@ public class OPlayer {
         media.addOption(":live-caching=10000");//直播缓存
         media.addOption(":sout-mux-caching=10000");//输出缓存
         setHWDecoderEnabled(true);
-        if (mMediaPlayer == null)
-            mMediaPlayer = new MediaPlayer(mLibVLC);
+        mMediaPlayer = new MediaPlayer(FLibVLC);
         mMediaPlayer.stop();
         mMediaPlayer.setMedia(media);
         mMediaPlayer.setAspectRatio(null);
         mMediaPlayer.setScale(0);
+        mMediaPlayer.setVolume(volumeVaule);
         return true;
     }
 
@@ -163,9 +160,7 @@ public class OPlayer {
             media = null;
         }
         if (afd == null) return false;
-        mURL = afd.toString();
-        media = new Media(mLibVLC, afd);
-
+        media = new Media(FLibVLC, afd);
         //media.addOption(":no-audio");
         media.addOption(":fullscreen");
         media.addOption(":no-autoscale");
@@ -174,12 +169,12 @@ public class OPlayer {
         media.addOption(":live-caching=10000");//直播缓存
         media.addOption(":sout-mux-caching=10000");//输出缓存
         setHWDecoderEnabled(true);
-        if (mMediaPlayer == null)
-            mMediaPlayer = new MediaPlayer(mLibVLC);
+        mMediaPlayer = new MediaPlayer(FLibVLC);
         mMediaPlayer.stop();
         mMediaPlayer.setMedia(media);
         mMediaPlayer.setAspectRatio(null);
         mMediaPlayer.setScale(0);
+        mMediaPlayer.setVolume(volumeVaule);
         return true;
     }
 
@@ -189,9 +184,7 @@ public class OPlayer {
             media = null;
         }
         if (fd == null) return false;
-        mURL = fd.toString();
-        media = new Media(mLibVLC, fd);
-
+        media = new Media(FLibVLC, fd);
         //media.addOption(":no-audio");
         media.addOption(":fullscreen");
         media.addOption(":no-autoscale");
@@ -200,12 +193,12 @@ public class OPlayer {
         media.addOption(":live-caching=10000");//直播缓存
         media.addOption(":sout-mux-caching=10000");//输出缓存
         setHWDecoderEnabled(true);
-        if (mMediaPlayer == null)
-            mMediaPlayer = new MediaPlayer(mLibVLC);
+        mMediaPlayer = new MediaPlayer(FLibVLC);
         mMediaPlayer.stop();
         mMediaPlayer.setMedia(media);
         mMediaPlayer.setAspectRatio(null);
         mMediaPlayer.setScale(0);
+        mMediaPlayer.setVolume(volumeVaule);
         return true;
     }
 
@@ -214,7 +207,6 @@ public class OPlayer {
         if (surfaceView == null) return;
         if (mSurfaceView != null)
             if (mSurfaceView.equals(surfaceView)) return;
-
         if (vlcVout.areViewsAttached())
             vlcVout.detachViews();
         vlcVout.addCallback(mIVLCVoutCallBack);
@@ -229,7 +221,6 @@ public class OPlayer {
         if (textureView == null) return;
         if (mTextureView != null)
             if (mTextureView.equals(textureView)) return;
-
         if (vlcVout.areViewsAttached())
             vlcVout.detachViews();
         vlcVout.addCallback(mIVLCVoutCallBack);
@@ -265,18 +256,18 @@ public class OPlayer {
         vlcVout.setVideoView(mTextureView);
         vlcVout.attachViews();
         //vlcVout.addCallback(mIVLCVoutCallBack);
+        mTextureView = textureView;
+        mSurfaceView =null;
     }
 
     public void play() {
         if (media == null) return;
         mMediaPlayer.play();
-        //Log.d(TAG, "start to play ----->" + mURL);
     }
 
     public void pause() {
         if (media == null) return;
         mMediaPlayer.pause();
-        //Log.d(TAG, "start to pause ----->" + mURL);
     }
 
     public void fastForward(float x) {
@@ -320,7 +311,6 @@ public class OPlayer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //Log.d(TAG, "start to stop ----->" + mURL);
     }
 
     public void resume() {
@@ -345,7 +335,9 @@ public class OPlayer {
                 media.release();
                 media = null;
             }
-            PlayerUtil.FreeSingleVLC();
+            if (FLibVLC != null)
+                FLibVLC.release();
+            FLibVLC = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -353,7 +345,6 @@ public class OPlayer {
 
     public void setNoAudio() {
         media.addOption(":no-audio");
-        return;
     }
 
     public void setOption(String option) {
@@ -400,11 +391,13 @@ public class OPlayer {
     }
 
     public void setVolume(int var1) {
-        mMediaPlayer.setVolume(var1);
+        volumeVaule = var1;
+        mMediaPlayer.setVolume(volumeVaule);
     }
 
     public int getVolume() {
-        return mMediaPlayer.getVolume();
+        volumeVaule = mMediaPlayer.getVolume();
+        return volumeVaule;
     }
 
     public Long getTime() {

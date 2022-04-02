@@ -14,7 +14,7 @@ import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.libfileutils.MediaFile;
 import com.zhuchao.android.netutil.OkHttpUtils;
 import com.zhuchao.android.playerutil.OPlayer;
-import com.zhuchao.android.playerutil.PlayerUtil;
+import com.zhuchao.android.playerutil.Player;
 
 import java.io.FileDescriptor;
 import java.io.Serializable;
@@ -30,12 +30,12 @@ import java.util.Map;
 
 public class OMedia implements Serializable, PlayerCallback {
     static final long serialVersionUID = 727566175075960653L;
-    private OPlayer oPlayer;
+    protected OPlayer FOPlayer;
+    protected Context context = null;
+    protected ArrayList<String> options = null;
     private PlayerCallback callback = null;
     private OMedia preOMedia = null;
     private OMedia nextOMedia = null;
-    private Context context = null;
-    private ArrayList<String> options = null;
     private float playRate = 1;
     private long lastPlayTime = 0;
     private Movie movie = null;//new Movie(null);
@@ -202,9 +202,9 @@ public class OMedia implements Serializable, PlayerCallback {
     public void stopFree() {
         try {
             this.save();
-            if (oPlayer != null)
-                oPlayer.free();
-            oPlayer = null;
+            if (FOPlayer != null)
+                FOPlayer.free();
+            FOPlayer = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -403,13 +403,13 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public OPlayer getOPlayer() {
-        if (oPlayer == null)
-            oPlayer = PlayerUtil.getSingleOPlayer(context, options, this);
-        return oPlayer;
+        if (FOPlayer == null)
+            FOPlayer = Player.getSingleOPlayer(context, options, this);
+        return FOPlayer;
     }
 
     public boolean isPlayerReady() {
-        if (oPlayer == null) return false;
+        if (FOPlayer == null) return false;
         else
             return true;
     }

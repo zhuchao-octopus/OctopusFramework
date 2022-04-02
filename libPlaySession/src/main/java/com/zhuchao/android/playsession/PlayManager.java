@@ -291,7 +291,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
             playingList.clear();
             playingList = null;
             if(getPlayingMedia()!=null)
-                getPlayingMedia().stopFree();
+               getPlayingMedia().stopFree();
         } catch (Exception e) {
             e.printStackTrace();
         }

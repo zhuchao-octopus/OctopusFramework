@@ -14,57 +14,65 @@
 
 package com.zhuchao.android.video;
 
-import static com.zhuchao.android.libfileutils.FilesManager.getFileName;
-
-import android.text.TextUtils;
-
+import com.zhuchao.android.callbackevent.NormalRequestCallback;
 import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.libfileutils.MediaFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 public class VideoList {
-    //private List<OMedia> list;
-    public HashMap<String, Object> hashMap;
+    private NormalRequestCallback RequestCallBack = null;
+    private int count = 0;
+    private boolean threadLock = false;
+    private HashMap<String, Object> FHashMap;
 
     public VideoList() {
-        this.hashMap = new HashMap();
+        this.FHashMap = new HashMap();
+    }
+
+    public VideoList(NormalRequestCallback requestCallBack) {
+        RequestCallBack = requestCallBack;
+        this.count = 0;
+        this.threadLock = false;
+        this.FHashMap = new HashMap();
+    }
+
+    public HashMap<String, Object> getMap() {
+        return FHashMap;
     }
 
     public void add(OMedia oMedia) {
         if (oMedia == null) return;
         if (findByPath(oMedia.getMovie().getsUrl()) != null) return;
 
-        OMedia fvideo = findByIndex(0);
-        OMedia lvideo = findByIndex(hashMap.size() - 1);
+        OMedia fVideo = findByIndex(0);
+        OMedia lVideo = findByIndex(FHashMap.size() - 1);
 
-        if (lvideo != null) {
-            lvideo.setNext(oMedia);
-            oMedia.setPre(lvideo);
+        if (lVideo != null) {
+            lVideo.setNext(oMedia);
+            oMedia.setPre(lVideo);
         } else {
             oMedia.setPre(oMedia);
             oMedia.setNext(oMedia);
         }
-
-        if (fvideo != null) {
-            fvideo.setPre(oMedia);
-            oMedia.setNext(fvideo);
+        if (fVideo != null) {
+            fVideo.setPre(oMedia);
+            oMedia.setNext(fVideo);
         }
-        //if(TextUtils.isEmpty(oMedia.getName()))
-        hashMap.put(oMedia.md5(), oMedia);
-        //else
-        //  hashMap.put(oMedia.getName(), oMedia);
+        FHashMap.put(oMedia.md5(), oMedia);
     }
 
-    public void add(String key, Object value) {
-        hashMap.put(key, value);
+    public void add(String FileName) {
+        OMedia oMedia = new OMedia(FileName);
+        FHashMap.put(oMedia.md5(), oMedia);
     }
 
-    public int getCount() {
-        return hashMap.size();
+    public void add(String key, Object Obj) {
+        FHashMap.put(key, Obj);
     }
 
     public void delete(OMedia oMedia) {
@@ -75,7 +83,7 @@ public class VideoList {
             oPre.setNext(oNext);
         if (oNext != null)
             oNext.setPre(oPre);
-        hashMap.remove(oMedia);
+        FHashMap.remove(oMedia);
     }
 
     public void delete(String fileName) {
@@ -84,28 +92,24 @@ public class VideoList {
             delete(ob);
     }
 
+    public int getCount() {
+        return FHashMap.size();
+    }
+
     public void clear() {
-        hashMap.clear();
+        FHashMap.clear();
     }
 
     public OMedia findByIndex(int index) {
-        int i = 0;
-        if (index < 0 || index >= hashMap.size()) return null;
-        Object[] array = hashMap.values().toArray();
+        if (index < 0 || index >= FHashMap.size()) return null;
+        Object[] array = FHashMap.values().toArray();
         if (array == null) return null;
         return (OMedia) array[index];
     }
 
-    public OMedia findAny() {
-        Random generator = new Random();
-        Object[] values = hashMap.values().toArray();
-        Object randomValue = values[generator.nextInt(values.length)];
-        return (OMedia) randomValue;
-    }
-
     public List<OMedia> findsByName(String fileName) {
         List<OMedia> movies = new ArrayList<>();
-        for (HashMap.Entry<String, Object> m : hashMap.entrySet()) {
+        for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
             OMedia oMedia = (OMedia) m.getValue();
             if (fileName.equals(oMedia.getMovie().getName()))
                 movies.add(oMedia);
@@ -114,7 +118,7 @@ public class VideoList {
     }
 
     public OMedia findByName(String fileName) {
-        for (HashMap.Entry<String, Object> m : hashMap.entrySet()) {
+        for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
             OMedia oMedia = (OMedia) m.getValue();
             if (fileName.equals(oMedia.getMovie().getName()))
                 return oMedia;
@@ -124,20 +128,62 @@ public class VideoList {
 
     public OMedia findByPath(String fileName) {
         String md5 = FilesManager.md5(fileName);
-        return (OMedia) hashMap.get(md5);
+        return (OMedia) FHashMap.get(md5);
     }
 
-    //com.zhuchao.android.MEDIAFILEA_SCAN_ACTION
-    public void loadFromDir(String FilePath, int FileType)
-    {
-        List<String> FileList = MediaFile.getMediaFiles(FilePath, FileType);
-        for (int i = 0; i < FileList.size(); i++)
-        {
-            Movie movie = new Movie(FileList.get(i));
-            String filename = getFileName(movie.getsUrl());
-            if (!TextUtils.isEmpty(filename))
-                movie.setName(filename);
-            add(new OMedia(movie));
+    public OMedia findAny() {
+        Random generator = new Random();
+        Object[] values = FHashMap.values().toArray();
+        Object randomValue = values[generator.nextInt(values.length)];
+        return (OMedia) randomValue;
+    }
+
+    public void loadFromDir(String dirPath, int FileType) {
+        if (threadLock) return;
+        new Thread() {
+            public void run() {
+                threadLock = true;
+                getMediaFiles(dirPath, FileType);
+                threadLock = false;
+            }
+        }.start();
+    }
+
+    private void getMediaFiles(String FilePath, int fileType) {
+        File path = new File(FilePath);
+        File[] files = path.listFiles();
+        getMediaFileName(files, fileType);
+    }
+
+    private void getMediaFileName(File[] files, int fileType) {
+        if (files == null) return;
+        String filePathName = null;
+        for (File file : files) {
+            if (file.isDirectory()) {
+                getMediaFileName(file.listFiles(), fileType);
+            } else {
+                filePathName = file.getPath();// +"  "+ file.getName() ;
+                MediaFile.MediaFileType mm = MediaFile.getFileType(filePathName);
+                if (mm != null) {
+                    count++;
+                    if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == 100)) {
+                        add(filePathName);//所有的媒体文件
+                    } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == 101)) {
+                        add(filePathName);
+                    } else if (MediaFile.isAudioFileType(mm.fileType) && (fileType == 102)) {
+                        add(filePathName);
+                    } else if (MediaFile.isVideoFileType(mm.fileType) && (fileType == 103)) {
+                        add(filePathName);
+                    } else if ((MediaFile.isVideoFileType(mm.fileType) || MediaFile.isAudioFileType(mm.fileType)) && (fileType == 104)) {
+                        add(filePathName);
+                    } else if (fileType == 99) {
+                        add(filePathName);//所有的文件
+                    }
+                    if (RequestCallBack != null) {
+                        RequestCallBack.onRequestComplete(filePathName, count);
+                    }
+                }
+            }
         }
     }
 }

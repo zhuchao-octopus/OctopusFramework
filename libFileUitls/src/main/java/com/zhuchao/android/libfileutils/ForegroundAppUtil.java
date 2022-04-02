@@ -8,30 +8,49 @@ import android.content.Intent;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.List;
 
 public class ForegroundAppUtil {
-
-    private static final long END_TIME = System.currentTimeMillis();
-    private static final long TIME_INTERVAL = 7 * 24 * 60 * 60 * 1000L;
-    private static final long START_TIME = END_TIME - TIME_INTERVAL;
+    private static final String TAG ="ForegroundAppUtil";
+    //private static final long END_TIME = System.currentTimeMillis();
+    //private static final long TIME_INTERVAL = 7 * 24 * 60 * 60 * 1000L;
+    //private static final long START_TIME = END_TIME - TIME_INTERVAL;
 
     /**
      * 获取栈顶的应用包名
      */
     public static String getForegroundActivityName(Context context) {
-        String currentClassName = "";
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            ActivityManager manager = (ActivityManager) context.getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-            currentClassName = manager.getRunningTasks(1).get(0).topActivity.getPackageName();
-        } else {
-            UsageStats initStat = getForegroundUsageStats(context, START_TIME, END_TIME);
-            if (initStat != null) {
-                currentClassName = initStat.getPackageName();
+        String topClassName = null;
+        long END_TIME = System.currentTimeMillis();
+        ActivityManager activityManager = (ActivityManager) context.getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+        {
+            topClassName = activityManager.getRunningTasks(1).get(0).topActivity.getPackageName();
+        }
+        else
+        {
+            UsageStats initStat = getForegroundUsageStats(context, END_TIME-60000, END_TIME);
+            if (initStat != null)
+            {
+                topClassName = initStat.getPackageName();
+                Log.d(TAG,"getForegroundUsageStats topClassName="+topClassName);
             }
         }
-        return currentClassName;
+        if(TextUtils.isEmpty(topClassName))
+        {
+            List<ActivityManager.RunningAppProcessInfo> appProcessInfoList = activityManager.getRunningAppProcesses();
+            for (ActivityManager.RunningAppProcessInfo processInfo : appProcessInfoList)
+            {
+                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                    {
+                        topClassName= processInfo.processName;
+                    }
+                }
+            }
+        }
+        return topClassName;
     }
 
     /**
@@ -44,8 +63,9 @@ public class ForegroundAppUtil {
     /**
      * 获取时间段内，
      */
-    public static long getTotleForegroundTime(Context context) {
-        UsageStats usageStats = getCurrentUsageStats(context, START_TIME, END_TIME);
+    public static long getTotalForegroundTime(Context context) {
+        long END_TIME = System.currentTimeMillis();
+        UsageStats usageStats = getPackageUsageStats(context, END_TIME-60000, END_TIME);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return usageStats != null ? usageStats.getTotalTimeInForeground() : 0;
         }
@@ -54,15 +74,18 @@ public class ForegroundAppUtil {
 
     /**
      * 获取记录前台应用的UsageStats对象
+     *  <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
      */
     private static UsageStats getForegroundUsageStats(Context context, long startTime, long endTime) {
         UsageStats usageStatsResult = null;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            List<UsageStats> usageStatses = getUsageStatsList(context, startTime, endTime);
-            if (usageStatses == null || usageStatses.isEmpty()) return null;
-            for (UsageStats usageStats : usageStatses) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            List<UsageStats> UsageStatsList = getUsageStatsList(context, startTime, endTime);
+            if (UsageStatsList == null || UsageStatsList.isEmpty()) return null;
+            for (UsageStats usageStats : UsageStatsList)
+            {
                 if (usageStatsResult == null || usageStatsResult.getLastTimeUsed() < usageStats.getLastTimeUsed()) {
-                    usageStatsResult = usageStats;
+                    usageStatsResult = usageStats;//找出最最近使用过的APP
                 }
             }
         }
@@ -72,11 +95,13 @@ public class ForegroundAppUtil {
     /**
      * 获取记录当前应用的UsageStats对象
      */
-    public static UsageStats getCurrentUsageStats(Context context, long startTime, long endTime) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            List<UsageStats> usageStatses = getUsageStatsList(context, startTime, endTime);
-            if (usageStatses == null || usageStatses.isEmpty()) return null;
-            for (UsageStats usageStats : usageStatses) {
+    public static UsageStats getPackageUsageStats(Context context, long startTime, long endTime) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            List<UsageStats> UsageStatsList = getUsageStatsList(context, startTime, endTime);
+            if (UsageStatsList == null || UsageStatsList.isEmpty()) return null;
+            for (UsageStats usageStats : UsageStatsList)
+            {
                 if (TextUtils.equals(usageStats.getPackageName(), context.getPackageName())) {
                     return usageStats;
                 }
@@ -89,21 +114,22 @@ public class ForegroundAppUtil {
      * 通过UsageStatsManager获取List<UsageStats>集合
      */
     public static List<UsageStats> getUsageStatsList(Context context, long startTime, long endTime) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
             UsageStatsManager manager = (UsageStatsManager) context.getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
             //UsageStatsManager.INTERVAL_WEEKLY，UsageStatsManager的参数定义了5个，具体查阅源码
-            List<UsageStats> usageStatses = manager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, startTime, endTime);
-
-            if (usageStatses == null || usageStatses.size() == 0) {// 没有权限，获取不到数据
-                Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            List<UsageStats> UsageStatsList = manager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, startTime, endTime);
+            if (UsageStatsList == null || UsageStatsList.size() == 0)
+            {// 没有权限，获取不到数据
+                //Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 //context.getApplicationContext().startActivity(intent);
                 //Toast t = Toast.makeText(context,"need permmition to access settings .", Toast.LENGTH_LONG);
                 //t.show();
+                Log.d(TAG,"getUsageStatsList fail,need Settings.ACTION_USAGE_ACCESS_SETTINGS permission");
                 return null;
             }
-
-            return usageStatses;
+            return UsageStatsList;
         }
         return null;
     }

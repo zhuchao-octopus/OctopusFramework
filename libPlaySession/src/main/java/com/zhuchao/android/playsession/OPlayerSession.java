@@ -167,7 +167,7 @@ public class OPlayerSession implements SessionCompleteCallback {
     }
 
     public void addVideos(VideoList vList) {
-      for(HashMap.Entry<String, Object> m: vList.hashMap.entrySet())
+      for(HashMap.Entry<String, Object> m: vList.getMap().entrySet())
         {
             videoList.add(m.getKey(),m.getValue());
         }

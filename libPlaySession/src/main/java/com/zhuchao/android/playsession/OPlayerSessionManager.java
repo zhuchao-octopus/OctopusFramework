@@ -299,7 +299,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
             Log.d(TAG, "printSessionsVideoList " + entry.getKey() + " : " + entry.getValue().getVideoCategoryNameList().get(entry.getKey())
                     + " Movies Count =" + entry.getValue().getVideos().size());
             */
-            for (HashMap.Entry<String, Object> m : entry.getValue().getVideos().hashMap.entrySet())
+            for (HashMap.Entry<String, Object> m : entry.getValue().getVideos().getMap().entrySet())
                 allOMedia.add((OMedia) m.getValue());
         }
         return allOMedia;
