@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.TextureView;
 
@@ -13,8 +14,8 @@ import com.zhuchao.android.databaseutil.SPreference;
 import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.libfileutils.MediaFile;
 import com.zhuchao.android.netutil.OkHttpUtils;
-import com.zhuchao.android.playerutil.OPlayer;
-import com.zhuchao.android.playerutil.Player;
+import com.zhuchao.android.playerutil.PlayControl;
+import com.zhuchao.android.playerutil.PlayerManager;
 
 import java.io.FileDescriptor;
 import java.io.Serializable;
@@ -30,14 +31,16 @@ import java.util.Map;
 
 public class OMedia implements Serializable, PlayerCallback {
     static final long serialVersionUID = 727566175075960653L;
-    protected OPlayer FOPlayer;
+    private final String TAG = "OMedia";
+    protected PlayControl FPlayer;
     protected Context context = null;
     protected ArrayList<String> options = null;
+    protected int MagicNum = 0;
     private PlayerCallback callback = null;
     private OMedia preOMedia = null;
     private OMedia nextOMedia = null;
     private float playRate = 1;
-    private long lastPlayTime = 0;
+    private long playTime = 0;
     private Movie movie = null;//new Movie(null);
     private FileDescriptor fileDescriptor;
     private AssetFileDescriptor assetFileDescriptor;
@@ -166,16 +169,24 @@ public class OMedia implements Serializable, PlayerCallback {
 
     public void setSurfaceView(SurfaceView surfaceView) {
         if (!isPlayerReady()) return;
-        //setWindowSize(surfaceView.getWidth(),surfaceView.getHeight());
-        getOPlayer().stop();
-        getOPlayer().reAttachSurfaceView(surfaceView);
-        getOPlayer().resume();
+        if (surfaceView == null) return;
+        if (getOPlayer().getSurfaceView() == null)
+            getOPlayer().setSurfaceView(surfaceView);
+        else if (!getOPlayer().getTAG().equals("OPlayer>>>")) {
+            playTime = getOPlayer().getTime();
+            getOPlayer().reAttachSurfaceView(surfaceView);
+            play();
+        } else {
+            getOPlayer().stop();
+            getOPlayer().reAttachSurfaceView(surfaceView);
+            getOPlayer().resume();
+        }
     }
 
     public void setSurfaceView(TextureView textureView) {
         if (!isPlayerReady()) return;
         getOPlayer().stop();
-        getOPlayer().reAttachSurfaceView(textureView);
+        getOPlayer().reAttachTextureView(textureView);
         getOPlayer().resume();
     }
 
@@ -191,7 +202,7 @@ public class OMedia implements Serializable, PlayerCallback {
 
     public void stop() {
         try {
-            this.save();
+            playTime = getTime();
             if (isPlayerReady())
                 getOPlayer().stop();
         } catch (Exception e) {
@@ -201,10 +212,11 @@ public class OMedia implements Serializable, PlayerCallback {
 
     public void stopFree() {
         try {
-            this.save();
-            if (FOPlayer != null)
-                FOPlayer.free();
-            FOPlayer = null;
+            //this.save();
+            if (FPlayer != null)
+                FPlayer.free();
+            FPlayer = null;
+            PlayerManager.reset();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -220,12 +232,12 @@ public class OMedia implements Serializable, PlayerCallback {
         getOPlayer().setCallback(this);
     }
 
-    public long getLastPlayTime() {
-        return lastPlayTime;
+    public long getPlayTime() {
+        return playTime;
     }
 
-    public OMedia setLastPlayTime(long mLastPlayTime) {
-        this.lastPlayTime = mLastPlayTime;
+    public OMedia setPlayTime(long mLastPlayTime) {
+        this.playTime = mLastPlayTime;
         return this;
     }
 
@@ -248,6 +260,11 @@ public class OMedia implements Serializable, PlayerCallback {
     public void setNoAudio() {
         if (isPlayerReady())
             getOPlayer().setNoAudio();
+    }
+
+    public void setOption(String option) {
+        if (isPlayerReady())
+            getOPlayer().setOption(option);
     }
 
     public void setVolume(int var1) {
@@ -279,19 +296,19 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public void fastBack(int x) {
-        lastPlayTime = -1;
+        playTime = -1;
         if (isPlayerReady())
             getOPlayer().fastBack(x);
     }
 
     public void fastBack(long x) {
-        lastPlayTime = -1;
+        playTime = -1;
         if (isPlayerReady())
             getOPlayer().fastBack(x);
     }
 
     public void fastBack() {
-        lastPlayTime = -1;
+        playTime = -1;
         if (isPlayerReady()) {
             playRate = playRate - 0.1f;
             if (playRate <= 0) playRate = 1;
@@ -402,14 +419,8 @@ public class OMedia implements Serializable, PlayerCallback {
         return movie.getName();
     }
 
-    public OPlayer getOPlayer() {
-        if (FOPlayer == null)
-            FOPlayer = Player.getSingleOPlayer(context, options, this);
-        return FOPlayer;
-    }
-
     public boolean isPlayerReady() {
-        if (FOPlayer == null) return false;
+        if (FPlayer == null) return false;
         else
             return true;
     }
@@ -418,23 +429,23 @@ public class OMedia implements Serializable, PlayerCallback {
     //int Stopped=5; //int Ended=6;//int Error=7;
     @Override
     public void OnEventCallBack(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
-        int ii = getPlayState();
-        switch (ii) {
+        //int ii = getPlayState();
+        switch (EventType) {
             case 0:
             case 1:
             case 2:
             case 3:
             case 4:
-                if (lastPlayTime > getTime()) {
-                    setTime(lastPlayTime);
+                if (playTime > getTime()) {
+                    Log.d(TAG, "go to position = " + playTime);
+                    setTime(playTime);
+                    playTime = 0;
                 }
-                if (ii == 3)
-                    lastPlayTime = TimeChanged;
                 break;
             case 5:
             case 6:
             case 7:
-                lastPlayTime = 0;
+                playTime = 0;
                 break;
         }
         if (this.callback != null) {
@@ -454,7 +465,8 @@ public class OMedia implements Serializable, PlayerCallback {
         String md5 = FilesManager.md5(movie.getsUrl());
         //SPreference.saveSharedPreferences(mContext, md5, "name", mMovie.getMovieName());
         //SPreference.saveSharedPreferences(mContext, md5, "url", mMovie.getSourceUrl());
-        SPreference.putLong(context, md5, "playTime", getTime());
+        playTime = getTime();
+        SPreference.putLong(context, md5, "playTime", playTime);
     }
 
     public void load() {
@@ -462,7 +474,7 @@ public class OMedia implements Serializable, PlayerCallback {
         if (context == null) return;
         if (TextUtils.isEmpty(movie.getsUrl())) return;
         String md5 = FilesManager.md5(movie.getsUrl());
-        lastPlayTime = SPreference.getLong(context, md5, "playTime");
+        playTime = SPreference.getLong(context, md5, "playTime");
     }
 
     public void download() {
@@ -513,27 +525,55 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public String getDownloadFrom(String fromPath) {
-        final String lpath = fromPath + "/" + movie.getName();
-        if (!FilesManager.isExists(lpath)) return null;
-        return lpath;
+        final String lath = fromPath + "/" + movie.getName();
+        if (!FilesManager.isExists(lath)) return null;
+        return lath;
     }
 
     public String getDownload() {
-        final String lpath = FilesManager.getDownloadDir(null) + movie.getName();
-        if (!FilesManager.isExists(lpath)) return null;
-        return lpath;
+        final String lath = FilesManager.getDownloadDir(null) + movie.getName();
+        if (!FilesManager.isExists(lath)) return null;
+        return lath;
     }
 
     public boolean isAvailable(String cachePath) {
         boolean bf = false;
-        if (FilesManager.isExists(movie.getsUrl()) ||
-                this.uri != null ||
+        if (this.uri != null ||
                 this.assetFileDescriptor != null ||
-                this.fileDescriptor != null ||
-                FilesManager.isExists(cachePath + movie.getName()))
+                this.fileDescriptor != null)
             bf = true;
-        bf = MediaFile.isMediaFile(movie.getsUrl());
+
+        else if (FilesManager.isExists(movie.getsUrl()))
+            bf = MediaFile.isMediaFile(movie.getsUrl());
+        else if (FilesManager.isExists(cachePath + movie.getName()))
+            bf = MediaFile.isMediaFile(cachePath + movie.getName());
         return bf;
     }
 
+    public void setMagicNum(int MagicNum) {
+        if (this.MagicNum != this.MagicNum) {
+            if (FPlayer != null)
+                stopFree();
+        }
+        this.MagicNum = MagicNum;
+        getOPlayer();
+    }
+
+    protected PlayControl getOPlayer() {
+        if (this.context == null) return null;
+        if (FPlayer == null) {
+            switch (MagicNum) {
+                case 1:
+                    FPlayer = PlayerManager.getSingleOPlayer(context, options, this);
+                    Log.d(TAG, FPlayer.getTAG() + ",MagicNum = " + MagicNum);
+                    break;
+                case 0:
+                default:
+                    FPlayer = PlayerManager.getSingleMPlayer(context, this);
+                    Log.d(TAG, FPlayer.getTAG() + ",MagicNum = " + MagicNum);
+                    break;
+            }
+        }
+        return FPlayer;
+    }
 }

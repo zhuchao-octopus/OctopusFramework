@@ -272,8 +272,9 @@ public class MediaFile {
      */
     public static boolean isMimeTypeMedia(String mimeType) {
         int fileType = getFileTypeForMimeType(mimeType);
-        return isAudioFileType(fileType) || isVideoFileType(fileType)
-                || isImageFileType(fileType) || isPlayListFileType(fileType);
+        return  isAudioFileType(fileType) ||
+                isVideoFileType(fileType) ||
+                isPlayListFileType(fileType);
     }
 
     /**
@@ -356,7 +357,7 @@ public class MediaFile {
     public static List<String> getMediaFiles(String FilePath, int fileType) {
         List<String> FileList = new ArrayList<String>();
         File path = new File(FilePath);
-        File[] files = path.listFiles();// 读取
+        File[] files = path.listFiles();
         getMediaFileName(files, FileList, fileType);
         return FileList;
     }

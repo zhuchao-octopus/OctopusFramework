@@ -1,7 +1,7 @@
 package com.zhuchao.android.video;
 
 import com.zhuchao.android.playerutil.OPlayer;
-import com.zhuchao.android.playerutil.Player;
+import com.zhuchao.android.playerutil.PlayerManager;
 
 public class OMediaX extends OMedia{
     public OMediaX(String url) {
@@ -10,8 +10,8 @@ public class OMediaX extends OMedia{
 
     @Override
     public OPlayer getOPlayer() {
-        if (FOPlayer == null)
-            FOPlayer = Player.getMultiOPlayer(context, options, this);
-        return FOPlayer;
+        if (FPlayer == null)
+            FPlayer = PlayerManager.getMultiOPlayer(context, options, this);
+        return (OPlayer) FPlayer;
     }
 }

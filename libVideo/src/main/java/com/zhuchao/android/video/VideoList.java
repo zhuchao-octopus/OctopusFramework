@@ -14,19 +14,24 @@
 
 package com.zhuchao.android.video;
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.zhuchao.android.callbackevent.NormalRequestCallback;
 import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.libfileutils.MediaFile;
 
 import java.io.File;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 public class VideoList {
-    private NormalRequestCallback RequestCallBack = null;
-    private int count = 0;
+    private final String TAG = "VideoList";
+    //private NormalRequestCallback RequestCallBack = null;
+    //private int count = 0;
     private boolean threadLock = false;
     private HashMap<String, Object> FHashMap;
 
@@ -35,8 +40,8 @@ public class VideoList {
     }
 
     public VideoList(NormalRequestCallback requestCallBack) {
-        RequestCallBack = requestCallBack;
-        this.count = 0;
+        //RequestCallBack = requestCallBack;
+        //this.count = 0;
         this.threadLock = false;
         this.FHashMap = new HashMap();
     }
@@ -45,34 +50,69 @@ public class VideoList {
         return FHashMap;
     }
 
+    public void makeLinkAll() {
+        OMedia fVideo = findByIndex(0);
+        //OMedia lVideo = findByIndex(FHashMap.size() - 1);
+        for (int i = 0; i < getCount(); i++) {
+            OMedia o = findByIndex(i);
+            OMedia oo = findByIndex(i + 1);
+            if (oo != null) {
+                o.setNext(oo);
+                //Log.d(TAG, "oo= " + oo.toString());
+            } else {
+                o.setNext(fVideo);
+                fVideo.setPre(o);
+            }
+        }
+    }
+
     public void add(OMedia oMedia) {
         if (oMedia == null) return;
-        if (findByPath(oMedia.getMovie().getsUrl()) != null) return;
-
         OMedia fVideo = findByIndex(0);
         OMedia lVideo = findByIndex(FHashMap.size() - 1);
+        if (lVideo != null) {//依次连接
+            lVideo.setNext(oMedia);
+            oMedia.setPre(lVideo);
+        }
+        if (fVideo != null) {//首尾连接
+            fVideo.setPre(oMedia);
+            oMedia.setNext(fVideo);
+        }
+        FHashMap.put(oMedia.md5(), oMedia);
+        //Log.d(TAG, "add1");
+    }
 
+    public void add(String fileName) {
+        if(TextUtils.isEmpty(fileName)) return;
+        OMedia oMedia = new OMedia(fileName);
+        OMedia fVideo = findByIndex(0);
+        OMedia lVideo = findByIndex(FHashMap.size() - 1);
         if (lVideo != null) {
             lVideo.setNext(oMedia);
             oMedia.setPre(lVideo);
-        } else {
-            oMedia.setPre(oMedia);
-            oMedia.setNext(oMedia);
         }
         if (fVideo != null) {
             fVideo.setPre(oMedia);
             oMedia.setNext(fVideo);
         }
         FHashMap.put(oMedia.md5(), oMedia);
+        //Log.d(TAG, count+":add2");
     }
 
-    public void add(String FileName) {
-        OMedia oMedia = new OMedia(FileName);
-        FHashMap.put(oMedia.md5(), oMedia);
-    }
-
-    public void add(String key, Object Obj) {
-        FHashMap.put(key, Obj);
+    public void add(String Key, Object obj) {
+        OMedia oMedia = (OMedia) obj;
+        OMedia fVideo = findByIndex(0);
+        OMedia lVideo = findByIndex(FHashMap.size() - 1);
+        if (lVideo != null) {
+            lVideo.setNext(oMedia);
+            oMedia.setPre(lVideo);
+        }
+        if (fVideo != null) {
+            fVideo.setPre(oMedia);
+            oMedia.setNext(fVideo);
+        }
+        FHashMap.put(Key, obj);
+        //Log.d(TAG, "add3");
     }
 
     public void delete(OMedia oMedia) {
@@ -84,20 +124,13 @@ public class VideoList {
         if (oNext != null)
             oNext.setPre(oPre);
         FHashMap.remove(oMedia);
+        Log.d(TAG, "delete");
     }
 
     public void delete(String fileName) {
         OMedia ob = findByPath(fileName);
         if (ob != null)
             delete(ob);
-    }
-
-    public int getCount() {
-        return FHashMap.size();
-    }
-
-    public void clear() {
-        FHashMap.clear();
     }
 
     public OMedia findByIndex(int index) {
@@ -138,6 +171,51 @@ public class VideoList {
         return (OMedia) randomValue;
     }
 
+    public int getCount() {
+        return FHashMap.size();
+    }
+
+    public void clear() {
+        FHashMap.clear();
+    }
+
+    public void printAll() {
+        int i=0;
+        for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
+            OMedia oMedia = (OMedia) m.getValue();
+            Log.d(TAG, i+":"+oMedia.getPathName());
+            i++;
+        }
+    }
+
+    public void printAllByIndex() {
+        for (int i = 0; i < getCount(); i++) {
+            OMedia oMedia = findByIndex(i);
+            if (oMedia != null)
+                Log.d(TAG, i + ":" + oMedia.getPathName());
+            else
+                Log.d(TAG, "null");
+        }
+    }
+
+    public void printFollow() {
+        if (getCount() <= 0) return;
+        OMedia oMedia = findByIndex(0);
+        Log.d(TAG, "0:↓"+oMedia.getPathName());
+        if (getCount() <= 1) return;
+        for (int i = 1; i < getCount(); i++)
+        {
+            if (oMedia != null)
+            {
+                oMedia = oMedia.getNext();
+                if (oMedia != null)
+                    Log.d(TAG, i+":↓"+oMedia.getPathName());
+                else
+                    Log.d(TAG, "null");
+            }
+        }
+    }
+
     public void loadFromDir(String dirPath, int FileType) {
         if (threadLock) return;
         new Thread() {
@@ -161,11 +239,13 @@ public class VideoList {
         for (File file : files) {
             if (file.isDirectory()) {
                 getMediaFileName(file.listFiles(), fileType);
-            } else {
+            }
+            else
+            {
                 filePathName = file.getPath();// +"  "+ file.getName() ;
                 MediaFile.MediaFileType mm = MediaFile.getFileType(filePathName);
-                if (mm != null) {
-                    count++;
+                if (mm != null)
+                {
                     if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == 100)) {
                         add(filePathName);//所有的媒体文件
                     } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == 101)) {
@@ -178,9 +258,6 @@ public class VideoList {
                         add(filePathName);
                     } else if (fileType == 99) {
                         add(filePathName);//所有的文件
-                    }
-                    if (RequestCallBack != null) {
-                        RequestCallBack.onRequestComplete(filePathName, count);
                     }
                 }
             }

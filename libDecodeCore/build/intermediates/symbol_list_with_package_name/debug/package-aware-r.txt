@@ -1,0 +1,2 @@
+com.zhuchao.android.decodecore
+string app_name

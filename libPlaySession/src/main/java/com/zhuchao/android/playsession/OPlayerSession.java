@@ -235,7 +235,7 @@ public class OPlayerSession implements SessionCompleteCallback {
     }
 
     public void initMediasFromPath(Context context, String FilePath, Integer fType) {
-        List<String> FileList = MediaFile.getMediaFiles(context, FilePath, fType);
+        List<String> FileList = MediaFile.getMediaFiles(FilePath, fType);
         for (int i = 0; i < FileList.size(); i++) {
             Movie movie = new Movie(FileList.get(i));
             String filename = getFileName(movie.getsUrl());

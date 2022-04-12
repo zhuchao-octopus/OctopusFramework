@@ -8,6 +8,7 @@ import android.hardware.usb.UsbManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
@@ -196,7 +197,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
     }
 
     private void initMobileSessionContent(final String DeviceName, final String DevicePath) {
-        //Log.d(TAG, "initMobileSessionContent  " +DeviceName+":"+ DevicePath);
+        Log.d(TAG, "initMobileSessionContent  " +DeviceName+":"+ DevicePath);
         if (DeviceName == null) return;
         OPlayerSession mSession = null;
 
@@ -341,7 +342,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
         //Log.d(TAG, "OnSessionComplete mIniType = " + mIniType + ",  sessionId=" + sessionId);
     }
 
-    private Handler myHandler = new Handler() {
+    private Handler myHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
