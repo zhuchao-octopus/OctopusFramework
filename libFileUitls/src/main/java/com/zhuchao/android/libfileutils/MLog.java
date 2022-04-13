@@ -1,5 +1,7 @@
 package com.zhuchao.android.libfileutils;
 
+import android.util.Log;
+
 import java.util.Properties;
 
 public class MLog {
@@ -16,7 +18,7 @@ public class MLog {
     }
 
     public static void log(String TAG, String logMsg) {
-        if (debugOnOff.equals(true))
-            log(TAG, logMsg);
+        if (debugOnOff.equals("true"))
+            Log.d(TAG, logMsg);
     }
 }

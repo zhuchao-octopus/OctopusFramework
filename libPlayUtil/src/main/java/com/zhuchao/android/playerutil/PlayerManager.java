@@ -11,16 +11,16 @@ public class PlayerManager {
     private static PlayControl FOPlayer = null;
 
     public synchronized static PlayControl getSingleOPlayer(Context context, PlayerCallback callback) {
-        //if (FOPlayer == null) {
-        FOPlayer = new OPlayer(context, callback);
-        //}
+        if (FOPlayer == null) {//不可以注释非常重要，全局单例对象
+            FOPlayer = new OPlayer(context, callback);
+        }
         return FOPlayer;
     }
 
     public synchronized static PlayControl getSingleOPlayer(Context context, ArrayList<String> options, PlayerCallback callback) {
-        //if (FOPlayer == null) {
-        FOPlayer = new OPlayer(context, options, callback);
-        //}
+        if (FOPlayer == null) {
+            FOPlayer = new OPlayer(context, options, callback);
+        }
         return FOPlayer;
     }
 
@@ -33,10 +33,14 @@ public class PlayerManager {
     }
 
     public synchronized static PlayControl getSingleMPlayer(Context context, PlayerCallback callback) {
-        //if (FOPlayer == null) {
-        FOPlayer = new MPlayer(context, callback);
-        //}
+        if (FOPlayer == null) {
+            FOPlayer = new MPlayer(context, callback);
+        }
         return FOPlayer;
+    }
+
+    public synchronized static PlayControl getMultiMPlayer(Context context, PlayerCallback callback) {
+        return new MPlayer(context, callback);
     }
 
     public static void reset() {

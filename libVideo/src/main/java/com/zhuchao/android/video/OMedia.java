@@ -426,8 +426,6 @@ public class OMedia implements Serializable, PlayerCallback {
             return true;
     }
 
-    //int NothingSpecial=0;//int Opening=1;//int Buffering=2;//int Playing=3;//int Paused=4;
-    //int Stopped=5; //int Ended=6;//int Error=7;
     @Override
     public void OnEventCallBack(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
         //int ii = getPlayState();
@@ -438,7 +436,7 @@ public class OMedia implements Serializable, PlayerCallback {
             case PlaybackEvent.Status_Playing:
             case PlaybackEvent.Status_Paused:
                 if (playTime > getTime()) {
-                    MLog.log(TAG, "go to position = " + playTime);
+                    MLog.log(TAG, "OnEventCallBack go to position = " + playTime);
                     setTime(playTime);
                     playTime = 0;
                 }
@@ -563,12 +561,12 @@ public class OMedia implements Serializable, PlayerCallback {
             switch (MagicNum) {
                 case 1:
                     FPlayer = PlayerManager.getSingleOPlayer(context, options, this);
-                    MLog.log(TAG, FPlayer.getTAG() + ",MagicNum = " + MagicNum);
+                    //MLog.log(TAG, FPlayer.getTAG() + ",MagicNum = " + MagicNum);
                     break;
                 case 0:
                 default:
                     FPlayer = PlayerManager.getSingleMPlayer(context, this);
-                    MLog.log(TAG, FPlayer.getTAG() + ",MagicNum = " + MagicNum);
+                    //MLog.log(TAG, FPlayer.getTAG() + ",MagicNum = " + MagicNum);
                     break;
             }
         }

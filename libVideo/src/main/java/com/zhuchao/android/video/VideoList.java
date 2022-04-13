@@ -30,7 +30,8 @@ import java.util.Random;
 public class VideoList {
     private String TAG = "VideoList";
     private NormalRequestCallback RequestCallBack = null;
-    //private int count = 0;
+    private OMedia fVideo = null;
+    private OMedia lVideo = null;
     private boolean threadLock = false;
     private HashMap<String, Object> FHashMap;
 
@@ -44,9 +45,8 @@ public class VideoList {
         return FHashMap;
     }
 
-    public void makeLinkAll() {
+    public void makeSingleLinkAll() {
         OMedia fVideo = findByIndex(0);
-        //OMedia lVideo = findByIndex(FHashMap.size() - 1);
         for (int i = 0; i < getCount(); i++) {
             OMedia o = findByIndex(i);
             OMedia oo = findByIndex(i + 1);
@@ -63,8 +63,8 @@ public class VideoList {
     public void add(OMedia oMedia) {
         if (oMedia == null) return;
         if(FHashMap.containsKey(oMedia.md5())) return;
-        OMedia fVideo = findByIndex(0);
-        OMedia lVideo = findByIndex(FHashMap.size() - 1);
+        if(getCount()<=0) fVideo = oMedia;
+
         if (lVideo != null) {//依次连接
             lVideo.setNext(oMedia);
             oMedia.setPre(lVideo);
@@ -74,6 +74,7 @@ public class VideoList {
             oMedia.setNext(fVideo);
         }
         FHashMap.put(oMedia.md5(), oMedia);
+        lVideo = oMedia;
         //MLog.log(TAG, "add1");
     }
 
@@ -236,8 +237,12 @@ public class VideoList {
                     } else if (fileType == 99) {
                         add(filePathName);//所有的文件
                     }
-                    if (RequestCallBack != null)
-                        RequestCallBack.onRequestComplete(TAG,fileType);
+                    try {
+                        if (RequestCallBack != null)
+                            RequestCallBack.onRequestComplete(TAG,fileType);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
