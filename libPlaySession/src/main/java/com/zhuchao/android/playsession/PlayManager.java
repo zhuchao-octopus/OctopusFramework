@@ -201,17 +201,19 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
     //int Stopped=5; //int Ended=6;//int Error=7;
     @Override
     public void OnEventCallBack(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
-        int ii = oMedia.getPlayStatus();
-        switch (ii) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
+        //int ii = oMedia.getPlayStatus();
+        switch (EventType)
+        {
+            case PlaybackEvent.Status_NothingIdle:
+            case PlaybackEvent.Status_Opening:
+            case PlaybackEvent.Status_Buffering:
+            case PlaybackEvent.Status_Playing:
+            case PlaybackEvent.Status_Paused:
+            case PlaybackEvent.Status_Stopped:
+            case PlaybackEvent.MediaChanged:
                 break;
-            case 6:
-            case 7:
+            case PlaybackEvent.Status_Ended:
+            case PlaybackEvent.Status_Error:
                 if (playOrder == 0) //循序列表循环
                 {
                     if (oMedia.getNext() != null) {
@@ -363,7 +365,6 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         }
     }
 
-    //public static final int SESSION_TYPE_LOCALMEDIA = 10; //本地媒体
     @Override
     public void OnSessionComplete(int sessionId, String result) {
         MLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",result   = " + result);
@@ -375,29 +376,32 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
             MLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getMobileSession().getVideoList().getCount() = " + sessionManager.getMobileSession().getVideoList().getCount());
             if (isPlaying() == false && (autoPlay == SessionID.SESSION_SOURCE_MOBILE_USB || autoPlay == SessionID.SESSION_SOURCE_ALL)) {
                 playHandler.sendEmptyMessage(100);
+                return;
             }
         } else if (sessionId == SessionID.SESSION_SOURCE_LOCAL_INTERNAL) {
             MLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getLocalSession().getVideoList().getCount() = " + sessionManager.getLocalSession().getVideoList().getCount());
             if (isPlaying() == false && (autoPlay == SessionID.SESSION_SOURCE_LOCAL_INTERNAL || autoPlay == SessionID.SESSION_SOURCE_ALL)) {
                 playHandler.sendEmptyMessage(100);
+                return;
             }
         } else if (sessionId == SessionID.SESSION_SOURCE_PATH) {
             MLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getMobileTFSession().getVideoList().getCount() = " + sessionManager.getFileSession().getVideoList().getCount());
             if (isPlaying() == false && (autoPlay == SessionID.SESSION_SOURCE_LOCAL_INTERNAL || autoPlay == SessionID.SESSION_SOURCE_ALL)) {
                 playHandler.sendEmptyMessage(100);
+                return;
             }
         }
 
-        if (isPlaying() == false && (autoPlay == SessionID.SESSION_SOURCE_LOCAL_INTERNAL || autoPlay == SessionID.SESSION_SOURCE_ALL)) {
+        if (isPlaying() == false && (autoPlay == SessionID.SESSION_SOURCE_ALL)) {
             playHandler.sendEmptyMessage(100);
         }
-        //MLog.log(TAG, "getMobileTFSession().getVideoList().getCount() = " + sessionManager.getMobileTFSession().getVideoList().getCount());
     }
 
     @Override
     public void onRequestComplete(String Result, int Index) {
         if (autoPlay >= 0)
-           autoPlay(autoPlay);
+            playHandler.sendEmptyMessage(100);
+        MLog.log(TAG,Result+","+Index);
     }
 
     private Handler playHandler = new Handler(Looper.getMainLooper()) {

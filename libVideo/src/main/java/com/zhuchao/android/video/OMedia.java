@@ -8,6 +8,7 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 
 import com.zhuchao.android.callbackevent.NormalRequestCallback;
+import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.databaseutil.SPreference;
 import com.zhuchao.android.libfileutils.FilesManager;
@@ -431,20 +432,20 @@ public class OMedia implements Serializable, PlayerCallback {
     public void OnEventCallBack(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
         //int ii = getPlayState();
         switch (EventType) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
+            case PlaybackEvent.Status_NothingIdle:
+            case PlaybackEvent.Status_Opening:
+            case PlaybackEvent.Status_Buffering:
+            case PlaybackEvent.Status_Playing:
+            case PlaybackEvent.Status_Paused:
                 if (playTime > getTime()) {
                     MLog.log(TAG, "go to position = " + playTime);
                     setTime(playTime);
                     playTime = 0;
                 }
                 break;
-            case 5:
-            case 6:
-            case 7:
+            case PlaybackEvent.Status_Stopped:
+            case PlaybackEvent.Status_Ended:
+            case PlaybackEvent.Status_Error:
                 playTime = 0;
                 break;
         }
