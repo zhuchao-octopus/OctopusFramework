@@ -4,15 +4,12 @@ import android.app.ActivityManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
-import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.List;
 
-public class ForegroundAppUtil {
+public class AppUtil {
     private static final String TAG ="ForegroundAppUtil";
     //private static final long END_TIME = System.currentTimeMillis();
     //private static final long TIME_INTERVAL = 7 * 24 * 60 * 60 * 1000L;
@@ -35,7 +32,7 @@ public class ForegroundAppUtil {
             if (initStat != null)
             {
                 topClassName = initStat.getPackageName();
-                Log.d(TAG,"getForegroundActivityName topClassName="+topClassName);
+                MLog.log(TAG,"getForegroundActivityName topClassName="+topClassName);
             }
         }
         if(TextUtils.isEmpty(topClassName))
@@ -126,7 +123,7 @@ public class ForegroundAppUtil {
                 //context.getApplicationContext().startActivity(intent);
                 //Toast t = Toast.makeText(context,"need permmition to access settings .", Toast.LENGTH_LONG);
                 //t.show();
-                Log.d(TAG,"getUsageStatsList fail,need Settings.ACTION_USAGE_ACCESS_SETTINGS permission");
+                MLog.log(TAG,"getUsageStatsList fail,need Settings.ACTION_USAGE_ACCESS_SETTINGS permission");
                 return null;
             }
             return UsageStatsList;

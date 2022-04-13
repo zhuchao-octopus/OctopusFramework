@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class FileFinger extends ObjectList {
+public class FilesFinger extends ObjectList {
     private NormalRequestCallback RequestCallBack = null;
     private int count = 0;
     private boolean stopScan = false;
@@ -19,7 +19,7 @@ public class FileFinger extends ObjectList {
     private long lStart = 0;
     private List<String> fileTypes = null;
 
-    public FileFinger(NormalRequestCallback requestCallBack) {
+    public FilesFinger(NormalRequestCallback requestCallBack) {
         super();
         count = 0;
         RequestCallBack = requestCallBack;

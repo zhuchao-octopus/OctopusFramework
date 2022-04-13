@@ -15,14 +15,13 @@
 package com.zhuchao.android.video;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.zhuchao.android.callbackevent.NormalRequestCallback;
 import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.MLog;
 import com.zhuchao.android.libfileutils.MediaFile;
 
 import java.io.File;
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +57,7 @@ public class VideoList {
             OMedia oo = findByIndex(i + 1);
             if (oo != null) {
                 o.setNext(oo);
-                //Log.d(TAG, "oo= " + oo.toString());
+                //MLog.MLog.logTAG, "oo= " + oo.toString());
             } else {
                 o.setNext(fVideo);
                 fVideo.setPre(o);
@@ -79,40 +78,19 @@ public class VideoList {
             oMedia.setNext(fVideo);
         }
         FHashMap.put(oMedia.md5(), oMedia);
-        //Log.d(TAG, "add1");
+        //MLog.log(TAG, "add1");
     }
 
     public void add(String fileName) {
-        if(TextUtils.isEmpty(fileName)) return;
+        if (TextUtils.isEmpty(fileName)) return;
         OMedia oMedia = new OMedia(fileName);
-        OMedia fVideo = findByIndex(0);
-        OMedia lVideo = findByIndex(FHashMap.size() - 1);
-        if (lVideo != null) {
-            lVideo.setNext(oMedia);
-            oMedia.setPre(lVideo);
-        }
-        if (fVideo != null) {
-            fVideo.setPre(oMedia);
-            oMedia.setNext(fVideo);
-        }
-        FHashMap.put(oMedia.md5(), oMedia);
-        //Log.d(TAG, count+":add2");
+        add(oMedia);
     }
 
-    public void add(String Key, Object obj) {
-        OMedia oMedia = (OMedia) obj;
-        OMedia fVideo = findByIndex(0);
-        OMedia lVideo = findByIndex(FHashMap.size() - 1);
-        if (lVideo != null) {
-            lVideo.setNext(oMedia);
-            oMedia.setPre(lVideo);
+    public void add(VideoList vl) {
+        for (HashMap.Entry<String, Object> oo : vl.getMap().entrySet()) {
+            add((OMedia) oo);
         }
-        if (fVideo != null) {
-            fVideo.setPre(oMedia);
-            oMedia.setNext(fVideo);
-        }
-        FHashMap.put(Key, obj);
-        //Log.d(TAG, "add3");
     }
 
     public void delete(OMedia oMedia) {
@@ -124,7 +102,7 @@ public class VideoList {
         if (oNext != null)
             oNext.setPre(oPre);
         FHashMap.remove(oMedia);
-        Log.d(TAG, "delete");
+        MLog.log(TAG, "delete");
     }
 
     public void delete(String fileName) {
@@ -180,10 +158,10 @@ public class VideoList {
     }
 
     public void printAll() {
-        int i=0;
+        int i = 0;
         for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
             OMedia oMedia = (OMedia) m.getValue();
-            Log.d(TAG, i+":"+oMedia.getPathName());
+            MLog.log(TAG, i + ":" + oMedia.getPathName());
             i++;
         }
     }
@@ -192,26 +170,24 @@ public class VideoList {
         for (int i = 0; i < getCount(); i++) {
             OMedia oMedia = findByIndex(i);
             if (oMedia != null)
-                Log.d(TAG, i + ":" + oMedia.getPathName());
+                MLog.log(TAG, i + ":" + oMedia.getPathName());
             else
-                Log.d(TAG, "null");
+                MLog.log(TAG, "null");
         }
     }
 
     public void printFollow() {
         if (getCount() <= 0) return;
         OMedia oMedia = findByIndex(0);
-        Log.d(TAG, "0:↓"+oMedia.getPathName());
+        MLog.log(TAG, "0:↓" + oMedia.getPathName());
         if (getCount() <= 1) return;
-        for (int i = 1; i < getCount(); i++)
-        {
-            if (oMedia != null)
-            {
+        for (int i = 1; i < getCount(); i++) {
+            if (oMedia != null) {
                 oMedia = oMedia.getNext();
                 if (oMedia != null)
-                    Log.d(TAG, i+":↓"+oMedia.getPathName());
+                    MLog.log(TAG, i + ":↓" + oMedia.getPathName());
                 else
-                    Log.d(TAG, "null");
+                    MLog.log(TAG, "null");
             }
         }
     }
@@ -239,13 +215,10 @@ public class VideoList {
         for (File file : files) {
             if (file.isDirectory()) {
                 getMediaFileName(file.listFiles(), fileType);
-            }
-            else
-            {
+            } else {
                 filePathName = file.getPath();// +"  "+ file.getName() ;
                 MediaFile.MediaFileType mm = MediaFile.getFileType(filePathName);
-                if (mm != null)
-                {
+                if (mm != null) {
                     if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == 100)) {
                         add(filePathName);//所有的媒体文件
                     } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == 101)) {

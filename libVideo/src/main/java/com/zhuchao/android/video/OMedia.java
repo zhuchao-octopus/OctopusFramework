@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.SurfaceView;
 import android.view.TextureView;
 
@@ -12,6 +11,7 @@ import com.zhuchao.android.callbackevent.NormalRequestCallback;
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.databaseutil.SPreference;
 import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.MLog;
 import com.zhuchao.android.libfileutils.MediaFile;
 import com.zhuchao.android.netutil.OkHttpUtils;
 import com.zhuchao.android.playerutil.PlayControl;
@@ -437,7 +437,7 @@ public class OMedia implements Serializable, PlayerCallback {
             case 3:
             case 4:
                 if (playTime > getTime()) {
-                    Log.d(TAG, "go to position = " + playTime);
+                    MLog.log(TAG, "go to position = " + playTime);
                     setTime(playTime);
                     playTime = 0;
                 }
@@ -538,11 +538,8 @@ public class OMedia implements Serializable, PlayerCallback {
 
     public boolean isAvailable(String cachePath) {
         boolean bf = false;
-        if (this.uri != null ||
-                this.assetFileDescriptor != null ||
-                this.fileDescriptor != null)
+        if (this.uri != null || this.assetFileDescriptor != null || this.fileDescriptor != null)
             bf = true;
-
         else if (FilesManager.isExists(movie.getsUrl()))
             bf = MediaFile.isMediaFile(movie.getsUrl());
         else if (FilesManager.isExists(cachePath + movie.getName()))
@@ -565,12 +562,12 @@ public class OMedia implements Serializable, PlayerCallback {
             switch (MagicNum) {
                 case 1:
                     FPlayer = PlayerManager.getSingleOPlayer(context, options, this);
-                    Log.d(TAG, FPlayer.getTAG() + ",MagicNum = " + MagicNum);
+                    MLog.log(TAG, FPlayer.getTAG() + ",MagicNum = " + MagicNum);
                     break;
                 case 0:
                 default:
                     FPlayer = PlayerManager.getSingleMPlayer(context, this);
-                    Log.d(TAG, FPlayer.getTAG() + ",MagicNum = " + MagicNum);
+                    MLog.log(TAG, FPlayer.getTAG() + ",MagicNum = " + MagicNum);
                     break;
             }
         }

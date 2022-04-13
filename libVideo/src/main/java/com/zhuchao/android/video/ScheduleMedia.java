@@ -1,9 +1,6 @@
 package com.zhuchao.android.video;
 
-import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.netutil.TimeDateUtils;
-
-import java.util.ArrayList;
 
 public class ScheduleMedia extends OMedia {
     private int mID=0;

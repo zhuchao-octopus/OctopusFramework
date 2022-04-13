@@ -16,6 +16,8 @@ package com.zhuchao.android.netutil;
  * limitations under the License.
  */
 
+import static okhttp3.internal.platform.Platform.INFO;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -35,8 +37,6 @@ import okhttp3.internal.http.HttpHeaders;
 import okhttp3.internal.platform.Platform;
 import okio.Buffer;
 import okio.BufferedSource;
-
-import static okhttp3.internal.platform.Platform.INFO;
 
 /**
  * An OkHttp interceptor which logs request and response information. Can be applied as an

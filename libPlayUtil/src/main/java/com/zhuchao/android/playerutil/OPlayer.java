@@ -3,11 +3,11 @@ package com.zhuchao.android.playerutil;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
-import android.util.Log;
 import android.view.SurfaceView;
 import android.view.TextureView;
 
 import com.zhuchao.android.callbackevent.PlayerCallback;
+import com.zhuchao.android.libfileutils.MLog;
 
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
@@ -65,7 +65,7 @@ public class OPlayer extends PlayControl {
             vlcVout = mMediaPlayer.getVLCVout();
             vlcVout.addCallback(mIVLCVoutCallBack);
             mMediaPlayer.setVolume(volumeValue);
-            //Log.d(TAG,"OPlayer=========>");
+            //MLog.log(TAG,"OPlayer=========>");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,7 +86,7 @@ public class OPlayer extends PlayControl {
             vlcVout = mMediaPlayer.getVLCVout();
             vlcVout.addCallback(mIVLCVoutCallBack);
             mMediaPlayer.setVolume(volumeValue);
-            //Log.d(TAG, "OPlayer=========>");
+            //MLog.log(TAG, "OPlayer=========>");
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
@@ -224,7 +224,7 @@ public class OPlayer extends PlayControl {
         //vlcVout.addCallback(mIVLCVoutCallBack);
         mSurfaceView = surfaceView;
         mTextureView = null;
-        Log.d(TAG, "re attached surface view successful");
+        MLog.log(TAG, "re attached surface view successful");
     }
 
     public void reAttachTextureView(TextureView textureView) {
@@ -425,13 +425,13 @@ public class OPlayer extends PlayControl {
     class IVLCVoutCallBack implements IVLCVout.Callback, IVLCVout.OnNewVideoLayoutListener {
         @Override
         public void onNewVideoLayout(IVLCVout vlcVout, int width, int height, int visibleWidth, int visibleHeight, int sarNum, int sarDen) {
-            Log.d(TAG, "IVLCVoutCallBack ---> width=" + width + ",height=" + height + ",visibleWidth=" + visibleWidth + ",visibleHeight=" + visibleHeight
+            MLog.log(TAG, "IVLCVoutCallBack ---> width=" + width + ",height=" + height + ",visibleWidth=" + visibleWidth + ",visibleHeight=" + visibleHeight
                     + ",sarNum=" + sarNum + ",sarDen=" + sarDen);
         }
 
         @Override
         public void onSurfacesCreated(IVLCVout ivlcVout) {
-            Log.d(TAG, "IVLCVoutCallBack ---> onSurfacesCreated");
+            MLog.log(TAG, "IVLCVoutCallBack ---> onSurfacesCreated");
             if (mSurfaceView != null) {
                 vlcVout.setWindowSize(mSurfaceView.getWidth(), mSurfaceView.getHeight());
             } else if (mTextureView != null) {
@@ -443,7 +443,7 @@ public class OPlayer extends PlayControl {
 
         @Override
         public void onSurfacesDestroyed(IVLCVout ivlcVout) {
-            //Log.d(TAG, "IVLCVoutCallBack ---> onSurfacesDestroyed");
+            //MLog.log(TAG, "IVLCVoutCallBack ---> onSurfacesDestroyed");
         }
     }
 }

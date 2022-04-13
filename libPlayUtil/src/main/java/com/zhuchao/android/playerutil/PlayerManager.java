@@ -11,16 +11,16 @@ public class PlayerManager {
     private static PlayControl FOPlayer = null;
 
     public synchronized static PlayControl getSingleOPlayer(Context context, PlayerCallback callback) {
-        if (FOPlayer == null) {
-            FOPlayer = new OPlayer(context, callback);
-        }
+        //if (FOPlayer == null) {
+        FOPlayer = new OPlayer(context, callback);
+        //}
         return FOPlayer;
     }
 
     public synchronized static PlayControl getSingleOPlayer(Context context, ArrayList<String> options, PlayerCallback callback) {
-        if (FOPlayer == null) {
-            FOPlayer = new OPlayer(context, options, callback);
-        }
+        //if (FOPlayer == null) {
+        FOPlayer = new OPlayer(context, options, callback);
+        //}
         return FOPlayer;
     }
 
@@ -33,9 +33,9 @@ public class PlayerManager {
     }
 
     public synchronized static PlayControl getSingleMPlayer(Context context, PlayerCallback callback) {
-        if (FOPlayer == null) {
-            FOPlayer = new MPlayer(context, callback);
-        }
+        //if (FOPlayer == null) {
+        FOPlayer = new MPlayer(context, callback);
+        //}
         return FOPlayer;
     }
 

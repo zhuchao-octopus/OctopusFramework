@@ -9,9 +9,9 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.Gson;
+import com.zhuchao.android.libfileutils.MLog;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
@@ -151,7 +150,7 @@ public class NetUtils {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            Log.d(TAG, "Got Action>>>>>>>:" + action);
+            MLog.log(TAG, "Got Action>>>>>>>:" + action);
             new Thread() {
                 public void run() {
                     if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
@@ -261,12 +260,12 @@ public class NetUtils {
             while ((content = in.readLine()) != null) {
                 stringBuffer.append(content);
             }
-            Log.d(TAG,"ping IP:"+ip+" "+stringBuffer.toString());
+            MLog.log(TAG,"ping IP:"+ip+" "+stringBuffer.toString());
             // ping的状态
             int status = p.waitFor();
             if (status == 0) {
                 result = "success";
-                Log.d(TAG,"ping IP:"+ip+" "+result);
+                MLog.log(TAG,"ping IP:"+ip+" "+result);
                 return true;
             } else {
                 result = "failed";
@@ -277,7 +276,7 @@ public class NetUtils {
             result = "InterruptedException";
         } finally {
         }
-        Log.d(TAG,"ping IP:"+ip+" "+result);
+        MLog.log(TAG,"ping IP:"+ip+" "+result);
         return false;
     }
 
@@ -325,7 +324,7 @@ public class NetUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "");
+            MLog.log(TAG, "");
         }
 
         return "00:00:00:00:00:00";
@@ -379,10 +378,10 @@ public class NetUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "");
+            MLog.log(TAG, "");
         } finally {
             if (!wifiInitState) {
-                Log.d(TAG, "wifi close");
+                MLog.log(TAG, "wifi close");
                 mWifiManager.setWifiEnabled(false);
             }
         }
@@ -475,7 +474,7 @@ public class NetUtils {
                 {
                     IP0 = "";
                     Location = "";
-                    Log.d(TAG,"GetInternetIp" + e.toString());
+                    MLog.log(TAG,"GetInternetIp" + e.toString());
                 }
             }
         }.start();
@@ -495,7 +494,7 @@ public class NetUtils {
                 }
             }
         } catch (SocketException ex) {
-            Log.e("Exception", ex.toString());
+            MLog.log("Exception", ex.toString());
         }
         return "";
     }

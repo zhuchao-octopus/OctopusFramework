@@ -12,10 +12,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.core.content.FileProvider;
-//import com.zhuchao.android.databaseutil.SPreference;
+
+import com.zhuchao.android.callbackevent.AppsCallback;
 import com.zhuchao.android.libfileutils.bean.AppInfor;
 
 import java.io.File;
@@ -65,10 +65,9 @@ public class AppsManager {
         mAppsCallback = appsCallback;
         mPackageManager = mContext.getPackageManager();
         mExecutorService = Executors.newSingleThreadExecutor();
-
-        Log.d(TAG, "Init>>>>>>>>>>>>>>>>>>>>>>>>>>");
         UpdateAppsInfor();
         registerAppsReceiver();
+        MLog.log(TAG, "Init>>>>>>>>>>>>>>>>>>>>>>>>>>");
     }
 
     public List<String> getFilter() {
@@ -164,7 +163,7 @@ public class AppsManager {
                 AllAppInfors.add(appInfor);
 
                 if (mAppsCallback != null)
-                    mAppsCallback.OnAppsChanged(SCANING_ACTION, appInfor);
+                    mAppsCallback.OnAppsChanged(SCANING_ACTION, appInfor.toString());
 
             }
 
@@ -188,7 +187,7 @@ public class AppsManager {
 
         //int i = 0;
         //for (AppInfor Info : AllAppInfors) {
-        //    Log.d(TAG, "Apps[" + i + "]:" + Info.toString());
+        //    MLog.log(TAG, "Apps[" + i + "]:" + Info.toString());
         //    i++;
         //}
         //String myapp = SPreference.getSharedPreferences(mContext, "MyAppInfors", "MyAppInfors");
@@ -244,7 +243,7 @@ public class AppsManager {
 
             String action = intent.getAction();
 
-            Log.e(TAG, "BroadcastReceiver:" + intent.getAction());
+            MLog.log(TAG, "BroadcastReceiver:" + intent.getAction());
 
             if (action.equals(Intent.ACTION_PACKAGE_ADDED)) {
                 UpdateAppsInfor();
@@ -300,10 +299,10 @@ public class AppsManager {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-            Log.d(TAG, "LaunchApp>>>>" + infor.getPackageName());
+            MLog.log(TAG, "LaunchApp>>>>" + infor.getPackageName());
             return true;
         } else {
-            Log.d(TAG, "LaunchApp not found>>>>" + infor.getPackageName());
+            MLog.log(TAG, "LaunchApp not found>>>>" + infor.getPackageName());
             return false;
         }
     }
@@ -316,10 +315,10 @@ public class AppsManager {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-            Log.d(TAG, "LaunchApp>>>>" + packageName);
+            MLog.log(TAG, "LaunchApp>>>>" + packageName);
             return true;
         } else {
-            Log.d(TAG, "LaunchApp not found>>>>" + packageName);
+            MLog.log(TAG, "LaunchApp not found>>>>" + packageName);
             return false;
         }
     }
@@ -339,10 +338,10 @@ public class AppsManager {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-            Log.d(TAG, "LaunchApp>>>>" + packageName);
+            MLog.log(TAG, "LaunchApp>>>>" + packageName);
             return true;
         } else {
-            Log.d(TAG, "LaunchApp not found>>>>" + packageName);
+            MLog.log(TAG, "LaunchApp not found>>>>" + packageName);
             return false;
         }
     }
@@ -357,10 +356,10 @@ public class AppsManager {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-            Log.d(TAG, "LaunchApp>>>>" + packageName);
+            MLog.log(TAG, "LaunchApp>>>>" + packageName);
             return true;
         } else {
-            Log.d(TAG, "LaunchApp not found>>>>" + packageName);
+            MLog.log(TAG, "LaunchApp not found>>>>" + packageName);
             return false;
         }
     }

@@ -17,7 +17,6 @@ package com.zhuchao.android.libfileutils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -414,22 +413,22 @@ public class MediaFile {
                     MediaFile.MediaFileType mm = MediaFile.getFileType(filePathName);
                     if (mm != null) {
                         if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == 100)) {
-                            //Log.d("getMediaFileName--->",fileName);//所有的媒体文件
+                            //MLog.log("getMediaFileName--->",fileName);//所有的媒体文件
                             FileList.add(filePathName);
                             sendProgressMessage(context, filePathName);
                         } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == 101)) {
-                            //Log.d("getMediaFileName--->",fileName);
+                            //MLog.log("getMediaFileName--->",fileName);
                             FileList.add(filePathName);
                             sendProgressMessage(context, filePathName);
                         } else if (MediaFile.isAudioFileType(mm.fileType) && (fileType == 102)) {
-                            //Log.d("getMediaFileName--->",fileName);
+                            //MLog.log("getMediaFileName--->",fileName);
                             FileList.add(filePathName);
                             sendProgressMessage(context, filePathName);
                         } else if ((MediaFile.isVideoFileType(mm.fileType) || isPlayListFileType(mm.fileType)) && (fileType == 103)) {
                             FileList.add(filePathName);
                             sendProgressMessage(context, filePathName);
                         } else if ((MediaFile.isVideoFileType(mm.fileType) || MediaFile.isAudioFileType(mm.fileType)) && (fileType == 104)) {
-                            //Log.d("getMediaFileName--->",filePathName);
+                            //MLog.log("getMediaFileName--->",filePathName);
                             FileList.add(filePathName);
                             sendProgressMessage(context, filePathName);
                         } else {

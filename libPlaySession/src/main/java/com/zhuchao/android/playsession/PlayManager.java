@@ -1,5 +1,8 @@
 package com.zhuchao.android.playsession;
 
+import static com.zhuchao.android.libfileutils.FilesManager.getDownloadDir;
+import static com.zhuchao.android.libfileutils.FilesManager.getFileName;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -8,19 +11,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.SurfaceView;
 
 import com.zhuchao.android.callbackevent.PlayerCallback;
-import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.MLog;
 import com.zhuchao.android.video.Movie;
 import com.zhuchao.android.video.OMedia;
 import com.zhuchao.android.video.VideoList;
 
 import java.io.FileDescriptor;
-
-import static com.zhuchao.android.libfileutils.FilesManager.getDownloadDir;
-import static com.zhuchao.android.libfileutils.FilesManager.getFileName;
 
 public class PlayManager implements PlayerCallback, SessionCompleteCallback {
     private final String TAG = "PlayManager";
@@ -32,7 +31,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
     private boolean isPlaying = false;
     private PlayerCallback callback = null;
     private String cachePath = getDownloadDir(null);
-    private boolean threadLock = false;
+    //private boolean threadLock = false;
     private int playOrder = Data.SESSION_SOURCE_ALL;
     private int autoPlay = Data.SESSION_SOURCE_ALL;
     public VideoList playingList = new VideoList();
@@ -84,23 +83,21 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
     }
 
     public void startPlay(OMedia oMedia) {
-        if (oMedia == null) {
-            Log.d(TAG, "There is no media to play！！！");
-            return;
-        }
         if (surfaceView == null) {
-            Log.d(TAG, "no surfaceView ！！！！！！");
+            MLog.log(TAG, "no surfaceView ！！！！！！");
             return;
         }
-        if (oMedia != null) {
-            if (!oMedia.isAvailable(cachePath)) {
-                Log.d(TAG, "The Source is not available! go next---> " + oMedia.getMovie().getsUrl());
-                playHandler.sendEmptyMessage(100);
-                return;
-            }
+        if (oMedia == null) {
+            MLog.log(TAG, "There is no media to play！！！");
+            return;
+        } else if (!oMedia.isAvailable(cachePath)) {
+            MLog.log(TAG, "The Source is not available! go next/pre---> " + oMedia.getMovie().getsUrl());
+            playHandler.sendEmptyMessage(200);
+            return;
         }
+
         this.oMedia = oMedia;
-        Log.d(TAG, "StartPlay --> " + oMedia.getMovie().getsUrl() + ", Last time = " + oMedia.getPlayTime());
+        MLog.log(TAG, "StartPlay --> " + oMedia.getMovie().getsUrl() + ", Last time = " + oMedia.getPlayTime());
         this.oMedia.setMagicNum(MagicNum);
         this.oMedia.with(context);
         this.oMedia.setNormalRate();
@@ -240,24 +237,14 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
     public void setCachePath(String CacheDir) {
         this.cachePath = CacheDir;
         if (playingList.getCount() > 0) return;
-        if (FilesManager.isExists(cachePath)) {
-            if (threadLock) return;
-            new Thread() {     //不可在主线程中调用
-                public void run() {
-                    threadLock = true;
-                    try {
-                        updatePlayingList();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    threadLock = false;
-                }
-            }.start();
+        try {
+            updatePlayingList();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public synchronized void updatePlayingList() {
-        if (threadLock) return;
         playingList.clear();
         playingList.loadFromDir(cachePath, Data.MEDIA_TYPE_ID_AllMEDIA);
     }
@@ -352,35 +339,30 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
         //跳过无效的资源
         if (oMedia == null)
             startPlay(ooMedia);
-        else if (ooMedia != null) {
-            if (playOrder == 1)
-                startPlay(ooMedia.getNext());
-            else if (playOrder == 2)
-                startPlay(ooMedia.getPre());
-            else ;
-        } else ;
+        else
+            startPlay(oMedia);
     }
 
     //public static final int SESSION_TYPE_LOCALMEDIA = 10; //本地媒体
     @Override
     public void OnSessionComplete(int sessionId, String result) {
-        Log.d(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",result   = " + result);
-        Log.d(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",autoPlay = " + autoPlay + ",getAllVideoList().size() = " + sessionManager.getAllMedias().size());
+        MLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",result   = " + result);
+        MLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",autoPlay = " + autoPlay + ",getAllVideoList().size() = " + sessionManager.getAllMedias().size());
         if (sessionId <= 0) {
             if (isPlaying()) this.playPause();
         }
         if (sessionId == Data.SESSION_SOURCE_MOBILE_USB) {
-            Log.d(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getMobileSession().getVideoList().getCount() = " + sessionManager.getMobileSession().getVideoList().getCount());
+            MLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getMobileSession().getVideoList().getCount() = " + sessionManager.getMobileSession().getVideoList().getCount());
             if (isPlaying() == false && (autoPlay == Data.SESSION_SOURCE_MOBILE_USB || autoPlay == Data.SESSION_SOURCE_ALL)) {
                 playHandler.sendEmptyMessage(100);
             }
         } else if (sessionId == Data.SESSION_SOURCE_LOCAL_INTERNAL) {
-            Log.d(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getLocalSession().getVideoList().getCount() = " + sessionManager.getLocalSession().getVideoList().getCount());
+            MLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getLocalSession().getVideoList().getCount() = " + sessionManager.getLocalSession().getVideoList().getCount());
             if (isPlaying() == false && (autoPlay == Data.SESSION_SOURCE_LOCAL_INTERNAL || autoPlay == Data.SESSION_SOURCE_ALL)) {
                 playHandler.sendEmptyMessage(100);
             }
         } else if (sessionId == Data.SESSION_SOURCE_PATH) {
-            Log.d(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getMobileTFSession().getVideoList().getCount() = " + sessionManager.getFileSession().getVideoList().getCount());
+            MLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getMobileTFSession().getVideoList().getCount() = " + sessionManager.getFileSession().getVideoList().getCount());
             if (isPlaying() == false && (autoPlay == Data.SESSION_SOURCE_LOCAL_INTERNAL || autoPlay == Data.SESSION_SOURCE_ALL)) {
                 playHandler.sendEmptyMessage(100);
             }
@@ -389,7 +371,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
         if (isPlaying() == false && (autoPlay == Data.SESSION_SOURCE_LOCAL_INTERNAL || autoPlay == Data.SESSION_SOURCE_ALL)) {
             playHandler.sendEmptyMessage(100);
         }
-        //Log.d(TAG, "getMobileTFSession().getVideoList().getCount() = " + sessionManager.getMobileTFSession().getVideoList().getCount());
+        //MLog.log(TAG, "getMobileTFSession().getVideoList().getCount() = " + sessionManager.getMobileTFSession().getVideoList().getCount());
     }
 
     private Handler playHandler = new Handler(Looper.getMainLooper()) {
@@ -397,7 +379,6 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            //Log.i(TAG, "   handlerMessage msg.what= " + msg.what);
             switch (msg.what) {
                 case 100://自动播放
                     autoPlay(autoPlay);
@@ -418,6 +399,12 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
                 case 104://随机播放
                     if (playOrder == 3)
                         startPlay(playingList.findAny());
+                    break;
+                case 200://下一首或上一首
+                    if (playOrder == 1)
+                        playNext();
+                    else if (playOrder == 2)
+                        playPre();
                     break;
                 default:
                     break;

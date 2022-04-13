@@ -2,14 +2,13 @@ package com.zhuchao.android.netutil;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.zhuchao.android.callbackevent.NormalRequestCallback;
+import com.zhuchao.android.libfileutils.MLog;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import me.jessyan.progressmanager.BuildConfig;
@@ -53,7 +52,7 @@ public class OkHttpUtils  {
         OkHttpUtils.getInstance().getOkHttpClient().newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.d(TAG, "Failed:" + url);
+                MLog.log(TAG, "Failed:" + url);
                 try {
                     if(normalRequestCallBack != null)
                     normalRequestCallBack.onRequestComplete("", -1);
@@ -67,14 +66,14 @@ public class OkHttpUtils  {
                 if (response != null && response.isSuccessful()) {
                     String result = response.body().string();
 
-                    Log.d(TAG, "ok:" + url);
-                    Log.d(TAG, "gt:" + result);
+                    MLog.log(TAG, "ok:" + url);
+                    MLog.log(TAG, "gt:" + result);
                     if(normalRequestCallBack != null)
                     normalRequestCallBack.onRequestComplete(result, 0);
                 }
                 else
                 {
-                    Log.d(TAG, "failed:" + url);
+                    MLog.log(TAG, "failed:" + url);
                     //normalRequestCallBack.onRequestComplete("", -1);
                 }
             }
@@ -93,7 +92,7 @@ public class OkHttpUtils  {
                 {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.d(TAG, "Download Failed From :" + url);
+                MLog.log(TAG, "Download Failed From :" + url);
                 if(normalRequestCallBack != null)
                 normalRequestCallBack.onRequestComplete("", -1);
             }
@@ -103,7 +102,7 @@ public class OkHttpUtils  {
                 if (response != null && response.isSuccessful())
                 {
                     //String result = response.body().string();
-                    Log.d(TAG, "Download from:" + url+" to "+toPath);
+                    MLog.log(TAG, "Download from:" + url+" to "+toPath);
 
                     InputStream inputStream = response.body().byteStream();
                     FileOutputStream fos = new FileOutputStream(toPath);
@@ -114,18 +113,18 @@ public class OkHttpUtils  {
                     while ((len = inputStream.read(buffer)) != -1) {
                         fos.write(buffer, 0, len);
                         sum += len;
-                        //Log.d(TAG, "Downloading:" + sum+"/"+tlen);
+                        //MLog.log(TAG, "Downloading:" + sum+"/"+tlen);
                     }
                     fos.flush();
                     fos.close();
                     inputStream.close();
 
-                    Log.d(TAG, "Download successfully from:" + url+" to: " + toPath);
-                    //Log.d(TAG, "Saved    successfully to:" + toPath);
+                    MLog.log(TAG, "Download successfully from:" + url+" to: " + toPath);
+                    //MLog.log(TAG, "Saved    successfully to:" + toPath);
                     if(normalRequestCallBack != null)
                     normalRequestCallBack.onRequestComplete("success", 0);
                 } else {
-                    Log.d(TAG, "download failed from :" + url);
+                    MLog.log(TAG, "download failed from :" + url);
                     //normalRequestCallBack.onRequestComplete("", -1);
                 }
             }

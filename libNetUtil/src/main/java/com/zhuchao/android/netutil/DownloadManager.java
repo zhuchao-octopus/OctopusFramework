@@ -12,7 +12,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -24,10 +23,10 @@ import java.security.NoSuchAlgorithmException;
 public class DownloadManager {
     private final String TAG = "DownloadManager-->";
     private static DownloadManager manager = null;
-    private String mRemouteFileUrl = "";
-    private String mLocalFilePath = "";
-    private Context mcontext;
     private static String authoritiesAppID = null;
+    private String mRemoteFileUrl = "";
+    private String mLocalFilePath = "";
+    private Context mContext;
 
     private DownloadManager() {
         //this.activity = activity;
@@ -46,17 +45,17 @@ public class DownloadManager {
         return manager;
     }
 
-    public DownloadManager(String mRemouteFileUrl, String mLocalFilePathName) {
-        this.mRemouteFileUrl = mRemouteFileUrl;
+    public DownloadManager(String mRemoteFileUrl, String mLocalFilePathName) {
+        this.mRemoteFileUrl = mRemoteFileUrl;
         this.mLocalFilePath = mLocalFilePathName;
     }
 
-    public String getmRemouteFileUrl() {
-        return mRemouteFileUrl;
+    public String getmRemoteFileUrl() {
+        return mRemoteFileUrl;
     }
 
-    public void setmRemouteFileUrl(String mRemouteFileUrl) {
-        this.mRemouteFileUrl = mRemouteFileUrl;
+    public void setmRemoteFileUrl(String mRemoteFileUrl) {
+        this.mRemoteFileUrl = mRemoteFileUrl;
     }
 
     public String getmLocalFilePath() {
@@ -68,12 +67,12 @@ public class DownloadManager {
     }
 
     public DownloadManager with(Context context) {
-        mcontext = context;
+        mContext = context;
         return this;
     }
 
     public DownloadManager downloadFrom(String url) {
-        mRemouteFileUrl = url;
+        mRemoteFileUrl = url;
         return this;
     }
 
@@ -82,7 +81,7 @@ public class DownloadManager {
         new Thread() {
             public void run() {
                 Looper.prepare();
-                downloadFile(mRemouteFileUrl, mLocalFilePath);
+                downloadFile(mRemoteFileUrl, mLocalFilePath);
                 Looper.loop();
             }
         }.start();
@@ -90,17 +89,17 @@ public class DownloadManager {
     }
 
     public String download(String url) {
-        mRemouteFileUrl = url;
+        mRemoteFileUrl = url;
         //File file0 = new File(mRemouteFileUrl);
 
-        mLocalFilePath = getDownloadCacheDir(mcontext) + stringToMD5(url) + FilesManager.getExtFromFileFullName(url);     // ".mp4";
+        mLocalFilePath = getDownloadCacheDir(mContext) + stringToMD5(url) + FilesManager.getExtFromFileFullName(url);     // ".mp4";
         File file = new File(mLocalFilePath);
 
         if (!file.exists()) {
             new Thread() {
                 public void run() {
                     Looper.prepare();
-                    downloadFile(mRemouteFileUrl, mLocalFilePath);
+                    downloadFile(mRemoteFileUrl, mLocalFilePath);
                     Looper.loop();
                 }
             }.start();
@@ -200,13 +199,13 @@ public class DownloadManager {
     }
 
     public Boolean ExistsLocalCacheFile(String url) {
-        String fileName = getDownloadCacheDir(mcontext) + stringToMD5(url) + FilesManager.getExtFromFileFullName(url);//".mp4";
+        String fileName = getDownloadCacheDir(mContext) + stringToMD5(url) + FilesManager.getExtFromFileFullName(url);//".mp4";
         File file = new File(fileName);
         return file.exists();
     }
 
     public String GetLocalCacheFile(String url) {
-        String fileName = getDownloadCacheDir(mcontext) + stringToMD5(url) + FilesManager.getExtFromFileFullName(url);//".mp4";
+        String fileName = getDownloadCacheDir(mContext) + stringToMD5(url) + FilesManager.getExtFromFileFullName(url);//".mp4";
         return fileName;
     }
 

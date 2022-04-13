@@ -10,9 +10,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.MLog;
 import com.zhuchao.android.netutil.NetUtils;
 import com.zhuchao.android.video.OMedia;
 
@@ -99,7 +99,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
         new Thread() {
             public void run() {
                 mThreadLock1 = true;
-                Log.d(TAG, "initLocalSessionContent 本地媒体库");
+                MLog.log(TAG, "initLocalSessionContent 本地媒体库");
                 OPlayerSession lSession = null;
 
                 lSession = new OPlayerSession(OPlayerSessionManager.this);
@@ -141,7 +141,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
                 mThreadLock2 = true;
                 mobileDiscs = FilesManager.getUDiscName(mContext);
                 if (mobileDiscs.isEmpty()) {
-                    Log.d(TAG, " no device found ");
+                    MLog.log(TAG, " no device found ");
                     mThreadLock2 = false;
                     return;
                 }
@@ -197,7 +197,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
     }
 
     private void initMobileSessionContent(final String DeviceName, final String DevicePath) {
-        Log.d(TAG, "initMobileSessionContent  " +DeviceName+":"+ DevicePath);
+        MLog.log(TAG, "initMobileSessionContent  " +DeviceName+":"+ DevicePath);
         if (DeviceName == null) return;
         OPlayerSession mSession = null;
 
@@ -233,7 +233,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
     }
 
     private void updateCategorySession() { //顶层分类信息，顶层分类会话
-        Log.d(TAG, "updateTopSession mIniType = " + initStage);
+        MLog.log(TAG, "updateTopSession mIniType = " + initStage);
         if (initStage == 0) {
             categorySession.doUpdateSession(Data.SESSION_TYPE_GET_MOVIE_CATEGORY);
             categorySession.doUpdateSession(Data.SESSION_TYPE_GET_MOVIE_TYPE);
@@ -245,13 +245,13 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
         try {
             for (Map.Entry<Integer, OPlayerSession> entry : sessions.entrySet()) {
                 if (entry.getKey() <= Data.SESSION_SOURCE_LOCAL_INTERNAL) continue; //本地媒体ID
-                Log.d(TAG, "updateCategorySessionContent = " + entry.getKey());
+                MLog.log(TAG, "updateCategorySessionContent = " + entry.getKey());
                 entry.getValue().doUpdateSession(entry.getKey());
             }
             initStage = 3;
-            //Log.d(TAG, "initPlaySessionContent mIniType = " + mIniType);
+            //MLog.logTAG, "initPlaySessionContent mIniType = " + mIniType);
         } catch (Exception e) {
-            //Log.d(TAG, "initPlaySessionContent fail mIniType = " + mIniType + ":" + e.toString());
+            //MLog.logTAG, "initPlaySessionContent fail mIniType = " + mIniType + ":" + e.toString());
             e.printStackTrace();
         }
     }
@@ -297,7 +297,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
         List<OMedia> allOMedia = new ArrayList<>();
         for (Map.Entry<Integer, OPlayerSession> entry : sessions.entrySet()) {
             /*
-            Log.d(TAG, "printSessionsVideoList " + entry.getKey() + " : " + entry.getValue().getVideoCategoryNameList().get(entry.getKey())
+            MLog.logTAG, "printSessionsVideoList " + entry.getKey() + " : " + entry.getValue().getVideoCategoryNameList().get(entry.getKey())
                     + " Movies Count =" + entry.getValue().getVideos().size());
             */
             for (HashMap.Entry<String, Object> m : entry.getValue().getVideos().getMap().entrySet())
@@ -339,7 +339,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
                 }
                 break;
         }
-        //Log.d(TAG, "OnSessionComplete mIniType = " + mIniType + ",  sessionId=" + sessionId);
+        //MLog.logTAG, "OnSessionComplete mIniType = " + mIniType + ",  sessionId=" + sessionId);
     }
 
     private Handler myHandler = new Handler(Looper.getMainLooper()) {
@@ -366,9 +366,9 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
                     break;
             }
 
-            Log.d(TAG, "Handler mIniType = " + initStage + ",  sessionId=" + msg.what + "userSessionCallback=" + userSessionCallback.toString());
+            MLog.log(TAG, "Handler mIniType = " + initStage + ",  sessionId=" + msg.what + "userSessionCallback=" + userSessionCallback.toString());
             if (userSessionCallback != null) {
-                //Log.d(TAG, "Handler mIniType = " + mIniType + ",  sessionId=" + msg.what);
+                //MLog.logTAG, "Handler mIniType = " + mIniType + ",  sessionId=" + msg.what);
                 userSessionCallback.OnSessionComplete(msg.what, null);
             }
         }
@@ -376,21 +376,21 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
 
     public void printSessions() {
         String str = "";
-        //Log.d(TAG, "printSessions InManager");
+        //MLog.logTAG, "printSessions InManager");
         for (Map.Entry<Integer, OPlayerSession> entry : sessions.entrySet()) {
-            //Log.d(TAG, entry.getKey() + " : " + entry.getValue().getmVideoCategoryNameList().get(entry.getKey()));
+            //MLog.logTAG, entry.getKey() + " : " + entry.getValue().getmVideoCategoryNameList().get(entry.getKey()));
             str = str + entry.getKey() + ":" + entry.getValue().getVideoCategoryNameList().get(entry.getKey()) + ", ";
         }
-        Log.d(TAG, "printSessions InManager:" + str);
+        MLog.log(TAG, "printSessions InManager:" + str);
     }
 
     public void printSessionContent(int categoryId) {
-        Log.d(TAG, "printSessionsVideoList categoryId = " + categoryId + " LVideo Count = " + sessions.get(categoryId).getVideos().getCount());
+        MLog.log(TAG, "printSessionsVideoList categoryId = " + categoryId + " LVideo Count = " + sessions.get(categoryId).getVideos().getCount());
         sessions.get(categoryId).printMovies();
         /*
         for (Map.Entry<Integer, OPlayerSession> entry : mSessions.entrySet())
         {
-            Log.d(TAG, "printSessionsVideoList " + entry.getKey() + " : " + entry.getValue().getmVideoCategoryNameList().get(entry.getKey())
+            MLog.logTAG, "printSessionsVideoList " + entry.getKey() + " : " + entry.getValue().getmVideoCategoryNameList().get(entry.getKey())
                     + " Movies Count =" + entry.getValue().getVideos().size());
             entry.getValue().printMovies();
         }*/
@@ -445,11 +445,11 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
                     case UsbManager.ACTION_USB_DEVICE_ATTACHED:
                         if (bundle != null) {
                             for (String key : bundle.keySet())
-                                Log.d(TAG, "USB device attached, " + key + ":" + bundle.toString());
+                                MLog.log(TAG, "USB device attached, " + key + ":" + bundle.toString());
                         } else
-                            Log.d(TAG, "USB device attached, " + intent.toString() + "," + data);
+                            MLog.log(TAG, "USB device attached, " + intent.toString() + "," + data);
                         if (data != null)
-                            Log.d(TAG, "USB device Url = " + data);
+                            MLog.log(TAG, "USB device Url = " + data);
                         initSessionFromMobileDisc();
                         break;
                     case UsbManager.ACTION_USB_DEVICE_DETACHED:
@@ -457,7 +457,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
                     case Intent.ACTION_MEDIA_UNMOUNTED:
                         if (bundle != null) {
                             for (String key : bundle.keySet())
-                                Log.d(TAG, "USB device detached, " + key + ":" + bundle.toString());
+                                MLog.log(TAG, "USB device detached, " + key + ":" + bundle.toString());
                         }
                         if (userSessionCallback != null)
                             userSessionCallback.OnSessionComplete(-1, data+"");

@@ -1,5 +1,7 @@
 package com.zhuchao.android.netutil;
 
+import com.zhuchao.android.callbackevent.HttpCallBack;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,16 +14,8 @@ import java.net.URL;
 public class MyHttpUtils {
     private static final int TIMEOUT_IN_MILLIONS = 5000;
 
-    public interface HttpCallBack {
-        void onHttpRequestComplete(String result, int resultIndex);
-    }
-
-
     /**
      * 异步的Get请求
-     *
-     * @param urlStr
-     * @param callBack
      */
     public static void doGetAsyn(final String urlStr, final int requestId, final HttpCallBack callBack) {
         new Thread() {
@@ -40,11 +34,6 @@ public class MyHttpUtils {
 
     /**
      * 异步的Post请求
-     *
-     * @param urlStr
-     * @param params
-     * @param callBack
-     * @throws Exception
      */
     public static void doPostAsyn(final String urlStr, final String params, final HttpCallBack callBack) throws Exception {
         new Thread() {
@@ -63,10 +52,6 @@ public class MyHttpUtils {
 
     /**
      * Get请求，获得返回数据
-     *
-     * @param urlStr
-     * @return
-     * @throws Exception
      */
     private static String doGet(String urlStr) {
         URL url = null;

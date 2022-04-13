@@ -1,11 +1,7 @@
 package com.zhuchao.android.libfileutils.bean;
 
 import android.content.pm.ApplicationInfo;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 //import androidx.annotation.NonNull;
 

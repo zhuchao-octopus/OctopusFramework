@@ -1,7 +1,5 @@
 package com.zhuchao.android.playsession;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -9,19 +7,19 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.zhuchao.android.netutil.HttpResultCallBack;
+import com.zhuchao.android.callbackevent.HttpCallBack;
+import com.zhuchao.android.libfileutils.MLog;
 import com.zhuchao.android.netutil.MyHttpUtils;
 import com.zhuchao.android.playsession.PaserBean.IdNameBean;
 import com.zhuchao.android.playsession.PaserBean.MovieListBean;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ImplementProxy implements HttpResultCallBack {
+public class ImplementProxy implements HttpCallBack {
     public final String TAG = "ImplementProxy";
     private SessionCompleteCallback SessionCallback = null;
 
@@ -100,9 +98,9 @@ public class ImplementProxy implements HttpResultCallBack {
 
     public void performanceUrl(int sessionId, String url) {
         if (url == null) {
-            Log.d(TAG, "URL 错误为空.");
+            MLog.log(TAG, "URL 错误为空.");
         } else {
-            Log.d(TAG, "performanceUrl = " + url);
+            MLog.log(TAG, "performanceUrl = " + url);
             MyHttpUtils.doGetAsyn(url, sessionId,this);
         }
     }

@@ -7,13 +7,13 @@ import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.widget.RelativeLayout;
 
 import com.zhuchao.android.callbackevent.PlayerCallback;
+import com.zhuchao.android.libfileutils.MLog;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     public MPlayer(Context context, PlayerCallback callback) {
         super(context, callback);
         playStatus = Status_NothingIdle;
-        //Log.d(TAG,"MPlayer=========>");
+        //MLog.logTAG,"MPlayer=========>");
     }
 
     @Override
@@ -148,7 +148,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         if (surfaceView == mSurfaceView) return;
         free();
         setSurfaceView(surfaceView);
-        Log.d(TAG, "re attached surface view successful");
+        MLog.log(TAG, "re attached surface view successful");
     }
 
     @Override
@@ -277,7 +277,12 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     @Override
     public void setWindowSize(int width, int height) {
-
+        if (mediaPlayer != null) {
+            if(mSurfaceView != null) {
+                //mediaPlayer.setDisplay(mSurfaceView.getHolder());
+                //mSurfaceView.getHolder().setFixedSize(mediaPlayer.getVideoWidth(), mediaPlayer.getVideoHeight());
+            }
+        }
     }
 
     @Override
@@ -313,7 +318,6 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     @Override
     public Map<Integer, String> getAudioTracks() {
-
         MediaPlayer.TrackInfo[] trackInfo = mediaPlayer.getTrackInfo();
         Map<Integer, String> mtd = new HashMap<Integer, String>();
         if (mediaPlayer == null) return mtd;
@@ -370,19 +374,19 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
         playCompletion();
-        Log.d(TAG, "onCompletion:" + mediaPlayer.toString());
+        MLog.log(TAG, "onCompletion:" + mediaPlayer.toString());
     }
 
     @Override
     public void onSeekComplete(MediaPlayer mediaPlayer) {
         mediaPlayer.start();
-        Log.d(TAG, "onSeekComplete:" + mediaPlayer.toString());
+        MLog.log(TAG, "onSeekComplete:" + mediaPlayer.toString());
     }
 
     @Override
     public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
         playStatus = Status_Error;
-        Log.e(TAG, "onError:" + i + "," + i1);
+        MLog.log(TAG, "onError:" + i + "," + i1);
         return false;
     }
 
@@ -399,7 +403,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                     0,
                     i,
                     lDuration);
-        //Log.d(TAG, "onBufferingUpdate:" + i);
+        //MLog.logTAG, "onBufferingUpdate:" + i);
     }
 
     @Override
@@ -408,18 +412,18 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             mediaPlayer.setDisplay(surfaceHolder);
             surfaceHolder.setFixedSize(mediaPlayer.getVideoWidth(), mediaPlayer.getVideoHeight());
         }
-        Log.d(TAG, "surfaceCreated=========>" + surfaceHolder.toString());
+        MLog.log(TAG, "surfaceCreated=========>" + surfaceHolder.toString());
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
         surfaceHolder.setFixedSize(mediaPlayer.getVideoWidth(), mediaPlayer.getVideoHeight());
-        Log.d(TAG, "surfaceChanged=========>" + surfaceHolder.toString());
+        MLog.log(TAG, "surfaceChanged=========>" + surfaceHolder.toString());
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-        Log.d(TAG, "surfaceDestroyed=======>" + surfaceHolder.toString());
+        MLog.log(TAG, "surfaceDestroyed=======>" + surfaceHolder.toString());
     }
 
     @Override
@@ -482,7 +486,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                Log.d(TAG, "onPrepared start to play..." + mediaPlayer.toString());
+                MLog.log(TAG, "onPrepared start to play..." + mediaPlayer.toString());
                 mp.start();
                 playStatus = Status_Playing;
                 if (progressThread == null) {

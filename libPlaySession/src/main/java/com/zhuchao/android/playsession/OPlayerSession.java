@@ -2,9 +2,9 @@ package com.zhuchao.android.playsession;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.MLog;
 import com.zhuchao.android.libfileutils.MediaFile;
 import com.zhuchao.android.libfileutils.bean.LMusic;
 import com.zhuchao.android.libfileutils.bean.LVideo;
@@ -16,7 +16,6 @@ import com.zhuchao.android.video.VideoList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -167,27 +166,24 @@ public class OPlayerSession implements SessionCompleteCallback {
     }
 
     public void addVideos(VideoList vList) {
-      for(HashMap.Entry<String, Object> m: vList.getMap().entrySet())
-        {
-            videoList.add(m.getKey(),m.getValue());
-        }
+        videoList.add(vList);
     }
 
     public void printMovies() {
-        //Log.d(TAG,"printMovies mVideoList size =" + mVideoList.getVideos().size());
+        //MLog.logTAG,"printMovies mVideoList size =" + mVideoList.getVideos().size());
         //for (OMedia oMedia : videoList.getList()) {
-        //    Log.d(TAG, "vidieId = " + oMedia.getMovie().getMovieId() + " : videoName = " + oMedia.getMovie().getMovieName());
+        //    MLog.logTAG, "vidieId = " + oMedia.getMovie().getMovieId() + " : videoName = " + oMedia.getMovie().getMovieName());
         //}
     }
 
     public void printCategory() {
         for (Map.Entry<Integer, String> entry : videoCategoryNameList.entrySet())
-            Log.d(TAG, "id = " + entry.getKey() + ", name = " + entry.getValue());
+            MLog.log(TAG, "id = " + entry.getKey() + ", name = " + entry.getValue());
     }
 
     public void printVideoType() {
         for (Map.Entry<Integer, String> entry : videoTypeNameList.entrySet())
-            Log.d(TAG, "id = " + entry.getKey() + ", name = " + entry.getValue());
+            MLog.log(TAG, "id = " + entry.getKey() + ", name = " + entry.getValue());
     }
 
     public String getFileName(String filePath) {
@@ -277,7 +273,7 @@ public class OPlayerSession implements SessionCompleteCallback {
             }
             this.mTotalPages = movieListBean.getPages();
         } else {
-            Log.d(TAG, "generateAndAppendVideoFromIlpr movieListBean == null");
+            MLog.log(TAG, "generateAndAppendVideoFromIlpr movieListBean == null");
         }
     }
 

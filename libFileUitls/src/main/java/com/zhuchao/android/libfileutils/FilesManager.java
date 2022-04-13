@@ -19,7 +19,6 @@ import android.os.storage.StorageManager;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -32,7 +31,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -43,7 +41,6 @@ import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.nio.channels.FileChannel;
-import java.nio.channels.WritableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -306,7 +303,7 @@ public class FilesManager {
                     p1 = (String) getBestVolumeDescription.invoke(mStorageManager, vol);
                     p2 = path2.getPath();
                     USBDiscs.put(p1, p2);
-                    //Log.i(TAG, "getUDiscName DeviceName = " + p1 + ":" + p2);
+                    //MLog.log(TAG, "getUDiscName DeviceName = " + p1 + ":" + p2);
                 }
             }
         } catch (Exception ex) {
@@ -345,7 +342,7 @@ public class FilesManager {
                     String p2 = path2.getPath();
                     USBDiscs.put(p1, p2);
                     rpath = p2;
-                    //Log.i(TAG, "getUDiscPath DeviceName = " + p1 + ":" + p2);
+                    //MLog.log(TAG, "getUDiscPath DeviceName = " + p1 + ":" + p2);
                 }
             }
 
@@ -615,7 +612,7 @@ public class FilesManager {
         //String Path = getDiskCachePath(context) + "/" + fileName + ".xml";
         File file = new File(filePath);
         if (!file.exists()) {
-            Log.e("FilesManager", "Not found file:" + filePath);
+            MLog.log("FilesManager", "Not found file:" + filePath);
             return;
         }
         try {
@@ -625,7 +622,7 @@ public class FilesManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-            //Log.e(Tag, "写入文件失败");
+            //log(Tag, "写入文件失败");
         } finally {
             try {
                 if (writer != null) {
@@ -633,7 +630,7 @@ public class FilesManager {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                //Log.e(Tag, e.getMessage());
+                //log(Tag, e.getMessage());
             }
         }
     }
@@ -649,7 +646,7 @@ public class FilesManager {
         try {
             File file = new File(strFilePath);
             if (!file.exists()) {
-                Log.d("TestFile", "Create the file:" + strFilePath);
+                MLog.log("TestFile", "Create the file:" + strFilePath);
                 file.getParentFile().mkdirs();
                 file.createNewFile();
             }
@@ -658,7 +655,7 @@ public class FilesManager {
             raf.write(strContent.getBytes());
             raf.close();
         } catch (Exception e) {
-            Log.e("TestFile", "Error on write File:" + e);
+            MLog.log("TestFile", "Error on write File:" + e);
         }
     }
 
@@ -684,7 +681,7 @@ public class FilesManager {
                 file.mkdir();
             }
         } catch (Exception e) {
-            Log.i("error:", e + "");
+            MLog.log("error:", e + "");
         }
     }
 

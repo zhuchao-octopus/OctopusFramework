@@ -4,11 +4,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+
+import com.zhuchao.android.libfileutils.MLog;
 
 import java.util.ArrayList;
 
 public class CommonDBUtils {
+    private final String TAG = "CommonDBUtils";
     private static CommonDBUtils dbUtils;
     private SQLiteDatabase db;
     private String DefaultDatabaseName;
@@ -30,7 +32,7 @@ public class CommonDBUtils {
      *
      * @param contenxt 上下文对象
      */
-    public void creadDatabase(Context contenxt, String databaseName, String tableName) {
+    public void readDatabase(Context context, String databaseName, String tableName) {
         DefaultDatabaseName = databaseName;
         DefaultTableName = tableName;
 
@@ -39,7 +41,7 @@ public class CommonDBUtils {
         if (DefaultTableName == null)
             DefaultTableName = "MyTable";
 
-        String path = contenxt.getCacheDir().getPath() + "/" + DefaultDatabaseName;
+        String path = context.getCacheDir().getPath() + "/" + DefaultDatabaseName;
 
         db = SQLiteDatabase.openOrCreateDatabase(path, null);
 
@@ -79,7 +81,7 @@ public class CommonDBUtils {
             String p14 = cursor.getString(cursor.getColumnIndex("p14"));
 
             list.add(String.valueOf(id) +','+name + ',' + p1 + ',' + p2 + ',' + p3 + ',' + p4 + ',' + p5 + ',' + p6 + ',' + p7 + ',' + p8 + ',' + p9 + ',' + p10 + ',' + p11 + ',' + p12 + ',' + p13 + ',' + p14);
-            //Log.d("--Main--", "selectis=========" + id + "==" + name + "==" + mon + "==" + address + "==" + number);
+            //MLog("--Main--", "selectis=========" + id + "==" + name + "==" + mon + "==" + address + "==" + number);
         }
         if (cursor != null) {
             cursor.close();
@@ -109,7 +111,7 @@ public class CommonDBUtils {
             String p14 = cursor.getString(cursor.getColumnIndex("p14"));
 
             list.add(String.valueOf(id)+','+name + ',' + p1 + ',' + p2 + ',' + p3 + ',' + p4 + ',' + p5 + ',' + p6 + ',' + p7 + ',' + p8 + ',' + p9 + ',' + p10 + ',' + p11 + ',' + p12 + ',' + p13 + ',' + p14);
-            //Log.d("--Main--", "selectis=========" + id + "==" + name + "==" + mon + "==" + address + "==" + number);
+            //MLog("--Main--", "selectis=========" + id + "==" + name + "==" + mon + "==" + address + "==" + number);
         }
 
         if (cursor != null) {
@@ -142,7 +144,7 @@ public class CommonDBUtils {
             String p14 = cursor.getString(cursor.getColumnIndex("p14"));
 
             list.add(String.valueOf(id)+','+name + ',' + p1 + ',' + p2 + ',' + p3 + ',' + p4 + ',' + p5 + ',' + p6 + ',' + p7 + ',' + p8 + ',' + p9 + ',' + p10 + ',' + p11 + ',' + p12 + ',' + p13 + ',' + p14);
-            //Log.d("--Main--", "selectis=========" + id + "==" + name + "==" + mon + "==" + address + "==" + number);
+            //MLog("--Main--", "selectis=========" + id + "==" + name + "==" + mon + "==" + address + "==" + number);
         }
 
         if (cursor != null) {
@@ -174,7 +176,7 @@ public class CommonDBUtils {
             String p14 = cursor.getString(cursor.getColumnIndex("p14"));
 
             list.add(String.valueOf(id)+','+name + ',' + p1 + ',' + p2 + ',' + p3 + ',' + p4 + ',' + p5 + ',' + p6 + ',' + p7 + ',' + p8 + ',' + p9 + ',' + p10 + ',' + p11 + ',' + p12 + ',' + p13 + ',' + p14);
-            //Log.d("--Main--", "selectis=========" + id + "==" + name + "==" + mon + "==" + address + "==" + number);
+            //MLog("--Main--", "selectis=========" + id + "==" + name + "==" + mon + "==" + address + "==" + number);
         }
 
         if (cursor != null) {
@@ -191,18 +193,18 @@ public class CommonDBUtils {
      */
     public int delData(String tableName, int id) {
         int inde = db.delete(tableName, "id = ?", new String[]{String.valueOf(id)});
-        //Log.d("--Main--", "删除了==============" + inde);
+        //MLog("--Main--", "删除了==============" + inde);
         return inde;
     }
 
     public int delData(String tableName, String name) {
         int inde = db.delete(tableName, "name = ?", new String[]{name});
-        Log.d("--Main--", "删除了==============" + inde);
+        MLog.log("--Main--", "删除了==============" + inde);
         return inde;
     }
     public int delDataNameP1(String tableName, String name,String p1) {
         int inde = db.delete(tableName, "name = ? and p1 = ?", new String[]{name,p1});
-        Log.d("--Main--", "删除了==============" + inde);
+        MLog.log("--Main--", "删除了==============" + inde);
         return inde;
     }
 
@@ -224,7 +226,7 @@ public class CommonDBUtils {
         contentValues.put("p13", p13);
         contentValues.put("p14", p14);
         int index = db.update(tableName, contentValues, "id = ?", new String[]{String.valueOf(id)});
-        //Log.e("--Main--", "修改了===============" + index);
+        //MLog("--Main--", "修改了===============" + index);
         return index;
     }
 
@@ -246,7 +248,7 @@ public class CommonDBUtils {
         contentValues.put("p13", p13);
         contentValues.put("p14", p14);
         int index = db.update(tableName, contentValues, "name = ?", new String[]{name});
-        //Log.e("--Main--", "修改了===============" + index);
+        //MLog("--Main--", "修改了===============" + index);
         return index;
     }
     public int modifyDataByNameP1(String tableName, String name, String p1, String p2, String p3, String p4, String p5, String p6, String p7, String p8, String p9, String p10, String p11, String p12, String p13, String p14) {
@@ -267,7 +269,7 @@ public class CommonDBUtils {
         contentValues.put("p13", p13);
         contentValues.put("p14", p14);
         int index = db.update(tableName, contentValues, "name = ? and p1 = ?", new String[]{name,p1});
-        //Log.e("--Main--", "修改了===============" + index);
+        //MLog("--Main--", "修改了===============" + index);
         return index;
     }
     /**
@@ -294,7 +296,7 @@ public class CommonDBUtils {
         contentValues.put("p14", p14);
         long dataSize = db.insert(tableName, null, contentValues);
 
-        Log.d("--insertData--", "insertData====" + name);
+        MLog.log("--insertData--", "insertData====" + name);
         return dataSize;
     }
 
