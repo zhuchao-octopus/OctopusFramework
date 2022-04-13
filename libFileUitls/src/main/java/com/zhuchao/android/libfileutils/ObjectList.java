@@ -67,6 +67,11 @@ public class ObjectList {
         return array[Index];
     }
 
+    public boolean exist(String key)
+    {
+        return FHashMap.containsKey(key);
+    }
+
     public int getCount() {
         return FHashMap.size();
     }

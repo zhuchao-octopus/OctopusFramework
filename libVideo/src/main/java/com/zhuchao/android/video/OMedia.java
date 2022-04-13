@@ -110,14 +110,14 @@ public class OMedia implements Serializable, PlayerCallback {
         }
     }
 
-    public OMedia playCache(String cachePath) {
-        String cacheFile = cachePath + movie.getName();
+    public OMedia playCache(String cachedPath) {
+        String cachedFile = cachedPath + movie.getName();
         if (assetFileDescriptor != null)
             return play(assetFileDescriptor);
         else if (fileDescriptor != null)
             return play(fileDescriptor);
-        else if (FilesManager.isExists(cacheFile))
-            return play(cacheFile);
+        else if (FilesManager.isExists(cachedFile))//缓存优先与在线播放
+            return play(cachedFile);
         else if (uri != null)
             return play(uri);
         else
@@ -474,65 +474,6 @@ public class OMedia implements Serializable, PlayerCallback {
         if (TextUtils.isEmpty(movie.getsUrl())) return;
         String md5 = FilesManager.md5(movie.getsUrl());
         playTime = SPreference.getLong(context, md5, "playTime");
-    }
-
-    public void download() {
-        final String dlpath = FilesManager.getDownloadDir(null) + movie.getName() + ".d";
-        final String lpath = FilesManager.getDownloadDir(null) + movie.getName();
-        if (FilesManager.isExists(lpath)) {
-            return;
-        }
-        if (FilesManager.isExists(dlpath)) {
-            FilesManager.deleteFile(dlpath);
-        }
-        try {
-            OkHttpUtils.Download(movie.getsUrl(), dlpath, movie.getName(), new NormalRequestCallback() {
-                @Override
-                public void onRequestComplete(String result, int resultIndex) {
-                    if (resultIndex >= 0) {
-                        FilesManager.renameFile(dlpath, lpath);
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void downloadTo(String toPath) {
-        final String dlpath = toPath + "/" + movie.getName() + ".d";
-        final String lpath = toPath + "/" + movie.getName();
-
-        if (FilesManager.isExists(lpath)) {
-            return;
-        }
-        if (FilesManager.isExists(dlpath)) {
-            FilesManager.deleteFile(dlpath);
-        }
-        try {
-            OkHttpUtils.Download(movie.getsUrl(), dlpath, movie.getName(), new NormalRequestCallback() {
-                @Override
-                public void onRequestComplete(String result, int resultIndex) {
-                    if (resultIndex >= 0) {
-                        FilesManager.renameFile(dlpath, lpath);
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String getDownloadFrom(String fromPath) {
-        final String lath = fromPath + "/" + movie.getName();
-        if (!FilesManager.isExists(lath)) return null;
-        return lath;
-    }
-
-    public String getDownload() {
-        final String lath = FilesManager.getDownloadDir(null) + movie.getName();
-        if (!FilesManager.isExists(lath)) return null;
-        return lath;
     }
 
     public boolean isAvailable(String cachePath) {

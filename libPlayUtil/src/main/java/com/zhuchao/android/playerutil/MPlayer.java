@@ -7,6 +7,7 @@ import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
@@ -196,10 +197,26 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     @Override
     public void playPause() {
-        if (mediaPlayer.isPlaying()) {
-            pause();
-        } else {
-            play();
+        try {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+                playStatus = PlaybackEvent.Status_Paused;
+                MLog.log(TAG,"playPause pause directly playStatus="+playStatus);
+            }
+            else if(playStatus == PlaybackEvent.Status_Paused)
+            {
+                MLog.log(TAG,"playPause play directly playStatus="+playStatus);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(1));
+                else
+                    mediaPlayer.start();
+                playStatus = PlaybackEvent.Status_Playing;
+            }
+            else {
+                asyncPreparePlay();
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         }
     }
 
@@ -440,31 +457,35 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     }
 
     private void asyncPreparePlay() {
-        switch (playStatus) {
-            case PlaybackEvent.Status_Paused:
-            {
-                MLog.log(TAG,"asyncPreparePlay start() directly playStatus="+playStatus);
-                mediaPlayer.start();
-                playStatus = PlaybackEvent.Status_Playing;
-                return;
+        try {
+            switch (playStatus) {
+                case PlaybackEvent.Status_Paused:
+                {
+                    MLog.log(TAG,"asyncPreparePlay start() directly playStatus="+playStatus);
+                    mediaPlayer.start();
+                    playStatus = PlaybackEvent.Status_Playing;
+                    return;
+                }
+                case PlaybackEvent.Status_Buffering:
+                case PlaybackEvent.Status_Playing:
+                case PlaybackEvent.Status_Error:
+                case PlaybackEvent.Status_Ended:
+                    return;
             }
-            case PlaybackEvent.Status_Buffering:
-            case PlaybackEvent.Status_Playing:
-            case PlaybackEvent.Status_Error:
-            case PlaybackEvent.Status_Ended:
-                return;
+            MLog.log(TAG,"asyncPreparePlay call prepareAsync() to start playStatus="+playStatus);
+            mediaPlayer.prepareAsync();
+            playStatus = PlaybackEvent.Status_Buffering;
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    MLog.log(TAG, "onPrepared, start to play... " + mp.toString());
+                    mp.start();
+                    playStatus = PlaybackEvent.Status_Playing;
+                }
+            });
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         }
-        MLog.log(TAG,"asyncPreparePlay call prepareAsync() to start playStatus="+playStatus);
-        mediaPlayer.prepareAsync();
-        playStatus = PlaybackEvent.Status_Buffering;
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                MLog.log(TAG, "onPrepared, start to play... " + mp.toString());
-                mp.start();
-                playStatus = PlaybackEvent.Status_Playing;
-            }
-        });
     }
 
     class ProgressThread extends Thread {
@@ -510,27 +531,4 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             keepActive = false;
         }
     }
-
-    private void updateVideoSize(int Orientation) {
-        if (mediaPlayer == null) return;
-        if (mSurfaceView == null) return;
-        if (mSurfaceView.getWidth() <= 10) return;
-        if (mSurfaceView.getHeight() <= 10) return;
-        int videoWidth = mediaPlayer.getVideoWidth();
-        int videoHeight = mediaPlayer.getVideoHeight();
-        float max;
-        if (Orientation == 0) {
-            //竖屏模式下按视频宽度计算放大倍数值
-            max = Math.max((float) videoWidth / (float) mSurfaceView.getWidth(), (float) videoHeight / (float) mSurfaceView.getHeight());
-        } else {
-            //横屏模式下按视频高度计算放大倍数值
-            max = Math.max(((float) videoWidth / (float) mSurfaceView.getHeight()), (float) videoHeight / (float) mSurfaceView.getWidth());
-        }
-        //视频宽高分别/最大倍数值 计算出放大后的视频尺寸
-        videoWidth = (int) Math.ceil((float) videoWidth / max);
-        videoHeight = (int) Math.ceil((float) videoHeight / max);
-        //无法直接设置视频尺寸，将计算出的视频尺寸设置到surfaceView 让视频自动填充。
-        mSurfaceView.setLayoutParams(new RelativeLayout.LayoutParams(videoWidth, videoHeight));
-    }
-
 }

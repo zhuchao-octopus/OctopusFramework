@@ -1,8 +1,5 @@
 package com.zhuchao.android.playsession;
 
-import static com.zhuchao.android.libfileutils.FilesManager.getDownloadDir;
-import static com.zhuchao.android.libfileutils.FilesManager.getFileName;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -16,6 +13,7 @@ import android.view.SurfaceView;
 import com.zhuchao.android.callbackevent.NormalRequestCallback;
 import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
+import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.libfileutils.MLog;
 import com.zhuchao.android.video.Movie;
 import com.zhuchao.android.video.OMedia;
@@ -31,18 +29,20 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
     private OMedia oMedia = null;
     private boolean isPlaying = false;
     private PlayerCallback callback = null;
-    private String cachePath = null;
+    private String playPath = null;
+    private String downloadPath = null;
     private int playOrder = SessionID.PLAY_MANAGER_PLAY_ORDER2;
     private int autoPlaySource = SessionID.SESSION_SOURCE_NONE;
     private VideoList playingList = null;
     private OPlayerSessionManager sessionManager = null;
+    private long lStartTick = 0;
 
     public PlayManager(Context mContext, SurfaceView mSurfaceView) {
         this.context = mContext;
         this.surfaceView = mSurfaceView;
         playingList = new VideoList(this);
         playingList.setTAG("PlayManager.VideoList");
-        cachePath = getDownloadDir(null);
+        downloadPath = FilesManager.getDownloadDir(null);//播放目录和，下载缓存目录不一样
         setMagicNum(0);
     }
     public PlayManager callback(PlayerCallback mCallback) {
@@ -59,8 +59,8 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         return oMedia;
     }
 
-    public String getCachePath() {
-        return cachePath;
+    public String getPlayPath() {
+        return playPath;
     }
 
     public int getPlayOrder() {
@@ -92,7 +92,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         if (oMedia == null) {
             MLog.log(TAG, "There is no media to play！！！");
             return;
-        } else if (!oMedia.isAvailable(cachePath)) {
+        } else if (!oMedia.isAvailable(playPath)) {
             MLog.log(TAG, "The Source is not available! go next/pre---> " + oMedia.getMovie().getsUrl());
             playHandler.sendEmptyMessage(this.playOrder);
             return;
@@ -106,7 +106,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         this.oMedia.setNormalRate();
         this.oMedia.callback(this);
         this.oMedia.onView(surfaceView);
-        this.oMedia.playCache(cachePath);
+        this.oMedia.playCache(downloadPath);
         this.isPlaying = true;
     }
 
@@ -160,13 +160,20 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
     }
 
     public void playPause() {
-        if (oMedia != null)
+        if((System.currentTimeMillis() - lStartTick) <= 600)
+           return;
+        if (oMedia != null) {
             oMedia.playPause();
+            lStartTick = System.currentTimeMillis();
+        }
     }
 
     public void playNext() {
+        if((System.currentTimeMillis() - lStartTick) <= 600)
+            return;
         if (oMedia != null) {
             startPlay(oMedia.getNext());
+            lStartTick = System.currentTimeMillis();
         }
     }
 
@@ -203,18 +210,26 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         return playingList;
     }
 
-    public void setCachePath(String CacheDir) {
-        this.cachePath = CacheDir;
+    public void setPlayPath(String CacheDir) {
+        this.playPath = CacheDir;
         updateCachedFiles();
     }
 
+    public String getDownloadPath() {
+        return downloadPath;
+    }
+
+    public void setDownloadPath(String downloadPath) {
+        this.downloadPath = downloadPath;
+    }
+
     public void updateCachedFiles() {
-        playingList.loadFromDir(cachePath, SessionID.MEDIA_TYPE_ID_AllMEDIA);
+        playingList.loadFromDir(playPath, SessionID.MEDIA_TYPE_ID_AllMEDIA);
     }
 
     public void addSource(String Url) {
         Movie movie = new Movie(Url);
-        String filename = getFileName(movie.getsUrl());
+        String filename = FilesManager.getFileName(movie.getsUrl());
         if (!TextUtils.isEmpty(filename))
             movie.setName(filename);
         playingList.add(new OMedia(movie));

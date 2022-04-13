@@ -19,7 +19,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class OkHttpUtils  {
+public class OkHttpUtils {
     private static final String TAG = "OkHttpUtils";
     private OkHttpClient okHttpClient;
     private Handler mHandler;
@@ -53,26 +53,19 @@ public class OkHttpUtils  {
             @Override
             public void onFailure(Call call, IOException e) {
                 MLog.log(TAG, "Failed:" + url);
-                try {
-                    if(normalRequestCallBack != null)
+                if (normalRequestCallBack != null)
                     normalRequestCallBack.onRequestComplete("", -1);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response != null && response.isSuccessful()) {
                     String result = response.body().string();
-
                     MLog.log(TAG, "ok:" + url);
                     MLog.log(TAG, "gt:" + result);
-                    if(normalRequestCallBack != null)
-                    normalRequestCallBack.onRequestComplete(result, 0);
-                }
-                else
-                {
+                    if (normalRequestCallBack != null)
+                        normalRequestCallBack.onRequestComplete(result, 0);
+                } else {
                     MLog.log(TAG, "failed:" + url);
                     //normalRequestCallBack.onRequestComplete("", -1);
                 }
@@ -80,54 +73,47 @@ public class OkHttpUtils  {
         });
     }
 
-    public static void Download(final String url,final String toPath,String tag, final NormalRequestCallback normalRequestCallBack) {
+    public static void Download(final String url, final String toPath, String tag, final NormalRequestCallback normalRequestCallBack) {
         OkHttpUtils.getInstance()
                 .getOkHttpClient()
                 .newCall(new Request.Builder()
                         .url(url)
                         .tag(tag)
                         .build())
-                .enqueue(new Callback()
-
-                {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                MLog.log(TAG, "Download Failed From :" + url);
-                if(normalRequestCallBack != null)
-                normalRequestCallBack.onRequestComplete("", -1);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response != null && response.isSuccessful())
-                {
-                    //String result = response.body().string();
-                    MLog.log(TAG, "Download from:" + url+" to "+toPath);
-
-                    InputStream inputStream = response.body().byteStream();
-                    FileOutputStream fos = new FileOutputStream(toPath);
-                    long tlen = response.body().contentLength();
-                    long sum = 0;
-                    int len = 0;
-                    byte[] buffer = new byte[1024 * 10];
-                    while ((len = inputStream.read(buffer)) != -1) {
-                        fos.write(buffer, 0, len);
-                        sum += len;
-                        //MLog.log(TAG, "Downloading:" + sum+"/"+tlen);
+                .enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        if (normalRequestCallBack != null)
+                            normalRequestCallBack.onRequestComplete("", -1);
                     }
-                    fos.flush();
-                    fos.close();
-                    inputStream.close();
 
-                    MLog.log(TAG, "Download successfully from:" + url+" to: " + toPath);
-                    //MLog.log(TAG, "Saved    successfully to:" + toPath);
-                    if(normalRequestCallBack != null)
-                    normalRequestCallBack.onRequestComplete("success", 0);
-                } else {
-                    MLog.log(TAG, "download failed from :" + url);
-                    //normalRequestCallBack.onRequestComplete("", -1);
-                }
-            }
-        });
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        if (response != null && response.isSuccessful()) {
+                            //String result = response.body().string();
+                            MLog.log(TAG, "Download from:" + url + " to " + toPath);
+                            InputStream inputStream = response.body().byteStream();
+                            FileOutputStream fos = new FileOutputStream(toPath);
+                            //long tLen = response.body().contentLength();
+                            long sum = 0;
+                            int len = 0;
+                            byte[] buffer = new byte[1024 * 10];
+                            while ((len = inputStream.read(buffer)) != -1) {
+                                fos.write(buffer, 0, len);
+                                sum += len;
+                                //MLog.log(TAG, "Downloading:" + sum+"/"+tlen);
+                            }
+                            fos.flush();
+                            fos.close();
+                            inputStream.close();
+                            MLog.log(TAG, "Download successfully from:" + url + " to: " + toPath);
+                            if (normalRequestCallBack != null)
+                                normalRequestCallBack.onRequestComplete("success", 0);
+                        } else {
+                            MLog.log(TAG, "download failed from :" + url);
+                            //normalRequestCallBack.onRequestComplete("", -1);
+                        }
+                    }
+                });
     }
 }
