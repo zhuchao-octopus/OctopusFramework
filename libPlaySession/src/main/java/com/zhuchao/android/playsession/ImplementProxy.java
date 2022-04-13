@@ -120,22 +120,22 @@ public class ImplementProxy implements HttpCallBack {
     public synchronized void onHttpRequestComplete(String result, int resultIndex) {
 
         switch (resultIndex) {
-            case Data.SESSION_TYPE_GET_MOVIELIST_ALLTV:
-            case Data.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
-            case Data.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
-            case Data.SESSION_TYPE_GET_MOVIELIST_VID:
-            case Data.SESSION_TYPE_GET_MOVIELIST_VNAME:
-            case Data.SESSION_TYPE_GET_MOVIELIST_AREA:
-            case Data.SESSION_TYPE_GET_MOVIELIST_YEAR:
-            case Data.SESSION_TYPE_GET_MOVIELIST_ACTOR:
-            case Data.SESSION_TYPE_GET_MOVIELIST_VIP:
-            case Data.SESSION_TYPE_GET_MOVIE_TYPE:
+            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
+            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
+            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
+            case SessionID.SESSION_TYPE_GET_MOVIELIST_VID:
+            case SessionID.SESSION_TYPE_GET_MOVIELIST_VNAME:
+            case SessionID.SESSION_TYPE_GET_MOVIELIST_AREA:
+            case SessionID.SESSION_TYPE_GET_MOVIELIST_YEAR:
+            case SessionID.SESSION_TYPE_GET_MOVIELIST_ACTOR:
+            case SessionID.SESSION_TYPE_GET_MOVIELIST_VIP:
+            case SessionID.SESSION_TYPE_GET_MOVIE_TYPE:
                 mMovieListBean = parseJSonToMovieListBean(result);
                 break;
-            case Data.SESSION_TYPE_GET_MOVIE_CATEGORY:
+            case SessionID.SESSION_TYPE_GET_MOVIE_CATEGORY:
                 mVideoCategory = jsonIdNameArrayToMap(result);
                 break;
-            case Data.SESSION_TYPE_SCHEDULEPLAYBACK:
+            case SessionID.SESSION_TYPE_SCHEDULEPLAYBACK:
                 break;
             default://默认尝试转化成视频列表
                // mMovieListBean = parseJSonToMovieListBean(result);

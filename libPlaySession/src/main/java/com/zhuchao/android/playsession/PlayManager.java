@@ -13,6 +13,8 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.SurfaceView;
 
+import com.zhuchao.android.callbackevent.NormalRequestCallback;
+import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.libfileutils.MLog;
 import com.zhuchao.android.video.Movie;
@@ -21,25 +23,25 @@ import com.zhuchao.android.video.VideoList;
 
 import java.io.FileDescriptor;
 
-public class PlayManager implements PlayerCallback, SessionCompleteCallback {
+public class PlayManager implements PlayerCallback, SessionCompleteCallback, NormalRequestCallback {
     private final String TAG = "PlayManager";
     private int MagicNum = 0;
     private Context context;
-    private SurfaceView surfaceView;
-    private OPlayerSessionManager sessionManager = null;
+    private SurfaceView surfaceView = null;
     private OMedia oMedia = null;
     private boolean isPlaying = false;
     private PlayerCallback callback = null;
-    private String cachePath = getDownloadDir(null);
-    //private boolean threadLock = false;
-    private int playOrder = Data.SESSION_SOURCE_ALL;
-    private int autoPlay = Data.SESSION_SOURCE_ALL;
-    public VideoList playingList = new VideoList();
-
+    private String cachePath = null;
+    private int playOrder = SessionID.SESSION_SOURCE_ALL;
+    private int autoPlay = SessionID.SESSION_SOURCE_NONE;
+    private VideoList playingList = null;
+    private OPlayerSessionManager sessionManager = null;
 
     public PlayManager(Context mContext, SurfaceView mSurfaceView) {
         this.context = mContext;
         this.surfaceView = mSurfaceView;
+        playingList = new VideoList(this);
+        cachePath = getDownloadDir(null);
         setMagicNum(0);
     }
 
@@ -69,8 +71,8 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
             isPlaying = false;
             return false;
         }
-        int sta = oMedia.getPlayState();
-        if (sta >= 1 && sta <= 3)
+        int sta = oMedia.getPlayStatus();
+        if (sta >= PlaybackEvent.Status_Opening && sta <= PlaybackEvent.Status_Playing)
             isPlaying = true;
         else
             isPlaying = false;
@@ -96,15 +98,16 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
             return;
         }
 
-        this.oMedia = oMedia;
         MLog.log(TAG, "StartPlay --> " + oMedia.getMovie().getsUrl() + ", Last time = " + oMedia.getPlayTime());
+
+        this.oMedia = oMedia;
         this.oMedia.setMagicNum(MagicNum);
         this.oMedia.with(context);
         this.oMedia.setNormalRate();
         this.oMedia.callback(this);
         this.oMedia.onView(surfaceView);
         this.oMedia.playCache(cachePath);
-        isPlaying = true;
+        this.isPlaying = true;
     }
 
     public void startPlay(String url) {
@@ -198,7 +201,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
     //int Stopped=5; //int Ended=6;//int Error=7;
     @Override
     public void OnEventCallBack(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
-        int ii = oMedia.getPlayState();
+        int ii = oMedia.getPlayStatus();
         switch (ii) {
             case 0:
             case 1:
@@ -236,17 +239,11 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
 
     public void setCachePath(String CacheDir) {
         this.cachePath = CacheDir;
-        if (playingList.getCount() > 0) return;
-        try {
-            updatePlayingList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        updateCachedFiles();
     }
 
-    public synchronized void updatePlayingList() {
-        playingList.clear();
-        playingList.loadFromDir(cachePath, Data.MEDIA_TYPE_ID_AllMEDIA);
+    public void updateCachedFiles() {
+        playingList.loadFromDir(cachePath, SessionID.MEDIA_TYPE_ID_AllMEDIA);
     }
 
     public void addSource(String Url) {
@@ -289,6 +286,10 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
             oMedia.setMagicNum(MagicNum);
     }
 
+    public void setAutoPlay(int autoPlay) {
+        this.autoPlay = autoPlay;
+    }
+
     public void free() {
         try {
             playingList.clear();
@@ -300,40 +301,51 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
         }
     }
 
+    public void autoPlay()
+    {
+        autoPlay(autoPlay);
+    }
     public void autoPlay(int autoPlayType) {
         OMedia ooMedia = null;
         this.autoPlay = autoPlayType;
         if (autoPlay < 0) return;
-        if (autoPlay == Data.SESSION_SOURCE_ALL) {
-            if (playingList.getCount() > 0)
-                ooMedia = playingList.findByIndex(0);
-            else if (sessionManager != null) {
-                if (sessionManager.getMobileSession().getVideoList().getCount() > 0)
-                    ooMedia = sessionManager.getMobileSession().getVideos().findByIndex(0);
-                else if (sessionManager.getLocalSession().getVideoList().getCount() > 0)
+        if (oMedia != null)
+        {
+          if (isPlaying())
+              return;
+          if(oMedia.getPlayStatus() == PlaybackEvent.Status_Paused) {
+              playPause();
+              return;
+          }
+        }
+
+        switch (autoPlay)
+        {
+            case SessionID.SESSION_SOURCE_PLAYLIST:
+                if (playingList.getCount() > 0 && autoPlay == SessionID.SESSION_SOURCE_ALL) {
+                    ooMedia = playingList.findByIndex(0);
+                }
+                break;
+            case SessionID.SESSION_SOURCE_MOBILE_USB:
+                if (autoPlay == SessionID.SESSION_SOURCE_MOBILE_USB && sessionManager != null)
+                {
+                    if (sessionManager.getMobileSession().getVideoList().getCount() > 0)
+                        ooMedia = sessionManager.getMobileSession().getVideos().findByIndex(0);
+                }
+            case SessionID.SESSION_SOURCE_LOCAL_INTERNAL:
+                if (autoPlay == SessionID.SESSION_SOURCE_LOCAL_INTERNAL && sessionManager != null)
+                {
                     ooMedia = sessionManager.getLocalSession().getVideos().findByIndex(0);
-                else if (sessionManager.getFileSession().getVideoList().getCount() > 0)
-                    ooMedia = sessionManager.getFileSession().getVideos().findByIndex(0);
-            }
-        } else if (autoPlay == Data.SESSION_SOURCE_MOBILE_USB) {
-            if (sessionManager != null)
-                if (sessionManager.getMobileSession().getVideoList().getCount() > 0)
-                    ooMedia = sessionManager.getMobileSession().getVideos().findByIndex(0);
-                else
-                    sessionManager.initSessionFromMobileDisc();
-        } else if (autoPlay == Data.SESSION_SOURCE_LOCAL_INTERNAL) {
-            if (sessionManager != null)
-                if (sessionManager.getLocalSession().getVideoList().getCount() > 0)
-                    ooMedia = sessionManager.getLocalSession().getVideos().findByIndex(0);
-                else
-                    sessionManager.initSessionFromLocal();
-        } else if (autoPlay == Data.SESSION_SOURCE_EXTERNAL) {
-            if (sessionManager != null)
-                if (sessionManager.getFileSession().getVideoList().getCount() > 0)
-                    ooMedia = sessionManager.getFileSession().getVideos().findByIndex(0);
-        } else {
-            if (playingList.getCount() > 0)
-                ooMedia = playingList.findByIndex(0);
+                }
+            case SessionID.SESSION_SOURCE_EXTERNAL:
+                if (autoPlay == SessionID.SESSION_SOURCE_EXTERNAL && sessionManager != null)
+                {
+                    if (sessionManager.getFileSession().getVideoList().getCount() > 0)
+                        ooMedia = sessionManager.getFileSession().getVideos().findByIndex(0);
+                }
+            case SessionID.SESSION_SOURCE_ALL:
+            default:
+                break;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         //跳过无效的资源
@@ -351,27 +363,33 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
         if (sessionId <= 0) {
             if (isPlaying()) this.playPause();
         }
-        if (sessionId == Data.SESSION_SOURCE_MOBILE_USB) {
+        if (sessionId == SessionID.SESSION_SOURCE_MOBILE_USB) {
             MLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getMobileSession().getVideoList().getCount() = " + sessionManager.getMobileSession().getVideoList().getCount());
-            if (isPlaying() == false && (autoPlay == Data.SESSION_SOURCE_MOBILE_USB || autoPlay == Data.SESSION_SOURCE_ALL)) {
+            if (isPlaying() == false && (autoPlay == SessionID.SESSION_SOURCE_MOBILE_USB || autoPlay == SessionID.SESSION_SOURCE_ALL)) {
                 playHandler.sendEmptyMessage(100);
             }
-        } else if (sessionId == Data.SESSION_SOURCE_LOCAL_INTERNAL) {
+        } else if (sessionId == SessionID.SESSION_SOURCE_LOCAL_INTERNAL) {
             MLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getLocalSession().getVideoList().getCount() = " + sessionManager.getLocalSession().getVideoList().getCount());
-            if (isPlaying() == false && (autoPlay == Data.SESSION_SOURCE_LOCAL_INTERNAL || autoPlay == Data.SESSION_SOURCE_ALL)) {
+            if (isPlaying() == false && (autoPlay == SessionID.SESSION_SOURCE_LOCAL_INTERNAL || autoPlay == SessionID.SESSION_SOURCE_ALL)) {
                 playHandler.sendEmptyMessage(100);
             }
-        } else if (sessionId == Data.SESSION_SOURCE_PATH) {
+        } else if (sessionId == SessionID.SESSION_SOURCE_PATH) {
             MLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getMobileTFSession().getVideoList().getCount() = " + sessionManager.getFileSession().getVideoList().getCount());
-            if (isPlaying() == false && (autoPlay == Data.SESSION_SOURCE_LOCAL_INTERNAL || autoPlay == Data.SESSION_SOURCE_ALL)) {
+            if (isPlaying() == false && (autoPlay == SessionID.SESSION_SOURCE_LOCAL_INTERNAL || autoPlay == SessionID.SESSION_SOURCE_ALL)) {
                 playHandler.sendEmptyMessage(100);
             }
         }
 
-        if (isPlaying() == false && (autoPlay == Data.SESSION_SOURCE_LOCAL_INTERNAL || autoPlay == Data.SESSION_SOURCE_ALL)) {
+        if (isPlaying() == false && (autoPlay == SessionID.SESSION_SOURCE_LOCAL_INTERNAL || autoPlay == SessionID.SESSION_SOURCE_ALL)) {
             playHandler.sendEmptyMessage(100);
         }
         //MLog.log(TAG, "getMobileTFSession().getVideoList().getCount() = " + sessionManager.getMobileTFSession().getVideoList().getCount());
+    }
+
+    @Override
+    public void onRequestComplete(String Result, int Index) {
+        if (autoPlay >= 0)
+           autoPlay(autoPlay);
     }
 
     private Handler playHandler = new Handler(Looper.getMainLooper()) {
@@ -411,4 +429,5 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback {
             }
         }
     };
+
 }

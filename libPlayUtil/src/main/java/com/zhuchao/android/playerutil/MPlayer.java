@@ -12,6 +12,7 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 import android.widget.RelativeLayout;
 
+import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.libfileutils.MLog;
 
@@ -34,11 +35,11 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     //private MediaPlayer.OnErrorListener onErrorListener;
     //private MediaPlayer.OnPreparedListener onPreparedListener;
     private ProgressThread progressThread = null;
-    private int playStatus = Status_NothingIdle;
+    private int playStatus = PlaybackEvent.Status_NothingIdle;
 
     public MPlayer(Context context, PlayerCallback callback) {
         super(context, callback);
-        playStatus = Status_NothingIdle;
+        playStatus = PlaybackEvent.Status_NothingIdle;
         //MLog.logTAG,"MPlayer=========>");
     }
 
@@ -50,72 +51,72 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void setSource(String filePath) {
         try {
-            playStatus = Status_Opening;
+            playStatus = PlaybackEvent.Status_Opening;
             createPlayer(false);
             mediaPlayer.setDataSource(filePath);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            playStatus = Status_Error;
+            playStatus = PlaybackEvent.Status_Error;
         } catch (IOException e) {
             e.printStackTrace();
-            playStatus = Status_Error;
+            playStatus = PlaybackEvent.Status_Error;
         } catch (Exception e) {
             e.printStackTrace();
-            playStatus = Status_Error;
+            playStatus = PlaybackEvent.Status_Error;
         }
     }
 
     @Override
     public void setSource(Uri uri) {
         try {
-            playStatus = Status_Opening;
+            playStatus = PlaybackEvent.Status_Opening;
             createPlayer(false);
             mediaPlayer.setDataSource(mContext, uri);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            playStatus = Status_Error;
+            playStatus = PlaybackEvent.Status_Error;
         } catch (IOException e) {
             e.printStackTrace();
-            playStatus = Status_Error;
+            playStatus = PlaybackEvent.Status_Error;
         } catch (Exception e) {
             e.printStackTrace();
-            playStatus = Status_Error;
+            playStatus = PlaybackEvent.Status_Error;
         }
     }
 
     @Override
     public void setSource(AssetFileDescriptor afd) {
         try {
-            playStatus = Status_Opening;
+            playStatus = PlaybackEvent.Status_Opening;
             createPlayer(false);
             mediaPlayer.setDataSource(afd);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            playStatus = Status_Error;
+            playStatus = PlaybackEvent.Status_Error;
         } catch (IOException e) {
             e.printStackTrace();
-            playStatus = Status_Error;
+            playStatus = PlaybackEvent.Status_Error;
         } catch (Exception e) {
             e.printStackTrace();
-            playStatus = Status_Error;
+            playStatus = PlaybackEvent.Status_Error;
         }
     }
 
     @Override
     public void setSource(FileDescriptor fd) {
         try {
-            playStatus = Status_Opening;
+            playStatus = PlaybackEvent.Status_Opening;
             createPlayer(false);
             mediaPlayer.setDataSource(fd);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            playStatus = Status_Error;
+            playStatus = PlaybackEvent.Status_Error;
         } catch (IOException e) {
             e.printStackTrace();
-            playStatus = Status_Error;
+            playStatus = PlaybackEvent.Status_Error;
         } catch (Exception e) {
             e.printStackTrace();
-            playStatus = Status_Error;
+            playStatus = PlaybackEvent.Status_Error;
         }
     }
 
@@ -193,14 +194,14 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void pause() {
         mediaPlayer.pause();
-        playStatus = Status_Paused;
+        playStatus = PlaybackEvent.Status_Paused;
     }
 
     @Override
     public void stop() {
-        if (playStatus != Status_Stopped)
+        if (playStatus != PlaybackEvent.Status_Stopped)
             mediaPlayer.stop();
-        playStatus = Status_Stopped;
+        playStatus = PlaybackEvent.Status_Stopped;
     }
 
     @Override
@@ -266,7 +267,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public int getPlayerState() {
         if (mediaPlayer.isPlaying())
-            playStatus = Status_Playing;
+            playStatus = PlaybackEvent.Status_Playing;
         return playStatus;
     }
 
@@ -347,7 +348,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     @Override
     public void free() {
-        playStatus = Status_NothingIdle;
+        playStatus = PlaybackEvent.Status_NothingIdle;
         if (mediaPlayer == null) return;
 
         try {
@@ -385,7 +386,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     @Override
     public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
-        playStatus = Status_Error;
+        playStatus = PlaybackEvent.Status_Error;
         MLog.log(TAG, "onError:" + i + "," + i1);
         return false;
     }
@@ -434,7 +435,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     private void playCompletion() {
         if (progressThread != null)
             progressThread.finish();
-        playStatus = Status_Ended;
+        playStatus = PlaybackEvent.Status_Ended;
         if (playerEventCallBack != null)
             playerEventCallBack.OnEventCallBack(
                     playStatus,
@@ -469,26 +470,26 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     private void asyncPreparePlay() {
         switch (playStatus) {
-            case Status_Paused:
-            case Status_Ended: {
+            case PlaybackEvent.Status_Paused:
+            case PlaybackEvent.Status_Ended: {
                 mediaPlayer.start();
-                playStatus = Status_Playing;
+                playStatus = PlaybackEvent.Status_Playing;
                 return;
             }
-            case Status_Buffering:
-            case Status_Playing:
-            case Status_Error:
+            case PlaybackEvent.Status_Buffering:
+            case PlaybackEvent.Status_Playing:
+            case PlaybackEvent.Status_Error:
                 return;
         }
 
         mediaPlayer.prepareAsync();
-        playStatus = Status_Buffering;
+        playStatus = PlaybackEvent.Status_Buffering;
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 MLog.log(TAG, "onPrepared start to play..." + mediaPlayer.toString());
                 mp.start();
-                playStatus = Status_Playing;
+                playStatus = PlaybackEvent.Status_Playing;
                 if (progressThread == null) {
                     progressThread = new ProgressThread();
                     progressThread.start();

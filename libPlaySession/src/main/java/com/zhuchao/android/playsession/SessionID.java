@@ -1,7 +1,7 @@
 package com.zhuchao.android.playsession;
 
 
-public class Data {
+public class SessionID {
     public static final int DB_VERSION = 1;
     //public static final String DB_DIRECTORY = CommonValues.application.getFilesDir().getPath();
     public static final int SESSION_TYPE_GET_MOVIELIST_DEFAULT_PAGESIZE = 100;
@@ -26,6 +26,7 @@ public class Data {
     public static final int SESSION_SOURCE_LOCAL_INTERNAL = 10; //本地媒体
     public static final int SESSION_SOURCE_MOBILE_USB = 11;
     public static final int SESSION_SOURCE_EXTERNAL = 12;
+    public static final int SESSION_SOURCE_PLAYLIST = 13;
 
     //获取分类的ID
     public static final int SESSION_TYPE_GET_MOVIE_CATEGORY = 20;//版面分类

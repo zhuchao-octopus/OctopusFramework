@@ -28,19 +28,14 @@ import java.util.List;
 import java.util.Random;
 
 public class VideoList {
-    private final String TAG = "VideoList";
-    //private NormalRequestCallback RequestCallBack = null;
+    private String TAG = "VideoList";
+    private NormalRequestCallback RequestCallBack = null;
     //private int count = 0;
     private boolean threadLock = false;
     private HashMap<String, Object> FHashMap;
 
-    public VideoList() {
-        this.FHashMap = new HashMap();
-    }
-
     public VideoList(NormalRequestCallback requestCallBack) {
-        //RequestCallBack = requestCallBack;
-        //this.count = 0;
+        RequestCallBack = requestCallBack;
         this.threadLock = false;
         this.FHashMap = new HashMap();
     }
@@ -67,6 +62,7 @@ public class VideoList {
 
     public void add(OMedia oMedia) {
         if (oMedia == null) return;
+        if(FHashMap.containsKey(oMedia.md5())) return;
         OMedia fVideo = findByIndex(0);
         OMedia lVideo = findByIndex(FHashMap.size() - 1);
         if (lVideo != null) {//依次连接
@@ -157,6 +153,14 @@ public class VideoList {
         FHashMap.clear();
     }
 
+    public String getTAG() {
+        return TAG;
+    }
+
+    public void setTAG(String TAG) {
+        this.TAG = TAG;
+    }
+
     public void printAll() {
         int i = 0;
         for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
@@ -232,6 +236,8 @@ public class VideoList {
                     } else if (fileType == 99) {
                         add(filePathName);//所有的文件
                     }
+                    if (RequestCallBack != null)
+                        RequestCallBack.onRequestComplete(TAG,fileType);
                 }
             }
         }

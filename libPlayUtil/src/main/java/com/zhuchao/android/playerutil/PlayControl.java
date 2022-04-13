@@ -19,14 +19,6 @@ public abstract class PlayControl {
     protected SurfaceView mSurfaceView = null;
     protected Boolean hwDecoderEnabled = true;
     protected int volumeValue = 30;
-    public final int Status_NothingIdle = 0;
-    public final int Status_Opening = 1;
-    public final int Status_Buffering = 2;
-    public final int Status_Playing = 3;
-    public final int Status_Paused = 4;
-    public final int Status_Stopped = 5;
-    public final int Status_Ended = 6;
-    public final int Status_Error = 7;
 
     public PlayControl(Context context, PlayerCallback callback) {
         mContext = context;

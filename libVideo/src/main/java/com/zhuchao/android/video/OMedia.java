@@ -323,7 +323,7 @@ public class OMedia implements Serializable, PlayerCallback {
             return false;
     }
 
-    public int getPlayState() {
+    public int getPlayStatus() {
         if (isPlayerReady())
             return getOPlayer().getPlayerState();
         else

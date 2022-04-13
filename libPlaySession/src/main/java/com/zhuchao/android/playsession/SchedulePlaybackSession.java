@@ -42,7 +42,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
                     initFromDirectoryFile(mContext.getCacheDir().getAbsolutePath()+"/");
 
                     if (userSessionCallback != null)
-                        userSessionCallback.OnSessionComplete(Data.SESSION_TYPE_SCHEDULEPLAYBACK, "SchedulePlaybackSession");
+                        userSessionCallback.OnSessionComplete(SessionID.SESSION_TYPE_SCHEDULEPLAYBACK, "SchedulePlaybackSession");
                 }
                 catch (Exception e)
                 {
@@ -70,7 +70,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
     @Override
     public void OnSessionComplete(int sessionId, String result) {
         int Count=0;
-        if (sessionId == Data.SESSION_TYPE_SCHEDULEPLAYBACK)
+        if (sessionId == SessionID.SESSION_TYPE_SCHEDULEPLAYBACK)
         {
             ScheduleVideoRootBean scheduleVideoRootBean = null;
             try {

@@ -779,14 +779,11 @@ public class FilesManager {
         return null;
     }
 
-    public static String md5(String string) {
-        if (TextUtils.isEmpty(string)) {
-            return "";
-        }
-        MessageDigest md5 = null;
+    public static String md5(String str) {
+        if (str == null)  return "null";
         try {
-            md5 = MessageDigest.getInstance("MD5");
-            byte[] bytes = md5.digest(string.getBytes());
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            byte[] bytes = md5.digest(str.getBytes());
             String result = "";
             for (byte b : bytes) {
                 String temp = Integer.toHexString(b & 0xff);
@@ -799,7 +796,7 @@ public class FilesManager {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        return "";
+        return "null";
     }
 
     public static String getMD5(File f) {
