@@ -309,6 +309,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         OMedia ooMedia = null;
         this.autoPlay = autoPlayType;
         if (autoPlay < 0) return;
+
         if (oMedia != null)
         {
           if (isPlaying())
@@ -321,38 +322,45 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
 
         switch (autoPlay)
         {
+            case SessionID.SESSION_SOURCE_ALL:
             case SessionID.SESSION_SOURCE_PLAYLIST:
                 if (playingList.getCount() > 0 && autoPlay == SessionID.SESSION_SOURCE_ALL) {
                     ooMedia = playingList.findByIndex(0);
+                    if (oMedia == null) {
+                        startPlay(ooMedia);
+                        break;
+                    }
                 }
-                break;
+                if(autoPlay == SessionID.SESSION_SOURCE_PLAYLIST)  break;
             case SessionID.SESSION_SOURCE_MOBILE_USB:
                 if (autoPlay == SessionID.SESSION_SOURCE_MOBILE_USB && sessionManager != null)
                 {
                     if (sessionManager.getMobileSession().getVideoList().getCount() > 0)
                         ooMedia = sessionManager.getMobileSession().getVideos().findByIndex(0);
+                    if (oMedia == null)
+                        startPlay(ooMedia);
                 }
+                break;
             case SessionID.SESSION_SOURCE_LOCAL_INTERNAL:
                 if (autoPlay == SessionID.SESSION_SOURCE_LOCAL_INTERNAL && sessionManager != null)
                 {
                     ooMedia = sessionManager.getLocalSession().getVideos().findByIndex(0);
+                    if (oMedia == null)
+                        startPlay(ooMedia);
                 }
+                break;
             case SessionID.SESSION_SOURCE_EXTERNAL:
                 if (autoPlay == SessionID.SESSION_SOURCE_EXTERNAL && sessionManager != null)
                 {
                     if (sessionManager.getFileSession().getVideoList().getCount() > 0)
                         ooMedia = sessionManager.getFileSession().getVideos().findByIndex(0);
+                    if (oMedia == null)
+                        startPlay(ooMedia);
                 }
-            case SessionID.SESSION_SOURCE_ALL:
+                break;
             default:
                 break;
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////
-        //跳过无效的资源
-        if (oMedia == null)
-            startPlay(ooMedia);
-        else
-            startPlay(oMedia);
     }
 
     //public static final int SESSION_TYPE_LOCALMEDIA = 10; //本地媒体
