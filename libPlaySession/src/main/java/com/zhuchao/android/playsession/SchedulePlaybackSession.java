@@ -7,7 +7,7 @@ import android.os.Environment;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.zhuchao.android.libfileutils.FilesManager;
-import com.zhuchao.android.libfileutils.MLog;
+import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.playsession.PaserBean.ScheduleVideoBean;
 import com.zhuchao.android.playsession.PaserBean.ScheduleVideoRootBean;
 import com.zhuchao.android.video.ScheduleMedia;
@@ -95,7 +95,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
                             videoList.add(scheduleVideo);
                         }
 
-                        MLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
+                        MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
                                 scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
                         Count ++;
                     }
@@ -133,7 +133,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
               if (!videoList.contains(scheduleVideo)) {
                   videoList.add(scheduleVideo);
               }
-              MLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
+              MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
                       scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
               Count ++;
           }
@@ -152,7 +152,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
               if (!videoList.contains(scheduleVideo)) {
                   videoList.add(scheduleVideo);
               }
-              MLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
+              MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
                       scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
               Count ++;
           }
@@ -183,7 +183,7 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
                 videoList.add(scheduleVideo);
             }
 
-            MLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
+            MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
                     scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
             Count++;
         }

@@ -67,7 +67,7 @@ public class AppsManager {
         mExecutorService = Executors.newSingleThreadExecutor();
         UpdateAppsInfor();
         registerAppsReceiver();
-        MLog.log(TAG, "Init>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        MMLog.log(TAG, "Init>>>>>>>>>>>>>>>>>>>>>>>>>>");
     }
 
     public List<String> getFilter() {
@@ -243,7 +243,7 @@ public class AppsManager {
 
             String action = intent.getAction();
 
-            MLog.log(TAG, "BroadcastReceiver:" + intent.getAction());
+            MMLog.log(TAG, "BroadcastReceiver:" + intent.getAction());
 
             if (action.equals(Intent.ACTION_PACKAGE_ADDED)) {
                 UpdateAppsInfor();
@@ -299,10 +299,10 @@ public class AppsManager {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-            MLog.log(TAG, "LaunchApp>>>>" + infor.getPackageName());
+            MMLog.log(TAG, "LaunchApp>>>>" + infor.getPackageName());
             return true;
         } else {
-            MLog.log(TAG, "LaunchApp not found>>>>" + infor.getPackageName());
+            MMLog.log(TAG, "LaunchApp not found>>>>" + infor.getPackageName());
             return false;
         }
     }
@@ -315,10 +315,10 @@ public class AppsManager {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-            MLog.log(TAG, "LaunchApp>>>>" + packageName);
+            MMLog.log(TAG, "LaunchApp>>>>" + packageName);
             return true;
         } else {
-            MLog.log(TAG, "LaunchApp not found>>>>" + packageName);
+            MMLog.log(TAG, "LaunchApp not found>>>>" + packageName);
             return false;
         }
     }
@@ -338,10 +338,10 @@ public class AppsManager {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-            MLog.log(TAG, "LaunchApp>>>>" + packageName);
+            MMLog.log(TAG, "LaunchApp>>>>" + packageName);
             return true;
         } else {
-            MLog.log(TAG, "LaunchApp not found>>>>" + packageName);
+            MMLog.log(TAG, "LaunchApp not found>>>>" + packageName);
             return false;
         }
     }
@@ -356,10 +356,10 @@ public class AppsManager {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-            MLog.log(TAG, "LaunchApp>>>>" + packageName);
+            MMLog.log(TAG, "LaunchApp>>>>" + packageName);
             return true;
         } else {
-            MLog.log(TAG, "LaunchApp not found>>>>" + packageName);
+            MMLog.log(TAG, "LaunchApp not found>>>>" + packageName);
             return false;
         }
     }

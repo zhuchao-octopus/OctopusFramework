@@ -32,7 +32,7 @@ public class AppUtil {
             if (initStat != null)
             {
                 topClassName = initStat.getPackageName();
-                MLog.log(TAG,"getForegroundActivityName topClassName="+topClassName);
+                MMLog.log(TAG,"getForegroundActivityName topClassName="+topClassName);
             }
         }
         if(TextUtils.isEmpty(topClassName))
@@ -123,7 +123,7 @@ public class AppUtil {
                 //context.getApplicationContext().startActivity(intent);
                 //Toast t = Toast.makeText(context,"need permmition to access settings .", Toast.LENGTH_LONG);
                 //t.show();
-                MLog.log(TAG,"getUsageStatsList fail,need Settings.ACTION_USAGE_ACCESS_SETTINGS permission");
+                MMLog.log(TAG,"getUsageStatsList fail,need Settings.ACTION_USAGE_ACCESS_SETTINGS permission");
                 return null;
             }
             return UsageStatsList;

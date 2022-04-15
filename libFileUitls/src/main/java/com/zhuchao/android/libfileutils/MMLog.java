@@ -4,7 +4,7 @@ import android.util.Log;
 
 import java.util.Properties;
 
-public class MLog {
+public class MMLog {
     private static final String LOG_SYSTEM_PROPERTY = "persist.app.log.on.off";
     private static String debugOnOff = "false";
 

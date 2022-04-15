@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.zhuchao.android.libfileutils.FilesManager;
-import com.zhuchao.android.libfileutils.MLog;
+import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.libfileutils.MediaFile;
 import com.zhuchao.android.libfileutils.bean.LMusic;
 import com.zhuchao.android.libfileutils.bean.LVideo;
@@ -181,12 +181,12 @@ public class OPlayerSession implements SessionCompleteCallback {
 
     public void printCategory() {
         for (Map.Entry<Integer, String> entry : videoCategoryNameList.entrySet())
-            MLog.log(TAG, "id = " + entry.getKey() + ", name = " + entry.getValue());
+            MMLog.log(TAG, "id = " + entry.getKey() + ", name = " + entry.getValue());
     }
 
     public void printVideoType() {
         for (Map.Entry<Integer, String> entry : videoTypeNameList.entrySet())
-            MLog.log(TAG, "id = " + entry.getKey() + ", name = " + entry.getValue());
+            MMLog.log(TAG, "id = " + entry.getKey() + ", name = " + entry.getValue());
     }
 
     public String getFileName(String filePath) {
@@ -275,7 +275,7 @@ public class OPlayerSession implements SessionCompleteCallback {
             }
             this.mTotalPages = movieListBean.getPages();
         } else {
-            MLog.log(TAG, "generateAndAppendVideoFromIlpr movieListBean == null");
+            MMLog.log(TAG, "generateAndAppendVideoFromIlpr movieListBean == null");
         }
     }
 

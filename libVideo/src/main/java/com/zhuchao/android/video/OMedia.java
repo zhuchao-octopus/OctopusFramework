@@ -11,7 +11,7 @@ import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.databaseutil.SPreference;
 import com.zhuchao.android.libfileutils.FilesManager;
-import com.zhuchao.android.libfileutils.MLog;
+import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.libfileutils.MediaFile;
 import com.zhuchao.android.playerutil.PlayControl;
 import com.zhuchao.android.playerutil.PlayerManager;
@@ -44,6 +44,7 @@ public class OMedia implements Serializable, PlayerCallback {
     private FileDescriptor fileDescriptor;
     private AssetFileDescriptor assetFileDescriptor;
     private Uri uri;
+    private boolean restorePlay = false;
 
     public void callback(PlayerCallback mCallback) {
         setCallback(mCallback);
@@ -415,6 +416,10 @@ public class OMedia implements Serializable, PlayerCallback {
             return true;
     }
 
+    public void setRestorePlay(boolean restorePlay) {
+        this.restorePlay = restorePlay;
+    }
+
     @Override
     public void OnEventCallBack(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
         switch (EventType) {
@@ -425,10 +430,8 @@ public class OMedia implements Serializable, PlayerCallback {
             case PlaybackEvent.Status_Buffering:
             case PlaybackEvent.Status_Playing:
             case PlaybackEvent.Status_Paused:
-                if (((PositionChanged + 100) < playTime) && (playTime <= Length) && (Length > 0)) {//播放进度恢复
-                    MLog.log(TAG, "OnEventCallBack go to position " + PositionChanged + "->" + playTime + " Total Length = " + Length);
-                    setTime(playTime);
-                }
+                if(restorePlay)
+                restorePlay(PositionChanged,Length);
                 break;
             case PlaybackEvent.Status_Stopped:
                 break;
@@ -447,6 +450,13 @@ public class OMedia implements Serializable, PlayerCallback {
         return FilesManager.md5(movie.getsUrl());
     }
 
+    private void restorePlay(float position,long Length)
+    {
+        if (((position + 100) < playTime) && (playTime <= Length) && (Length > 0)) {//播放进度恢复
+            MMLog.log(TAG, "OnEventCallBack go to position " + position + "->" + playTime + " Total Length = " + Length);
+            //setTime(playTime);
+        }
+    }
     public void save() {
         if (movie == null) return;
         if (context == null) return;

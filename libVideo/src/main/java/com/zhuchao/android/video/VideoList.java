@@ -18,7 +18,7 @@ import android.text.TextUtils;
 
 import com.zhuchao.android.callbackevent.NormalRequestCallback;
 import com.zhuchao.android.libfileutils.FilesManager;
-import com.zhuchao.android.libfileutils.MLog;
+import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.libfileutils.MediaFile;
 
 import java.io.File;
@@ -81,6 +81,8 @@ public class VideoList {
         FHashMap.put(oMedia.md5(), oMedia);
         lastItem = oMedia;
         //MLog.log(TAG, "add1");
+        if (RequestCallBack != null)
+            RequestCallBack.onRequestComplete(TAG, getCount());
     }
 
     public void add(String fileName) {
@@ -104,7 +106,7 @@ public class VideoList {
         if (oNext != null)
             oNext.setPre(oPre);
         FHashMap.remove(oMedia);
-        MLog.log(TAG, "delete");
+        MMLog.log(TAG, "delete");
     }
 
     public void delete(String fileName) {
@@ -179,7 +181,7 @@ public class VideoList {
         int i = 0;
         for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
             OMedia oMedia = (OMedia) m.getValue();
-            MLog.log(TAG, i + ":" + oMedia.getPathName());
+            MMLog.log(TAG, i + ":" + oMedia.getPathName());
             i++;
         }
     }
@@ -188,24 +190,25 @@ public class VideoList {
         for (int i = 0; i < getCount(); i++) {
             OMedia oMedia = findByIndex(i);
             if (oMedia != null)
-                MLog.log(TAG, i + ":" + oMedia.getPathName());
+                MMLog.log(TAG, i + ":" + oMedia.getPathName());
             else
-                MLog.log(TAG, "null");
+                MMLog.log(TAG, "null");
         }
     }
 
     public void printFollow() {
         if (getCount() <= 0) return;
-        OMedia oMedia = findByIndex(0);
-        MLog.log(TAG, "0:↓" + oMedia.getPathName());
-        if (getCount() <= 1) return;
-        for (int i = 1; i < getCount(); i++) {
-            if (oMedia != null) {
+        OMedia oMedia = firstItem;
+        for (int i = 0; i < getCount(); i++)
+        {
+            if (oMedia != null)
+            {
+                MMLog.log(TAG, i + ":↓" + oMedia.getPathName());
                 oMedia = oMedia.getNext();
-                if (oMedia != null)
-                    MLog.log(TAG, i + ":↓" + oMedia.getPathName());
-                else
-                    MLog.log(TAG, "null");
+                if (oMedia == null)
+                   MMLog.log(TAG, "null");
+                if(oMedia.equals(lastItem))
+                    MMLog.log(TAG, "printFollow() done");
             }
         }
     }

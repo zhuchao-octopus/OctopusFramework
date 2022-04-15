@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.zhuchao.android.libfileutils.MLog;
+import com.zhuchao.android.libfileutils.MMLog;
 
 import java.util.ArrayList;
 
@@ -199,12 +199,12 @@ public class CommonDBUtils {
 
     public int delData(String tableName, String name) {
         int inde = db.delete(tableName, "name = ?", new String[]{name});
-        MLog.log("--Main--", "删除了==============" + inde);
+        MMLog.log("--Main--", "删除了==============" + inde);
         return inde;
     }
     public int delDataNameP1(String tableName, String name,String p1) {
         int inde = db.delete(tableName, "name = ? and p1 = ?", new String[]{name,p1});
-        MLog.log("--Main--", "删除了==============" + inde);
+        MMLog.log("--Main--", "删除了==============" + inde);
         return inde;
     }
 
@@ -296,7 +296,7 @@ public class CommonDBUtils {
         contentValues.put("p14", p14);
         long dataSize = db.insert(tableName, null, contentValues);
 
-        MLog.log("--insertData--", "insertData====" + name);
+        MMLog.log("--insertData--", "insertData====" + name);
         return dataSize;
     }
 

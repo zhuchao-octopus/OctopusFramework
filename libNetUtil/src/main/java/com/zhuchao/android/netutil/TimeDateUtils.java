@@ -7,7 +7,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.provider.Settings;
 
-import com.zhuchao.android.libfileutils.MLog;
+import com.zhuchao.android.libfileutils.MMLog;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -247,7 +247,7 @@ public class TimeDateUtils {
     public static void setTimeZone(Context context, String timeZone) {
         final Calendar now = Calendar.getInstance();
 
-        MLog.log(TAG,"getCurrentTimeZone="+getCurrentTimeZone());
+        MMLog.log(TAG,"getCurrentTimeZone="+getCurrentTimeZone());
         TimeZone tz = TimeZone.getTimeZone(timeZone);
         now.setTimeZone(tz);
         TimeZone.setDefault(tz);
@@ -255,15 +255,15 @@ public class TimeDateUtils {
         //alarm.setTimeZone(id);//默认时区的id
         alarm.setTimeZone(timeZone);
 
-        MLog.log(TAG,"setTimeZone="+tz);
-        MLog.log(TAG,"getCurrentTimeZone="+getCurrentTimeZone());
+        MMLog.log(TAG,"setTimeZone="+tz);
+        MMLog.log(TAG,"getCurrentTimeZone="+getCurrentTimeZone());
     }
 
     public static void setAutoTimeZone(Context context, int checked) {
         android.provider.Settings.Global.putInt(context.getContentResolver(),
                 android.provider.Settings.Global.AUTO_TIME_ZONE, checked);
 
-        MLog.log(TAG,"getCurrentTimeZone="+getCurrentTimeZone());
+        MMLog.log(TAG,"getCurrentTimeZone="+getCurrentTimeZone());
     }
 
     public static void setAutoDateTime(Context context, int checked) {

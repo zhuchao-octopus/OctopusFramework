@@ -11,7 +11,7 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.zhuchao.android.libfileutils.MLog;
+import com.zhuchao.android.libfileutils.MMLog;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -150,7 +150,7 @@ public class NetUtils {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            MLog.log(TAG, "Got Action>>>>>>>:" + action);
+            MMLog.log(TAG, "Got Action>>>>>>>:" + action);
             new Thread() {
                 public void run() {
                     if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
@@ -260,12 +260,12 @@ public class NetUtils {
             while ((content = in.readLine()) != null) {
                 stringBuffer.append(content);
             }
-            MLog.log(TAG,"ping IP:"+ip+" "+stringBuffer.toString());
+            MMLog.log(TAG,"ping IP:"+ip+" "+stringBuffer.toString());
             // ping的状态
             int status = p.waitFor();
             if (status == 0) {
                 result = "success";
-                MLog.log(TAG,"ping IP:"+ip+" "+result);
+                MMLog.log(TAG,"ping IP:"+ip+" "+result);
                 return true;
             } else {
                 result = "failed";
@@ -276,7 +276,7 @@ public class NetUtils {
             result = "InterruptedException";
         } finally {
         }
-        MLog.log(TAG,"ping IP:"+ip+" "+result);
+        MMLog.log(TAG,"ping IP:"+ip+" "+result);
         return false;
     }
 
@@ -324,7 +324,7 @@ public class NetUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            MLog.log(TAG, "");
+            MMLog.log(TAG, "");
         }
 
         return "00:00:00:00:00:00";
@@ -378,10 +378,10 @@ public class NetUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            MLog.log(TAG, "");
+            MMLog.log(TAG, "");
         } finally {
             if (!wifiInitState) {
-                MLog.log(TAG, "wifi close");
+                MMLog.log(TAG, "wifi close");
                 mWifiManager.setWifiEnabled(false);
             }
         }
@@ -474,7 +474,7 @@ public class NetUtils {
                 {
                     IP0 = "";
                     Location = "";
-                    MLog.log(TAG,"GetInternetIp" + e.toString());
+                    MMLog.log(TAG,"GetInternetIp" + e.toString());
                 }
             }
         }.start();
@@ -494,7 +494,7 @@ public class NetUtils {
                 }
             }
         } catch (SocketException ex) {
-            MLog.log("Exception", ex.toString());
+            MMLog.log("Exception", ex.toString());
         }
         return "";
     }

@@ -612,7 +612,7 @@ public class FilesManager {
         //String Path = getDiskCachePath(context) + "/" + fileName + ".xml";
         File file = new File(filePath);
         if (!file.exists()) {
-            MLog.log("FilesManager", "Not found file:" + filePath);
+            MMLog.log("FilesManager", "Not found file:" + filePath);
             return;
         }
         try {
@@ -646,7 +646,7 @@ public class FilesManager {
         try {
             File file = new File(strFilePath);
             if (!file.exists()) {
-                MLog.log("TestFile", "Create the file:" + strFilePath);
+                MMLog.log("TestFile", "Create the file:" + strFilePath);
                 file.getParentFile().mkdirs();
                 file.createNewFile();
             }
@@ -655,7 +655,7 @@ public class FilesManager {
             raf.write(strContent.getBytes());
             raf.close();
         } catch (Exception e) {
-            MLog.log("TestFile", "Error on write File:" + e);
+            MMLog.log("TestFile", "Error on write File:" + e);
         }
     }
 
@@ -681,7 +681,7 @@ public class FilesManager {
                 file.mkdir();
             }
         } catch (Exception e) {
-            MLog.log("error:", e + "");
+            MMLog.log("error:", e + "");
         }
     }
 

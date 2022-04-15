@@ -8,7 +8,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.zhuchao.android.callbackevent.HttpCallBack;
-import com.zhuchao.android.libfileutils.MLog;
+import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.netutil.MyHttpUtils;
 import com.zhuchao.android.playsession.PaserBean.IdNameBean;
 import com.zhuchao.android.playsession.PaserBean.MovieListBean;
@@ -98,9 +98,9 @@ public class ImplementProxy implements HttpCallBack {
 
     public void performanceUrl(int sessionId, String url) {
         if (url == null) {
-            MLog.log(TAG, "URL 错误为空.");
+            MMLog.log(TAG, "URL 错误为空.");
         } else {
-            MLog.log(TAG, "performanceUrl = " + url);
+            MMLog.log(TAG, "performanceUrl = " + url);
             MyHttpUtils.doGetAsyn(url, sessionId,this);
         }
     }

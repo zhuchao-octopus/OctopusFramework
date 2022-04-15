@@ -44,8 +44,8 @@ public class PlayerManager {
     }
 
     public synchronized static void free() {
-        if(FOPlayer != null)
+        if (FOPlayer != null)
             FOPlayer.free();
-           FOPlayer = null;
+        FOPlayer = null;
     }
 }

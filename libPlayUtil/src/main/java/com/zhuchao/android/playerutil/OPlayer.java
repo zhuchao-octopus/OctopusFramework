@@ -7,7 +7,7 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 
 import com.zhuchao.android.callbackevent.PlayerCallback;
-import com.zhuchao.android.libfileutils.MLog;
+import com.zhuchao.android.libfileutils.MMLog;
 
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
@@ -224,7 +224,7 @@ public class OPlayer extends PlayControl {
         //vlcVout.addCallback(mIVLCVoutCallBack);
         mSurfaceView = surfaceView;
         mTextureView = null;
-        MLog.log(TAG, "re attached surface view successful");
+        MMLog.log(TAG, "re attached surface view successful");
     }
 
     public void reAttachTextureView(TextureView textureView) {
@@ -425,13 +425,13 @@ public class OPlayer extends PlayControl {
     class IVLCVoutCallBack implements IVLCVout.Callback, IVLCVout.OnNewVideoLayoutListener {
         @Override
         public void onNewVideoLayout(IVLCVout vlcVout, int width, int height, int visibleWidth, int visibleHeight, int sarNum, int sarDen) {
-            MLog.log(TAG, "IVLCVoutCallBack ---> width=" + width + ",height=" + height + ",visibleWidth=" + visibleWidth + ",visibleHeight=" + visibleHeight
+            MMLog.log(TAG, "IVLCVoutCallBack ---> width=" + width + ",height=" + height + ",visibleWidth=" + visibleWidth + ",visibleHeight=" + visibleHeight
                     + ",sarNum=" + sarNum + ",sarDen=" + sarDen);
         }
 
         @Override
         public void onSurfacesCreated(IVLCVout ivlcVout) {
-            MLog.log(TAG, "IVLCVoutCallBack ---> onSurfacesCreated");
+            MMLog.log(TAG, "IVLCVoutCallBack ---> onSurfacesCreated");
             if (mSurfaceView != null) {
                 vlcVout.setWindowSize(mSurfaceView.getWidth(), mSurfaceView.getHeight());
             } else if (mTextureView != null) {
