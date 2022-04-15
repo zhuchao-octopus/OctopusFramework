@@ -33,7 +33,7 @@ public class PlayerManager {
     }
 
     public synchronized static PlayControl getSingleMPlayer(Context context, PlayerCallback callback) {
-        if (FOPlayer == null) {
+        if (FOPlayer == null) {//重用已有的播放器
             FOPlayer = new MPlayer(context, callback);
         }
         return FOPlayer;
@@ -43,7 +43,9 @@ public class PlayerManager {
         return new MPlayer(context, callback);
     }
 
-    public static void reset() {
-        PlayerManager.FOPlayer = null;
+    public synchronized static void free() {
+        if(FOPlayer != null)
+            FOPlayer.free();
+           FOPlayer = null;
     }
 }

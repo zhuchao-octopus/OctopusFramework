@@ -27,4 +27,7 @@ public  class PlaybackEvent  {
     public static final int Status_Stopped = 5;
     public static final int Status_Ended = 6;
     public static final int Status_Error = 7;
+
+    public static final int Status_SEEKING = 300;
+    public static final int Status_RESUME = 301;
 }

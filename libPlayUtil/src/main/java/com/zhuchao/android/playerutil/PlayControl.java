@@ -67,9 +67,9 @@ public abstract class PlayControl {
 
     public abstract void pause();
 
-    public abstract void stop();
-
     public abstract void playPause();
+
+    public abstract void stop();
 
     public abstract void resume();
 
@@ -89,7 +89,7 @@ public abstract class PlayControl {
 
     public abstract long getLength();
 
-    public abstract int getPlayerState();
+    public abstract int getPlayerStatus();
 
     public abstract void setRate(float v);
 

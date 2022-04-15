@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class ObjectList {
-    protected HashMap<String, Object> FHashMap;
+    private HashMap<String, Object> FHashMap;
 
     public ObjectList() {
         this.FHashMap = new HashMap();
@@ -53,11 +53,8 @@ public class ObjectList {
         return array[Index];
     }
 
-    public Object getRandomObject() {
-        Random generator = new Random();
-        Object[] values = FHashMap.values().toArray();
-        Object randomValue = values[generator.nextInt(values.length)];
-        return randomValue;
+    public Object getValue(int Index) {
+        return getObject(Index);
     }
 
     public String getKey(int Index) {
@@ -67,17 +64,23 @@ public class ObjectList {
         return array[Index];
     }
 
-    public boolean exist(String key)
-    {
-        return FHashMap.containsKey(key);
+    public Object getRandom() {
+        Random generator = new Random();
+        Object[] values = FHashMap.values().toArray();
+        Object randomValue = values[generator.nextInt(values.length)];
+        return randomValue;
+    }
+
+    public HashMap<String, Object> getAll() {
+        return FHashMap;
     }
 
     public int getCount() {
         return FHashMap.size();
     }
 
-    public HashMap<String, Object> getAllMap() {
-        return FHashMap;
+    public boolean exist(String key) {
+        return FHashMap.containsKey(key);
     }
 
     public void saveObject(String filePath) {
@@ -92,13 +95,13 @@ public class ObjectList {
         } finally {
         }
     }
-    public void readObject(String filePath)
-    {
+
+    public void readObject(String filePath) {
         FileInputStream inputStream;
         try {
             inputStream = new FileInputStream(filePath);
             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-            FHashMap=(HashMap<String, Object>)objectInputStream.readObject();
+            FHashMap = (HashMap<String, Object>) objectInputStream.readObject();
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

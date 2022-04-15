@@ -72,7 +72,7 @@ public class FilesFinger extends ObjectList {
     }
 
     public HashMap<String, Object> getAllFiles() {
-        return FHashMap;
+        return getAll();
     }
 
     public void addType(String extName) {
@@ -178,7 +178,7 @@ public class FilesFinger extends ObjectList {
         stopScan();
         dirList.clear();
         threadPool.clear();
-        FHashMap.clear();
+        clear();
         fileTypes.clear();
     }
 }

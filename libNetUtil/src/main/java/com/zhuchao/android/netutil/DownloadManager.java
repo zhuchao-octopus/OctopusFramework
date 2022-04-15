@@ -2,8 +2,10 @@ package com.zhuchao.android.netutil;
 
 import android.text.TextUtils;
 
+import com.zhuchao.android.callbackevent.CallbackFunction;
 import com.zhuchao.android.callbackevent.NormalRequestCallback;
 import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.TTask;
 import com.zhuchao.android.libfileutils.ThreadPool;
 
 import java.util.ArrayList;
@@ -13,19 +15,39 @@ import java.util.List;
 public class DownloadManager {
     private static final String TAG = "DownloadManager";
     private static ThreadPool threadPool = new ThreadPool();
-    private static DownLoadThread downLoadThread = null;
 
-    public static void batDownload(String fromPathName, String toPath) {
-        if (threadPool.exist(fromPathName)) return;//任务已经在进行中
+    public static void d(String fromPathName, String toPath) {
         if (TextUtils.isEmpty(fromPathName)) return;
         if (!FilesManager.isExists(fromPathName)) return;
-
-        downLoadThread = new DownLoadThread(fromPathName,toPath);
-        threadPool.add(fromPathName,downLoadThread);
-        downLoadThread.start();
+        TTask tTask = threadPool.createTask(fromPathName);
+        tTask.call(new CallbackFunction() {
+            @Override
+            public void call() {
+                if (TextUtils.isEmpty(toPath))
+                    download(fromPathName);
+                else
+                    download(fromPathName, toPath);
+            }
+        });
+        tTask.start();
+       return ;
     }
 
-    private static void download(String fromPathName) {
+    public static TTask dl(String fromPathName, String toPath) {
+        TTask tTask = threadPool.createTask(fromPathName);
+        tTask.call(new CallbackFunction() {
+            @Override
+            public void call() {
+                if (TextUtils.isEmpty(toPath))
+                    download(fromPathName);
+                else
+                    download(fromPathName, toPath);
+            }
+        });
+        return tTask;
+    }
+
+    public static void download(String fromPathName) {
         final String fileName = FilesManager.getFileName(fromPathName);
         final String dlPath = FilesManager.getDownloadDir(null) + fileName + ".d";
         final String lPath = FilesManager.getDownloadDir(null) + fileName;
@@ -40,7 +62,6 @@ public class DownloadManager {
                 public void onRequestComplete(String result, int resultIndex) {
                     if (resultIndex >= 0) {
                         FilesManager.renameFile(dlPath, lPath);
-                        threadPool.delete(fromPathName);
                     }
                 }
             });
@@ -49,7 +70,7 @@ public class DownloadManager {
         }
     }
 
-    private static void download(String fromPathName, String toPath) {
+    public static void download(String fromPathName, String toPath) {
         final String fileName = FilesManager.getFileName(fromPathName);
         final String dlPath = toPath + "/" + fileName + ".d";
         final String lPath = toPath + "/" + fileName;
@@ -64,7 +85,6 @@ public class DownloadManager {
                 public void onRequestComplete(String result, int resultIndex) {
                     if (resultIndex >= 0) {
                         FilesManager.renameFile(dlPath, lPath);
-                        threadPool.delete(fromPathName);
                     }
                 }
             });
@@ -72,26 +92,4 @@ public class DownloadManager {
             e.printStackTrace();
         }
     }
-
-    private static class DownLoadThread extends Thread {
-        String tag = null;
-        String fromPath = null;
-        String toPath = null;
-        DownLoadThread(String fromPathName, String toPath)
-        {
-            this.fromPath = fromPathName;
-            this.toPath = toPath;
-        }
-        @Override
-        public void run() {
-            super.run();
-            if (TextUtils.isEmpty(fromPath)) return;
-            //if(TextUtils.isEmpty(toPath)) return;
-            if (TextUtils.isEmpty(toPath))
-                download(fromPath);
-            else
-                download(fromPath, toPath);
-        }
-    }
-
 }

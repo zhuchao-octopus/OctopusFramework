@@ -23,9 +23,11 @@ import com.zhuchao.android.libfileutils.MediaFile;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.TreeMap;
 
 public class VideoList {
     private String TAG = "VideoList";
@@ -34,6 +36,13 @@ public class VideoList {
     private OMedia lVideo = null;
     private boolean threadLock = false;
     private HashMap<String, Object> FHashMap;
+
+    /*private TreeMap<String, Object> FHashMap = new TreeMap<String, Object>(new Comparator<String>() {
+        @Override
+        public int compare(String o1, String o2) {
+            return o2.compareTo(o1);
+        }
+    });*/
 
     public VideoList(NormalRequestCallback requestCallBack) {
         RequestCallBack = requestCallBack;

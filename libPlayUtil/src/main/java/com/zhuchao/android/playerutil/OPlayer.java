@@ -356,7 +356,7 @@ public class OPlayer extends PlayControl {
         return mMediaPlayer.getLength();
     }
 
-    public int getPlayerState() {
+    public int getPlayerStatus() {
         return mMediaPlayer.getPlayerState();
     }
 
