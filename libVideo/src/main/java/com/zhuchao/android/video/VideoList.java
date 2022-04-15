@@ -67,8 +67,8 @@ public class VideoList {
 
     public void add(OMedia oMedia) {
         if (oMedia == null) return;
-        if(FHashMap.containsKey(oMedia.md5())) return;
-        if(getCount()<=0) firstItem = oMedia;
+        if (FHashMap.containsKey(oMedia.md5())) return;
+        if (FHashMap.size() <= 0) firstItem = oMedia;
 
         if (lastItem != null) {//依次连接
             lastItem.setNext(oMedia);
@@ -252,7 +252,7 @@ public class VideoList {
                     }
                     try {
                         if (RequestCallBack != null)
-                            RequestCallBack.onRequestComplete(TAG,fileType);
+                            RequestCallBack.onRequestComplete(TAG, fileType);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

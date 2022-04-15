@@ -151,18 +151,14 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
     }
 
     public void stopPlay() {
-        if ((System.currentTimeMillis() - lStartTick) <= ACTION_DELAY)
-            return;
         if (oMedia != null) {
             oMedia.stop();
-            lStartTick = System.currentTimeMillis();
         }
     }
 
     public void resumePlay() {
         if (oMedia != null) {
             oMedia.resume();
-            //lStartTick = System.currentTimeMillis();
         }
     }
 
@@ -176,27 +172,21 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
     }
 
     public void playNext() {
-        if ((System.currentTimeMillis() - lStartTick) <= ACTION_DELAY)
-            return;
         if (oMedia != null) {
             OMedia oo = oMedia.getNext();
             if (oo != null) {
                 MLog.log(TAG, "Next:" + oo.getPathName());
                 startPlay(oo);
-                lStartTick = System.currentTimeMillis();
             }
         }
     }
 
     public void playPre() {
-        if ((System.currentTimeMillis() - lStartTick) <= ACTION_DELAY)
-            return;
         if (oMedia != null) {
             OMedia oo = oMedia.getPre();
             if (oo != null) {
                 MLog.log(TAG, "Pre:" + oo.getPathName());
                 startPlay(oo);
-                lStartTick = System.currentTimeMillis();
             }
         }
     }
@@ -326,7 +316,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
                 break;
             case SessionID.SESSION_SOURCE_MOBILE_USB:
                 if (autoPlaySource == SessionID.SESSION_SOURCE_MOBILE_USB && sessionManager != null) {
-                        ooMedia = sessionManager.getMobileSession().getVideos().getFirstItem();
+                    ooMedia = sessionManager.getMobileSession().getVideos().getFirstItem();
                 }
                 break;
             case SessionID.SESSION_SOURCE_LOCAL_INTERNAL:
@@ -336,14 +326,14 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
                 break;
             case SessionID.SESSION_SOURCE_EXTERNAL:
                 if (autoPlaySource == SessionID.SESSION_SOURCE_EXTERNAL && sessionManager != null) {
-                        ooMedia = sessionManager.getFileSession().getVideos().getFirstItem();
+                    ooMedia = sessionManager.getFileSession().getVideos().getFirstItem();
                 }
                 break;
             default:
                 break;
         }
         if (ooMedia != null) {
-            MLog.log(TAG,"Auto play " + ooMedia.getPathName());
+            MLog.log(TAG, "Auto play " + ooMedia.getPathName());
             startPlay(ooMedia);
         }
     }
@@ -364,8 +354,9 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
                 break;
             case PlaybackEvent.Status_Ended:
             case PlaybackEvent.Status_Error:
-                MLog.log(TAG, "OnEventCallBack.EventType= " + EventType + "-->" + oMedia.getPathName());
-                playHandler.sendEmptyMessage(playOrder);
+                isPlaying = false;
+                MLog.log(TAG, "OnEventCallBack.EventType=" + EventType + ",播放完成：" + oMedia.getPathName());
+                playHandler.sendEmptyMessage(playOrder);//继续播放，跳到上一首或下一首
                 break;
         }
         if (this.callback != null)
@@ -438,7 +429,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
                     if (!isPlaying)
                         startPlay(playingList.findAny());
                     break;
-                case SessionID.PLAY_MANAGER_PLAY_ORDER6://下一首或上一首
+                case SessionID.PLAY_MANAGER_PLAY_ORDER6:
                 default:
                     break;
             }

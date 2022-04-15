@@ -200,7 +200,8 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public void stop() {
-        if (isPlayerReady()) {
+        if (isPlayerReady())
+        {
             if(getOPlayer().isPlaying())
                 playTime = getTime();
             getOPlayer().stop();
@@ -430,7 +431,6 @@ public class OMedia implements Serializable, PlayerCallback {
                 }
                 break;
             case PlaybackEvent.Status_Stopped:
-                playTime = TimeChanged;
                 break;
             case PlaybackEvent.Status_Ended:
             case PlaybackEvent.Status_Error:
