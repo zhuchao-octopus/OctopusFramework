@@ -23,19 +23,17 @@ import com.zhuchao.android.libfileutils.MediaFile;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.TreeMap;
 
 public class VideoList {
     private String TAG = "VideoList";
     private NormalRequestCallback RequestCallBack = null;
-    private OMedia fVideo = null;
-    private OMedia lVideo = null;
+    private OMedia firstItem = null;
+    private OMedia lastItem = null;
     private boolean threadLock = false;
-    private HashMap<String, Object> FHashMap;
+    private HashMap<String, Object> FHashMap = new HashMap();
 
     /*private TreeMap<String, Object> FHashMap = new TreeMap<String, Object>(new Comparator<String>() {
         @Override
@@ -46,8 +44,6 @@ public class VideoList {
 
     public VideoList(NormalRequestCallback requestCallBack) {
         RequestCallBack = requestCallBack;
-        this.threadLock = false;
-        this.FHashMap = new HashMap();
     }
 
     public HashMap<String, Object> getMap() {
@@ -72,18 +68,18 @@ public class VideoList {
     public void add(OMedia oMedia) {
         if (oMedia == null) return;
         if(FHashMap.containsKey(oMedia.md5())) return;
-        if(getCount()<=0) fVideo = oMedia;
+        if(getCount()<=0) firstItem = oMedia;
 
-        if (lVideo != null) {//依次连接
-            lVideo.setNext(oMedia);
-            oMedia.setPre(lVideo);
+        if (lastItem != null) {//依次连接
+            lastItem.setNext(oMedia);
+            oMedia.setPre(lastItem);
         }
-        if (fVideo != null) {//首尾连接
-            fVideo.setPre(oMedia);
-            oMedia.setNext(fVideo);
+        if (firstItem != null) {//首尾连接
+            firstItem.setPre(oMedia);
+            oMedia.setNext(firstItem);
         }
         FHashMap.put(oMedia.md5(), oMedia);
-        lVideo = oMedia;
+        lastItem = oMedia;
         //MLog.log(TAG, "add1");
     }
 
@@ -153,6 +149,14 @@ public class VideoList {
         Object[] values = FHashMap.values().toArray();
         Object randomValue = values[generator.nextInt(values.length)];
         return (OMedia) randomValue;
+    }
+
+    public OMedia getFirstItem() {
+        return firstItem;
+    }
+
+    public OMedia getLastItem() {
+        return lastItem;
     }
 
     public int getCount() {

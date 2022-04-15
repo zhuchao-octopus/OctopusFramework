@@ -322,25 +322,21 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         switch (autoPlaySource) {
             case SessionID.SESSION_SOURCE_ALL:
             case SessionID.SESSION_SOURCE_PLAYLIST:
-                if (playingList.getCount() > 0) {
-                    ooMedia = playingList.findByIndex(0);
-                }
+                ooMedia = playingList.getFirstItem();
                 break;
             case SessionID.SESSION_SOURCE_MOBILE_USB:
                 if (autoPlaySource == SessionID.SESSION_SOURCE_MOBILE_USB && sessionManager != null) {
-                    if (sessionManager.getMobileSession().getVideoList().getCount() > 0)
-                        ooMedia = sessionManager.getMobileSession().getVideos().findByIndex(0);
+                        ooMedia = sessionManager.getMobileSession().getVideos().getFirstItem();
                 }
                 break;
             case SessionID.SESSION_SOURCE_LOCAL_INTERNAL:
                 if (autoPlaySource == SessionID.SESSION_SOURCE_LOCAL_INTERNAL && sessionManager != null) {
-                    ooMedia = sessionManager.getLocalSession().getVideos().findByIndex(0);
+                    ooMedia = sessionManager.getLocalSession().getVideos().getFirstItem();
                 }
                 break;
             case SessionID.SESSION_SOURCE_EXTERNAL:
                 if (autoPlaySource == SessionID.SESSION_SOURCE_EXTERNAL && sessionManager != null) {
-                    if (sessionManager.getFileSession().getVideoList().getCount() > 0)
-                        ooMedia = sessionManager.getFileSession().getVideos().findByIndex(0);
+                        ooMedia = sessionManager.getFileSession().getVideos().getFirstItem();
                 }
                 break;
             default:
