@@ -23,7 +23,7 @@ public class MyHttpUtils {
                 try {
                     String result = doGet(urlStr);
                     if (callBack != null) {
-                        callBack.onHttpRequestComplete(result, requestId);
+                        callBack.onHttpRequestProgress(requestId,result,urlStr,0,0);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -41,7 +41,7 @@ public class MyHttpUtils {
                 try {
                     String result = doPost(urlStr, params);
                     if (callBack != null) {
-                        callBack.onHttpRequestComplete(result, 0);
+                        callBack.onHttpRequestProgress("",urlStr,result, 0,0);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

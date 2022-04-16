@@ -95,8 +95,8 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
                             videoList.add(scheduleVideo);
                         }
 
-                        MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
-                                scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
+                        //MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
+                        //        scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
                         Count ++;
                     }
 
@@ -133,8 +133,8 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
               if (!videoList.contains(scheduleVideo)) {
                   videoList.add(scheduleVideo);
               }
-              MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
-                      scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
+              //MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
+              //        scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
               Count ++;
           }
           else if(all.length == 5)
@@ -152,8 +152,8 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
               if (!videoList.contains(scheduleVideo)) {
                   videoList.add(scheduleVideo);
               }
-              MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
-                      scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
+              //MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
+              //        scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
               Count ++;
           }
 
@@ -183,8 +183,8 @@ public class SchedulePlaybackSession implements SessionCompleteCallback {
                 videoList.add(scheduleVideo);
             }
 
-            MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
-                    scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
+            //MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
+            //        scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
             Count++;
         }
 

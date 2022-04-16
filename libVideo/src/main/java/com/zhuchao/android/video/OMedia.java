@@ -210,11 +210,16 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public void resume() {
-        if (MagicNum == 0) {
-            if (isPlayerReady()) {
+        if (MagicNum == 0)
+        {
+            if (isPlayerReady())
+            {
+                restorePlay = true;
                 play();
             }
-        } else {
+        }
+        else
+        {
             if (isPlayerReady())
                 getOPlayer().resume();
         }
@@ -223,10 +228,6 @@ public class OMedia implements Serializable, PlayerCallback {
     private void setCallback(PlayerCallback callBack) {
         this.callback = callBack;
         getOPlayer().setCallback(this);
-    }
-
-    public long getPlayTime() {
-        return playTime;
     }
 
     public OMedia setPlayTime(long mLastPlayTime) {
@@ -416,15 +417,10 @@ public class OMedia implements Serializable, PlayerCallback {
             return true;
     }
 
-    public void setRestorePlay(boolean restorePlay) {
-        this.restorePlay = restorePlay;
-    }
-
     @Override
     public void OnEventCallBack(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
         switch (EventType) {
             //case PlaybackEvent.Status_NothingIdle:
-            //    playTime = 0;
             //    break;
             case PlaybackEvent.Status_Opening:
             case PlaybackEvent.Status_Buffering:
@@ -452,9 +448,14 @@ public class OMedia implements Serializable, PlayerCallback {
 
     private void restorePlay(float position,long Length)
     {
-        if (((position + 100) < playTime) && (playTime <= Length) && (Length > 0)) {//播放进度恢复
-            MMLog.log(TAG, "OnEventCallBack go to position " + position + "->" + playTime + " Total Length = " + Length);
-            //setTime(playTime);
+        try {
+            if (((position + 100) < playTime) && (playTime <= Length) && (Length > 0)) {//播放进度恢复
+                MMLog.log(TAG, "OnEventCallBack go to position " + position + "->" + playTime + " Total Length = " + Length);
+                setTime(playTime);
+                restorePlay = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     public void save() {

@@ -18,6 +18,16 @@ public class ObjectList {
         this.FHashMap = new HashMap();
     }
 
+    public Object build(String Name, Object obj) {
+        if (TextUtils.isEmpty(Name))
+            return null;
+        Object o = getObject(Name);
+        if (o != null)
+            return o;
+        add(Name, obj);
+        return obj;
+    }
+
     public void add(String Key, Object Obj) {
         if (TextUtils.isEmpty(Key))
             return;
@@ -79,7 +89,7 @@ public class ObjectList {
         return FHashMap.size();
     }
 
-    public boolean exist(String key) {
+    public boolean existObject(String key) {
         return FHashMap.containsKey(key);
     }
 

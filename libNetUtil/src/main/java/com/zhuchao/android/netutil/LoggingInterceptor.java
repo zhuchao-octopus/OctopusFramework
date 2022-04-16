@@ -45,7 +45,7 @@ import okio.BufferedSource;
  * this class should not be considered stable and may change slightly between releases. If you need
  * a stable logging format, use your own interceptor.
  */
-public final class HttpLoggingInterceptor implements Interceptor {
+public final class LoggingInterceptor implements Interceptor {
     private static final Charset UTF8 = StandardCharsets.UTF_8;
 
     public enum Level {
@@ -116,11 +116,11 @@ public final class HttpLoggingInterceptor implements Interceptor {
         };
     }
 
-    public HttpLoggingInterceptor() {
+    public LoggingInterceptor() {
         this(Logger.DEFAULT);
     }
 
-    public HttpLoggingInterceptor(Logger logger) {
+    public LoggingInterceptor(Logger logger) {
         this.logger = logger;
     }
 
@@ -129,7 +129,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
     private volatile Level level = Level.NONE;
 
     /** Change the level at which this interceptor logs. */
-    public HttpLoggingInterceptor setLevel(Level level) {
+    public LoggingInterceptor setLevel(Level level) {
         if (level == null) throw new NullPointerException("level == null. Use Level.NONE instead.");
         this.level = level;
         return this;

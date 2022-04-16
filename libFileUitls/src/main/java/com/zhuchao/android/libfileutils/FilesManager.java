@@ -71,23 +71,66 @@ public class FilesManager {
     public static final int TYPE_ZIP = 2;
 
 
-    public static boolean isExists(String path) {
-        File file = new File(path);
-        return file.exists();
+    public static boolean isExists(String filePath) {
+        if (TextUtils.isEmpty(filePath)) return false;
+        if (filePath.startsWith("http:") ||
+                filePath.startsWith("https:") ||
+                filePath.startsWith("ftp:") ||
+                filePath.startsWith("rtp:") ||
+                filePath.startsWith("rtsp:") ||
+                filePath.startsWith("mms:"))
+            return true;
+        try {
+            File file = new File(filePath);
+            return file.exists();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static String getFileName(String filePath) {
-        File file = new File(filePath);
-        if (file.exists())
-            return file.getName();
+        String fileName = filePath;
+        if (filePath.startsWith("http:") ||
+                filePath.startsWith("https:") ||
+                filePath.startsWith("ftp:") ||
+                filePath.startsWith("rtp:") ||
+                filePath.startsWith("rtsp:") ||
+                filePath.startsWith("mms:"))
+        {
+            int lastSlash = filePath.lastIndexOf('/');
+            if (lastSlash >= 0) {
+                lastSlash++;
+                if (lastSlash < filePath.length()) {
+                    {
+                        fileName = filePath.substring(lastSlash);
+                        return fileName;
+                    }
+                }
+            }
+        }
         else
-            return null;
+        {
+            File file = new File(filePath);
+            if (file.exists()) {
+                if (file.isFile())
+                    return file.getName();
+                else
+                    return null;
+            }
+        }
+        return null;
     }
 
     public static boolean deleteFile(String filePath) {
-        File file = new File(filePath);
-        if (file.exists()) file.delete();
-        return true;
+        try {
+            File file = new File(filePath);
+            if (file.exists()) file.delete();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static boolean deleteFiles(String filePath) {
@@ -104,11 +147,16 @@ public class FilesManager {
         return true;
     }
 
-    public static void renameFile(String oldPath, String newPath) {
-        File oleFile = new File(oldPath);
-        File newFile = new File(newPath);
-        //执行重命名
-        oleFile.renameTo(newFile);
+    public static boolean renameFile(String oldPath, String newPath) {
+        try {
+            File oleFile = new File(oldPath);
+            File newFile = new File(newPath);
+            oleFile.renameTo(newFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     public static void copy(String FromFile, String ToFile) {
@@ -296,8 +344,7 @@ public class FilesManager {
             getType = volumeInfoClazz.getMethod("getType");
             getPath = volumeInfoClazz.getMethod("getPath");
             volumes = (List<?>) getVolumes.invoke(mStorageManager);
-            for (Object vol : volumes)
-            {
+            for (Object vol : volumes) {
                 if (vol != null && (boolean) isMountedReadable.invoke(vol) && (int) getType.invoke(vol) == 0) {
                     File path2 = (File) getPath.invoke(vol);
                     p1 = (String) getBestVolumeDescription.invoke(mStorageManager, vol);
@@ -780,7 +827,7 @@ public class FilesManager {
     }
 
     public static String md5(String str) {
-        if (str == null)  return "null";
+        if (str == null) return "null";
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             byte[] bytes = md5.digest(str.getBytes());

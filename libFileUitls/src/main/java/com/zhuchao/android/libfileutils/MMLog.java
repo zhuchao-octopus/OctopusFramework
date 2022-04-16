@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.Properties;
 
 public class MMLog {
+    private static final String MTAG = "MMLog";
     private static final String LOG_SYSTEM_PROPERTY = "persist.app.log.on.off";
     private static String debugOnOff = "false";
 
@@ -19,6 +20,6 @@ public class MMLog {
 
     public static void log(String TAG, String logMsg) {
         if (debugOnOff.equals("true"))
-            Log.d(TAG, logMsg);
+            Log.d(MTAG+"."+TAG, logMsg);
     }
 }

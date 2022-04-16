@@ -89,8 +89,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
     }
 
     public synchronized void startPlay(OMedia oMedia) {
-        if (oMediaLoading)
-        {
+        if (oMediaLoading) {
             MMLog.log(TAG, "oMedia is loading ！！！！！！");
             return;
         }
@@ -177,19 +176,32 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
 
     public void playPause() {
         if ((System.currentTimeMillis() - lStartTick) <= ACTION_DELAY) {
-            MMLog.log(TAG, "playPause() not permit");
+            MMLog.log(TAG, "playPause() not allowed to do this now");
             return;
         }
         lStartTick = System.currentTimeMillis();
-        if (oMedia != null) {
-            if (oMedia.getPlayStatus() == PlaybackEvent.Status_Ended)
-                playNext();
-            if (oMedia.getPlayStatus() == PlaybackEvent.Status_NothingIdle)
-                oMedia.play();
-            else
-                oMedia.playPause();
-        } else {
+        if (oMedia == null) {
             autoPlay();
+            return;
+        }
+        switch (oMedia.getPlayStatus()) {
+            case PlaybackEvent.Status_NothingIdle:
+                oMedia.play();
+                break;
+            case PlaybackEvent.Status_Opening:
+            case PlaybackEvent.Status_Buffering:
+                break;
+            case PlaybackEvent.Status_Playing:
+            case PlaybackEvent.Status_Paused:
+                oMedia.playPause();
+                break;
+            case PlaybackEvent.Status_Stopped:
+                resumePlay();
+                break;
+            case PlaybackEvent.Status_Ended:
+            case PlaybackEvent.Status_Error:
+                playNext();//play next
+                break;
         }
     }
 
@@ -341,6 +353,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
     }
 
     public void autoPlay() {
+        //自动播放就是播放指定位置的第一个
         autoPlay(autoPlaySource);
     }
 
@@ -350,7 +363,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         if (autoPlaySource < SessionID.SESSION_SOURCE_ALL) return;
         if (oMediaLoading)
             return;
-        if(isPlaying()) return;
+        if (isPlaying()) return;
         switch (autoPlaySource) {
             case SessionID.SESSION_SOURCE_ALL:
             case SessionID.SESSION_SOURCE_PLAYLIST:
@@ -377,6 +390,10 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         if (ooMedia != null) {
             MMLog.log(TAG, "Auto play " + ooMedia.getPathName());
             startPlay(ooMedia);
+        }
+        else
+        {
+            MMLog.log(TAG, "No oMedia found in playing list");
         }
     }
 
@@ -453,12 +470,12 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
             super.handleMessage(msg);
             //MLog.log(TAG, "playHandler Msg = " + msg.toString());
             switch (msg.what) {
-                case SessionID.PLAY_MANAGER_PLAY_ORDER1://继续自动播放
+                case SessionID.PLAY_MANAGER_PLAY_ORDER1://自动播放(播放第一个)
                     if (!isPlaying())
                         autoPlay(autoPlaySource);
                     break;
                 case SessionID.PLAY_MANAGER_PLAY_ORDER2://循序列表循环
-                    MMLog.log(TAG, "playHandler Msg = " + msg.toString() + ",isPlaying=" + isPlaying());
+                    //MMLog.log(TAG, "playHandler Msg = " + msg.toString() + ",isPlaying=" + isPlaying());
                     if (!isPlaying())
                         playNext();
                     break;

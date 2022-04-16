@@ -1,4 +1,4 @@
-package com.zhuchao.android.netutil;
+package com.zhuchao.android.libfileutils;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

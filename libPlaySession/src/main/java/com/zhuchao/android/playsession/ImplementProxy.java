@@ -117,9 +117,13 @@ public class ImplementProxy implements HttpCallBack {
     }
 
     @Override
-    public synchronized void onHttpRequestComplete(String result, int resultIndex) {
+    public void onHttpRequestProgress(String tag, String url, String lrl, long progress, long total) {
 
-        switch (resultIndex) {
+    }
+
+    @Override
+    public void onHttpRequestProgress(int tag, String url, String lrl, long progress, long total) {
+        switch (tag) {
             case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
             case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
             case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
@@ -130,20 +134,25 @@ public class ImplementProxy implements HttpCallBack {
             case SessionID.SESSION_TYPE_GET_MOVIELIST_ACTOR:
             case SessionID.SESSION_TYPE_GET_MOVIELIST_VIP:
             case SessionID.SESSION_TYPE_GET_MOVIE_TYPE:
-                mMovieListBean = parseJSonToMovieListBean(result);
+                mMovieListBean = parseJSonToMovieListBean(lrl);
                 break;
             case SessionID.SESSION_TYPE_GET_MOVIE_CATEGORY:
-                mVideoCategory = jsonIdNameArrayToMap(result);
+                mVideoCategory = jsonIdNameArrayToMap(lrl);
                 break;
             case SessionID.SESSION_TYPE_SCHEDULEPLAYBACK:
                 break;
             default://默认尝试转化成视频列表
-               // mMovieListBean = parseJSonToMovieListBean(result);
+                // mMovieListBean = parseJSonToMovieListBean(result);
                 break;
         }
 
         if (SessionCallback != null)
-            SessionCallback.OnSessionComplete(resultIndex, result);
+            SessionCallback.OnSessionComplete(tag, lrl);
+    }
+
+    @Override
+    public void onHttpRequestComplete(String tag, String url, String lrl, long progress, long total) {
+
     }
 }
 
