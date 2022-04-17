@@ -15,6 +15,7 @@ import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.libfileutils.SessionID;
 import com.zhuchao.android.video.Movie;
 import com.zhuchao.android.video.OMedia;
 import com.zhuchao.android.video.VideoList;
@@ -46,7 +47,8 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         downloadPath = FilesManager.getDownloadDir(null);//播放目录和，下载缓存目录不一样
         playingList = new VideoList(null);
         favoriteList = new VideoList(this);
-        playingList.setTAG("PlayManager.VideoList");
+        playingList.setTAG("PlayManager.VideoList0");
+        playingList.setTAG("PlayManager.VideoList1");
         setMagicNum(0);
     }
 
@@ -187,9 +189,9 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         MMLog.log(TAG, "playPause() playStatus = " + oMedia.getPlayStatus());
         switch (oMedia.getPlayStatus()) {
             case PlaybackEvent.Status_NothingIdle:
+            case PlaybackEvent.Status_Opening:
                 oMedia.play();
                 break;
-            case PlaybackEvent.Status_Opening:
             case PlaybackEvent.Status_Buffering:
                 break;
             case PlaybackEvent.Status_Playing:
@@ -208,16 +210,12 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
     }
 
     public void playNext() {
-        if (oMedia != null) {
-            OMedia oo = oMedia.getNext();
-            if (oo != null) {
-                MMLog.log(TAG, "Go Next = " + oo.getPathName());
-                startPlay(oo);
-            } else {
-                MMLog.log(TAG, "Go Next = null");
-            }
+        OMedia oo = getNextAvailable();//获取下一个有效的资源
+        if (oo != null) {
+            MMLog.log(TAG, "Go Next = " + oo.getPathName());
+            startPlay(oo);
         } else {
-            MMLog.log(TAG, "Go Next auto play");
+            MMLog.log(TAG, "Next = null,go to auto play");
             autoPlay();
         }
     }
@@ -273,8 +271,9 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         return downloadPath;
     }
 
-    public void setDownloadPath(String downloadPath) {
+    public synchronized void setDownloadPath(String downloadPath) {
         this.downloadPath = downloadPath;
+        this.favoriteList.loadFromDir(downloadPath, SessionID.MEDIA_TYPE_ID_AllMEDIA);
     }
 
     public void addSource(String Url) {
@@ -354,6 +353,24 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         }
     }
 
+    private OMedia getNextAvailable() {
+        OMedia ooMedia = null;
+        MMLog.log(TAG, "available Count = " + playingList.getCount() + " | " + favoriteList.getCount());
+        if (favoriteList.exist(oMedia))
+            ooMedia = favoriteList.getNextAvailable(oMedia);
+        else
+            ooMedia = favoriteList.getNextAvailable(null);
+
+        if (ooMedia == null)
+        {
+            if (playingList.exist(oMedia))
+                ooMedia = playingList.getNextAvailable(oMedia);
+            else
+                ooMedia = playingList.getNextAvailable(null);
+        }
+        return ooMedia;
+    }
+
     public void autoPlay() {
         //自动播放就是播放指定位置的第一个
         autoPlay(autoPlaySource);
@@ -363,14 +380,15 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         OMedia ooMedia = null;
         this.autoPlaySource = autoPlayType;
         if (autoPlaySource < SessionID.SESSION_SOURCE_ALL) return;
+        if (isPlaying())
+            return;
         if (oMediaLoading)
             return;
-        if (isPlaying()) return;
         switch (autoPlaySource) {
             case SessionID.SESSION_SOURCE_ALL:
             case SessionID.SESSION_SOURCE_PLAYLIST:
                 if (favoriteList.getCount() > 0)
-                    ooMedia = favoriteList.getFirstItem();
+                    ooMedia = favoriteList.getFirstItem();//优先切换到第二收藏列表，优先播放收藏列表
                 else
                     ooMedia = playingList.getFirstItem();
                 break;
@@ -437,33 +455,35 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         if (sessionId == SessionID.SESSION_SOURCE_MOBILE_USB) {
             MMLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getMobileSession().getVideoList().getCount() = " + sessionManager.getMobileSession().getVideoList().getCount());
             if (autoPlaySource == SessionID.SESSION_SOURCE_MOBILE_USB || autoPlaySource == SessionID.SESSION_SOURCE_ALL) {
-                playHandler.sendEmptyMessage(SessionID.PLAY_MANAGER_PLAY_ORDER1);
+                playHandler.sendEmptyMessage(SessionID.PLAY_MANAGER_PLAY_ORDER0);
                 return;
             }
         } else if (sessionId == SessionID.SESSION_SOURCE_LOCAL_INTERNAL) {
             MMLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getLocalSession().getVideoList().getCount() = " + sessionManager.getLocalSession().getVideoList().getCount());
             if ((autoPlaySource == SessionID.SESSION_SOURCE_LOCAL_INTERNAL || autoPlaySource == SessionID.SESSION_SOURCE_ALL)) {
-                playHandler.sendEmptyMessage(SessionID.PLAY_MANAGER_PLAY_ORDER1);
+                playHandler.sendEmptyMessage(SessionID.PLAY_MANAGER_PLAY_ORDER0);
                 return;
             }
         } else if (sessionId == SessionID.SESSION_SOURCE_PATH) {
             MMLog.log(TAG, "OnSessionComplete: " + "sessionId = " + sessionId + ",getMobileTFSession().getVideoList().getCount() = " + sessionManager.getFileSession().getVideoList().getCount());
             if ((autoPlaySource == SessionID.SESSION_SOURCE_LOCAL_INTERNAL || autoPlaySource == SessionID.SESSION_SOURCE_ALL)) {
-                playHandler.sendEmptyMessage(SessionID.PLAY_MANAGER_PLAY_ORDER1);
+                playHandler.sendEmptyMessage(SessionID.PLAY_MANAGER_PLAY_ORDER0);
                 return;
             }
         }
 
         if ((autoPlaySource == SessionID.SESSION_SOURCE_ALL)) {
-            playHandler.sendEmptyMessage(SessionID.PLAY_MANAGER_PLAY_ORDER1);
+            playHandler.sendEmptyMessage(SessionID.PLAY_MANAGER_PLAY_ORDER0);
         }
     }
 
     @Override
     public void onRequestComplete(String Result, int Index) {
-        //MLog.log(TAG, "onRequestComplete," + Result + "," + Index + ",autoPlaySource=" + autoPlaySource);
-        if (autoPlaySource >= SessionID.SESSION_SOURCE_ALL)
+        //MLog.log(TAG, "onRequestComplete," + Result + "," + Index + ",autoPlaySource = " + autoPlaySource);
+        if (Result.equals("PlayManager.VideoList1")) {
             playHandler.sendEmptyMessage(SessionID.PLAY_MANAGER_PLAY_ORDER1);
+        } else if (autoPlaySource >= SessionID.SESSION_SOURCE_ALL)
+            playHandler.sendEmptyMessage(SessionID.PLAY_MANAGER_PLAY_ORDER0);
     }
 
     private Handler playHandler = new Handler(Looper.getMainLooper()) {
@@ -473,9 +493,12 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
             super.handleMessage(msg);
             //MLog.log(TAG, "playHandler Msg = " + msg.toString());
             switch (msg.what) {
-                case SessionID.PLAY_MANAGER_PLAY_ORDER1://自动播放(播放第一个)
+                case SessionID.PLAY_MANAGER_PLAY_ORDER0://自动播放(播放第一个)
                     if (!isPlaying())
                         autoPlay(autoPlaySource);
+                    break;
+                case SessionID.PLAY_MANAGER_PLAY_ORDER1://强制自动播放(播放第一个)
+                    autoPlay(autoPlaySource);
                     break;
                 case SessionID.PLAY_MANAGER_PLAY_ORDER2://循序列表循环
                     //MMLog.log(TAG, "playHandler Msg = " + msg.toString() + ",isPlaying=" + isPlaying());

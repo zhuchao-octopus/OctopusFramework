@@ -7,7 +7,7 @@ import android.os.Environment;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.zhuchao.android.libfileutils.FilesManager;
-import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.libfileutils.SessionID;
 import com.zhuchao.android.playsession.PaserBean.ScheduleVideoBean;
 import com.zhuchao.android.playsession.PaserBean.ScheduleVideoRootBean;
 import com.zhuchao.android.video.ScheduleMedia;

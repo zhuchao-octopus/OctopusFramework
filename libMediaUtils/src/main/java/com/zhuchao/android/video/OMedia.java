@@ -484,8 +484,8 @@ public class OMedia implements Serializable, PlayerCallback {
             bf = true;
         else if (FilesManager.isExists(movie.getsUrl()))
             bf = MediaFile.isMediaFile(movie.getsUrl());
-        else if (FilesManager.isExists(cachePath + movie.getName()))
-            bf = MediaFile.isMediaFile(cachePath + movie.getName());
+        else if (!TextUtils.isEmpty(cachePath) && FilesManager.isExists(cachePath +"/"+ movie.getName()))
+            bf = MediaFile.isMediaFile(cachePath +"/"+ movie.getName());
         return bf;
     }
 

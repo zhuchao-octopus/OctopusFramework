@@ -465,6 +465,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             } else MMLog.log(TAG, "resetPlaySession.mSurfaceView = null");
         } catch (Exception e) {
             MMLog.log(TAG,"resetPlaySession " +e.toString());
+            //这里可能报异常，setSource后要重新setsurfaceview
         }
 
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -477,40 +478,41 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     }
 
     private void asyncStatusProcess(int Status) {
+        MMLog.log(TAG, "enter asyncStatusProcess() playStatus = " + Status);
         try {
             switch (Status) {
                 case PlaybackEvent.Status_NothingIdle:
-                    MMLog.log(TAG, "asyncStatusProcess player is idle, nothing to do playStatus=" + Status);
+                    MMLog.log(TAG, "asyncStatusProcess player is idle, nothing to do playStatus = " + Status);
                     break;
                 case PlaybackEvent.Status_Stopped:
                 case PlaybackEvent.Status_Opening:
                     StartPlayProgressThread();
-                    MPlayer.playStatus = PlaybackEvent.Status_Buffering;
+                    playStatus = PlaybackEvent.Status_Buffering;
                     mediaPlayer.prepareAsync();
                     mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                         @Override
                         public void onPrepared(MediaPlayer mp) {
                             MMLog.log(TAG, "asyncStatusProcess start to play async... playStatus = " + Status);
-                            MPlayer.playStatus = PlaybackEvent.Status_Playing;
+                            playStatus = PlaybackEvent.Status_Playing;
                             mp.start();
                         }
                     });
                     break;
                 case PlaybackEvent.Status_Buffering:
                 case PlaybackEvent.Status_Playing:
-                    MMLog.log(TAG, "asyncStatusProcess is playing playStatus=" + Status);
+                    MMLog.log(TAG, "asyncStatusProcess is playing playStatus = " + Status);
                     break;
 
                 case PlaybackEvent.Status_Paused:
                 case PlaybackEvent.Status_SEEKING:
-                    MMLog.log(TAG, "asyncStatusProcess start to play directly playStatus=" + Status);
-                    MPlayer.playStatus = PlaybackEvent.Status_Playing;
+                    MMLog.log(TAG, "asyncStatusProcess start to play directly playStatus = " + Status);
+                    playStatus = PlaybackEvent.Status_Playing;
                     mediaPlayer.start();
                     break;
                 case PlaybackEvent.Status_Ended:
                 case PlaybackEvent.Status_Error:
                 default:
-                    MMLog.log(TAG, "asyncStatusProcess do nothing, playStatus=" + Status);
+                    MMLog.log(TAG, "asyncStatusProcess do nothing, playStatus = " + Status);
                     break;
             }
 

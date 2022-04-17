@@ -9,6 +9,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.zhuchao.android.callbackevent.HttpCallBack;
 import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.libfileutils.SessionID;
 import com.zhuchao.android.netutil.HttpUtils;
 import com.zhuchao.android.playsession.PaserBean.IdNameBean;
 import com.zhuchao.android.playsession.PaserBean.MovieListBean;

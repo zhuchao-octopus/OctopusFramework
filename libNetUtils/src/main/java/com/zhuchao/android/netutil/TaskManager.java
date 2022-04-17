@@ -45,6 +45,10 @@ public class TaskManager {
         this.stopContinue = stopContinue;
     }
 
+    public void setReDownload(boolean reDownload) {
+        this.reDownload = reDownload;
+    }
+
     public TTask request(final String fromUrl) {
         if (TextUtils.isEmpty(fromUrl)) {
             MMLog.log(TAG, "fromUrl = " + fromUrl);

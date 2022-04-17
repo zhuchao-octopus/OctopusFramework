@@ -20,6 +20,7 @@ import com.zhuchao.android.callbackevent.NormalRequestCallback;
 import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.libfileutils.MediaFile;
+import com.zhuchao.android.libfileutils.SessionID;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -142,8 +143,17 @@ public class VideoList {
     }
 
     public OMedia findByPath(String fileName) {
-        String md5 = FilesManager.md5(fileName);
-        return (OMedia) FHashMap.get(md5);
+        String md5Key = FilesManager.md5(fileName);
+        return (OMedia) FHashMap.get(md5Key);
+    }
+
+    public boolean exist(String fileName) {
+        String md5Key = FilesManager.md5(fileName);
+        return FHashMap.containsKey(md5Key);
+    }
+
+    public boolean exist(OMedia oMedia) {
+        return FHashMap.containsValue(oMedia);
     }
 
     public OMedia findAny() {
@@ -151,6 +161,22 @@ public class VideoList {
         Object[] values = FHashMap.values().toArray();
         Object randomValue = values[generator.nextInt(values.length)];
         return (OMedia) randomValue;
+    }
+    //跳过无效的资源对象
+    public OMedia getNextAvailable(OMedia oMedia) {
+        OMedia ooMedia = null;
+        if (getCount() <= 0) return null;
+        if (oMedia == null)
+            return firstItem;
+
+        ooMedia = oMedia;//找下一个
+        for (int i = 0; i < getCount(); i++)
+        {
+            ooMedia = ooMedia.getNext();
+             if((ooMedia != null) && (ooMedia.isAvailable(null)))
+                return ooMedia;
+        }
+        return null;
     }
 
     public OMedia getFirstItem() {
@@ -199,15 +225,13 @@ public class VideoList {
     public void printFollow() {
         if (getCount() <= 0) return;
         OMedia oMedia = firstItem;
-        for (int i = 0; i < getCount(); i++)
-        {
-            if (oMedia != null)
-            {
+        for (int i = 0; i < getCount(); i++) {
+            if (oMedia != null) {
                 MMLog.log(TAG, i + ":↓" + oMedia.getPathName());
                 oMedia = oMedia.getNext();
                 if (oMedia == null)
-                   MMLog.log(TAG, "null");
-                if(oMedia.equals(lastItem))
+                    MMLog.log(TAG, "null");
+                if (oMedia.equals(lastItem))
                     MMLog.log(TAG, "printFollow() done");
             }
         }
@@ -240,17 +264,15 @@ public class VideoList {
                 filePathName = file.getPath();// +"  "+ file.getName() ;
                 MediaFile.MediaFileType mm = MediaFile.getFileType(filePathName);
                 if (mm != null) {
-                    if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == 100)) {
+                    if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == SessionID.MEDIA_TYPE_ID_AllMEDIA)) {
                         add(filePathName);//所有的媒体文件
-                    } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == 101)) {
+                    } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == SessionID.MEDIA_TYPE_ID_PIC)) {
                         add(filePathName);
-                    } else if (MediaFile.isAudioFileType(mm.fileType) && (fileType == 102)) {
+                    } else if (MediaFile.isAudioFileType(mm.fileType) && (fileType == SessionID.MEDIA_TYPE_ID_AUDIO)) {
                         add(filePathName);
-                    } else if (MediaFile.isVideoFileType(mm.fileType) && (fileType == 103)) {
+                    } else if (MediaFile.isVideoFileType(mm.fileType) && (fileType == SessionID.MEDIA_TYPE_ID_VIDEO)) {
                         add(filePathName);
-                    } else if ((MediaFile.isVideoFileType(mm.fileType) || MediaFile.isAudioFileType(mm.fileType)) && (fileType == 104)) {
-                        add(filePathName);
-                    } else if (fileType == 99) {
+                    } else if (fileType == SessionID.MEDIA_TYPE_ID_AllFILE) {
                         add(filePathName);//所有的文件
                     }
                     try {
