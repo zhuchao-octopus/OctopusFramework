@@ -3,7 +3,7 @@ apply plugin: 'maven-publish'
 configurations.maybeCreate("default")
 artifacts.add("default", file('libvlc-armv7-3.1.0.aar'))
 ext {
-    GITHUB_REPO_PATH ='F:\\StudioProjects\\OctopusFrameworkLibs'
+    GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libDecodeCore'
     PUBLISH_VERSION = '2.1'
@@ -20,24 +20,11 @@ afterEvaluate {
                 version PUBLISH_VERSION
             }
         }
-        repositories{
-            maven{
+        repositories {
+            maven {
                 allowInsecureProtocol true
                 url GITHUB_REPO_PATH
             }
         }
     }
 }
-
-//repositories{
-//    flatDir { dirs 'libs'}
-//}
-//android {
-//    compileSdkVersion 30
-//}
-
-//dependencies {
-    //implementation fileTree(dir: 'libs', include: ['*.jar'])
-//    api(name:'libvlc-armv7-3.1.0',ext:'aar')
-//}
-//apply from: '../maven_build.gradle'

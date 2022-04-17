@@ -1,1 +1,1 @@
-include ':libFileUitls', ':libNotifier', ':libDecodeCore', ':libPlayUtil', ':libPlaySession', ':libNetUtil', ':libDataBaseUtil', ':libVideo', ':libCallbackEvent'
+include ':libFileUitls', ':libApplicationUtils', ':libDecodeCore', ':libPlayerUtils', ':libSessionUtils', ':libNetUtils', ':libDataBaseUtils', ':libMediaUtils', ':libCallbackEvent'

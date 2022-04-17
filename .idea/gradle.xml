@@ -11,15 +11,15 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/libApplicationUtils" />
             <option value="$PROJECT_DIR$/libCallbackEvent" />
-            <option value="$PROJECT_DIR$/libDataBaseUtil" />
+            <option value="$PROJECT_DIR$/libDataBaseUtils" />
             <option value="$PROJECT_DIR$/libDecodeCore" />
             <option value="$PROJECT_DIR$/libFileUitls" />
-            <option value="$PROJECT_DIR$/libNetUtil" />
-            <option value="$PROJECT_DIR$/libNotifier" />
-            <option value="$PROJECT_DIR$/libPlaySession" />
-            <option value="$PROJECT_DIR$/libPlayUtil" />
-            <option value="$PROJECT_DIR$/libVideo" />
+            <option value="$PROJECT_DIR$/libMediaUtils" />
+            <option value="$PROJECT_DIR$/libNetUtils" />
+            <option value="$PROJECT_DIR$/libPlayerUtils" />
+            <option value="$PROJECT_DIR$/libSessionUtils" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -57,19 +56,9 @@ import java.util.Map;
 
 public class FilesManager {
     private final static String TAG = "FilesManager";
-    /**
-     * 文档类型
-     */
     public static final int TYPE_DOC = 0;
-    /**
-     * apk类型
-     */
     public static final int TYPE_APK = 1;
-    /**
-     * 压缩包类型
-     */
     public static final int TYPE_ZIP = 2;
-
 
     public static boolean isExists(String filePath) {
         if (TextUtils.isEmpty(filePath)) return false;
@@ -96,8 +85,7 @@ public class FilesManager {
                 filePath.startsWith("ftp:") ||
                 filePath.startsWith("rtp:") ||
                 filePath.startsWith("rtsp:") ||
-                filePath.startsWith("mms:"))
-        {
+                filePath.startsWith("mms:")) {
             int lastSlash = filePath.lastIndexOf('/');
             if (lastSlash >= 0) {
                 lastSlash++;
@@ -108,9 +96,7 @@ public class FilesManager {
                     }
                 }
             }
-        }
-        else
-        {
+        } else {
             File file = new File(filePath);
             if (file.exists()) {
                 if (file.isFile())
@@ -120,6 +106,19 @@ public class FilesManager {
             }
         }
         return null;
+    }
+
+    public static long getFileSize(String fileName) {
+        try {
+            File file = new File(fileName);
+            if (!file.exists() || !file.isFile()) {
+                return 0;
+            }
+            return file.length();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     public static boolean deleteFile(String filePath) {
@@ -160,7 +159,6 @@ public class FilesManager {
     }
 
     public static void copy(String FromFile, String ToFile) {
-        //int bytesum = 0;
         int byteread = 0;
         try {
             File fFile = new File(FromFile);
@@ -903,34 +901,25 @@ public class FilesManager {
     }
 
 
-    public static void getFiles(Context context, String FilePath, List<String> FileList) {
+    public static void getFiles(String FilePath, List<String> FileList) {
         //List<String> FileList = new ArrayList<String>();
         File path = new File(FilePath);
         File[] files = path.listFiles();
-        getFileList(context, files, FileList);
+        getFileList(files, FileList);
         //return FileList;
     }
 
-    private static void getFileList(Context context, File[] files, List<String> FileList) {
+    private static void getFileList(File[] files, List<String> FileList) {
         if (files != null) {// 先判断目录是否为空，否则会报空指针
             String filePathName = null;
             for (File file : files) {
                 if (file.isDirectory()) {
-                    getFileList(context, file.listFiles(), FileList);
+                    getFileList(file.listFiles(), FileList);
                 } else {
                     filePathName = file.getPath();// +"  "+ file.getName() ;
                     FileList.add(filePathName);
-                    sendProgressMessage(context, filePathName);
                 }
             }
-        }
-    }
-
-    private static void sendProgressMessage(Context context, String msg) {
-        if (context != null) {
-            Intent i = new Intent("com.zhuchao.android.FILE_SCAN_ACTION");
-            i.putExtra("FileName", msg);
-            context.sendBroadcast(i);
         }
     }
 

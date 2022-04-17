@@ -1,0 +1,255 @@
+package com.zhuchao.android.netutil;
+
+import com.zhuchao.android.callbackevent.HttpCallBack;
+import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.MMLog;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+public class HttpUtils {
+    private static final String TAG = "HttpUtils";
+    private static final int TIMEOUT_IN_MILLIONS = 5000;
+    private OkHttpClient okHttpClient;
+
+    private HttpUtils() {
+        LoggingInterceptor loggingInterceptor = new LoggingInterceptor();
+        loggingInterceptor.setLevel(BuildConfig.DEBUG ? LoggingInterceptor.Level.BODY : LoggingInterceptor.Level.NONE);
+        okHttpClient = new OkHttpClient().newBuilder().build();
+    }
+
+    private static class Holder {
+        private static HttpUtils httpUtils = new HttpUtils();
+    }
+
+    public static HttpUtils getInstance() {
+        return Holder.httpUtils;
+    }
+
+    public OkHttpClient getOkHttpClient() {
+        return okHttpClient;
+    }
+
+    //异步请求
+    public static void request(final String tag, final String fromUrl, final HttpCallBack RequestCallBack) {
+        HttpUtils.getInstance().getOkHttpClient().newCall(new Request.Builder().url(fromUrl).build()).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                MMLog.log(TAG, "request onFailure from " + fromUrl);
+                MMLog.log(TAG, e.toString());
+                if (RequestCallBack != null)
+                    RequestCallBack.onHttpRequestComplete("", fromUrl, null, 0, 0);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = null;
+                try {
+                    if (response != null && response.isSuccessful()) {
+                        result = response.body().string();
+                    } else {
+                        MMLog.log(TAG, "Request failed from " + fromUrl);
+                    }
+                } catch (IOException e) {
+                    MMLog.log(TAG, e.toString());
+                }
+                if (RequestCallBack != null)
+                    RequestCallBack.onHttpRequestComplete("", fromUrl, result, 0, 0);
+            }
+        });
+    }
+
+    //asynchronous 异步方法
+    public static void Download(final String tag, final String fromUrl, final String toUrl, final HttpCallBack RequestCallBack) {
+        HttpUtils.getInstance()
+                .getOkHttpClient()
+                .newCall(new Request.Builder()
+                        .tag(tag)
+                        .url(fromUrl)
+                        .build())
+                .enqueue(new Callback() {//asynchronous
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        MMLog.log(TAG, "download onFailure from " + fromUrl);
+                        MMLog.log(TAG, e.toString());
+                        if (RequestCallBack != null)
+                            RequestCallBack.onHttpRequestComplete(tag, fromUrl, toUrl, 0, 0);
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        try {
+                            if (response != null && response.isSuccessful())
+                            {
+                                InputStream inputStream = null;
+                                FileOutputStream fileOutputStream = null;
+
+                                long rwOffset = FilesManager.getFileSize(toUrl);
+                                inputStream = response.body().byteStream();
+                                long contentLength = response.body().contentLength();
+                                long downloadLengthSum = rwOffset;
+                                if (rwOffset <= 0) {
+                                    //完整下载模式，覆盖模式
+                                    fileOutputStream = new FileOutputStream(toUrl, false);
+                                    downloadLengthSum = 0;
+                                } else {
+                                    inputStream.skip(rwOffset);//断点续传
+                                    fileOutputStream = new FileOutputStream(toUrl, true);
+                                    MMLog.log(TAG, "continue downloading rw offset = " + rwOffset);
+                                }
+                                int len = 0;
+                                byte[] buffer = new byte[1024 * 10];
+                                while ((len = inputStream.read(buffer)) != -1) {
+                                    fileOutputStream.write(buffer, 0, len);
+                                    downloadLengthSum += len;
+                                    if (RequestCallBack != null)
+                                        RequestCallBack.onHttpRequestProgress(tag, fromUrl, toUrl, downloadLengthSum, contentLength);
+                                }
+                                fileOutputStream.flush();
+                                fileOutputStream.close();
+                                inputStream.close();
+                                if (RequestCallBack != null)
+                                    RequestCallBack.onHttpRequestComplete(tag, fromUrl, toUrl, downloadLengthSum, contentLength);
+
+                            }
+                            else
+                            {
+                                MMLog.log(TAG, "download failed from " + fromUrl);
+                                if (RequestCallBack != null)
+                                    RequestCallBack.onHttpRequestComplete(tag, fromUrl, toUrl, -1, 0);
+                            }
+                        } catch (Exception e) {
+                            MMLog.log(TAG, e.toString());
+                            if (RequestCallBack != null)
+                                RequestCallBack.onHttpRequestComplete(tag, fromUrl, toUrl, -2, 0);
+                        }
+
+                    }
+                });//{//asynchronous
+    }
+
+    public static void asynchronousGet(final String tag, final String fromUrl, final int requestId, final HttpCallBack callBack) {
+        new Thread() {
+            public void run() {
+                try {
+                    String result = Get(fromUrl);
+                    if (callBack != null) {
+                        callBack.onHttpRequestProgress(tag, result, fromUrl, requestId, 0);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    public static void asynchronousPost(final String tag, final String fromUrl, final String params, final HttpCallBack callBack) throws Exception {
+        new Thread() {
+            public void run() {
+                try {
+                    String result = Post(fromUrl, params);
+                    if (callBack != null) {
+                        callBack.onHttpRequestProgress(tag, fromUrl, result, 0, 0);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    private static String Get(String fromUrl) {
+        URL url = null;
+        String result = null;
+        HttpURLConnection httpURLConnection = null;
+        InputStream inputStream = null;
+        ByteArrayOutputStream byteArrayOutputStream = null;
+        try {
+            url = new URL(fromUrl);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setReadTimeout(TIMEOUT_IN_MILLIONS);
+            httpURLConnection.setConnectTimeout(TIMEOUT_IN_MILLIONS);
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.setRequestProperty("accept", "*/*");
+            httpURLConnection.setRequestProperty("connection", "Keep-Alive");
+
+            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                inputStream = httpURLConnection.getInputStream();
+                byteArrayOutputStream = new ByteArrayOutputStream();
+                int len = -1;
+                byte[] buf = new byte[128];
+
+                while ((len = inputStream.read(buf)) != -1) {
+                    byteArrayOutputStream.write(buf, 0, len);
+                }
+                byteArrayOutputStream.flush();
+                result = byteArrayOutputStream.toString();
+            } else {
+                //throw new RuntimeException(" responseCode is not 200 ... ");
+                MMLog.log(TAG, "get failed from " + fromUrl);
+            }
+            if (inputStream != null)
+                inputStream.close();
+            if (byteArrayOutputStream != null)
+                byteArrayOutputStream.close();
+            httpURLConnection.disconnect();
+        } catch (Exception e) {
+            //MMLog.log(TAG, e.toString());
+            MMLog.log(TAG, e.toString());
+        }
+        return result;
+    }
+
+    private static String Post(String fromUrl, String param) {
+        PrintWriter printWriter = null;
+        BufferedReader bufferedReader = null;
+        String result = "";
+        try {
+            URL realUrl = new URL(fromUrl);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) realUrl.openConnection();
+            httpURLConnection.setRequestProperty("accept", "*/*");
+            httpURLConnection.setRequestProperty("connection", "Keep-Alive");
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            httpURLConnection.setRequestProperty("charset", "utf-8");
+            httpURLConnection.setUseCaches(false);
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+            httpURLConnection.setReadTimeout(TIMEOUT_IN_MILLIONS);
+            httpURLConnection.setConnectTimeout(TIMEOUT_IN_MILLIONS);
+
+            if (param != null && !param.trim().equals("")) {
+                printWriter = new PrintWriter(httpURLConnection.getOutputStream());
+                printWriter.print(param);
+                printWriter.flush();
+            }
+            bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+            String str;
+            while ((str = bufferedReader.readLine()) != null) {
+                result += str;
+            }
+            if (printWriter != null)
+                printWriter.close();
+            if (bufferedReader != null)
+                bufferedReader.close();
+        } catch (Exception e) {
+            MMLog.log(TAG, e.toString());
+            //e.printStackTrace();
+        } finally {
+        }
+        return result;
+    }
+}
