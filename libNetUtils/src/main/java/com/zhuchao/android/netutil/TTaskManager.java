@@ -11,14 +11,14 @@ import com.zhuchao.android.callbackevent.HttpCallBack;
 import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.libfileutils.TTask;
-import com.zhuchao.android.libfileutils.TaskThreadPool;
+import com.zhuchao.android.libfileutils.TTaskThreadPool;
 
 
-public class TaskManager {
-    private final String TAG = "TaskManager";
+public class TTaskManager {
+    private final String TAG = "TTaskManager";
     private final String D_EXT_NAME = ".d.temp";
     private Context mContext = null;
-    private TaskThreadPool downloadTaskPool = null;
+    private TTaskThreadPool tTaskThreadPool = null;
     private boolean stopContinue = true;
     private boolean reDownload = true;
     private Handler taskHandler = new Handler(Looper.getMainLooper()) {
@@ -36,9 +36,9 @@ public class TaskManager {
         }
     };
 
-    public TaskManager(Context context) {
+    public TTaskManager(Context context) {
         mContext = context;
-        downloadTaskPool = new TaskThreadPool(100);
+        tTaskThreadPool = new TTaskThreadPool(100);
     }
 
     public void setStopContinue(boolean stopContinue) {
@@ -54,7 +54,7 @@ public class TaskManager {
             MMLog.log(TAG, "fromUrl = " + fromUrl);
             return null;
         }
-        TTask tTask = downloadTaskPool.createTask(fromUrl);
+        TTask tTask = tTaskThreadPool.createTask(fromUrl);
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.call(new CallbackFunction() {
             @Override
@@ -89,7 +89,7 @@ public class TaskManager {
             MMLog.log(TAG, "fromUrl = " + fromUrl);
             return null;
         }
-        TTask tTask = downloadTaskPool.createTask(fromUrl);
+        TTask tTask = tTaskThreadPool.createTask(fromUrl);
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.getProperties().putString("toPath", toPath);
 
@@ -104,7 +104,7 @@ public class TaskManager {
 
     private void download(String tag, String fromUrl, String toPath) {
         MMLog.log(TAG, "download TTask.tTask.tag = " + tag);
-        TTask tTask = downloadTaskPool.getTaskByTag(tag);
+        TTask tTask = tTaskThreadPool.getTaskByTag(tag);
         if (tTask == null) {
             MMLog.log(TAG, "download stop,get tTask failed  interrupted!!!");
             tTask.free();
@@ -158,7 +158,7 @@ public class TaskManager {
         MMLog.log(TAG, "download file from " + fromUrl);
         MMLog.log(TAG, "download file to " + downloadingPathFileName);
         try {
-            HttpUtils.Download(tag, fromUrl, downloadingPathFileName, new HttpCallBack() {
+            HttpUtils.download(tag, fromUrl, downloadingPathFileName, new HttpCallBack() {
                 @Override
                 public void onHttpRequestProgress(String tag, String fromUrl, String lrl, long progress, long total) {
                     if (tTask.getCallBackHandler() != null) {
@@ -194,7 +194,8 @@ public class TaskManager {
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.e(TAG,"download() "+ e.getMessage());
         }
     }
 }

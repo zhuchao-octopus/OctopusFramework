@@ -4,17 +4,17 @@ import static com.zhuchao.android.libfileutils.FilesManager.md5;
 
 import android.text.TextUtils;
 
-public class TaskThreadPool extends ObjectList {
+public class TTaskThreadPool extends ObjectList {
     private final String TAG = "TaskThreadPool";
     private int maxThreadCount = 100;
     private int minThreadCount = 0;
     private int taskCount = 0;
 
-    public TaskThreadPool() {
+    public TTaskThreadPool() {
         super();
     }
 
-    public TaskThreadPool(int maxThreadCount) {
+    public TTaskThreadPool(int maxThreadCount) {
         super();
         this.maxThreadCount = maxThreadCount;
     }
@@ -58,24 +58,24 @@ public class TaskThreadPool extends ObjectList {
 
 class PTask extends TTask {
     private final String TAG = "PTask";
-    private TaskThreadPool taskThreadPool = null;
+    private TTaskThreadPool TTaskThreadPool = null;
 
-    public PTask(String tag, TaskThreadPool taskThreadPool) {
+    public PTask(String tag, TTaskThreadPool TTaskThreadPool) {
         super(tag, null);
-        this.taskThreadPool = taskThreadPool;
+        this.TTaskThreadPool = TTaskThreadPool;
     }
 
     @Override
     public void run() {
-        if (taskThreadPool == null) {
+        if (TTaskThreadPool == null) {
             MMLog.log(TAG, "not found PTask pool object,break/stop tag = " + tTag);
             return;
         }
 
-        if (taskThreadPool.existObject(tTag)) {
+        if (TTaskThreadPool.existObject(tTag)) {
             super.run();
             //最终结束任务，从任务池中清除掉
-            taskThreadPool.delete(this.tTag);
+            TTaskThreadPool.delete(this.tTag);
             MMLog.log(TAG, "PTask successfully completed the task,remove from task pool tag = " + tTag);
         } else {
             MMLog.log(TAG, "not found PTask object in pool,break tag = " + tTag);

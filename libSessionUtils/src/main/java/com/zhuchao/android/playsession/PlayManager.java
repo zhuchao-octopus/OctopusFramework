@@ -39,7 +39,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
     private VideoList favoriteList = null;
     private OPlayerSessionManager sessionManager = null;
     private long lStartTick = 0;
-    private MonitorThread monitorThread = null;
+    //private MonitorThread monitorThread = null;
 
     public PlayManager(Context mContext, SurfaceView sfView) {
         this.context = mContext;
@@ -91,10 +91,10 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
     }
 
     public synchronized void startPlay(OMedia oMedia) {
-        if (oMediaLoading) {
-            MMLog.log(TAG, "oMedia is loading ！！！！！！");
-            return;
-        }
+        //if (oMediaLoading) {
+       //     MMLog.log(TAG, "oMedia is loading ！！！！！！ status = "+ getPlayerStatus());
+       //     return;
+        //}
         if (surfaceView == null) {
             MMLog.log(TAG, "no surfaceView ！！！！！！");
             return;
@@ -113,7 +113,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         }
 
         MMLog.log(TAG, "StartPlay --> " + oMedia.getMovie().getsUrl());
-        this.oMediaLoading = true;
+        //this.oMediaLoading = true;
         this.oMedia = oMedia;
         this.oMedia.setMagicNum(MagicNum);
         this.oMedia.with(context);
@@ -345,11 +345,8 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
             playingList = null;
             if (getPlayingMedia() != null)
                 getPlayingMedia().free();
-            if (monitorThread != null)
-                monitorThread.finish();
-            monitorThread = null;
         } catch (Exception e) {
-            e.printStackTrace();
+            MMLog.e(TAG,"free() "+e.toString());
         }
     }
 
@@ -382,8 +379,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         if (autoPlaySource < SessionID.SESSION_SOURCE_ALL) return;
         if (isPlaying())
             return;
-        if (oMediaLoading)
-            return;
+
         switch (autoPlaySource) {
             case SessionID.SESSION_SOURCE_ALL:
             case SessionID.SESSION_SOURCE_PLAYLIST:
@@ -424,7 +420,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
     public void OnEventCallBack(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
         switch (EventType) {
             case PlaybackEvent.Status_NothingIdle:
-                //oMediaLoading = false;//复位本地变量
+                oMediaLoading = false;//复位本地变量
                 playHandler.sendEmptyMessage(playOrder);//继续播放，跳到上一首或下一首
                 break;
             case PlaybackEvent.Status_Opening:
@@ -437,6 +433,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
                 break;
             case PlaybackEvent.Status_Ended:
             case PlaybackEvent.Status_Error:
+                oMediaLoading = false;//复位本地变量
                 MMLog.log(TAG, "OnEventCallBack.EventType=" + EventType + ", " + oMedia.getPathName());
                 playHandler.sendEmptyMessage(playOrder);//继续播放，跳到上一首或下一首
                 break;
@@ -524,27 +521,4 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         }
     };
 
-    private class MonitorThread extends Thread {
-        String tag = null;
-        private boolean keepActive = true;
-
-        void finish() {
-            keepActive = false;
-        }
-
-        @Override
-        public void run() {
-            super.run();
-            while (keepActive) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (autoPlaySource >= SessionID.SESSION_SOURCE_ALL) {
-
-                }
-            }
-        }
-    }
 }

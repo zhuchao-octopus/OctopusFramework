@@ -64,7 +64,7 @@ public class HttpUtils {
                         MMLog.log(TAG, "Request failed from " + fromUrl);
                     }
                 } catch (IOException e) {
-                    MMLog.log(TAG, e.toString());
+                    MMLog.e(TAG,"request().onResponse "+ e.getMessage());
                 }
                 if (RequestCallBack != null)
                     RequestCallBack.onHttpRequestComplete("", fromUrl, result, 0, 0);
@@ -73,7 +73,7 @@ public class HttpUtils {
     }
 
     //asynchronous 异步方法
-    public static void Download(final String tag, final String fromUrl, final String toUrl, final HttpCallBack RequestCallBack) {
+    public static void download(final String tag, final String fromUrl, final String toUrl, final HttpCallBack RequestCallBack) {
         HttpUtils.getInstance()
                 .getOkHttpClient()
                 .newCall(new Request.Builder()
@@ -132,7 +132,7 @@ public class HttpUtils {
                                     RequestCallBack.onHttpRequestComplete(tag, fromUrl, toUrl, -1, 0);
                             }
                         } catch (Exception e) {
-                            MMLog.log(TAG, e.toString());
+                            MMLog.e(TAG,"download().onResponse "+ e.getMessage());
                             if (RequestCallBack != null)
                                 RequestCallBack.onHttpRequestComplete(tag, fromUrl, toUrl, -2, 0);
                         }
@@ -150,7 +150,7 @@ public class HttpUtils {
                         callBack.onHttpRequestProgress(tag, result, fromUrl, requestId, 0);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    MMLog.e(TAG,"asynchronousGet() "+ e.getMessage());
                 }
             }
         }.start();
@@ -165,7 +165,7 @@ public class HttpUtils {
                         callBack.onHttpRequestProgress(tag, fromUrl, result, 0, 0);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    MMLog.e(TAG,"asynchronousPost() "+ e.getMessage());
                 }
             }
         }.start();
@@ -208,7 +208,7 @@ public class HttpUtils {
             httpURLConnection.disconnect();
         } catch (Exception e) {
             //MMLog.log(TAG, e.toString());
-            MMLog.log(TAG, e.toString());
+            MMLog.e(TAG,"Get() "+ e.getMessage());
         }
         return result;
     }
@@ -246,7 +246,7 @@ public class HttpUtils {
             if (bufferedReader != null)
                 bufferedReader.close();
         } catch (Exception e) {
-            MMLog.log(TAG, e.toString());
+            MMLog.e(TAG,"Post() "+ e.getMessage());
             //e.printStackTrace();
         } finally {
         }

@@ -12,7 +12,7 @@ public class TTask extends Thread {
     protected CallbackFunction callbackFunction = null;
     protected CallBackHandler callBackHandler = null;
     protected Bundle Properties = null;
-    protected boolean keepActive = false;
+    protected boolean isActive = false;
 
     public TTask(String tag, CallbackFunction callbackFunction) {
         this.tTag = tag;
@@ -58,14 +58,13 @@ public class TTask extends Thread {
     }
 
     public void free() {
-        keepActive = false;
-        //Properties.clear();
+        isActive = false;
     }
 
     @Override
     public synchronized void start() {
-        if(this.isAlive() || keepActive) return;
-        keepActive = true;
+        if(this.isAlive() || this.isActive) return;
+        isActive = true;
         super.start();
     }
 
@@ -87,14 +86,14 @@ public class TTask extends Thread {
             MMLog.log(TAG, "call TTask function tTag = " + tTag);
             callbackFunction.call(this.tTag);//asynchronous
         } catch (Exception e) {
-            e.printStackTrace();
+            MMLog.e(TAG,"run() "+ e.getMessage());
         }
 
-        while (keepActive) {
+        while (isActive) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                MMLog.e(TAG,"run() "+ e.getMessage());
             }
         }
     }
