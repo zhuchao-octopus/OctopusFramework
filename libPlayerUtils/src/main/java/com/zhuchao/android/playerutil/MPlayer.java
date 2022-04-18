@@ -178,10 +178,9 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void play() {
         try {
-            asyncStatusProcess(playStatus);
+            asyncPlayProcess(playStatus);
         } catch (Exception e) {
-            MMLog.e(TAG, "play() " + "playStatus = "+playStatus );
-            MMLog.e(TAG, "play() " + e.getMessage());
+            MMLog.e(TAG, "play() " + "playStatus = "+playStatus +" "+ e.getMessage());
         }
     }
 
@@ -198,7 +197,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             pause();
             MMLog.log(TAG, "playPause pause directly playStatus=" + playStatus);
         } else {
-            asyncStatusProcess(playStatus);
+            asyncPlayProcess(playStatus);
         }
 
     }
@@ -416,7 +415,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void onSeekComplete(MediaPlayer mediaPlayer) {
         MMLog.log(TAG, "onSeekComplete:" + mediaPlayer.toString());
-        asyncStatusProcess(PlaybackEvent.Status_SEEKING);
+        asyncPlayProcess(PlaybackEvent.Status_SEEKING);
     }
 
     @Override
@@ -444,16 +443,19 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        if (mediaPlayer != null) {
-            mediaPlayer.setDisplay(surfaceHolder);
-            surfaceHolder.setFixedSize(mediaPlayer.getVideoWidth(), mediaPlayer.getVideoHeight());
-        }
         MMLog.log(TAG, "surfaceCreated," + surfaceHolder.toString());
+        try {
+            if (mediaPlayer != null && surfaceHolder != null) {
+                mediaPlayer.setDisplay(surfaceHolder);
+                surfaceHolder.setFixedSize(mediaPlayer.getVideoWidth(), mediaPlayer.getVideoHeight());
+            }
+        } catch (Exception e) {
+            MMLog.e(TAG, "surfaceCreated() " + e.toString());
+        }
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        surfaceHolder.setFixedSize(mediaPlayer.getVideoWidth(), mediaPlayer.getVideoHeight());
         MMLog.log(TAG, "surfaceChanged," + surfaceHolder.toString());
     }
 
@@ -489,6 +491,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     }
 
     public synchronized void resetPlaySession(boolean nf) {
+        MMLog.e(TAG, "resetPlaySession() nf = " + nf);
         if (nf)   free();
 
         try {
@@ -524,12 +527,12 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         playStatus = PlaybackEvent.Status_NothingIdle;
     }
 
-    private synchronized void asyncStatusProcess(int Status) {
-        MMLog.log(TAG, "enter asyncStatusProcess() playStatus = " + Status);
+    private synchronized void asyncPlayProcess(int Status) {
+        MMLog.log(TAG, "enter asyncPlayProcess() playStatus = " + Status);
         try {
             switch (Status) {
                 case PlaybackEvent.Status_NothingIdle:
-                    MMLog.log(TAG, "asyncStatusProcess player is idle, nothing to do playStatus = " + Status);
+                    MMLog.log(TAG, "asyncPlayProcess player is idle, nothing to do playStatus = " + Status);
                     break;
                 case PlaybackEvent.Status_Stopped:
                 case PlaybackEvent.Status_Opening:
@@ -538,17 +541,18 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                     try {
                         mediaPlayer.prepareAsync();
                     } catch (IllegalStateException e) {
-                        MMLog.e(TAG, "asyncStatusProcess() " + e.toString());
+                        MMLog.e(TAG, "asyncPlayProcess() " + e.toString());
                         playStatus = PlaybackEvent.Status_Error;
+                        resetPlaySession(true);//复位
                     }
                     catch (Exception e) {
-                        MMLog.e(TAG, "asyncStatusProcess().prepareAsync() " + "playStatus = "+playStatus +" "+e.toString() );
+                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = "+playStatus +" "+e.toString() );
                         playStatus = PlaybackEvent.Status_Error;
                     }
                     mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                         @Override
                         public void onPrepared(MediaPlayer mp) {
-                            MMLog.log(TAG, "asyncStatusProcess start to play async... playStatus = " + Status);
+                            MMLog.log(TAG, "asyncPlayProcess start to play async... playStatus = " + Status);
                             playStatus = PlaybackEvent.Status_Playing;
                             mp.start();
                         }
@@ -556,27 +560,27 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                     break;
                 case PlaybackEvent.Status_Buffering:
                 case PlaybackEvent.Status_Playing:
-                    MMLog.log(TAG, "asyncStatusProcess is playing playStatus = " + Status);
+                    MMLog.log(TAG, "asyncPlayProcess is playing playStatus = " + Status);
                     break;
 
                 case PlaybackEvent.Status_Paused:
                 case PlaybackEvent.Status_SEEKING:
-                    MMLog.log(TAG, "asyncStatusProcess start to play directly playStatus = " + Status);
+                    MMLog.log(TAG, "asyncPlayProcess start to play directly playStatus = " + Status);
                     playStatus = PlaybackEvent.Status_Playing;
                     mediaPlayer.start();
                     break;
                 case PlaybackEvent.Status_Ended:
                 case PlaybackEvent.Status_Error:
                 default:
-                    MMLog.log(TAG, "asyncStatusProcess do nothing, playStatus = " + Status);
+                    MMLog.log(TAG, "asyncPlayProcess do nothing, playStatus = " + Status);
                     break;
             }
 
         } catch (IllegalStateException e) {
-            MMLog.e(TAG, "asyncStatusProcess() "+ "playStatus = "+playStatus +" " + e.toString());
+            MMLog.e(TAG, "asyncPlayProcess() "+ "playStatus = "+playStatus +" " + e.toString());
         }
         catch (Exception e) {
-            MMLog.e(TAG, "asyncStatusProcess() " + "playStatus = "+playStatus +" "+ e.getMessage());
+            MMLog.e(TAG, "asyncPlayProcess() " + "playStatus = "+playStatus +" "+ e.getMessage());
         }
     }
 

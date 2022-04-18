@@ -26,10 +26,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 
-public class OPlayerSessionManager implements SessionCompleteCallback {
+public class SessionManager implements SessionCallback {
     private final String TAG = "OPlayerSessionManager";
     private static Context mContext = null;
-    private SessionCompleteCallback userSessionCallback = null;
+    private SessionCallback userSessionCallback = null;
     private static Map<Integer, OPlayerSession> sessions;
     private static OPlayerSession categorySession;// = new OPlayerSession(ScheduleVideoBean.SESSION_TYPE_MANAGER, this);
 
@@ -47,7 +47,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
     private boolean mThreadLock3 = false;
     private int initStage = 0;//0 从网络， 1 //从本地, >=3 已经初始化完成
 
-    public OPlayerSessionManager(Context context, SessionCompleteCallback SessionCallback) {
+    public SessionManager(Context context, SessionCallback SessionCallback) {
         this.userSessionCallback = SessionCallback;
         mContext = context;
         //Data.setOplayerSessionRootUrl(hostPath);
@@ -68,11 +68,11 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
         //}
     }
 
-    public void setUserSessionCallback(SessionCompleteCallback userSessionCallback) {
+    public void setUserSessionCallback(SessionCallback userSessionCallback) {
         this.userSessionCallback = userSessionCallback;
     }
 
-    public OPlayerSessionManager Callback(SessionCompleteCallback userSessionCallback) {
+    public SessionManager Callback(SessionCallback userSessionCallback) {
         this.userSessionCallback = userSessionCallback;
         return this;
     }
@@ -103,7 +103,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
                 MMLog.log(TAG, "initLocalSessionContent 本地媒体库");
                 OPlayerSession lSession = null;
 
-                lSession = new OPlayerSession(OPlayerSessionManager.this);
+                lSession = new OPlayerSession(SessionManager.this);
                 lSession.initMediasFromLocal(mContext, SessionID.MEDIA_TYPE_ID_VIDEO);
                 if (lSession.getVideos().getCount() > 0)
                     addSessionToSessions(mobileSessionId, "本地视频", lSession);
@@ -111,7 +111,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
                 if (userSessionCallback != null)
                     userSessionCallback.OnSessionComplete(SessionID.MEDIA_TYPE_ID_VIDEO, "本地视频");
 
-                lSession = new OPlayerSession(OPlayerSessionManager.this);
+                lSession = new OPlayerSession(SessionManager.this);
                 lSession.initMediasFromLocal(mContext, SessionID.MEDIA_TYPE_ID_AUDIO);
                 if (lSession.getVideos().getCount() > 0)
                     addSessionToSessions(mobileSessionId, "本地音乐", lSession);
@@ -119,7 +119,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
                 if (userSessionCallback != null)
                     userSessionCallback.OnSessionComplete(SessionID.MEDIA_TYPE_ID_AUDIO, "本地音乐");
 
-                lSession = new OPlayerSession(OPlayerSessionManager.this);
+                lSession = new OPlayerSession(SessionManager.this);
                 lSession.initMediasFromLocal(mContext, SessionID.MEDIA_TYPE_ID_PIC);
                 if (lSession.getVideos().getCount() > 0)
                     addSessionToSessions(mobileSessionId, "本地图片", lSession);
@@ -202,7 +202,7 @@ public class OPlayerSessionManager implements SessionCompleteCallback {
         if (DeviceName == null) return;
         OPlayerSession mSession = null;
 
-        mSession = new OPlayerSession(OPlayerSessionManager.this);
+        mSession = new OPlayerSession(SessionManager.this);
         mSession.initMediasFromPath(mContext, DevicePath, SessionID.MEDIA_TYPE_ID_AllMEDIA);
         if (mSession.getVideos().getCount() > 0)
             addSessionToSessions(mobileSessionId, DeviceName, mSession);

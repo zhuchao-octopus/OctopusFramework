@@ -22,14 +22,14 @@ import java.util.Map;
 
 public class ImplementProxy implements HttpCallBack {
     public final String TAG = "ImplementProxy";
-    private SessionCompleteCallback SessionCallback = null;
+    private com.zhuchao.android.playsession.SessionCallback SessionCallback = null;
 
     private Map<Integer, String> mVideoCategory = null;// = new HashMap<Integer, String>();
     private Map<Integer, String> mVideoType = null;// = new HashMap<Integer, String>();
     private MovieListBean mMovieListBean = null;
 
-    public ImplementProxy(SessionCompleteCallback sessionCompleteCallback) {
-        SessionCallback = sessionCompleteCallback;
+    public ImplementProxy(com.zhuchao.android.playsession.SessionCallback sessionCallback) {
+        SessionCallback = sessionCallback;
     }
 
     public Map<Integer, String> getVideoCategory() {

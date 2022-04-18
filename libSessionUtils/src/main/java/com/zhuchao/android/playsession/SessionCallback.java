@@ -1,6 +1,6 @@
 package com.zhuchao.android.playsession;
 
-public interface SessionCompleteCallback {
+public interface SessionCallback {
 
       void OnSessionComplete(int sessionId,String result);
 

@@ -22,7 +22,7 @@ import com.zhuchao.android.video.VideoList;
 
 import java.io.FileDescriptor;
 
-public class PlayManager implements PlayerCallback, SessionCompleteCallback, NormalRequestCallback {
+public class PlaySessionManager implements PlayerCallback, SessionCallback, NormalRequestCallback {
     private final String TAG = "PlayManager";
     private final int ACTION_DELAY = 500;
     private int MagicNum = 0;
@@ -37,11 +37,11 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
     private int autoPlaySource = SessionID.SESSION_SOURCE_NONE;
     private VideoList playingList = null;
     private VideoList favoriteList = null;
-    private OPlayerSessionManager sessionManager = null;
+    private SessionManager sessionManager = null;
     private long lStartTick = 0;
     //private MonitorThread monitorThread = null;
 
-    public PlayManager(Context mContext, SurfaceView sfView) {
+    public PlaySessionManager(Context mContext, SurfaceView sfView) {
         this.context = mContext;
         this.surfaceView = sfView;
         downloadPath = FilesManager.getDownloadDir(null);//播放目录和，下载缓存目录不一样
@@ -52,13 +52,13 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
         setMagicNum(0);
     }
 
-    public PlayManager callback(PlayerCallback mCallback) {
+    public PlaySessionManager callback(PlayerCallback mCallback) {
         this.callback = mCallback;
         this.lStartTick = 0;
         return this;
     }
 
-    public void setSessionManager(OPlayerSessionManager sessionManager) {
+    public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
         this.sessionManager.setUserSessionCallback(this);
     }
@@ -434,7 +434,7 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
             case PlaybackEvent.Status_Ended:
             case PlaybackEvent.Status_Error:
                 oMediaLoading = false;//复位本地变量
-                MMLog.log(TAG, "OnEventCallBack.EventType=" + EventType + ", " + oMedia.getPathName());
+                MMLog.log(TAG, "OnEventCallBack.EventType = " + EventType + ", " + oMedia.getPathName());
                 playHandler.sendEmptyMessage(playOrder);//继续播放，跳到上一首或下一首
                 break;
         }
@@ -498,9 +498,10 @@ public class PlayManager implements PlayerCallback, SessionCompleteCallback, Nor
                     autoPlay(autoPlaySource);
                     break;
                 case SessionID.PLAY_MANAGER_PLAY_ORDER2://循序列表循环
-                    //MMLog.log(TAG, "playHandler Msg = " + msg.toString() + ",isPlaying=" + isPlaying());
                     if (!isPlaying())
                         playNext();
+                    else
+                        MMLog.log(TAG, "playHandler isPlaying=" + isPlaying());
                     break;
                 case SessionID.PLAY_MANAGER_PLAY_ORDER3://反向列表循环
                     if (!isPlaying())

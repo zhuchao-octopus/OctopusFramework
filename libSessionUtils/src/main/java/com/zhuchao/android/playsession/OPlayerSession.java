@@ -35,10 +35,10 @@ for (Integer value : map.values())
 */
 
 //会话
-public class OPlayerSession implements SessionCompleteCallback {
+public class OPlayerSession implements SessionCallback {
     public final String TAG = "OPlayerSession ---> ";
     protected int sessionId = SessionID.SESSION_SOURCE_NONE;//会话ID
-    private SessionCompleteCallback userSessionCallback = null;//会话回调
+    private SessionCallback userSessionCallback = null;//会话回调
     private ImplementProxy Ilpr = null;//new ImplementProxy();执行代理
     private VideoList videoList = new VideoList(null);//会话内容
     private Map<Integer, String> videoTypeNameList = new TreeMap<Integer, String>();
@@ -54,12 +54,12 @@ public class OPlayerSession implements SessionCompleteCallback {
         }
     });
 
-    public OPlayerSession(SessionCompleteCallback callback) {
+    public OPlayerSession(SessionCallback callback) {
         userSessionCallback = callback;
         //Ilpr = new ImplementProxy(this);
     }
 
-    public OPlayerSession(int sessionId, SessionCompleteCallback callback) {
+    public OPlayerSession(int sessionId, SessionCallback callback) {
         userSessionCallback = callback;
         this.sessionId = sessionId;
         //Ilpr = new ImplementProxy(this);
@@ -125,7 +125,7 @@ public class OPlayerSession implements SessionCompleteCallback {
         return null;
     }
 
-    public void setUserSessionCallback(SessionCompleteCallback userSessionCallback) {
+    public void setUserSessionCallback(SessionCallback userSessionCallback) {
         this.userSessionCallback = userSessionCallback;
     }
 
