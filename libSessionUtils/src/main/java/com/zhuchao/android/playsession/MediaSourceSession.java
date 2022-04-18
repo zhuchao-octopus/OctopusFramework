@@ -35,7 +35,7 @@ for (Integer value : map.values())
 */
 
 //会话
-public class OPlayerSession implements SessionCallback {
+public class MediaSourceSession implements SessionCallback {
     public final String TAG = "OPlayerSession ---> ";
     protected int sessionId = SessionID.SESSION_SOURCE_NONE;//会话ID
     private SessionCallback userSessionCallback = null;//会话回调
@@ -54,12 +54,12 @@ public class OPlayerSession implements SessionCallback {
         }
     });
 
-    public OPlayerSession(SessionCallback callback) {
+    public MediaSourceSession(SessionCallback callback) {
         userSessionCallback = callback;
         //Ilpr = new ImplementProxy(this);
     }
 
-    public OPlayerSession(int sessionId, SessionCallback callback) {
+    public MediaSourceSession(int sessionId, SessionCallback callback) {
         userSessionCallback = callback;
         this.sessionId = sessionId;
         //Ilpr = new ImplementProxy(this);

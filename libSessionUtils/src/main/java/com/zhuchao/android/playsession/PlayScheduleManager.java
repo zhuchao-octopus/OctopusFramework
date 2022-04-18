@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SchedulePlayback implements SessionCallback {
+public class PlayScheduleManager implements SessionCallback {
     private final String TAG = "SchedulePlaySession-->";
     private SessionCallback userSessionCallback = null;//会话回调
     //private ImplementProxy Ilpr = null;//new ImplementProxy();执行代理
@@ -26,7 +26,7 @@ public class SchedulePlayback implements SessionCallback {
     //private ScheduleMedia mCurrentScheduleVideo =null;
     private Context mContext = null;
 
-    public SchedulePlayback(Context context, SessionCallback callback) {
+    public PlayScheduleManager(Context context, SessionCallback callback) {
         userSessionCallback = callback;
         videoList = new ArrayList<>();
         this.mContext = context;

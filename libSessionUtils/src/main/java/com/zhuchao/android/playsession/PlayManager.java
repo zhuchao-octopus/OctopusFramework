@@ -22,7 +22,7 @@ import com.zhuchao.android.video.VideoList;
 
 import java.io.FileDescriptor;
 
-public class PlaySessionManager implements PlayerCallback, SessionCallback, NormalRequestCallback {
+public class PlayManager implements PlayerCallback, SessionCallback, NormalRequestCallback {
     private final String TAG = "PlayManager";
     private final int ACTION_DELAY = 500;
     private int MagicNum = 0;
@@ -41,7 +41,7 @@ public class PlaySessionManager implements PlayerCallback, SessionCallback, Norm
     private long lStartTick = 0;
     //private MonitorThread monitorThread = null;
 
-    public PlaySessionManager(Context mContext, SurfaceView sfView) {
+    public PlayManager(Context mContext, SurfaceView sfView) {
         this.context = mContext;
         this.surfaceView = sfView;
         downloadPath = FilesManager.getDownloadDir(null);//播放目录和，下载缓存目录不一样
@@ -52,7 +52,7 @@ public class PlaySessionManager implements PlayerCallback, SessionCallback, Norm
         setMagicNum(0);
     }
 
-    public PlaySessionManager callback(PlayerCallback mCallback) {
+    public PlayManager callback(PlayerCallback mCallback) {
         this.callback = mCallback;
         this.lStartTick = 0;
         return this;

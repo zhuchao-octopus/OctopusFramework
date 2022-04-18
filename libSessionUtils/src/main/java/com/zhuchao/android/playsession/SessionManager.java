@@ -30,12 +30,12 @@ public class SessionManager implements SessionCallback {
     private final String TAG = "OPlayerSessionManager";
     private static Context mContext = null;
     private SessionCallback userSessionCallback = null;
-    private static Map<Integer, OPlayerSession> sessions;
-    private static OPlayerSession categorySession;// = new OPlayerSession(ScheduleVideoBean.SESSION_TYPE_MANAGER, this);
+    private static Map<Integer, MediaSourceSession> sessions;
+    private static MediaSourceSession categorySession;// = new OPlayerSession(ScheduleVideoBean.SESSION_TYPE_MANAGER, this);
 
-    private OPlayerSession localSession = new OPlayerSession(null);
-    private OPlayerSession mobileUSBSession = new OPlayerSession(null);
-    private OPlayerSession fileSession = new OPlayerSession(null);
+    private MediaSourceSession localSession = new MediaSourceSession(null);
+    private MediaSourceSession mobileUSBSession = new MediaSourceSession(null);
+    private MediaSourceSession fileSession = new MediaSourceSession(null);
 
     private int mobileSessionId = SessionID.SESSION_SOURCE_LOCAL_INTERNAL;
     private Map<String, String> mobileDiscs = new HashMap<String, String>();
@@ -51,8 +51,8 @@ public class SessionManager implements SessionCallback {
         this.userSessionCallback = SessionCallback;
         mContext = context;
         //Data.setOplayerSessionRootUrl(hostPath);
-        categorySession = new OPlayerSession(SessionID.SESSION_SOURCE_NONE, this);
-        sessions = new TreeMap<Integer, OPlayerSession>(new Comparator<Integer>() {
+        categorySession = new MediaSourceSession(SessionID.SESSION_SOURCE_NONE, this);
+        sessions = new TreeMap<Integer, MediaSourceSession>(new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
                 return o2.compareTo(o1);
@@ -101,9 +101,9 @@ public class SessionManager implements SessionCallback {
             public void run() {
                 mThreadLock1 = true;
                 MMLog.log(TAG, "initLocalSessionContent 本地媒体库");
-                OPlayerSession lSession = null;
+                MediaSourceSession lSession = null;
 
-                lSession = new OPlayerSession(SessionManager.this);
+                lSession = new MediaSourceSession(SessionManager.this);
                 lSession.initMediasFromLocal(mContext, SessionID.MEDIA_TYPE_ID_VIDEO);
                 if (lSession.getVideos().getCount() > 0)
                     addSessionToSessions(mobileSessionId, "本地视频", lSession);
@@ -111,7 +111,7 @@ public class SessionManager implements SessionCallback {
                 if (userSessionCallback != null)
                     userSessionCallback.OnSessionComplete(SessionID.MEDIA_TYPE_ID_VIDEO, "本地视频");
 
-                lSession = new OPlayerSession(SessionManager.this);
+                lSession = new MediaSourceSession(SessionManager.this);
                 lSession.initMediasFromLocal(mContext, SessionID.MEDIA_TYPE_ID_AUDIO);
                 if (lSession.getVideos().getCount() > 0)
                     addSessionToSessions(mobileSessionId, "本地音乐", lSession);
@@ -119,7 +119,7 @@ public class SessionManager implements SessionCallback {
                 if (userSessionCallback != null)
                     userSessionCallback.OnSessionComplete(SessionID.MEDIA_TYPE_ID_AUDIO, "本地音乐");
 
-                lSession = new OPlayerSession(SessionManager.this);
+                lSession = new MediaSourceSession(SessionManager.this);
                 lSession.initMediasFromLocal(mContext, SessionID.MEDIA_TYPE_ID_PIC);
                 if (lSession.getVideos().getCount() > 0)
                     addSessionToSessions(mobileSessionId, "本地图片", lSession);
@@ -148,7 +148,7 @@ public class SessionManager implements SessionCallback {
                 }
                 Iterator it = sessions.entrySet().iterator();
                 while (it.hasNext()) {
-                    Map.Entry<Integer, OPlayerSession> entry = (Map.Entry<Integer, OPlayerSession>) it.next();
+                    Map.Entry<Integer, MediaSourceSession> entry = (Map.Entry<Integer, MediaSourceSession>) it.next();
                     if (entry.getKey() < SessionID.SESSION_SOURCE_LOCAL_INTERNAL)
                         it.remove();
                 }
@@ -200,9 +200,9 @@ public class SessionManager implements SessionCallback {
     private void initMobileSessionContent(final String DeviceName, final String DevicePath) {
         MMLog.log(TAG, "initMobileSessionContent  " +DeviceName+":"+ DevicePath);
         if (DeviceName == null) return;
-        OPlayerSession mSession = null;
+        MediaSourceSession mSession = null;
 
-        mSession = new OPlayerSession(SessionManager.this);
+        mSession = new MediaSourceSession(SessionManager.this);
         mSession.initMediasFromPath(mContext, DevicePath, SessionID.MEDIA_TYPE_ID_AllMEDIA);
         if (mSession.getVideos().getCount() > 0)
             addSessionToSessions(mobileSessionId, DeviceName, mSession);
@@ -226,9 +226,9 @@ public class SessionManager implements SessionCallback {
         for (Map.Entry<Integer, String> entry : categorySession.getVideoCategoryNameList().entrySet()) {
             if (entry.getKey() > SessionID.SESSION_SOURCE_LOCAL_INTERNAL)//初始化非本地分类
             {
-                OPlayerSession oPlayerSession = new OPlayerSession(this);
-                oPlayerSession.getVideoCategoryNameList().put(entry.getKey(), entry.getValue());
-                sessions.put(entry.getKey(), oPlayerSession);
+                MediaSourceSession mediaSourceSession = new MediaSourceSession(this);
+                mediaSourceSession.getVideoCategoryNameList().put(entry.getKey(), entry.getValue());
+                sessions.put(entry.getKey(), mediaSourceSession);
             }
         }
     }
@@ -244,7 +244,7 @@ public class SessionManager implements SessionCallback {
 
     private void updateCategorySessionContent() {//获取分类下面的内容
         try {
-            for (Map.Entry<Integer, OPlayerSession> entry : sessions.entrySet()) {
+            for (Map.Entry<Integer, MediaSourceSession> entry : sessions.entrySet()) {
                 if (entry.getKey() <= SessionID.SESSION_SOURCE_LOCAL_INTERNAL) continue; //本地媒体ID
                 MMLog.log(TAG, "updateCategorySessionContent = " + entry.getKey());
                 entry.getValue().doUpdateSession(entry.getKey());
@@ -257,7 +257,7 @@ public class SessionManager implements SessionCallback {
         }
     }
 
-    private void addSessionToSessions(int SessionID, String name, OPlayerSession Session) {
+    private void addSessionToSessions(int SessionID, String name, MediaSourceSession Session) {
         Session.getVideoCategoryNameList().put(SessionID, name);//备注名称
         categorySession.getVideoCategoryNameList().remove(SessionID);
         categorySession.getVideoCategoryNameList().put(SessionID, name);
@@ -270,23 +270,23 @@ public class SessionManager implements SessionCallback {
     //    return initType >= 3;
     //}
 
-    public OPlayerSession getCategorySession() {
+    public MediaSourceSession getCategorySession() {
         return categorySession;
     }
 
-    public Map<Integer, OPlayerSession> getSessions() {
+    public Map<Integer, MediaSourceSession> getSessions() {
         return sessions;
     }
 
-    public OPlayerSession getLocalSession() {
+    public MediaSourceSession getLocalSession() {
         return localSession;
     }
 
-    public OPlayerSession getMobileSession() {
+    public MediaSourceSession getMobileSession() {
         return mobileUSBSession;
     }
 
-    public OPlayerSession getFileSession() {
+    public MediaSourceSession getFileSession() {
         return fileSession;
     }
 
@@ -296,7 +296,7 @@ public class SessionManager implements SessionCallback {
 
     public List<OMedia> getAllMedias() {
         List<OMedia> allOMedia = new ArrayList<>();
-        for (Map.Entry<Integer, OPlayerSession> entry : sessions.entrySet()) {
+        for (Map.Entry<Integer, MediaSourceSession> entry : sessions.entrySet()) {
             /*
             MLog.logTAG, "printSessionsVideoList " + entry.getKey() + " : " + entry.getValue().getVideoCategoryNameList().get(entry.getKey())
                     + " Movies Count =" + entry.getValue().getVideos().size());
@@ -378,7 +378,7 @@ public class SessionManager implements SessionCallback {
     public void printSessions() {
         String str = "";
         //MLog.logTAG, "printSessions InManager");
-        for (Map.Entry<Integer, OPlayerSession> entry : sessions.entrySet()) {
+        for (Map.Entry<Integer, MediaSourceSession> entry : sessions.entrySet()) {
             //MLog.logTAG, entry.getKey() + " : " + entry.getValue().getmVideoCategoryNameList().get(entry.getKey()));
             str = str + entry.getKey() + ":" + entry.getValue().getVideoCategoryNameList().get(entry.getKey()) + ", ";
         }
