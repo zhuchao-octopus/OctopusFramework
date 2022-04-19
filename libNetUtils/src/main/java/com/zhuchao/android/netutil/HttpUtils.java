@@ -16,8 +16,11 @@ import java.net.URL;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class HttpUtils {
@@ -64,7 +67,66 @@ public class HttpUtils {
                         MMLog.log(TAG, "Request failed from " + fromUrl);
                     }
                 } catch (IOException e) {
-                    MMLog.e(TAG,"request().onResponse "+ e.getMessage());
+                    MMLog.e(TAG, "request().onResponse " + e.getMessage());
+                }
+                if (RequestCallBack != null)
+                    RequestCallBack.onHttpRequestComplete("", fromUrl, result, 0, 0);
+            }
+        });
+    }
+
+    public static void requestPost(final String tag, final String fromUrl, String bodyJson, final HttpCallBack RequestCallBack) {
+        //RequestBody body = new FormBody.Builder().build();
+        MediaType mediaType = MediaType.parse("application/json;charset=utf-8");
+        RequestBody requestBody = RequestBody.create(String.valueOf(bodyJson), mediaType);
+        HttpUtils.getInstance().getOkHttpClient().newCall(new Request.Builder().url(fromUrl).post(requestBody).build()).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                MMLog.log(TAG, "request onFailure from " + fromUrl);
+                MMLog.log(TAG, e.toString());
+                if (RequestCallBack != null)
+                    RequestCallBack.onHttpRequestComplete("", fromUrl, null, 0, 0);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = null;
+                try {
+                    if (response != null && response.isSuccessful()) {
+                        result = response.body().string();
+                    } else {
+                        MMLog.log(TAG, "Request failed from " + fromUrl);
+                    }
+                } catch (IOException e) {
+                    MMLog.e(TAG, "request().onResponse " + e.getMessage());
+                }
+                if (RequestCallBack != null)
+                    RequestCallBack.onHttpRequestComplete("", fromUrl, result, 0, 0);
+            }
+        });
+    }
+
+    public static void requestGet(final String tag, final String fromUrl, final HttpCallBack RequestCallBack) {
+        HttpUtils.getInstance().getOkHttpClient().newCall(new Request.Builder().url(fromUrl).get().build()).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                MMLog.log(TAG, "request onFailure from " + fromUrl);
+                MMLog.log(TAG, e.toString());
+                if (RequestCallBack != null)
+                    RequestCallBack.onHttpRequestComplete("", fromUrl, null, 0, 0);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = null;
+                try {
+                    if (response != null && response.isSuccessful()) {
+                        result = response.body().string();
+                    } else {
+                        MMLog.log(TAG, "Request failed from " + fromUrl);
+                    }
+                } catch (IOException e) {
+                    MMLog.e(TAG, "request().onResponse " + e.getMessage());
                 }
                 if (RequestCallBack != null)
                     RequestCallBack.onHttpRequestComplete("", fromUrl, result, 0, 0);
@@ -92,8 +154,7 @@ public class HttpUtils {
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         try {
-                            if (response != null && response.isSuccessful())
-                            {
+                            if (response != null && response.isSuccessful()) {
                                 InputStream inputStream = null;
                                 FileOutputStream fileOutputStream = null;
 
@@ -124,15 +185,13 @@ public class HttpUtils {
                                 if (RequestCallBack != null)
                                     RequestCallBack.onHttpRequestComplete(tag, fromUrl, toUrl, downloadLengthSum, contentLength);
 
-                            }
-                            else
-                            {
+                            } else {
                                 MMLog.log(TAG, "download failed from " + fromUrl);
                                 if (RequestCallBack != null)
                                     RequestCallBack.onHttpRequestComplete(tag, fromUrl, toUrl, -1, 0);
                             }
                         } catch (Exception e) {
-                            MMLog.e(TAG,"download().onResponse "+ e.getMessage());
+                            MMLog.e(TAG, "download().onResponse " + e.getMessage());
                             if (RequestCallBack != null)
                                 RequestCallBack.onHttpRequestComplete(tag, fromUrl, toUrl, -2, 0);
                         }
@@ -150,7 +209,7 @@ public class HttpUtils {
                         callBack.onHttpRequestProgress(tag, result, fromUrl, requestId, 0);
                     }
                 } catch (Exception e) {
-                    MMLog.e(TAG,"asynchronousGet() "+ e.getMessage());
+                    MMLog.e(TAG, "asynchronousGet() " + e.getMessage());
                 }
             }
         }.start();
@@ -165,7 +224,7 @@ public class HttpUtils {
                         callBack.onHttpRequestProgress(tag, fromUrl, result, 0, 0);
                     }
                 } catch (Exception e) {
-                    MMLog.e(TAG,"asynchronousPost() "+ e.getMessage());
+                    MMLog.e(TAG, "asynchronousPost() " + e.getMessage());
                 }
             }
         }.start();
@@ -208,7 +267,7 @@ public class HttpUtils {
             httpURLConnection.disconnect();
         } catch (Exception e) {
             //MMLog.log(TAG, e.toString());
-            MMLog.e(TAG,"Get() "+ e.getMessage());
+            MMLog.e(TAG, "Get() " + e.getMessage());
         }
         return result;
     }
@@ -246,7 +305,7 @@ public class HttpUtils {
             if (bufferedReader != null)
                 bufferedReader.close();
         } catch (Exception e) {
-            MMLog.e(TAG,"Post() "+ e.getMessage());
+            MMLog.e(TAG, "Post() " + e.getMessage());
             //e.printStackTrace();
         } finally {
         }

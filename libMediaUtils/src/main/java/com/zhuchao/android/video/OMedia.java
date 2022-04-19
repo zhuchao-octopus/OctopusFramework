@@ -457,7 +457,8 @@ public class OMedia implements Serializable, PlayerCallback {
                 restorePlay = false;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.e(TAG, "restorePlay() " + e.toString());
         }
     }
     public void save() {
@@ -529,7 +530,8 @@ public class OMedia implements Serializable, PlayerCallback {
                 PlayerManager.free();
             FPlayer = null;
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.e(TAG, "free() " + e.toString());
         }
     }
 

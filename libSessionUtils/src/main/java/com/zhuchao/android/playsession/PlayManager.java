@@ -168,6 +168,12 @@ public class PlayManager implements PlayerCallback, SessionCallback, NormalReque
         }
     }
 
+    public void stopFree() {
+        if (oMedia != null) {
+            oMedia.free();
+        }
+    }
+
     public void resumePlay() {
         if (oMedia != null) {
             oMedia.resume();
