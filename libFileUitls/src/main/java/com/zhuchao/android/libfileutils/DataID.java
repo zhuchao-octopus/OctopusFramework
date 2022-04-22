@@ -107,16 +107,6 @@ public class DataID {
                 builder.append("&page=" + pageIndexOrVid);
                 return builder.toString();
             }
-            case SESSION_TYPE_GET_MOVIELIST_ALLMOVIE: {
-                builder.append("/getVideoList?category=" + categoryName + "&limit=" + SESSION_TYPE_GET_MOVIELIST_DEFAULT_PAGESIZE);
-                builder.append("&page=" + pageIndexOrVid);
-                return builder.toString();
-            }
-            case SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2: {
-                builder.append("/getVideoList?category=" + categoryName + "&limit=" + SESSION_TYPE_GET_MOVIELIST_DEFAULT_PAGESIZE);
-                builder.append("&page=" + pageIndexOrVid);
-                return builder.toString();
-            }
             default: {
                 builder.append("/getVideoList?category=" + categoryName + "&limit=" + SESSION_TYPE_GET_MOVIELIST_DEFAULT_PAGESIZE);
                 builder.append("&page=" + pageIndexOrVid);

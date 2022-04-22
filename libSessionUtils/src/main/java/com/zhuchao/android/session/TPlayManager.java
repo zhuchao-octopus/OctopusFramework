@@ -203,12 +203,13 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
     }
 
     public synchronized void playPre() {
-        if (oMedia != null) {
-            OMedia oo = oMedia.getPre();
-            if (oo != null) {
-                MMLog.log(TAG, "Go Pre = " + oo.getPathName());
-                startPlay(oo);
-            }
+        OMedia oo = getPreAvailable();//获取上一个有效的资源
+        if (oo != null) {
+            MMLog.log(TAG, "Go Prev = " + oo.getPathName());
+            startPlay(oo);
+        } else {
+            MMLog.log(TAG, "Prev = null,go to auto play");
+            autoPlay();
         }
     }
 
@@ -372,6 +373,23 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
         return ooMedia;
     }
 
+    private OMedia getPreAvailable() {
+        OMedia ooMedia = null;
+        MMLog.log(TAG, "available Count = " + playingList.getCount() + " | " + favoriteList.getCount());
+        if (favoriteList.exist(oMedia))
+            ooMedia = favoriteList.getPreAvailable(oMedia);
+        else
+            ooMedia = favoriteList.getPreAvailable(null);
+
+        if (ooMedia == null) {
+            if (playingList.exist(oMedia))
+                ooMedia = playingList.getPreAvailable(oMedia);
+            else
+                ooMedia = playingList.getPreAvailable(null);
+        }
+        return ooMedia;
+    }
+
     public synchronized void autoPlay() {
         //自动播放就是播放指定位置的第一个
         autoPlay(autoPlaySource);
@@ -405,6 +423,14 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
 
     @Override
     public void OnEventCallBack(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
+        if (this.callback != null) {
+            //this.callback.OnEventCallBack(EventType, TimeChanged, LengthChanged, PositionChanged, OutCount, ChangedType, ChangedID, Buffering, Length);
+            Message msg = playHandler.obtainMessage();
+            msg.what = EventType;
+            msg.arg1 = (int) PositionChanged;
+            msg.arg2 = (int) Length;
+            playHandler.sendMessage(msg);
+        }
         switch (EventType) {
             case PlaybackEvent.Status_NothingIdle:
                 if (autoPlaySource >= DataID.SESSION_SOURCE_ALL) {
@@ -423,14 +449,6 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
                 MMLog.log(TAG, "OnEventCallBack.EventType = " + EventType + ", " + oMedia.getPathName());
                 playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                 break;
-        }
-        if (this.callback != null) {
-            //this.callback.OnEventCallBack(EventType, TimeChanged, LengthChanged, PositionChanged, OutCount, ChangedType, ChangedID, Buffering, Length);
-            Message msg = playHandler.obtainMessage();
-            msg.what = EventType;
-            msg.arg1 = (int) PositionChanged;
-            msg.arg2 = (int) Length;
-            playHandler.sendMessage(msg);
         }
     }
 

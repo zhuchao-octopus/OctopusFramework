@@ -179,6 +179,22 @@ public class VideoList {
         return null;
     }
 
+    public OMedia getPreAvailable(OMedia oMedia) {
+        OMedia ooMedia = null;
+        if (getCount() <= 0) return null;
+        if (oMedia == null)
+            return lastItem;
+
+        ooMedia = oMedia;//找下一个
+        for (int i = 0; i < getCount(); i++)
+        {
+            ooMedia = ooMedia.getPre();
+            if((ooMedia != null) && (ooMedia.isAvailable(null)))
+                return ooMedia;
+        }
+        return null;
+    }
+
     public OMedia getFirstItem() {
         return firstItem;
     }

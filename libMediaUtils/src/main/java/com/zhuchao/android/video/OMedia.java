@@ -312,6 +312,20 @@ public class OMedia implements Serializable, PlayerCallback {
         }
     }
 
+    public void setRate(float v)
+    {
+        if (isPlayerReady()) {
+            playRate = v;
+            getOPlayer().setRate(playRate);
+        }
+    }
+
+    public void setNormalRate() {
+        playRate = 1;
+        if (isPlayerReady())
+            getOPlayer().setRate(playRate);
+    }
+
     public boolean isPlaying() {
         if (isPlayerReady())
             return getOPlayer().isPlaying();
@@ -359,12 +373,6 @@ public class OMedia implements Serializable, PlayerCallback {
             return getOPlayer().getLength();
         else
             return 0;
-    }
-
-    public void setNormalRate() {
-        playRate = 1;
-        if (isPlayerReady())
-            getOPlayer().setRate(playRate);
     }
 
     public int getAudioTracksCount() {
