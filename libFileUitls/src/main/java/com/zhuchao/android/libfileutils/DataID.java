@@ -1,7 +1,7 @@
 package com.zhuchao.android.libfileutils;
 
 
-public class SessionID {
+public class DataID {
     public static final int DB_VERSION = 1;
     //public static final String DB_DIRECTORY = CommonValues.application.getFilesDir().getPath();
     public static final int SESSION_TYPE_GET_MOVIELIST_DEFAULT_PAGESIZE = 100;
@@ -50,7 +50,10 @@ public class SessionID {
     public static final int PLAY_MANAGER_PLAY_ORDER5 = PLAY_MANAGER_PLAY_ORDER4 + 1;
     public static final int PLAY_MANAGER_PLAY_ORDER6 = PLAY_MANAGER_PLAY_ORDER5 + 1;
 
-    public static final int SESSION_TYPE_SCHEDULEPLAYBACK = 300;
+    public static final int TASK_STATUS_NONE = 300;
+    public static final int TASK_STATUS_PROGRESSING = TASK_STATUS_NONE + 1;
+    public static final int TASK_STATUS_SUCCESS = TASK_STATUS_PROGRESSING + 1;
+    public static final int TASK_STATUS_ERROR = TASK_STATUS_SUCCESS + 1;
     //登录的ID
 
     public static void setOplayerSessionRootUrl(String oplayerSessionRootUrl) {
@@ -76,10 +79,6 @@ public class SessionID {
                 return builder.toString();
             case SESSION_TYPE_GET_MOVIELIST_ACTOR:
                 builder.append("/getVideoList?actor=" + categoryName + "&limit=" + SESSION_TYPE_GET_MOVIELIST_DEFAULT_PAGESIZE);
-                builder.append("&page=" + pageIndexOrVid);
-                return builder.toString();
-            case SESSION_TYPE_GET_MOVIELIST_VIP:
-                builder.append("/getVideoList?movieName=" + categoryName + "&limit=" + SESSION_TYPE_GET_MOVIELIST_DEFAULT_PAGESIZE);
                 builder.append("&page=" + pageIndexOrVid);
                 return builder.toString();
             case SESSION_TYPE_GET_MOVIELIST_SOURCE:

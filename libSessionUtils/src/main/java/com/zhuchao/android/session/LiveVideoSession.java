@@ -1,4 +1,4 @@
-package com.zhuchao.android.playsession;
+package com.zhuchao.android.session;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -6,10 +6,10 @@ import android.text.TextUtils;
 import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.libfileutils.MediaFile;
-import com.zhuchao.android.libfileutils.SessionID;
+import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.libfileutils.bean.LMusic;
 import com.zhuchao.android.libfileutils.bean.LVideo;
-import com.zhuchao.android.playsession.PaserBean.MovieListBean;
+import com.zhuchao.android.session.PaserBean.MovieListBean;
 import com.zhuchao.android.video.Movie;
 import com.zhuchao.android.video.OMedia;
 import com.zhuchao.android.video.VideoList;
@@ -35,9 +35,9 @@ for (Integer value : map.values())
 */
 
 //会话
-public class MediaSourceSession implements SessionCallback {
+public class LiveVideoSession implements SessionCallback {
     public final String TAG = "OPlayerSession ---> ";
-    protected int sessionId = SessionID.SESSION_SOURCE_NONE;//会话ID
+    protected int sessionId = DataID.SESSION_SOURCE_NONE;//会话ID
     private SessionCallback userSessionCallback = null;//会话回调
     private ImplementProxy Ilpr = null;//new ImplementProxy();执行代理
     private VideoList videoList = new VideoList(null);//会话内容
@@ -54,12 +54,12 @@ public class MediaSourceSession implements SessionCallback {
         }
     });
 
-    public MediaSourceSession(SessionCallback callback) {
+    public LiveVideoSession(SessionCallback callback) {
         userSessionCallback = callback;
         //Ilpr = new ImplementProxy(this);
     }
 
-    public MediaSourceSession(int sessionId, SessionCallback callback) {
+    public LiveVideoSession(int sessionId, SessionCallback callback) {
         userSessionCallback = callback;
         this.sessionId = sessionId;
         //Ilpr = new ImplementProxy(this);
@@ -67,17 +67,17 @@ public class MediaSourceSession implements SessionCallback {
 
     protected void doStart()//处理内置session,Id存储在内部类 网络请求，通过代理实现
     {
-        if (sessionId <= SessionID.SESSION_SOURCE_LOCAL_INTERNAL) return;
+        if (sessionId <= DataID.SESSION_SOURCE_LOCAL_INTERNAL) return;
         switch (sessionId) {
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
-                Ilpr.performanceUrl(sessionId, SessionID.getActionUrl(sessionId, this.getSessionName(), mPageIndexOrVid));
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
+                Ilpr.performanceUrl(sessionId, DataID.getActionUrl(sessionId, this.getSessionName(), mPageIndexOrVid));
                 break;
-            case SessionID.SESSION_TYPE_GET_MOVIE_CATEGORY:
-            case SessionID.SESSION_TYPE_GET_MOVIE_TYPE:
+            case DataID.SESSION_TYPE_GET_MOVIE_CATEGORY:
+            case DataID.SESSION_TYPE_GET_MOVIE_TYPE:
             default:
-                Ilpr.performanceUrl(sessionId, SessionID.getActionUrl(sessionId, this.getSessionName(), 1));
+                Ilpr.performanceUrl(sessionId, DataID.getActionUrl(sessionId, this.getSessionName(), 1));
                 break;
         }
     }
@@ -114,7 +114,7 @@ public class MediaSourceSession implements SessionCallback {
     }
 
     public void searchVideoById(int videoId) {
-        Ilpr.performanceUrl(SessionID.SESSION_TYPE_GET_MOVIELIST_VID, SessionID.getActionUrl(SessionID.SESSION_TYPE_GET_MOVIELIST_VID, null, videoId));
+        Ilpr.performanceUrl(DataID.SESSION_TYPE_GET_MOVIELIST_VID, DataID.getActionUrl(DataID.SESSION_TYPE_GET_MOVIELIST_VID, null, videoId));
     }
 
     private String getSessionName() {
@@ -199,7 +199,7 @@ public class MediaSourceSession implements SessionCallback {
     }
 
     public void initMediasFromLocal(Context context, Integer fType) {
-        if (fType == SessionID.MEDIA_TYPE_ID_VIDEO) {
+        if (fType == DataID.MEDIA_TYPE_ID_VIDEO) {
             List<LVideo> lVideos = FilesManager.getVideos(context);
             for (LVideo lVideo : lVideos) {
                 Movie movie = new Movie(lVideo.getPath());
@@ -209,7 +209,7 @@ public class MediaSourceSession implements SessionCallback {
                 OMedia oMedia = new OMedia(movie);
                 videoList.add(oMedia);
             }
-        } else if (fType == SessionID.MEDIA_TYPE_ID_AUDIO) {
+        } else if (fType == DataID.MEDIA_TYPE_ID_AUDIO) {
             List<LMusic> lMusics = FilesManager.getMusics(context);
             for (LMusic lmusic : lMusics) {
                 Movie movie = new Movie(lmusic.getPath());
@@ -221,7 +221,7 @@ public class MediaSourceSession implements SessionCallback {
             }
         }
 
-        if (fType == SessionID.MEDIA_TYPE_ID_PIC) {
+        if (fType == DataID.MEDIA_TYPE_ID_PIC) {
             List<String> imgList = FilesManager.getLocalImageList();
             for (String img : imgList) {
                 Movie movie = new Movie(img);
@@ -283,21 +283,21 @@ public class MediaSourceSession implements SessionCallback {
     @Override
     public synchronized void OnSessionComplete(int sessionId, String result) {
         switch (sessionId) {
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_VID:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_VNAME:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_AREA:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_YEAR:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ACTOR:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_VIP:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_VID:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_VNAME:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_AREA:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_YEAR:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ACTOR:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_VIP:
                 this.generateAndAppendVideoFromIlpr();
                 break;
-            case SessionID.SESSION_TYPE_GET_MOVIE_CATEGORY:
+            case DataID.SESSION_TYPE_GET_MOVIE_CATEGORY:
                 this.setVideoCategoryNameList(Ilpr.getVideoCategory());
                 break;
-            case SessionID.SESSION_TYPE_GET_MOVIE_TYPE:
+            case DataID.SESSION_TYPE_GET_MOVIE_TYPE:
                 this.setVideoTypeNameList(Ilpr.getVideoType());
                 break;
             default: //用户自定义SessionID,由用户自己解析，//默认尝试转化成视频列表

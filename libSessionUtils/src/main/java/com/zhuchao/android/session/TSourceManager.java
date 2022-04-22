@@ -1,4 +1,4 @@
-package com.zhuchao.android.playsession;
+package com.zhuchao.android.session;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,7 +13,7 @@ import android.os.Message;
 
 import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.libfileutils.MMLog;
-import com.zhuchao.android.libfileutils.SessionID;
+import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.netutil.NetUtils;
 import com.zhuchao.android.video.OMedia;
 
@@ -26,18 +26,18 @@ import java.util.Map;
 import java.util.TreeMap;
 
 
-public class SessionManager implements SessionCallback {
+public class TSourceManager implements SessionCallback {
     private final String TAG = "OPlayerSessionManager";
     private static Context mContext = null;
     private SessionCallback userSessionCallback = null;
-    private static Map<Integer, MediaSourceSession> sessions;
-    private static MediaSourceSession categorySession;// = new OPlayerSession(ScheduleVideoBean.SESSION_TYPE_MANAGER, this);
+    private static Map<Integer, LiveVideoSession> sessions;
+    private static LiveVideoSession categorySession;// = new OPlayerSession(ScheduleVideoBean.SESSION_TYPE_MANAGER, this);
 
-    private MediaSourceSession localSession = new MediaSourceSession(null);
-    private MediaSourceSession mobileUSBSession = new MediaSourceSession(null);
-    private MediaSourceSession fileSession = new MediaSourceSession(null);
+    private LiveVideoSession localSession = new LiveVideoSession(null);
+    private LiveVideoSession mobileUSBSession = new LiveVideoSession(null);
+    private LiveVideoSession fileSession = new LiveVideoSession(null);
 
-    private int mobileSessionId = SessionID.SESSION_SOURCE_LOCAL_INTERNAL;
+    private int mobileSessionId = DataID.SESSION_SOURCE_LOCAL_INTERNAL;
     private Map<String, String> mobileDiscs = new HashMap<String, String>();
 
     private MyBroadcastReceiver usbReceiver = null;//new USBReceiver();
@@ -47,12 +47,12 @@ public class SessionManager implements SessionCallback {
     private boolean mThreadLock3 = false;
     private int initStage = 0;//0 从网络， 1 //从本地, >=3 已经初始化完成
 
-    public SessionManager(Context context, SessionCallback SessionCallback) {
+    public TSourceManager(Context context, SessionCallback SessionCallback) {
         this.userSessionCallback = SessionCallback;
         mContext = context;
         //Data.setOplayerSessionRootUrl(hostPath);
-        categorySession = new MediaSourceSession(SessionID.SESSION_SOURCE_NONE, this);
-        sessions = new TreeMap<Integer, MediaSourceSession>(new Comparator<Integer>() {
+        categorySession = new LiveVideoSession(DataID.SESSION_SOURCE_NONE, this);
+        sessions = new TreeMap<Integer, LiveVideoSession>(new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
                 return o2.compareTo(o1);
@@ -72,7 +72,7 @@ public class SessionManager implements SessionCallback {
         this.userSessionCallback = userSessionCallback;
     }
 
-    public SessionManager Callback(SessionCallback userSessionCallback) {
+    public TSourceManager Callback(SessionCallback userSessionCallback) {
         this.userSessionCallback = userSessionCallback;
         return this;
     }
@@ -101,31 +101,31 @@ public class SessionManager implements SessionCallback {
             public void run() {
                 mThreadLock1 = true;
                 MMLog.log(TAG, "initLocalSessionContent 本地媒体库");
-                MediaSourceSession lSession = null;
+                LiveVideoSession lSession = null;
 
-                lSession = new MediaSourceSession(SessionManager.this);
-                lSession.initMediasFromLocal(mContext, SessionID.MEDIA_TYPE_ID_VIDEO);
+                lSession = new LiveVideoSession(TSourceManager.this);
+                lSession.initMediasFromLocal(mContext, DataID.MEDIA_TYPE_ID_VIDEO);
                 if (lSession.getVideos().getCount() > 0)
                     addSessionToSessions(mobileSessionId, "本地视频", lSession);
                 localSession.addVideos(lSession.getVideos());
                 if (userSessionCallback != null)
-                    userSessionCallback.OnSessionComplete(SessionID.MEDIA_TYPE_ID_VIDEO, "本地视频");
+                    userSessionCallback.OnSessionComplete(DataID.MEDIA_TYPE_ID_VIDEO, "本地视频");
 
-                lSession = new MediaSourceSession(SessionManager.this);
-                lSession.initMediasFromLocal(mContext, SessionID.MEDIA_TYPE_ID_AUDIO);
+                lSession = new LiveVideoSession(TSourceManager.this);
+                lSession.initMediasFromLocal(mContext, DataID.MEDIA_TYPE_ID_AUDIO);
                 if (lSession.getVideos().getCount() > 0)
                     addSessionToSessions(mobileSessionId, "本地音乐", lSession);
                 localSession.addVideos(lSession.getVideos());
                 if (userSessionCallback != null)
-                    userSessionCallback.OnSessionComplete(SessionID.MEDIA_TYPE_ID_AUDIO, "本地音乐");
+                    userSessionCallback.OnSessionComplete(DataID.MEDIA_TYPE_ID_AUDIO, "本地音乐");
 
-                lSession = new MediaSourceSession(SessionManager.this);
-                lSession.initMediasFromLocal(mContext, SessionID.MEDIA_TYPE_ID_PIC);
+                lSession = new LiveVideoSession(TSourceManager.this);
+                lSession.initMediasFromLocal(mContext, DataID.MEDIA_TYPE_ID_PIC);
                 if (lSession.getVideos().getCount() > 0)
                     addSessionToSessions(mobileSessionId, "本地图片", lSession);
                 localSession.addVideos(lSession.getVideos());
                 if (userSessionCallback != null)
-                    userSessionCallback.OnSessionComplete(SessionID.MEDIA_TYPE_ID_PIC, "本地图片");
+                    userSessionCallback.OnSessionComplete(DataID.MEDIA_TYPE_ID_PIC, "本地图片");
 
                 mThreadLock1 = false;
             }
@@ -148,15 +148,15 @@ public class SessionManager implements SessionCallback {
                 }
                 Iterator it = sessions.entrySet().iterator();
                 while (it.hasNext()) {
-                    Map.Entry<Integer, MediaSourceSession> entry = (Map.Entry<Integer, MediaSourceSession>) it.next();
-                    if (entry.getKey() < SessionID.SESSION_SOURCE_LOCAL_INTERNAL)
+                    Map.Entry<Integer, LiveVideoSession> entry = (Map.Entry<Integer, LiveVideoSession>) it.next();
+                    if (entry.getKey() < DataID.SESSION_SOURCE_LOCAL_INTERNAL)
                         it.remove();
                 }
                 mobileUSBSession.getVideos().clear();
                 for (Map.Entry<String, String> entry : mobileDiscs.entrySet()) {
                     initMobileSessionContent(entry.getKey(), entry.getValue());
                     if (userSessionCallback != null) {
-                        userSessionCallback.OnSessionComplete(SessionID.SESSION_SOURCE_MOBILE_USB, entry.getKey() + ":" + entry.getValue());
+                        userSessionCallback.OnSessionComplete(DataID.SESSION_SOURCE_MOBILE_USB, entry.getKey() + ":" + entry.getValue());
                     }
                 }
                 mThreadLock2 = false;
@@ -171,9 +171,9 @@ public class SessionManager implements SessionCallback {
             public void run() {
                 mThreadLock3 = true;
                 fileSession.getVideos().clear();
-                fileSession.initMediasFromPath(mContext, Path, SessionID.MEDIA_TYPE_ID_AUDIO_VIDEO);
+                fileSession.initMediasFromPath(mContext, Path, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO);
                 if (userSessionCallback != null)
-                    userSessionCallback.OnSessionComplete(SessionID.SESSION_SOURCE_PATH, Path);
+                    userSessionCallback.OnSessionComplete(DataID.SESSION_SOURCE_PATH, Path);
                 mThreadLock3 = false;
             }
         }.start();
@@ -191,7 +191,7 @@ public class SessionManager implements SessionCallback {
                 mThreadLock3 = true;
                 fileSession.initFilesFromPath(mContext, filePath, FileList);
                 if (userSessionCallback != null)
-                    userSessionCallback.OnSessionComplete(SessionID.SESSION_SOURCE_PATH, filePath);
+                    userSessionCallback.OnSessionComplete(DataID.SESSION_SOURCE_PATH, filePath);
                 mThreadLock3 = false;
             }
         }.start();
@@ -200,10 +200,10 @@ public class SessionManager implements SessionCallback {
     private void initMobileSessionContent(final String DeviceName, final String DevicePath) {
         MMLog.log(TAG, "initMobileSessionContent  " +DeviceName+":"+ DevicePath);
         if (DeviceName == null) return;
-        MediaSourceSession mSession = null;
+        LiveVideoSession mSession = null;
 
-        mSession = new MediaSourceSession(SessionManager.this);
-        mSession.initMediasFromPath(mContext, DevicePath, SessionID.MEDIA_TYPE_ID_AllMEDIA);
+        mSession = new LiveVideoSession(TSourceManager.this);
+        mSession.initMediasFromPath(mContext, DevicePath, DataID.MEDIA_TYPE_ID_AllMEDIA);
         if (mSession.getVideos().getCount() > 0)
             addSessionToSessions(mobileSessionId, DeviceName, mSession);
         mobileUSBSession.addVideos(mSession.getVideos());//USB总共的媒体文件
@@ -224,11 +224,11 @@ public class SessionManager implements SessionCallback {
     //初始化非本地分类
     private void initInternetCategorySessions() {
         for (Map.Entry<Integer, String> entry : categorySession.getVideoCategoryNameList().entrySet()) {
-            if (entry.getKey() > SessionID.SESSION_SOURCE_LOCAL_INTERNAL)//初始化非本地分类
+            if (entry.getKey() > DataID.SESSION_SOURCE_LOCAL_INTERNAL)//初始化非本地分类
             {
-                MediaSourceSession mediaSourceSession = new MediaSourceSession(this);
-                mediaSourceSession.getVideoCategoryNameList().put(entry.getKey(), entry.getValue());
-                sessions.put(entry.getKey(), mediaSourceSession);
+                LiveVideoSession liveVideoSession = new LiveVideoSession(this);
+                liveVideoSession.getVideoCategoryNameList().put(entry.getKey(), entry.getValue());
+                sessions.put(entry.getKey(), liveVideoSession);
             }
         }
     }
@@ -236,16 +236,16 @@ public class SessionManager implements SessionCallback {
     private void updateCategorySession() { //顶层分类信息，顶层分类会话
         MMLog.log(TAG, "updateTopSession mIniType = " + initStage);
         if (initStage == 0) {
-            categorySession.doUpdateSession(SessionID.SESSION_TYPE_GET_MOVIE_CATEGORY);
-            categorySession.doUpdateSession(SessionID.SESSION_TYPE_GET_MOVIE_TYPE);
+            categorySession.doUpdateSession(DataID.SESSION_TYPE_GET_MOVIE_CATEGORY);
+            categorySession.doUpdateSession(DataID.SESSION_TYPE_GET_MOVIE_TYPE);
         } else {
         }
     }
 
     private void updateCategorySessionContent() {//获取分类下面的内容
         try {
-            for (Map.Entry<Integer, MediaSourceSession> entry : sessions.entrySet()) {
-                if (entry.getKey() <= SessionID.SESSION_SOURCE_LOCAL_INTERNAL) continue; //本地媒体ID
+            for (Map.Entry<Integer, LiveVideoSession> entry : sessions.entrySet()) {
+                if (entry.getKey() <= DataID.SESSION_SOURCE_LOCAL_INTERNAL) continue; //本地媒体ID
                 MMLog.log(TAG, "updateCategorySessionContent = " + entry.getKey());
                 entry.getValue().doUpdateSession(entry.getKey());
             }
@@ -257,7 +257,7 @@ public class SessionManager implements SessionCallback {
         }
     }
 
-    private void addSessionToSessions(int SessionID, String name, MediaSourceSession Session) {
+    private void addSessionToSessions(int SessionID, String name, LiveVideoSession Session) {
         Session.getVideoCategoryNameList().put(SessionID, name);//备注名称
         categorySession.getVideoCategoryNameList().remove(SessionID);
         categorySession.getVideoCategoryNameList().put(SessionID, name);
@@ -270,23 +270,23 @@ public class SessionManager implements SessionCallback {
     //    return initType >= 3;
     //}
 
-    public MediaSourceSession getCategorySession() {
+    public LiveVideoSession getCategorySession() {
         return categorySession;
     }
 
-    public Map<Integer, MediaSourceSession> getSessions() {
+    public Map<Integer, LiveVideoSession> getSessions() {
         return sessions;
     }
 
-    public MediaSourceSession getLocalSession() {
+    public LiveVideoSession getLocalSession() {
         return localSession;
     }
 
-    public MediaSourceSession getMobileSession() {
+    public LiveVideoSession getMobileSession() {
         return mobileUSBSession;
     }
 
-    public MediaSourceSession getFileSession() {
+    public LiveVideoSession getFileSession() {
         return fileSession;
     }
 
@@ -296,7 +296,7 @@ public class SessionManager implements SessionCallback {
 
     public List<OMedia> getAllMedias() {
         List<OMedia> allOMedia = new ArrayList<>();
-        for (Map.Entry<Integer, MediaSourceSession> entry : sessions.entrySet()) {
+        for (Map.Entry<Integer, LiveVideoSession> entry : sessions.entrySet()) {
             /*
             MLog.logTAG, "printSessionsVideoList " + entry.getKey() + " : " + entry.getValue().getVideoCategoryNameList().get(entry.getKey())
                     + " Movies Count =" + entry.getValue().getVideos().size());
@@ -311,22 +311,22 @@ public class SessionManager implements SessionCallback {
     public void OnSessionComplete(int sessionId, String result) {
         Message msg = Message.obtain();
         switch (sessionId) {
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
                 msg.what = sessionId;//返回的是分类下面的内容，内容实体已经在相应会话中被处理
                 myHandler.sendMessage(msg);
                 break;
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_VID:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_VNAME:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_AREA:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_YEAR:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ACTOR:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_VIP:
-            case SessionID.SESSION_TYPE_GET_MOVIE_TYPE:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_VID:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_VNAME:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_AREA:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_YEAR:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ACTOR:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_VIP:
+            case DataID.SESSION_TYPE_GET_MOVIE_TYPE:
             default:
                 break;
-            case SessionID.SESSION_TYPE_GET_MOVIE_CATEGORY://返回的是顶层分类信息
+            case DataID.SESSION_TYPE_GET_MOVIE_CATEGORY://返回的是顶层分类信息
                 if (categorySession.getVideoCategoryNameList() != null) {
                     if (categorySession.getVideoCategoryNameList().size() > 0) {
                         initInternetCategorySessions(); //根据类别信息初始化会话对象数组
@@ -348,21 +348,21 @@ public class SessionManager implements SessionCallback {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
-                case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
-                case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
                     printSessionContent(msg.what);
                     break;
-                case SessionID.SESSION_TYPE_GET_MOVIE_CATEGORY:
+                case DataID.SESSION_TYPE_GET_MOVIE_CATEGORY:
                     updateCategorySessionContent();//更新分类内容
                     return;
-                case SessionID.SESSION_TYPE_GET_MOVIE_TYPE:
-                case SessionID.SESSION_TYPE_GET_MOVIELIST_VID:
-                case SessionID.SESSION_TYPE_GET_MOVIELIST_VNAME:
-                case SessionID.SESSION_TYPE_GET_MOVIELIST_AREA:
-                case SessionID.SESSION_TYPE_GET_MOVIELIST_YEAR:
-                case SessionID.SESSION_TYPE_GET_MOVIELIST_ACTOR:
-                case SessionID.SESSION_TYPE_GET_MOVIELIST_VIP:
+                case DataID.SESSION_TYPE_GET_MOVIE_TYPE:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_VID:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_VNAME:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_AREA:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_YEAR:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_ACTOR:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_VIP:
                 default://默认尝试转化成视频列表
                     break;
             }
@@ -378,7 +378,7 @@ public class SessionManager implements SessionCallback {
     public void printSessions() {
         String str = "";
         //MLog.logTAG, "printSessions InManager");
-        for (Map.Entry<Integer, MediaSourceSession> entry : sessions.entrySet()) {
+        for (Map.Entry<Integer, LiveVideoSession> entry : sessions.entrySet()) {
             //MLog.logTAG, entry.getKey() + " : " + entry.getValue().getmVideoCategoryNameList().get(entry.getKey()));
             str = str + entry.getKey() + ":" + entry.getValue().getVideoCategoryNameList().get(entry.getKey()) + ", ";
         }
@@ -465,11 +465,11 @@ public class SessionManager implements SessionCallback {
                         break;
                     case "com.zhuchao.android.MEDIAFILE_SCAN_ACTION":
                         if (userSessionCallback != null && bundle != null)
-                            userSessionCallback.OnSessionComplete(SessionID.MEDIA_TYPE_ID_AllMEDIA, bundle.getString("FileName"));
+                            userSessionCallback.OnSessionComplete(DataID.MEDIA_TYPE_ID_AllMEDIA, bundle.getString("FileName"));
                         break;
                     case "com.zhuchao.android.FILE_SCAN_ACTION":
                         if (userSessionCallback != null && bundle != null)
-                            userSessionCallback.OnSessionComplete(SessionID.MEDIA_TYPE_ID_AllFILE, bundle.getString("FileName"));
+                            userSessionCallback.OnSessionComplete(DataID.MEDIA_TYPE_ID_AllFILE, bundle.getString("FileName"));
                         break;
                 }
             } catch (Exception e) {

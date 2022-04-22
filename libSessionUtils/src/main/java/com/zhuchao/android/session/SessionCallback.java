@@ -1,4 +1,4 @@
-package com.zhuchao.android.playsession;
+package com.zhuchao.android.session;
 
 public interface SessionCallback {
 

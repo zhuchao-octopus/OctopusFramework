@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 public class PlayerManager {
     private static PlayControl FOPlayer = null;
+    public static final String MPLAYER = "MPlayer";
+    public static final String OPLAYER = "OPlayer";
 
     public synchronized static PlayControl getSingleOPlayer(Context context, PlayerCallback callback) {
         if (FOPlayer == null) {//不可以注释非常重要，全局单例对象

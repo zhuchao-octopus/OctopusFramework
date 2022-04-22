@@ -1,5 +1,5 @@
 package com.zhuchao.android.callbackevent;
 
 public interface CallBackHandler {
-    void onRequestHandler(String tag, String url, String lrl, long progress, long total);
+    void onRequestHandler(String tag, String fromUrl, String toUrl, long progress, long total,String result, int status);
 }

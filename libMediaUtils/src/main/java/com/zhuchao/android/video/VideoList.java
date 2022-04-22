@@ -20,7 +20,7 @@ import com.zhuchao.android.callbackevent.NormalRequestCallback;
 import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.libfileutils.MediaFile;
-import com.zhuchao.android.libfileutils.SessionID;
+import com.zhuchao.android.libfileutils.DataID;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -264,15 +264,15 @@ public class VideoList {
                 filePathName = file.getPath();// +"  "+ file.getName() ;
                 MediaFile.MediaFileType mm = MediaFile.getFileType(filePathName);
                 if (mm != null) {
-                    if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == SessionID.MEDIA_TYPE_ID_AllMEDIA)) {
+                    if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == DataID.MEDIA_TYPE_ID_AllMEDIA)) {
                         add(filePathName);//所有的媒体文件
-                    } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == SessionID.MEDIA_TYPE_ID_PIC)) {
+                    } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == DataID.MEDIA_TYPE_ID_PIC)) {
                         add(filePathName);
-                    } else if (MediaFile.isAudioFileType(mm.fileType) && (fileType == SessionID.MEDIA_TYPE_ID_AUDIO)) {
+                    } else if (MediaFile.isAudioFileType(mm.fileType) && (fileType == DataID.MEDIA_TYPE_ID_AUDIO)) {
                         add(filePathName);
-                    } else if (MediaFile.isVideoFileType(mm.fileType) && (fileType == SessionID.MEDIA_TYPE_ID_VIDEO)) {
+                    } else if (MediaFile.isVideoFileType(mm.fileType) && (fileType == DataID.MEDIA_TYPE_ID_VIDEO)) {
                         add(filePathName);
-                    } else if (fileType == SessionID.MEDIA_TYPE_ID_AllFILE) {
+                    } else if (fileType == DataID.MEDIA_TYPE_ID_AllFILE) {
                         add(filePathName);//所有的文件
                     }
                     try {

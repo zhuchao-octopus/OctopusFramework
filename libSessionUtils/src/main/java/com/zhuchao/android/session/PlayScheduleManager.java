@@ -1,4 +1,4 @@
-package com.zhuchao.android.playsession;
+package com.zhuchao.android.session;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,9 +7,9 @@ import android.os.Environment;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.zhuchao.android.libfileutils.FilesManager;
-import com.zhuchao.android.libfileutils.SessionID;
-import com.zhuchao.android.playsession.PaserBean.ScheduleVideoBean;
-import com.zhuchao.android.playsession.PaserBean.ScheduleVideoRootBean;
+import com.zhuchao.android.libfileutils.DataID;
+import com.zhuchao.android.session.PaserBean.ScheduleVideoBean;
+import com.zhuchao.android.session.PaserBean.ScheduleVideoRootBean;
 import com.zhuchao.android.video.ScheduleMedia;
 
 import java.io.File;
@@ -41,8 +41,8 @@ public class PlayScheduleManager implements SessionCallback {
                     initFromExternalStorageDirectoryFile();//DownloadCache
                     initFromDirectoryFile(mContext.getCacheDir().getAbsolutePath()+"/");
 
-                    if (userSessionCallback != null)
-                        userSessionCallback.OnSessionComplete(SessionID.SESSION_TYPE_SCHEDULEPLAYBACK, "SchedulePlaybackSession");
+                    //if (userSessionCallback != null)
+                    //    userSessionCallback.OnSessionComplete(DataID.SESSION_TYPE_SCHEDULEPLAYBACK, "SchedulePlaybackSession");
                 }
                 catch (Exception e)
                 {
@@ -70,7 +70,7 @@ public class PlayScheduleManager implements SessionCallback {
     @Override
     public void OnSessionComplete(int sessionId, String result) {
         int Count=0;
-        if (sessionId == SessionID.SESSION_TYPE_SCHEDULEPLAYBACK)
+        if (sessionId == DataID.TASK_STATUS_SUCCESS)
         {
             ScheduleVideoRootBean scheduleVideoRootBean = null;
             try {

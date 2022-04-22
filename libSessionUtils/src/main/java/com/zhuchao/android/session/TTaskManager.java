@@ -1,4 +1,4 @@
-package com.zhuchao.android.netutil;
+package com.zhuchao.android.session;
 
 import android.content.Context;
 import android.os.Handler;
@@ -8,10 +8,12 @@ import android.text.TextUtils;
 
 import com.zhuchao.android.callbackevent.CallbackFunction;
 import com.zhuchao.android.callbackevent.HttpCallBack;
+import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.libfileutils.FilesManager;
 import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.libfileutils.TTask;
 import com.zhuchao.android.libfileutils.TTaskThreadPool;
+import com.zhuchao.android.netutil.HttpUtils;
 
 
 public class TTaskManager {
@@ -24,13 +26,16 @@ public class TTaskManager {
     private Handler taskHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             TTask tTask = (TTask) (msg.obj);
-            if ((tTask != null) && tTask.getCallBackHandler() != null) {
+            if ((tTask != null) && tTask.getCallBackHandler() != null)
+            {
                 tTask.getCallBackHandler().onRequestHandler(//调用前端回调函数更新UI
                         tTask.getProperties().getString("tag"),
                         tTask.getProperties().getString("fromUrl"),
-                        tTask.getProperties().getString("lrl"),
+                        tTask.getProperties().getString("toUrl"),
                         tTask.getProperties().getLong("progress"),
-                        tTask.getProperties().getLong("total")
+                        tTask.getProperties().getLong("total"),
+                        tTask.getProperties().getString("result"),
+                        tTask.getProperties().getInt("status")
                 );
             }
         }
@@ -41,12 +46,38 @@ public class TTaskManager {
         tTaskThreadPool = new TTaskThreadPool(100);
     }
 
-    public void setStopContinue(boolean stopContinue) {
-        this.stopContinue = stopContinue;
-    }
-
-    public void setReDownload(boolean reDownload) {
-        this.reDownload = reDownload;
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //request task
+    public TTask requestPost(final String fromUrl, String bodyJson) {
+        if (TextUtils.isEmpty(fromUrl)) {
+            MMLog.log(TAG, "fromUrl = " + fromUrl);
+            return null;
+        }
+        TTask tTask = tTaskThreadPool.createTask(fromUrl);
+        tTask.getProperties().putString("fromUrl", fromUrl);
+        tTask.call(new CallbackFunction() {
+            @Override
+            public void call(String tag) {
+                HttpUtils.requestPost(tag, fromUrl, bodyJson, new HttpCallBack() {
+                    @Override
+                    public void onHttpRequestComplete(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
+                        if (tTask.getCallBackHandler() != null) {
+                            Message msg = taskHandler.obtainMessage();
+                            msg.obj = tTask;
+                            tTask.getProperties().putString("tag", tag);
+                            tTask.getProperties().putString("fromUrl", fromUrl);
+                            tTask.getProperties().putString("toUrl", toUrl);
+                            tTask.getProperties().putLong("progress", progress);
+                            tTask.getProperties().putLong("total", total);
+                            tTask.getProperties().putString("result", result);
+                            tTask.getProperties().putInt("status", status);
+                            taskHandler.sendMessage(msg);
+                        }
+                    }
+                });
+            }
+        });
+        return tTask;
     }
 
     public TTask request(final String fromUrl) {
@@ -60,21 +91,19 @@ public class TTaskManager {
             @Override
             public void call(String tag) {
                 HttpUtils.request(tag, fromUrl, new HttpCallBack() {
-                    @Override
-                    public void onHttpRequestProgress(String tag, String fromUrl, String lrl, long progress, long total) {
-
-                    }
 
                     @Override
-                    public void onHttpRequestComplete(String tag, String fromUrl, String lrl, long progress, long total) {
+                    public void onHttpRequestComplete(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
                         if (tTask.getCallBackHandler() != null) {
                             Message msg = taskHandler.obtainMessage();
                             msg.obj = tTask;
                             tTask.getProperties().putString("tag", tag);
                             tTask.getProperties().putString("fromUrl", fromUrl);
-                            tTask.getProperties().putString("lrl", lrl);
+                            tTask.getProperties().putString("toUrl", toUrl);
                             tTask.getProperties().putLong("progress", progress);
                             tTask.getProperties().putLong("total", total);
+                            tTask.getProperties().putString("result", result);
+                            tTask.getProperties().putInt("status", status);
                             taskHandler.sendMessage(msg);
                         }
                     }
@@ -82,6 +111,16 @@ public class TTaskManager {
             }
         });
         return tTask;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //download task
+    public void setStopContinue(boolean stopContinue) {
+        this.stopContinue = stopContinue;
+    }
+
+    public void setReDownload(boolean reDownload) {
+        this.reDownload = reDownload;
     }
 
     public TTask dl(final String fromUrl, final String toPath) {
@@ -159,43 +198,53 @@ public class TTaskManager {
         MMLog.log(TAG, "download file to " + downloadingPathFileName);
         try {
             HttpUtils.download(tag, fromUrl, downloadingPathFileName, new HttpCallBack() {
-                @Override
-                public void onHttpRequestProgress(String tag, String fromUrl, String lrl, long progress, long total) {
-                    if (tTask.getCallBackHandler() != null) {
-                        Message msg = taskHandler.obtainMessage();
-                        msg.obj = tTask;
-                        tTask.getProperties().putString("tag", tag);
-                        tTask.getProperties().putString("url", fromUrl);
-                        tTask.getProperties().putString("lrl", lrl);
-                        tTask.getProperties().putLong("progress", progress);
-                        tTask.getProperties().putLong("total", total);
-                        taskHandler.sendMessage(msg);
-                    }
-                }
 
                 @Override
-                public void onHttpRequestComplete(String tag, String fromUrl, String lrl, long progress, long total) {
+                public void onHttpRequestComplete(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
                     //String f1 = tTask.getProperties().getString("downloadingPathFileName");
-                    String f2 = lrl.substring(0, lrl.length() - D_EXT_NAME.length());//tTask.getProperties().getString("localPathFileName");
-                    try {
-                        if ((progress == total) && (progress > 0)) {
-                            MMLog.log(TAG, "download complete, from " + fromUrl);
-                            if (FilesManager.renameFile(lrl, f2))
-                                MMLog.log(TAG, "download save file complete, to " + f2);
-                            else
-                                MMLog.log(TAG, "download save file failed, to " + f2);
-                        } else {
-                            MMLog.log(TAG, "download file failed, from " + fromUrl);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    String f2 = tTask.getProperties().getString("localPathFileName");
+                    if(TextUtils.isEmpty(f2))
+                        f2 = toUrl.substring(0, toUrl.length() - D_EXT_NAME.length());
+                    switch (status)
+                    {
+                        case DataID.TASK_STATUS_ERROR:
+                        case DataID.TASK_STATUS_PROGRESSING:
+                            if (tTask.getCallBackHandler() != null) {
+                                Message msg = taskHandler.obtainMessage();
+                                msg.obj = tTask;
+                                tTask.getProperties().putString("tag", tag);
+                                tTask.getProperties().putString("fromUrl", fromUrl);
+                                tTask.getProperties().putString("toUrl", toUrl);
+                                tTask.getProperties().putLong("progress", progress);
+                                tTask.getProperties().putLong("total", total);
+                                tTask.getProperties().putString("result", result);
+                                tTask.getProperties().putInt("status", status);
+                                taskHandler.sendMessage(msg);
+                            }
+                            break;
+                        case DataID.TASK_STATUS_SUCCESS:
+                            try {
+                                if ((progress == total) && (progress > 0)) {
+                                    MMLog.log(TAG, "download complete, from " + fromUrl);
+                                    if (FilesManager.renameFile(toPath, f2))
+                                        MMLog.log(TAG, "download save file complete, to " + f2);
+                                    else
+                                        MMLog.log(TAG, "download save file failed, to " + f2);
+                                } else {
+                                    MMLog.log(TAG, "download file failed, from " + fromUrl);
+                                }
+                            } catch (Exception e) {
+                                //e.printStackTrace();
+                                MMLog.log(TAG, "download renameFile failed, from " + e.toString());
+                            }
+                            break;
                     }
                     tTask.free();//下载完成，释放任务
                 }
             });
         } catch (Exception e) {
             //e.printStackTrace();
-            MMLog.e(TAG,"download() "+ e.getMessage());
+            MMLog.e(TAG, "download() " + e.getMessage());
         }
     }
 }

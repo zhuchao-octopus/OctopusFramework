@@ -1,4 +1,4 @@
-package com.zhuchao.android.playsession;
+package com.zhuchao.android.session;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,10 +9,10 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.zhuchao.android.callbackevent.HttpCallBack;
 import com.zhuchao.android.libfileutils.MMLog;
-import com.zhuchao.android.libfileutils.SessionID;
+import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.netutil.HttpUtils;
-import com.zhuchao.android.playsession.PaserBean.IdNameBean;
-import com.zhuchao.android.playsession.PaserBean.MovieListBean;
+import com.zhuchao.android.session.PaserBean.IdNameBean;
+import com.zhuchao.android.session.PaserBean.MovieListBean;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -22,13 +22,13 @@ import java.util.Map;
 
 public class ImplementProxy implements HttpCallBack {
     public final String TAG = "ImplementProxy";
-    private com.zhuchao.android.playsession.SessionCallback SessionCallback = null;
+    private com.zhuchao.android.session.SessionCallback SessionCallback = null;
 
     private Map<Integer, String> mVideoCategory = null;// = new HashMap<Integer, String>();
     private Map<Integer, String> mVideoType = null;// = new HashMap<Integer, String>();
     private MovieListBean mMovieListBean = null;
 
-    public ImplementProxy(com.zhuchao.android.playsession.SessionCallback sessionCallback) {
+    public ImplementProxy(com.zhuchao.android.session.SessionCallback sessionCallback) {
         SessionCallback = sessionCallback;
     }
 
@@ -79,7 +79,7 @@ public class ImplementProxy implements HttpCallBack {
         return null;
     }
 
-    public String stringToMD5(String string) {
+    public String toMD5(String string) {
         byte[] hash;
         try {
             hash = MessageDigest.getInstance("MD5").digest(string.getBytes(StandardCharsets.UTF_8));
@@ -118,38 +118,31 @@ public class ImplementProxy implements HttpCallBack {
     }
 
     @Override
-    public void onHttpRequestProgress(String tag, String fromUrl, String lrl, long progress, long total) {
-        switch ((int) progress) {
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_VID:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_VNAME:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_AREA:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_YEAR:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_ACTOR:
-            case SessionID.SESSION_TYPE_GET_MOVIELIST_VIP:
-            case SessionID.SESSION_TYPE_GET_MOVIE_TYPE:
-                mMovieListBean = parseJSonToMovieListBean(lrl);
-                break;
-            case SessionID.SESSION_TYPE_GET_MOVIE_CATEGORY:
-                mVideoCategory = jsonIdNameArrayToMap(lrl);
-                break;
-            case SessionID.SESSION_TYPE_SCHEDULEPLAYBACK:
-                break;
-            default://默认尝试转化成视频列表
-                // mMovieListBean = parseJSonToMovieListBean(result);
-                break;
+    public void onHttpRequestComplete(String tag, String fromUrl, String toUrl, long progress, long total,String result, int status){
+            switch ((int) progress) {
+                case DataID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_VID:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_VNAME:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_AREA:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_YEAR:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_ACTOR:
+                case DataID.SESSION_TYPE_GET_MOVIELIST_VIP:
+                case DataID.SESSION_TYPE_GET_MOVIE_TYPE:
+                    mMovieListBean = parseJSonToMovieListBean(result);
+                    break;
+                case DataID.SESSION_TYPE_GET_MOVIE_CATEGORY:
+                    mVideoCategory = jsonIdNameArrayToMap(result);
+                    break;
+                default://默认尝试转化成视频列表
+                    // mMovieListBean = parseJSonToMovieListBean(result);
+                    break;
+            }
+
+            if (SessionCallback != null)
+                SessionCallback.OnSessionComplete((int) progress, result);
         }
-
-        if (SessionCallback != null)
-            SessionCallback.OnSessionComplete((int) progress, lrl);
-    }
-
-    @Override
-    public void onHttpRequestComplete(String tag, String fromUrl, String lrl, long progress, long total) {
-
-    }
 }
 
 

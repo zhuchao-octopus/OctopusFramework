@@ -418,6 +418,11 @@ public class OPlayer extends PlayControl {
         mMediaPlayer.setAudioTrack(index);
     }
 
+    @Override
+    public void deselectTrack(int index) {
+
+    }
+
     public void setCallback(PlayerCallback callback) {
         this.playerEventCallBack = callback;
     }

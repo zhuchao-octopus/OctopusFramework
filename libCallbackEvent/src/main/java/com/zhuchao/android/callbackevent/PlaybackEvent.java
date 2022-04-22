@@ -28,6 +28,7 @@ public  class PlaybackEvent  {
     public static final int Status_Ended = 6;
     public static final int Status_Error = 7;
 
-    public static final int Status_SEEKING = 300;
-    public static final int Status_RESUME = 301;
+    public static final int Status_INTERNAL = 300;
+    public static final int Status_SEEKING = 301;
+    public static final int Status_RESETING = 302;
 }

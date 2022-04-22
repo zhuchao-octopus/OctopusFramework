@@ -1,7 +1,7 @@
 /**
   * Copyright 2019 bejson.com 
   */
-package com.zhuchao.android.playsession.PaserBean;
+package com.zhuchao.android.session.PaserBean;
 import java.util.List;
 
 /**

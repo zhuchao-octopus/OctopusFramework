@@ -115,6 +115,8 @@ public abstract class PlayControl {
 
     public abstract void setAudioTrack(int index);
 
+    public abstract void deselectTrack(int index);
+
     public abstract void free();
 
 }
