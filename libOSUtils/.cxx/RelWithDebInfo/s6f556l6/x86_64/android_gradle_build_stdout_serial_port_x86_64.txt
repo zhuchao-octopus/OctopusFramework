@@ -1,0 +1,2 @@
+ninja: Entering directory `F:\StudioProjects\OctopusFramework\libOSUtils\.cxx\RelWithDebInfo\s6f556l6\x86_64'
+ninja: no work to do.
