@@ -2,7 +2,7 @@ package com.zhuchao.android.netutil;
 
 import com.zhuchao.android.callbackevent.HttpCallBack;
 import com.zhuchao.android.libfileutils.DataID;
-import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.FileUtils;
 import com.zhuchao.android.utils.MMLog;
 
 import java.io.BufferedReader;
@@ -156,7 +156,7 @@ public class HttpUtils {
                             if (response != null && response.isSuccessful()) {
                                 InputStream inputStream = null;
                                 FileOutputStream fileOutputStream = null;
-                                long rwOffset = FilesManager.getFileSize(toUrl);
+                                long rwOffset = FileUtils.getFileSize(toUrl);
                                 inputStream = response.body().byteStream();
 
                                 long contentLength = response.body().contentLength();

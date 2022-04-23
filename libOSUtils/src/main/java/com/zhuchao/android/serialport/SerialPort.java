@@ -245,7 +245,6 @@ public final class SerialPort {
     }
 
     public final static class Builder {
-
         private File device;
         private int baudrate;
         private int dataBits = 8;

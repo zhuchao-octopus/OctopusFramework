@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class AppsManager {
+public class AppsUtils {
     private static final String TAG = "MyAppsManager";
     public static final String UNINSTALL_ACTION = "UNINSTALL";
     public static final String INSTALL_ACTION = "INSTALL";
@@ -61,7 +61,7 @@ public class AppsManager {
 //        return mInstance;
 //    }
 
-    public AppsManager(Context context, AppsCallback appsCallback) {
+    public AppsUtils(Context context, AppsCallback appsCallback) {
         mContext = context;
         mAppsCallback = appsCallback;
         mPackageManager = mContext.getPackageManager();
@@ -88,7 +88,7 @@ public class AppsManager {
         return AllAppInfors;
     }
 
-    public AppsManager setmAppsChangedCallback(AppsCallback mAppsCallback) {
+    public AppsUtils setmAppsChangedCallback(AppsCallback mAppsCallback) {
         this.mAppsCallback = mAppsCallback;
         return this;
     }

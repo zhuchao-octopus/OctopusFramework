@@ -1,10 +1,10 @@
-package com.zhuchao.android.libfileutils.devices;
+package com.zhuchao.android.libfileutils;
 
 /**
  * Created by WangChaowei on 2017/12/11.
  */
 
-public class TypeTool {
+public class ByteTool {
     //-------------------------------------------------------
     // 判断奇数或偶数，位运算，最后一位是1则为奇数，为0是偶数
     public static int isOdd(int num) {

@@ -9,7 +9,7 @@ import android.text.TextUtils;
 import com.zhuchao.android.callbackevent.CallbackFunction;
 import com.zhuchao.android.callbackevent.HttpCallBack;
 import com.zhuchao.android.libfileutils.DataID;
-import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.FileUtils;
 import com.zhuchao.android.libfileutils.TTask;
 import com.zhuchao.android.libfileutils.TTaskThreadPool;
 import com.zhuchao.android.netutil.HttpUtils;
@@ -153,15 +153,15 @@ public class TTaskManager {
         String downloadingPathFileName = null;
         String localPathFileName = null;
         if (TextUtils.isEmpty(toPath)) {
-            fileName = FilesManager.getFileName(fromUrl);
+            fileName = FileUtils.getFileName(fromUrl);
             if (TextUtils.isEmpty(fileName))
                 fileName = tag;
-            downloadingPathFileName = FilesManager.getDownloadDir(null) + fileName + D_EXT_NAME;
-            localPathFileName = FilesManager.getDownloadDir(null) + fileName;
+            downloadingPathFileName = FileUtils.getDownloadDir(null) + fileName + D_EXT_NAME;
+            localPathFileName = FileUtils.getDownloadDir(null) + fileName;
         } else {
-            fileName = FilesManager.getFileName(toPath);
+            fileName = FileUtils.getFileName(toPath);
             if (TextUtils.isEmpty(fileName))
-                fileName = FilesManager.getFileName(fromUrl);
+                fileName = FileUtils.getFileName(fromUrl);
             if (TextUtils.isEmpty(fileName))
                 fileName = tag;
             downloadingPathFileName = toPath + "/" + fileName + D_EXT_NAME;
@@ -171,13 +171,13 @@ public class TTaskManager {
         tTask.getProperties().putString("downloadingPathFileName", downloadingPathFileName);
         tTask.getProperties().putString("localPathFileName", localPathFileName);
         if (!this.reDownload) {
-            if (FilesManager.isExists(localPathFileName)) {
+            if (FileUtils.isExists(localPathFileName)) {
                 MMLog.log(TAG, "download stop,file already exist --> " + localPathFileName);
                 tTask.free();
                 return;//已经完成下载，不再重复下载
             }
         } else {//重新下载
-            if (FilesManager.deleteFile(downloadingPathFileName)) {
+            if (FileUtils.deleteFile(downloadingPathFileName)) {
                 MMLog.log(TAG, "download delete exist file successfully " + localPathFileName);
             } else {
                 MMLog.log(TAG, "download stop, delete exist file failed " + localPathFileName);
@@ -186,7 +186,7 @@ public class TTaskManager {
             }
         }
         if (!this.stopContinue) {//非断点续传模式下，删除之前的未下载完的临时文件,重新完成下载
-            if (FilesManager.deleteFile(downloadingPathFileName)) {
+            if (FileUtils.deleteFile(downloadingPathFileName)) {
                 MMLog.log(TAG, "download delete temp file successfully " + downloadingPathFileName);
             } else {
                 MMLog.log(TAG, "download stop, delete exist file failed " + downloadingPathFileName);
@@ -232,7 +232,7 @@ public class TTaskManager {
                                 if ((progress == total) && (progress > 0))
                                 {
                                     MMLog.log(TAG, "download complete, from " + fromUrl +" total size = "+total);
-                                    if (FilesManager.renameFile(f1, f2))
+                                    if (FileUtils.renameFile(f1, f2))
                                         MMLog.log(TAG, "download save file complete, to " + f2);
                                     else
                                         MMLog.log(TAG, "download save file failed, to " + f2);

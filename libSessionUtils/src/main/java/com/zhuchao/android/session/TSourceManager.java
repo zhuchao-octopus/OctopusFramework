@@ -11,7 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.FileUtils;
 import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.netutil.NetUtils;
 import com.zhuchao.android.utils.MMLog;
@@ -140,7 +140,7 @@ public class TSourceManager implements SessionCallback {
         new Thread() {
             public void run() {
                 mThreadLock2 = true;
-                mobileDiscs = FilesManager.getUDiscName(mContext);
+                mobileDiscs = FileUtils.getUDiscName(mContext);
                 if (mobileDiscs.isEmpty()) {
                     MMLog.log(TAG, " no device found ");
                     mThreadLock2 = false;
@@ -183,7 +183,7 @@ public class TSourceManager implements SessionCallback {
         if (mThreadLock3) return;
         if (filePath == null) return;
         //if (FileList == null) return;
-        if (!FilesManager.isExists(filePath)) return;
+        if (!FileUtils.isExists(filePath)) return;
         registerFileBroadcastReceiver();
         fileSession.getVideos().clear();
         new Thread() {

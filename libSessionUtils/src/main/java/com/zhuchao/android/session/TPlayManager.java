@@ -13,7 +13,7 @@ import android.view.SurfaceView;
 import com.zhuchao.android.callbackevent.NormalRequestCallback;
 import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
-import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.FileUtils;
 import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.utils.MMLog;
 import com.zhuchao.android.video.Movie;
@@ -42,7 +42,7 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
     public TPlayManager(Context mContext, SurfaceView sfView) {
         this.context = mContext;
         this.surfaceView = sfView;
-        downloadPath = FilesManager.getDownloadDir(null);//播放目录和，下载缓存目录不一样
+        downloadPath = FileUtils.getDownloadDir(null);//播放目录和，下载缓存目录不一样
         playingList = new VideoList(null);
         favoriteList = new VideoList(this);
         playingList.setTAG("PlayManager.VideoList0");
@@ -284,7 +284,7 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
 
     public void addSource(String Url) {
         Movie movie = new Movie(Url);
-        String filename = FilesManager.getFileName(movie.getsUrl());
+        String filename = FileUtils.getFileName(movie.getsUrl());
         if (!TextUtils.isEmpty(filename))
             movie.setName(filename);
         playingList.add(new OMedia(movie));

@@ -17,7 +17,7 @@ import java.util.Map;
 import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.databaseutil.SPreference;
-import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.FileUtils;
 import com.zhuchao.android.libfileutils.MediaFile;
 import com.zhuchao.android.playerutil.PlayControl;
 import com.zhuchao.android.playerutil.PlayerManager;
@@ -121,7 +121,7 @@ public class OMedia implements Serializable, PlayerCallback {
             return play(assetFileDescriptor);
         else if (fileDescriptor != null)
             return play(fileDescriptor);
-        else if (FilesManager.isExists(cachedFile))//缓存优先与在线播放
+        else if (FileUtils.isExists(cachedFile))//缓存优先与在线播放
             return play(cachedFile);
         else if (uri != null)
             return play(uri);
@@ -455,7 +455,7 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public String md5() {
-        return FilesManager.md5(movie.getsUrl());
+        return FileUtils.md5(movie.getsUrl());
     }
 
     private void restorePlay(float position, long Length) {
@@ -475,7 +475,7 @@ public class OMedia implements Serializable, PlayerCallback {
         if (movie == null) return;
         if (context == null) return;
         if (TextUtils.isEmpty(movie.getsUrl())) return;
-        String md5 = FilesManager.md5(movie.getsUrl());
+        String md5 = FileUtils.md5(movie.getsUrl());
         //SPreference.saveSharedPreferences(mContext, md5, "name", mMovie.getMovieName());
         //SPreference.saveSharedPreferences(mContext, md5, "url", mMovie.getSourceUrl());
         SPreference.putLong(context, md5, "playTime", playTime);
@@ -485,7 +485,7 @@ public class OMedia implements Serializable, PlayerCallback {
         if (movie == null) return;
         if (context == null) return;
         if (TextUtils.isEmpty(movie.getsUrl())) return;
-        String md5 = FilesManager.md5(movie.getsUrl());
+        String md5 = FileUtils.md5(movie.getsUrl());
         playTime = SPreference.getLong(context, md5, "playTime");
     }
 
@@ -493,9 +493,9 @@ public class OMedia implements Serializable, PlayerCallback {
         boolean bf = false;
         if (this.uri != null || this.assetFileDescriptor != null || this.fileDescriptor != null)
             bf = true;
-        else if (FilesManager.isExists(movie.getsUrl()))
+        else if (FileUtils.isExists(movie.getsUrl()))
             bf = MediaFile.isMediaFile(movie.getsUrl());
-        else if (!TextUtils.isEmpty(cachePath) && FilesManager.isExists(cachePath + "/" + movie.getName()))
+        else if (!TextUtils.isEmpty(cachePath) && FileUtils.isExists(cachePath + "/" + movie.getName()))
             bf = MediaFile.isMediaFile(cachePath + "/" + movie.getName());
         return bf;
     }

@@ -55,7 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FilesManager {
+public class FileUtils {
     private final static String TAG = "FilesManager";
     public static final int TYPE_DOC = 0;
     public static final int TYPE_APK = 1;
@@ -519,12 +519,12 @@ public class FilesManager {
             while (c.moveToNext()) {
                 String path = c.getString(dataindex);
 
-                if (FilesManager.getFileType(path) == fileType) {
-                    if (!FilesManager.isExists(path)) {
+                if (FileUtils.getFileType(path) == fileType) {
+                    if (!FileUtils.isExists(path)) {
                         continue;
                     }
                     long size = c.getLong(sizeindex);
-                    FileBean fileBean = new FileBean(path, FilesManager.getFileIconByPath(path));
+                    FileBean fileBean = new FileBean(path, FileUtils.getFileIconByPath(path));
                     files.add(fileBean);
                 }
             }
@@ -599,7 +599,7 @@ public class FilesManager {
         File[] files = directory.listFiles();
         for (File file : files) {
             String path = file.getAbsolutePath();
-            if (FilesManager.isPicFile(path)) {
+            if (FileUtils.isPicFile(path)) {
                 imgPaths.add(path);
             }
         }

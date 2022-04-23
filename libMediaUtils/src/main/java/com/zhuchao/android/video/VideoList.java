@@ -17,7 +17,7 @@ package com.zhuchao.android.video;
 import android.text.TextUtils;
 
 import com.zhuchao.android.callbackevent.NormalRequestCallback;
-import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.FileUtils;
 import com.zhuchao.android.libfileutils.MediaFile;
 import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.utils.MMLog;
@@ -143,12 +143,12 @@ public class VideoList {
     }
 
     public OMedia findByPath(String fileName) {
-        String md5Key = FilesManager.md5(fileName);
+        String md5Key = FileUtils.md5(fileName);
         return (OMedia) FHashMap.get(md5Key);
     }
 
     public boolean exist(String fileName) {
-        String md5Key = FilesManager.md5(fileName);
+        String md5Key = FileUtils.md5(fileName);
         return FHashMap.containsKey(md5Key);
     }
 

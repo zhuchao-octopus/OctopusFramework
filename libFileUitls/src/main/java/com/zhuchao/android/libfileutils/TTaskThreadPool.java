@@ -1,6 +1,6 @@
 package com.zhuchao.android.libfileutils;
 
-import static com.zhuchao.android.libfileutils.FilesManager.md5;
+import static com.zhuchao.android.libfileutils.FileUtils.md5;
 
 import android.text.TextUtils;
 

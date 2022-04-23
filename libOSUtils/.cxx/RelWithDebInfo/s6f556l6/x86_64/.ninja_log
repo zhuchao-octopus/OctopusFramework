@@ -87,3 +87,10 @@
 0	12	0	clean	5257a025ec128d60
 2	956	672415061	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	82249c9058bd55bf
 957	1189	672415061	../../../../build/intermediates/cxx/RelWithDebInfo/s6f556l6/obj/x86_64/libserial_port.so	b0c1e6d9e995a435
+0	12	0	clean	5257a025ec128d60
+0	13	0	clean	5257a025ec128d60
+2	436	672417751	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	82249c9058bd55bf
+436	594	672417751	../../../../build/intermediates/cxx/RelWithDebInfo/s6f556l6/obj/x86_64/libserial_port.so	b0c1e6d9e995a435
+0	12	0	clean	5257a025ec128d60
+2	175	672417799	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	82249c9058bd55bf
+175	327	672417799	../../../../build/intermediates/cxx/RelWithDebInfo/s6f556l6/obj/x86_64/libserial_port.so	b0c1e6d9e995a435

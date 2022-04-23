@@ -3,7 +3,7 @@ package com.zhuchao.android.session;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.zhuchao.android.libfileutils.FilesManager;
+import com.zhuchao.android.libfileutils.FileUtils;
 import com.zhuchao.android.libfileutils.MediaFile;
 import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.libfileutils.bean.LMusic;
@@ -200,7 +200,7 @@ public class LiveVideoSession implements SessionCallback {
 
     public void initMediasFromLocal(Context context, Integer fType) {
         if (fType == DataID.MEDIA_TYPE_ID_VIDEO) {
-            List<LVideo> lVideos = FilesManager.getVideos(context);
+            List<LVideo> lVideos = FileUtils.getVideos(context);
             for (LVideo lVideo : lVideos) {
                 Movie movie = new Movie(lVideo.getPath());
                 String filename = getFileName(movie.getsUrl());
@@ -210,7 +210,7 @@ public class LiveVideoSession implements SessionCallback {
                 videoList.add(oMedia);
             }
         } else if (fType == DataID.MEDIA_TYPE_ID_AUDIO) {
-            List<LMusic> lMusics = FilesManager.getMusics(context);
+            List<LMusic> lMusics = FileUtils.getMusics(context);
             for (LMusic lmusic : lMusics) {
                 Movie movie = new Movie(lmusic.getPath());
                 String filename = getFileName(movie.getsUrl());
@@ -222,7 +222,7 @@ public class LiveVideoSession implements SessionCallback {
         }
 
         if (fType == DataID.MEDIA_TYPE_ID_PIC) {
-            List<String> imgList = FilesManager.getLocalImageList();
+            List<String> imgList = FileUtils.getLocalImageList();
             for (String img : imgList) {
                 Movie movie = new Movie(img);
                 String filename = getFileName(movie.getsUrl());
@@ -253,7 +253,7 @@ public class LiveVideoSession implements SessionCallback {
             FileList = new ArrayList<String>();
         else
             f = true;
-        FilesManager.getFiles(filePath, FileList);
+        FileUtils.getFiles(filePath, FileList);
         if (!f) {
             for (int i = 0; i < FileList.size(); i++) {
                 Movie movie = new Movie(FileList.get(i));
