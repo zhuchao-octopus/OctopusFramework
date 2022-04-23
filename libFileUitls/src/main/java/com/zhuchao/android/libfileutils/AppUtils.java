@@ -7,6 +7,8 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 
+import com.zhuchao.android.utils.MMLog;
+
 import java.util.List;
 
 public class AppUtils {

@@ -51,10 +51,11 @@ android {
 }
 
 dependencies {
-    //implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.google.code.gson:gson:2.8.8'
+    implementation project(path: ':libOSUtils')
+    implementation project(path: ':libCallbackEvent')
     implementation project(path: ':libFileUitls')
     implementation project(path: ':libNetUtils')
     implementation project(path: ':libMediaUtils')
-    implementation project(path: ':libCallbackEvent')
+
 }

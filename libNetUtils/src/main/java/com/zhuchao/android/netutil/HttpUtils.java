@@ -3,7 +3,7 @@ package com.zhuchao.android.netutil;
 import com.zhuchao.android.callbackevent.HttpCallBack;
 import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.libfileutils.FilesManager;
-import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.utils.MMLog;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -17,7 +17,6 @@ import java.net.URL;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -157,9 +156,9 @@ public class HttpUtils {
                             if (response != null && response.isSuccessful()) {
                                 InputStream inputStream = null;
                                 FileOutputStream fileOutputStream = null;
-
                                 long rwOffset = FilesManager.getFileSize(toUrl);
                                 inputStream = response.body().byteStream();
+
                                 long contentLength = response.body().contentLength();
                                 long downloadLengthSum = rwOffset;
                                 if (rwOffset <= 0) {
@@ -173,15 +172,17 @@ public class HttpUtils {
                                 }
                                 int len = 0;
                                 byte[] buffer = new byte[1024 * 10];
-                                while ((len = inputStream.read(buffer)) != -1) {
+                                while ((len = inputStream.read(buffer)) != -1)
+                                {
                                     fileOutputStream.write(buffer, 0, len);
                                     downloadLengthSum += len;
+
                                     ResultCallBack(tag,fromUrl,toUrl,downloadLengthSum,contentLength,"",DataID.TASK_STATUS_PROGRESSING,RequestCallBack);
                                 }
                                 fileOutputStream.flush();
                                 fileOutputStream.close();
                                 inputStream.close();
-                                ResultCallBack(tag,fromUrl,toUrl,downloadLengthSum,contentLength,"",DataID.TASK_STATUS_SUCCESS,RequestCallBack);
+                                ResultCallBack(tag,fromUrl,toUrl,downloadLengthSum,contentLength,"SUCCESS",DataID.TASK_STATUS_SUCCESS,RequestCallBack);
                             } else {
                                 MMLog.log(TAG, "download failed from " + fromUrl);
                                 ResultCallBack(tag,fromUrl,toUrl,0,0,"",DataID.TASK_STATUS_ERROR,RequestCallBack);

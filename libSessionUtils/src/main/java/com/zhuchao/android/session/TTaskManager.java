@@ -10,15 +10,15 @@ import com.zhuchao.android.callbackevent.CallbackFunction;
 import com.zhuchao.android.callbackevent.HttpCallBack;
 import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.libfileutils.FilesManager;
-import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.libfileutils.TTask;
 import com.zhuchao.android.libfileutils.TTaskThreadPool;
 import com.zhuchao.android.netutil.HttpUtils;
+import com.zhuchao.android.utils.MMLog;
 
 
 public class TTaskManager {
     private final String TAG = "TTaskManager";
-    private final String D_EXT_NAME = ".d.temp";
+    private final String D_EXT_NAME = ".downloading.temp";
     private Context mContext = null;
     private TTaskThreadPool tTaskThreadPool = null;
     private boolean stopContinue = true;
@@ -201,13 +201,12 @@ public class TTaskManager {
 
                 @Override
                 public void onHttpRequestComplete(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
-                    //String f1 = tTask.getProperties().getString("downloadingPathFileName");
+                    String f1 = tTask.getProperties().getString("downloadingPathFileName");
                     String f2 = tTask.getProperties().getString("localPathFileName");
-                    if(TextUtils.isEmpty(f2))
-                        f2 = toUrl.substring(0, toUrl.length() - D_EXT_NAME.length());
+                    //if(TextUtils.isEmpty(f2))
+                    //String f2 = toUrl.substring(0, toUrl.length() - D_EXT_NAME.length());
                     switch (status)
                     {
-                        case DataID.TASK_STATUS_ERROR:
                         case DataID.TASK_STATUS_PROGRESSING:
                             if (tTask.getCallBackHandler() != null) {
                                 Message msg = taskHandler.obtainMessage();
@@ -222,24 +221,33 @@ public class TTaskManager {
                                 taskHandler.sendMessage(msg);
                             }
                             break;
+                        case DataID.TASK_STATUS_ERROR:
+                            MMLog.log(TAG, "download file failed, from " + fromUrl);
+                            tTask.free();//下载完成，释放任务
+                            break;
                         case DataID.TASK_STATUS_SUCCESS:
-                            try {
-                                if ((progress == total) && (progress > 0)) {
-                                    MMLog.log(TAG, "download complete, from " + fromUrl);
-                                    if (FilesManager.renameFile(toPath, f2))
+                            try
+                            {
+                                //Thread.sleep(1000);
+                                if ((progress == total) && (progress > 0))
+                                {
+                                    MMLog.log(TAG, "download complete, from " + fromUrl +" total size = "+total);
+                                    if (FilesManager.renameFile(f1, f2))
                                         MMLog.log(TAG, "download save file complete, to " + f2);
                                     else
                                         MMLog.log(TAG, "download save file failed, to " + f2);
-                                } else {
+                                }
+                                else
+                                {
                                     MMLog.log(TAG, "download file failed, from " + fromUrl);
                                 }
                             } catch (Exception e) {
                                 //e.printStackTrace();
                                 MMLog.log(TAG, "download renameFile failed, from " + e.toString());
                             }
+                            tTask.free();//下载完成，释放任务
                             break;
                     }
-                    tTask.free();//下载完成，释放任务
                 }
             });
         } catch (Exception e) {

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.zhuchao.android.callbackevent.CallbackFunction;
 import com.zhuchao.android.callbackevent.CallBackHandler;
+import com.zhuchao.android.utils.MMLog;
 
 public class TTask extends Thread {
     private final String TAG = "TTask";
@@ -89,7 +90,8 @@ public class TTask extends Thread {
             MMLog.e(TAG,"run() "+ e.getMessage());
         }
 
-        while (isActive) {
+        while (isActive)
+        {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

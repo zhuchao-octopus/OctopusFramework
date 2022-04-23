@@ -18,10 +18,11 @@ import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.databaseutil.SPreference;
 import com.zhuchao.android.libfileutils.FilesManager;
-import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.libfileutils.MediaFile;
 import com.zhuchao.android.playerutil.PlayControl;
 import com.zhuchao.android.playerutil.PlayerManager;
+import com.zhuchao.android.utils.MMLog;
+
 import static com.zhuchao.android.playerutil.PlayerManager.MPLAYER;
 
 

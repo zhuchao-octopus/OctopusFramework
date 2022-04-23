@@ -1,4 +1,4 @@
-package com.zhuchao.android.libfileutils;
+package com.zhuchao.android.utils;
 
 import android.util.Log;
 

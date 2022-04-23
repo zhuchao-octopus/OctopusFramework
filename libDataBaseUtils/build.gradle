@@ -46,4 +46,5 @@ android {
 
 dependencies {
     implementation project(path: ':libFileUitls')
+    implementation project(path: ':libOSUtils')
 }

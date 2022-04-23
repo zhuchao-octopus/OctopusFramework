@@ -7,7 +7,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.provider.Settings;
 
-import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.utils.MMLog;
 
 import java.text.DateFormat;
 import java.text.ParseException;

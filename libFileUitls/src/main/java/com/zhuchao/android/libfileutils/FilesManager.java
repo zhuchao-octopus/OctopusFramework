@@ -25,6 +25,7 @@ import com.zhuchao.android.libfileutils.bean.FileBean;
 import com.zhuchao.android.libfileutils.bean.ImgFolderBean;
 import com.zhuchao.android.libfileutils.bean.LMusic;
 import com.zhuchao.android.libfileutils.bean.LVideo;
+import com.zhuchao.android.utils.MMLog;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -111,14 +112,14 @@ public class FilesManager {
     public static long getFileSize(String fileName) {
         try {
             File file = new File(fileName);
-            if (!file.exists() || !file.isFile()) {
+            if (file.exists() && file.isFile())
+                return file.length();
+            else
                 return 0;
-            }
-            return file.length();
         } catch (Exception e) {
             e.printStackTrace();
-            return 0;
         }
+        return 0;
     }
 
     public static boolean deleteFile(String filePath) {
@@ -146,20 +147,33 @@ public class FilesManager {
         return true;
     }
 
-    public static boolean renameFile(String oldPath, String newPath) {
+    public static boolean renameFile(String fromFilePathName, String newFilePathName) {
+        boolean bRet = false;
         try {
-            File oleFile = new File(oldPath);
-            File newFile = new File(newPath);
-            oleFile.renameTo(newFile);
+            File fromFile = new File(fromFilePathName);
+            File newFile = new File(newFilePathName);
+            if (!fromFile.exists())
+            {
+                MMLog.log(TAG,"fromFile not exist "+fromFile);
+                return false;
+            }
+            if (!newFile.exists())
+            {  //  确保新的文件名不存在
+                bRet = fromFile.renameTo(newFile);
+            }
+            else
+            {
+                MMLog.log(TAG,"file already exist "+newFilePathName);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            //e.printStackTrace();
+            MMLog.log(TAG,"renameFile failed to "+newFilePathName);
         }
-        return true;
+        return bRet;
     }
 
     public static void copy(String FromFile, String ToFile) {
-        int byteread = 0;
+        int byteRead = 0;
         try {
             File fFile = new File(FromFile);
             if (fFile.exists()) { //文件存在时
@@ -167,9 +181,9 @@ public class FilesManager {
                 FileOutputStream tStream = new FileOutputStream(ToFile);
                 byte[] buffer = new byte[1024];
                 //int length;
-                while ((byteread = fStream.read(buffer)) != -1) {
+                while ((byteRead = fStream.read(buffer)) != -1) {
                     //bytesum += byteread; //字节数 文件大小
-                    tStream.write(buffer, 0, byteread);
+                    tStream.write(buffer, 0, byteRead);
                 }
                 fStream.close();
                 tStream.close();

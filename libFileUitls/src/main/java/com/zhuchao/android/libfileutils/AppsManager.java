@@ -17,6 +17,7 @@ import androidx.core.content.FileProvider;
 
 import com.zhuchao.android.callbackevent.AppsCallback;
 import com.zhuchao.android.libfileutils.bean.AppInfor;
+import com.zhuchao.android.utils.MMLog;
 
 import java.io.File;
 import java.util.ArrayList;

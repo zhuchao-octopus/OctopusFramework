@@ -13,7 +13,7 @@ import android.view.TextureView;
 
 import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
-import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.utils.MMLog;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -32,6 +32,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     private ProgressThread progressThread = null;
     private static int playStatus = PlaybackEvent.Status_NothingIdle;
     private static long lDuration = 0;
+    private static long lPosition = 0;
     public MPlayer(Context context, PlayerCallback callback) {
         super(context, callback);
         playStatus = PlaybackEvent.Status_NothingIdle;
@@ -47,9 +48,10 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         try {
             resetComponent(false);
             playStatus = PlaybackEvent.Status_Opening;
+            CallbackProgress(0);
             mediaPlayer.setDataSource(filePath);
         } catch (IllegalArgumentException e) {
-            MMLog.e(TAG, "setSource() " + e.toString() +" filePath = "+filePath);
+            MMLog.e(TAG, "setSource() " + e.toString() + " filePath = " + filePath);
             playStatus = PlaybackEvent.Status_Error;
         } catch (IOException e) {
             MMLog.e(TAG, "setSource() " + e.toString());
@@ -65,6 +67,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         try {
             resetComponent(false);
             playStatus = PlaybackEvent.Status_Opening;
+            CallbackProgress(0);
             mediaPlayer.setDataSource(mContext, uri);
         } catch (IllegalArgumentException e) {
             MMLog.e(TAG, "setSource() " + e.toString());
@@ -83,6 +86,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         try {
             resetComponent(false);
             playStatus = PlaybackEvent.Status_Opening;
+            CallbackProgress(0);
             mediaPlayer.setDataSource(afd);
         } catch (IllegalArgumentException e) {
             MMLog.e(TAG, "setSource() " + e.toString());
@@ -101,6 +105,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         try {
             resetComponent(false);
             playStatus = PlaybackEvent.Status_Opening;
+            CallbackProgress(0);
             mediaPlayer.setDataSource(fd);
         } catch (IllegalArgumentException e) {
             MMLog.e(TAG, "setSource() " + e.toString());
@@ -112,6 +117,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             MMLog.e(TAG, "setSource() " + e.toString());
             playStatus = PlaybackEvent.Status_Error;
         }
+
     }
 
     @Override
@@ -172,6 +178,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     public void fastBack(long x) {
 
     }
+
     //播放循序
     //setSource(url);
     //.play();
@@ -180,7 +187,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         try {
             asyncPlayProcess(playStatus);
         } catch (Exception e) {
-            MMLog.e(TAG, "play() " + "playStatus = "+playStatus +" "+ e.getMessage());
+            MMLog.e(TAG, "play() " + "playStatus = " + playStatus + " " + e.getMessage());
         }
     }
 
@@ -258,25 +265,24 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     @Override
     public Long getTime() {
-        long l = 0;
         try {
             if ((mediaPlayer != null) && (mediaPlayer.isPlaying()))
-                l = Long.valueOf(mediaPlayer.getCurrentPosition());
+                lPosition = Long.valueOf(mediaPlayer.getCurrentPosition());
         } catch (Exception e) {
             MMLog.e(TAG, "getTime() " + e.toString());
         }
-        return l;
+        return lPosition;
     }
 
     @Override
     public float getPosition() {
         try {
             if ((mediaPlayer != null) && (mediaPlayer.isPlaying()))
-                return mediaPlayer.getCurrentPosition();
+                lPosition = mediaPlayer.getCurrentPosition();
         } catch (Exception e) {
             MMLog.e(TAG, "getPosition() " + e.toString());
         }
-        return 0;
+        return lPosition;
     }
 
     @Override
@@ -304,7 +310,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             if ((mediaPlayer != null) && (mediaPlayer.isPlaying()))
                 mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(v));
         } catch (Exception e) {
-            MMLog.e(TAG, "setRate() " + e.toString()+ " v = " + v);
+            MMLog.e(TAG, "setRate() " + e.toString() + " v = " + v);
         }
     }
 
@@ -345,7 +351,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public int getAudioTracksCount() {
         MediaPlayer.TrackInfo[] trackInfo = null;
-        if (mediaPlayer != null)  {
+        if (mediaPlayer != null) {
             try {
                 trackInfo = mediaPlayer.getTrackInfo();
             } catch (IllegalStateException e) {
@@ -368,7 +374,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             MMLog.e(TAG, "getAudioTracks() " + e.toString());
         }
 
-        for (int i = 0; i < trackInfo.length ; i++) {
+        for (int i = 0; i < trackInfo.length; i++) {
             //if (trackInfo[i].getTrackType() == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_AUDIO)
             mtd.put(i, trackInfo[i].getLanguage());
             MMLog.d(TAG, "getAudioTracks() " + trackInfo[i].toString());
@@ -392,17 +398,14 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         if (mediaPlayer == null) return;
         try {
             MediaPlayer.TrackInfo[] trackInfo = mediaPlayer.getTrackInfo();
-            if(index <= 0)
-            {
+            if (index <= 0) {
                 mediaPlayer.deselectTrack(getAudioTrack());
                 return;
             }
-            for (int i = 0; i < trackInfo.length ; i++)
-            {
+            for (int i = 0; i < trackInfo.length; i++) {
                 MediaPlayer.TrackInfo Info = trackInfo[i];
                 //if (Info.getTrackType() == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_AUDIO)
-                if(index == i)
-                {
+                if (index == i) {
                     mediaPlayer.selectTrack(i);
                     MMLog.d(TAG, "setAudioTrack() track info = " + Info.toString());
                     break;
@@ -418,12 +421,10 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         if (mediaPlayer == null) return;
         try {
             MediaPlayer.TrackInfo[] trackInfo = mediaPlayer.getTrackInfo();
-            for (int i = 0; i < trackInfo.length ; i++)
-            {
+            for (int i = 0; i < trackInfo.length; i++) {
                 MediaPlayer.TrackInfo Info = trackInfo[i];
                 //if (Info.getTrackType() == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_AUDIO)
-                if(index == i)
-                {
+                if (index == i) {
                     mediaPlayer.deselectTrack(i);
                     MMLog.d(TAG, "deselectTrack() track info = " + Info.toString());
                     break;
@@ -461,17 +462,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
         //MLog.log(TAG, "onBufferingUpdate:" + i);
-        if (playerEventCallBack != null)
-            playerEventCallBack.OnEventCallBack(
-                    playStatus,
-                    mediaPlayer.getCurrentPosition(),
-                    mediaPlayer.getCurrentPosition(),
-                    mediaPlayer.getCurrentPosition(),
-                    0,
-                    0,
-                    0,
-                    i,
-                    getLength());
+        CallbackProgress(i);
     }
 
     @Override
@@ -526,7 +517,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     public synchronized void resetComponent(boolean nf) {
         MMLog.d(TAG, "resetComponent() nf = " + nf);
-        if (nf)   free();
+        if (nf) free();
 
         try {
             if (mediaPlayer == null)
@@ -539,8 +530,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             return;
         }
 
-        try
-        {
+        try {
             if (mSurfaceView != null) {
                 mSurfaceView.getHolder().addCallback(this);
                 if (mSurfaceView.getHolder() != null) {
@@ -553,7 +543,6 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             //这里可能报异常，setSource后要重新 setSurfaceView
             //setSurfaceView 异常，依然可以播放，此处异常不重要
         }
-        lDuration = 0;
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.setOnSeekCompleteListener(this);
@@ -576,17 +565,16 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                     try {
                         mediaPlayer.prepareAsync();
                     } catch (IllegalStateException e) {
-                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = "+playStatus +" "+e.toString() );
+                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
                         playStatus = PlaybackEvent.Status_RESETING;
                         free();
                         playStatus = PlaybackEvent.Status_Ended;
-                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = "+playStatus +" "+e.toString() );
-                    }
-                    catch (Exception e) {
-                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = "+playStatus +" "+e.toString() );
+                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
+                    } catch (Exception e) {
+                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
                         playStatus = PlaybackEvent.Status_RESETING;
                         free();
-                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = "+playStatus +" "+e.toString() );
+                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
                         playStatus = PlaybackEvent.Status_Ended;
                     }
                     mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -597,7 +585,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                             try {
                                 lDuration = mediaPlayer.getDuration();
                             } catch (Exception e) {
-                                MMLog.e(TAG, "asyncPlayProcess().getDuration() "+ "playStatus = "+playStatus +" " + e.toString());
+                                MMLog.e(TAG, "asyncPlayProcess().getDuration() " + "playStatus = " + playStatus + " " + e.toString());
                             }
                             mp.start();
                         }
@@ -621,11 +609,41 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                     break;
             }
         } catch (IllegalStateException e) {
-            MMLog.e(TAG, "asyncPlayProcess() "+ "playStatus = "+playStatus +" " + e.toString());
+            MMLog.e(TAG, "asyncPlayProcess() " + "playStatus = " + playStatus + " " + e.toString());
+        } catch (Exception e) {
+            MMLog.e(TAG, "asyncPlayProcess() " + "playStatus = " + playStatus + " " + e.toString());
         }
-        catch (Exception e) {
-            MMLog.e(TAG, "asyncPlayProcess() "+ "playStatus = "+playStatus +" "+ e.toString());
+    }
+
+    private void CallbackProgress(int buffering) {
+        switch (playStatus) {
+            case PlaybackEvent.Status_Opening:
+                lPosition = 0;
+                lDuration = 0;
+                break;
+            case PlaybackEvent.Status_Buffering:
+            case PlaybackEvent.Status_Playing:
+            case PlaybackEvent.Status_Paused:
+                getTime();
+                break;
+            case PlaybackEvent.Status_Stopped:
+            case PlaybackEvent.Status_Ended:
+            case PlaybackEvent.Status_Error:
+            default:
+                break;
         }
+
+        if (playerEventCallBack != null)
+            playerEventCallBack.OnEventCallBack(
+                    playStatus,
+                    lPosition,
+                    lPosition,
+                    lPosition,
+                    0,
+                    0,
+                    0,
+                    buffering,
+                    lDuration);
     }
 
     private void StartPlayProgressThread() {   //创建进度状态线程
@@ -642,48 +660,25 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     private class ProgressThread extends Thread {
         private boolean isActive = true;
-        private int currentPosition = 0;
 
         @Override
         public void run() {
             super.run();
             while (isActive) {
-                if(playStatus >= PlaybackEvent.Status_INTERNAL) continue;
-                try {
-                    switch (playStatus) {
-                        case PlaybackEvent.Status_Playing:
-                            if ((mediaPlayer != null) && (mediaPlayer.isPlaying())) {
-                                currentPosition = mediaPlayer.getCurrentPosition();
-                            }
-                            break;
-                        case PlaybackEvent.Status_Stopped:
-                        case PlaybackEvent.Status_Ended:
-                        case PlaybackEvent.Status_Error:
-                        default:
-                            break;
-                    }
+                if (playStatus >= PlaybackEvent.Status_INTERNAL) continue;
+                if (playStatus == PlaybackEvent.Status_Buffering) continue;
 
-                    if (playerEventCallBack != null) {
-                        playerEventCallBack.OnEventCallBack(
-                                playStatus,
-                                currentPosition,
-                                currentPosition,
-                                currentPosition,
-                                0,
-                                0,
-                                0,
-                                0,
-                                lDuration);
-                    }
+                try {
+                    CallbackProgress(0);
                 } catch (IllegalStateException e) {
-                    MMLog.e(TAG, "Progress polling " + e.toString()+ " playStatus = " + playStatus);
+                    MMLog.e(TAG, "Progress polling " + e.toString() + " playStatus = " + playStatus);
                 } catch (Exception e) {
-                    MMLog.e(TAG, "Progress polling " + e.toString()+ " playStatus = " + playStatus);
+                    MMLog.e(TAG, "Progress polling " + e.toString() + " playStatus = " + playStatus);
                 }
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    MMLog.e(TAG, "Progress polling " + e.toString()+ " playStatus = " + playStatus);
+                    MMLog.e(TAG, "Progress polling " + e.toString() + " playStatus = " + playStatus);
                 }
             }
         }

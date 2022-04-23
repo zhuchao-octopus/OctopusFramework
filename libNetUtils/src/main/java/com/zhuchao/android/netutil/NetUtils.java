@@ -11,7 +11,7 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.utils.MMLog;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

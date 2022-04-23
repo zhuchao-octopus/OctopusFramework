@@ -4,6 +4,8 @@ import static com.zhuchao.android.libfileutils.FilesManager.md5;
 
 import android.text.TextUtils;
 
+import com.zhuchao.android.utils.MMLog;
+
 public class TTaskThreadPool extends ObjectList {
     private final String TAG = "TaskThreadPool";
     private int maxThreadCount = 100;
@@ -72,8 +74,11 @@ class PTask extends TTask {
             return;
         }
 
-        if (TTaskThreadPool.existObject(tTag)) {
+        if (TTaskThreadPool.existObject(tTag))
+        {
+
             super.run();
+
             //最终结束任务，从任务池中清除掉
             TTaskThreadPool.delete(this.tTag);
             MMLog.log(TAG, "PTask successfully completed the task,remove from task pool tag = " + tTag);
