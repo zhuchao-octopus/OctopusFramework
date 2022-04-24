@@ -1,6 +1,5 @@
 package com.zhuchao.android.callbackevent;
 
 public interface AppsCallback {
-
-    void OnAppsChanged(String Action, String appInfo);
+    void onAppsChanged(String Action, String appInfo);
 }

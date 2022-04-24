@@ -7,7 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.zhuchao.android.callbackevent.HttpCallBack;
+import com.zhuchao.android.callbackevent.HttpCallback;
 import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.netutil.HttpUtils;
 import com.zhuchao.android.session.PaserBean.IdNameBean;
@@ -20,7 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ImplementProxy implements HttpCallBack {
+public class ImplementProxy implements HttpCallback {
     public final String TAG = "ImplementProxy";
     private com.zhuchao.android.session.SessionCallback SessionCallback = null;
 
@@ -118,7 +118,7 @@ public class ImplementProxy implements HttpCallBack {
     }
 
     @Override
-    public void onHttpRequestComplete(String tag, String fromUrl, String toUrl, long progress, long total,String result, int status){
+    public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status){
             switch ((int) progress) {
                 case DataID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
                 case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:

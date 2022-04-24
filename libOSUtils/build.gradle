@@ -37,6 +37,12 @@ android {
     defaultConfig {
         minSdkVersion 24
         targetSdkVersion 32
+        externalNativeBuild {
+            cmake {
+                cppFlags "-frtti -fexceptions"
+                abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+            }
+        }
     }
 
     buildTypes {
@@ -45,6 +51,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     externalNativeBuild {
         cmake {
             path 'CMakeLists.txt'

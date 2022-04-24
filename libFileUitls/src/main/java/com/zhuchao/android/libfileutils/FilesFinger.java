@@ -2,7 +2,7 @@ package com.zhuchao.android.libfileutils;
 
 import android.text.TextUtils;
 
-import com.zhuchao.android.callbackevent.NormalRequestCallback;
+import com.zhuchao.android.callbackevent.NormalCallback;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class FilesFinger extends ObjectList {
-    private NormalRequestCallback RequestCallBack = null;
+    private NormalCallback RequestCallBack = null;
     private int count = 0;
     private boolean stopScan = false;
     private int sleepTime = -1;
@@ -19,7 +19,7 @@ public class FilesFinger extends ObjectList {
     private long lStart = 0;
     private List<String> fileTypes = null;
 
-    public FilesFinger(NormalRequestCallback requestCallBack) {
+    public FilesFinger(NormalCallback requestCallBack) {
         super();
         count = 0;
         RequestCallBack = requestCallBack;
@@ -28,22 +28,22 @@ public class FilesFinger extends ObjectList {
         fileTypes = new ArrayList<String>();
     }
 
-    public void callBack(NormalRequestCallback requestCallBack) {
+    public void callBack(NormalCallback requestCallBack) {
         RequestCallBack = requestCallBack;
     }
 
     public void addFile(String filePathName) {
         File file = new File(filePathName);
         if (file.exists())
-            add(filePathName, file);
+            addItem(filePathName, file);
     }
 
     public void addFile(String fileKey, File file) {
-        add(fileKey, file);
+        addItem(fileKey, file);
     }
 
     public void addFile(File file) {
-        add(file.getAbsolutePath(), file);
+        addItem(file.getAbsolutePath(), file);
     }
 
     public File getFile(String fileKey) {
@@ -68,7 +68,7 @@ public class FilesFinger extends ObjectList {
     }
 
     public String getFileName(int Index) {
-        return getKey(Index);
+        return getName(Index);
     }
 
     public HashMap<String, Object> getAllFiles() {
@@ -132,7 +132,7 @@ public class FilesFinger extends ObjectList {
                     addFile(filePathName, file);
                     count++;
                     if (RequestCallBack != null) {
-                        RequestCallBack.onRequestComplete(filePathName, count);
+                        RequestCallBack.onEventRequest(filePathName, count);
                     }
                 }
             }
@@ -148,7 +148,7 @@ public class FilesFinger extends ObjectList {
             if (!TextUtils.isEmpty(tag))
                 getFiles(tag);
             if (RequestCallBack != null)
-                RequestCallBack.onRequestComplete("TimeElapsed:" + (System.currentTimeMillis() - lStart) + "ms-->" + tag, count);
+                RequestCallBack.onEventRequest("TimeElapsed:" + (System.currentTimeMillis() - lStart) + "ms-->" + tag, count);
             if (threadPool.indexOf(this) >= 0)
                 threadPool.remove(this);
         }

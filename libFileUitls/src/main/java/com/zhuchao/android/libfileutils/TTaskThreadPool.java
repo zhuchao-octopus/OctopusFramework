@@ -1,9 +1,7 @@
 package com.zhuchao.android.libfileutils;
 
 import static com.zhuchao.android.libfileutils.FileUtils.md5;
-
 import android.text.TextUtils;
-
 import com.zhuchao.android.utils.MMLog;
 
 public class TTaskThreadPool extends ObjectList {
@@ -23,6 +21,10 @@ public class TTaskThreadPool extends ObjectList {
 
     public PTask createTask(final String Name) {
         String tag = disguiseName(Name);
+        if (TextUtils.isEmpty(tag)) {
+            MMLog.log(TAG, "invalid PTask name/tag ,tag = " + tag);
+            return null;
+        }
         if (existObject(tag)) //存在 对象
         {
             MMLog.log(TAG, "PTask already exist,tag = " + tag + ",task count = " + getCount());
@@ -31,13 +33,8 @@ public class TTaskThreadPool extends ObjectList {
 
         PTask pTask = new PTask(tag, this);
         MMLog.log(TAG, "create PTask name = " + Name + " tag = " + tag);
-        //抛弃非法 TAG 对象
-        if (TextUtils.isEmpty(tag)) {
-            MMLog.log(TAG, "invalid PTask name/tag ,tag = " + tag);
-            pTask.settTag(null);
-            return pTask;
-        }
-        add(tag, pTask);
+
+        addItem(tag, pTask);
         MMLog.log(TAG, "create PTask successfully in pool,tag = " + tag + ",task count = " + getCount());
         return pTask;
     }
@@ -76,9 +73,8 @@ class PTask extends TTask {
 
         if (TTaskThreadPool.existObject(tTag))
         {
-
-            super.run();
-
+            MMLog.log(TAG, "start PTask...  tTag = " + tTag);
+            super.run(); //执行父类 TTask
             //最终结束任务，从任务池中清除掉
             TTaskThreadPool.delete(this.tTag);
             MMLog.log(TAG, "PTask successfully completed the task,remove from task pool tag = " + tTag);

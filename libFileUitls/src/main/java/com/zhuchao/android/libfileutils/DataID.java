@@ -15,6 +15,7 @@ public class DataID {
     public static final int SESSION_SOURCE_MOBILE_USB = 13;
     public static final int SESSION_SOURCE_EXTERNAL = 14;
     public static final int SESSION_SOURCE_PLAYLIST = 15;
+    public static final int SESSION_SOURCE_FAVORITELIST = 16;
 
     //获取分类的ID
     public static final int SESSION_TYPE_GET_MOVIE_CATEGORY = 20;//版面分类

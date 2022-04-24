@@ -6,8 +6,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.zhuchao.android.callbackevent.CallbackFunction;
-import com.zhuchao.android.callbackevent.HttpCallBack;
+import com.zhuchao.android.callbackevent.InvokeFunction;
+import com.zhuchao.android.callbackevent.HttpCallback;
 import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.libfileutils.FileUtils;
 import com.zhuchao.android.libfileutils.TTask;
@@ -26,15 +26,9 @@ public class TTaskManager {
     private Handler taskHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             TTask tTask = (TTask) (msg.obj);
-            if ((tTask != null) && tTask.getCallBackHandler() != null)
-            {
-                tTask.getCallBackHandler().onRequestHandler(//调用前端回调函数更新UI
-                        tTask.getProperties().getString("tag"),
-                        tTask.getProperties().getString("fromUrl"),
-                        tTask.getProperties().getString("toUrl"),
-                        tTask.getProperties().getLong("progress"),
-                        tTask.getProperties().getLong("total"),
-                        tTask.getProperties().getString("result"),
+            if ((tTask != null) && tTask.getCallBackHandler() != null) {
+                tTask.getCallBackHandler().onEventTask(//调用前端回调函数更新UI
+                        tTask,
                         tTask.getProperties().getInt("status")
                 );
             }
@@ -46,6 +40,10 @@ public class TTaskManager {
         tTaskThreadPool = new TTaskThreadPool(100);
     }
 
+    public int getTaskCount() {
+        return tTaskThreadPool.getCount();
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //request task
     public TTask requestPost(final String fromUrl, String bodyJson) {
@@ -55,12 +53,12 @@ public class TTaskManager {
         }
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         tTask.getProperties().putString("fromUrl", fromUrl);
-        tTask.call(new CallbackFunction() {
+        tTask.call(new InvokeFunction() {
             @Override
             public void call(String tag) {
-                HttpUtils.requestPost(tag, fromUrl, bodyJson, new HttpCallBack() {
+                HttpUtils.requestPost(tag, fromUrl, bodyJson, new HttpCallback() {
                     @Override
-                    public void onHttpRequestComplete(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
+                    public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
                         if (tTask.getCallBackHandler() != null) {
                             Message msg = taskHandler.obtainMessage();
                             msg.obj = tTask;
@@ -87,13 +85,13 @@ public class TTaskManager {
         }
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         tTask.getProperties().putString("fromUrl", fromUrl);
-        tTask.call(new CallbackFunction() {
+        tTask.call(new InvokeFunction() {
             @Override
             public void call(String tag) {
-                HttpUtils.request(tag, fromUrl, new HttpCallBack() {
+                HttpUtils.request(tag, fromUrl, new HttpCallback() {
 
                     @Override
-                    public void onHttpRequestComplete(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
+                    public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
                         if (tTask.getCallBackHandler() != null) {
                             Message msg = taskHandler.obtainMessage();
                             msg.obj = tTask;
@@ -132,7 +130,7 @@ public class TTaskManager {
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.getProperties().putString("toPath", toPath);
 
-        tTask.call(new CallbackFunction() {
+        tTask.call(new InvokeFunction() {
             @Override
             public void call(String tag) {
                 download(tag, fromUrl, toPath);
@@ -197,18 +195,33 @@ public class TTaskManager {
         MMLog.log(TAG, "download file from " + fromUrl);
         MMLog.log(TAG, "download file to " + downloadingPathFileName);
         try {
-            HttpUtils.download(tag, fromUrl, downloadingPathFileName, new HttpCallBack() {
+            HttpUtils.download(tag, fromUrl, downloadingPathFileName, new HttpCallback() {
 
                 @Override
-                public void onHttpRequestComplete(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
+                public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
                     String f1 = tTask.getProperties().getString("downloadingPathFileName");
                     String f2 = tTask.getProperties().getString("localPathFileName");
                     //if(TextUtils.isEmpty(f2))
                     //String f2 = toUrl.substring(0, toUrl.length() - D_EXT_NAME.length());
-                    switch (status)
-                    {
+                    switch (status) {
+                        case DataID.TASK_STATUS_ERROR:
+                            MMLog.log(TAG, "download file failed, from " + fromUrl);
+                            tTask.free();//下载完成，释放任务
+                            //break;
                         case DataID.TASK_STATUS_PROGRESSING:
-                            if (tTask.getCallBackHandler() != null) {
+                        case DataID.TASK_STATUS_SUCCESS:
+                            if ((progress == total) && (progress > 0) && (status == DataID.TASK_STATUS_SUCCESS))
+                            {
+                                MMLog.log(TAG, "download complete, from " + fromUrl + " total size = " + total);
+                                if (FileUtils.renameFile(f1, f2))
+                                    MMLog.log(TAG, "download save file complete, to " + f2);
+                                else
+                                    MMLog.log(TAG, "download save file failed, to " + f2);
+                                tTask.free();//下载完成，释放任务等待模式
+                            }
+
+                            if (tTask.getCallBackHandler() != null)
+                            {
                                 Message msg = taskHandler.obtainMessage();
                                 msg.obj = tTask;
                                 tTask.getProperties().putString("tag", tag);
@@ -220,32 +233,6 @@ public class TTaskManager {
                                 tTask.getProperties().putInt("status", status);
                                 taskHandler.sendMessage(msg);
                             }
-                            break;
-                        case DataID.TASK_STATUS_ERROR:
-                            MMLog.log(TAG, "download file failed, from " + fromUrl);
-                            tTask.free();//下载完成，释放任务
-                            break;
-                        case DataID.TASK_STATUS_SUCCESS:
-                            try
-                            {
-                                //Thread.sleep(1000);
-                                if ((progress == total) && (progress > 0))
-                                {
-                                    MMLog.log(TAG, "download complete, from " + fromUrl +" total size = "+total);
-                                    if (FileUtils.renameFile(f1, f2))
-                                        MMLog.log(TAG, "download save file complete, to " + f2);
-                                    else
-                                        MMLog.log(TAG, "download save file failed, to " + f2);
-                                }
-                                else
-                                {
-                                    MMLog.log(TAG, "download file failed, from " + fromUrl);
-                                }
-                            } catch (Exception e) {
-                                //e.printStackTrace();
-                                MMLog.log(TAG, "download renameFile failed, from " + e.toString());
-                            }
-                            tTask.free();//下载完成，释放任务
                             break;
                     }
                 }

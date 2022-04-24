@@ -1,6 +1,6 @@
 package com.zhuchao.android.netutil;
 
-import com.zhuchao.android.callbackevent.HttpCallBack;
+import com.zhuchao.android.callbackevent.HttpCallback;
 import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.libfileutils.FileUtils;
 import com.zhuchao.android.utils.MMLog;
@@ -47,7 +47,7 @@ public class HttpUtils {
     }
 
     //异步请求
-    public static void request(final String tag, final String fromUrl, final HttpCallBack RequestCallBack) {
+    public static void request(final String tag, final String fromUrl, final HttpCallback RequestCallBack) {
         HttpUtils.getInstance().getOkHttpClient().newCall(new Request.Builder().url(fromUrl).build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -75,7 +75,7 @@ public class HttpUtils {
         });
     }
 
-    public static void requestPost(final String tag, final String fromUrl, String bodyJson, final HttpCallBack RequestCallBack) {
+    public static void requestPost(final String tag, final String fromUrl, String bodyJson, final HttpCallback RequestCallBack) {
         //RequestBody body = new FormBody.Builder().build();
         MediaType mediaType = MediaType.parse("application/json;charset=utf-8");
         RequestBody requestBody = RequestBody.create(String.valueOf(bodyJson), mediaType);
@@ -106,7 +106,7 @@ public class HttpUtils {
         });
     }
 
-    public static void requestGet(final String tag, final String fromUrl, final HttpCallBack RequestCallBack) {
+    public static void requestGet(final String tag, final String fromUrl, final HttpCallback RequestCallBack) {
         HttpUtils.getInstance().getOkHttpClient().newCall(new Request.Builder().url(fromUrl).get().build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -135,7 +135,7 @@ public class HttpUtils {
     }
 
     //asynchronous 异步方法
-    public static void download(final String tag, final String fromUrl, final String toUrl, final HttpCallBack RequestCallBack) {
+    public static void download(final String tag, final String fromUrl, final String toUrl, final HttpCallback RequestCallBack) {
         HttpUtils.getInstance()
                 .getOkHttpClient()
                 .newCall(new Request.Builder()
@@ -195,7 +195,7 @@ public class HttpUtils {
                 });//{//asynchronous
     }
 
-    public static void asynchronousGet(final String tag, final String fromUrl, final int requestId, final HttpCallBack callBack) {
+    public static void asynchronousGet(final String tag, final String fromUrl, final int requestId, final HttpCallback callBack) {
         new Thread() {
             public void run() {
                 try {
@@ -209,7 +209,7 @@ public class HttpUtils {
         }.start();
     }
 
-    public static void asynchronousPost(final String tag, final String fromUrl, final String params, final HttpCallBack callBack) throws Exception {
+    public static void asynchronousPost(final String tag, final String fromUrl, final String params, final HttpCallback callBack) throws Exception {
         new Thread() {
             public void run() {
                 try {
@@ -223,10 +223,10 @@ public class HttpUtils {
         }.start();
     }
 
-    private static void ResultCallBack(String tag, String fromUrl, String lrl, long progress, long total, String result,int status,final HttpCallBack callBack)
+    private static void ResultCallBack(String tag, String fromUrl, String lrl, long progress, long total, String result,int status,final HttpCallback callBack)
     {
         if (callBack != null) {
-            callBack.onHttpRequestComplete(tag, fromUrl, lrl, progress, total,result,status);
+            callBack.onEventHttpRequest(tag, fromUrl, lrl, progress, total,result,status);
         }
     }
 

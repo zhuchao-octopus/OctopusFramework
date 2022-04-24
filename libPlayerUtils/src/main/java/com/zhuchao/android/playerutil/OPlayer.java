@@ -38,7 +38,7 @@ public class OPlayer extends PlayControl {
         @Override
         public void onEvent(MediaPlayer.Event event) {
             if (playerEventCallBack != null)
-                playerEventCallBack.OnEventCallBack(
+                playerEventCallBack.onEventPlayerStatus(
                         //event.type,
                         mMediaPlayer.getPlayerState(),
                         event.getTimeChanged(),

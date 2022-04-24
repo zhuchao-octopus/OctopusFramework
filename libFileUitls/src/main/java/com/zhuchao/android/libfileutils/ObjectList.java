@@ -1,7 +1,5 @@
 package com.zhuchao.android.libfileutils;
 
-import android.text.TextUtils;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -18,24 +16,20 @@ public class ObjectList {
         this.FHashMap = new HashMap();
     }
 
-    public Object build(String Name, Object obj) {
-        if (TextUtils.isEmpty(Name))
-            return null;
+    public Object buildItem(String Name, Object obj) {
         Object o = getObject(Name);
         if (o != null)
             return o;
-        add(Name, obj);
+        addItem(Name, obj);
         return obj;
     }
 
-    public void add(String Key, Object Obj) {
-        if (TextUtils.isEmpty(Key))
-            return;
-        FHashMap.put(Key, Obj);
+    public void addItem(String Name, Object Obj) {
+        FHashMap.put(Name, Obj);
     }
 
-    public void delete(String Key) {
-        FHashMap.remove(Key);
+    public void delete(String Name) {
+        FHashMap.remove(Name);
     }
 
     public void delete(Object Obj) {
@@ -52,8 +46,8 @@ public class ObjectList {
         FHashMap.clear();
     }
 
-    public Object getObject(String Key) {
-        return FHashMap.get(Key);
+    public Object getObject(String Name) {
+        return FHashMap.get(Name);
     }
 
     public Object getObject(int Index) {
@@ -63,11 +57,7 @@ public class ObjectList {
         return array[Index];
     }
 
-    public Object getValue(int Index) {
-        return getObject(Index);
-    }
-
-    public String getKey(int Index) {
+    public String getName(int Index) {
         if (Index < 0 || Index >= FHashMap.size()) return null;
         String[] array = (String[]) FHashMap.keySet().toArray();
         if (array == null) return null;
@@ -81,16 +71,16 @@ public class ObjectList {
         return randomValue;
     }
 
+    public boolean existObject(String Name) {
+        return FHashMap.containsKey(Name);
+    }
+
     public HashMap<String, Object> getAll() {
         return FHashMap;
     }
 
     public int getCount() {
         return FHashMap.size();
-    }
-
-    public boolean existObject(String key) {
-        return FHashMap.containsKey(key);
     }
 
     public void saveObject(String filePath) {

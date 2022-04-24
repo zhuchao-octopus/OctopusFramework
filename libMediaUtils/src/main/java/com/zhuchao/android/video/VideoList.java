@@ -16,7 +16,7 @@ package com.zhuchao.android.video;
 
 import android.text.TextUtils;
 
-import com.zhuchao.android.callbackevent.NormalRequestCallback;
+import com.zhuchao.android.callbackevent.NormalCallback;
 import com.zhuchao.android.libfileutils.FileUtils;
 import com.zhuchao.android.libfileutils.MediaFile;
 import com.zhuchao.android.libfileutils.DataID;
@@ -30,7 +30,7 @@ import java.util.Random;
 
 public class VideoList {
     private String TAG = "VideoList";
-    private NormalRequestCallback RequestCallBack = null;
+    private NormalCallback RequestCallBack = null;
     private OMedia firstItem = null;
     private OMedia lastItem = null;
     private boolean threadLock = false;
@@ -43,7 +43,7 @@ public class VideoList {
         }
     });*/
 
-    public VideoList(NormalRequestCallback requestCallBack) {
+    public VideoList(NormalCallback requestCallBack) {
         RequestCallBack = requestCallBack;
     }
 
@@ -83,7 +83,7 @@ public class VideoList {
         lastItem = oMedia;
         //MLog.log(TAG, "add1");
         if (RequestCallBack != null)
-            RequestCallBack.onRequestComplete(TAG, getCount());
+            RequestCallBack.onEventRequest(TAG, getCount());
     }
 
     public void add(String fileName) {
@@ -106,8 +106,8 @@ public class VideoList {
             oPre.setNext(oNext);
         if (oNext != null)
             oNext.setPre(oPre);
-        FHashMap.remove(oMedia);
-        MMLog.log(TAG, "delete");
+        FHashMap.remove(oMedia.md5());
+        //MMLog.log(TAG, "delete");
     }
 
     public void delete(String fileName) {
@@ -293,7 +293,7 @@ public class VideoList {
                     }
                     try {
                         if (RequestCallBack != null)
-                            RequestCallBack.onRequestComplete(TAG, fileType);
+                            RequestCallBack.onEventRequest(TAG, fileType);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

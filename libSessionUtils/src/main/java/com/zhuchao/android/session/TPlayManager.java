@@ -10,7 +10,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.SurfaceView;
 
-import com.zhuchao.android.callbackevent.NormalRequestCallback;
+import com.zhuchao.android.callbackevent.NormalCallback;
 import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.libfileutils.FileUtils;
@@ -22,7 +22,7 @@ import com.zhuchao.android.video.VideoList;
 
 import java.io.FileDescriptor;
 
-public class TPlayManager implements PlayerCallback, NormalRequestCallback {
+public class TPlayManager implements PlayerCallback, NormalCallback {
     private final String TAG = "PlayManager";
     private final int ACTION_DELAY = 500;
     private int MagicNum = 0;
@@ -31,7 +31,7 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
     private OMedia oMedia = null;
     private boolean oMediaLoading = false;
     private PlayerCallback callback = null;
-    private String playingListPath = null;
+    private String playingPath = null;
     private String downloadPath = null;
     private int playOrder = DataID.PLAY_MANAGER_PLAY_ORDER2;
     private int autoPlaySource = DataID.SESSION_SOURCE_NONE;
@@ -80,7 +80,7 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
         if (oMedia == null) {
             MMLog.log(TAG, "There is no media to play！！！");
             return;
-        } else if (!oMedia.isAvailable(playingListPath)) {
+        } else if (!oMedia.isAvailable(playingPath)) {
             MMLog.log(TAG, "The Source is not available! ---> " + oMedia.getMovie().getsUrl());
             return;
         }
@@ -248,8 +248,8 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
         return oMedia;
     }
 
-    public String getPlayingListPath() {
-        return playingListPath;
+    public String getPlayingPath() {
+        return playingPath;
     }
 
     public int getPlayOrder() {
@@ -268,9 +268,9 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
         return favoriteList;
     }
 
-    public synchronized void setPlayingListPath(String CachedPath) {
-        this.playingListPath = CachedPath;
-        playingList.loadFromDir(playingListPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
+    public synchronized void setPlayingPath(String CachedPath) {
+        this.playingPath = CachedPath;
+        playingList.loadFromDir(playingPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
     }
 
     public String getDownloadPath() {
@@ -282,6 +282,17 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
         this.favoriteList.loadFromDir(downloadPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
     }
 
+    public void updatePlayingList()
+    {
+        if (FileUtils.isExists(playingPath)) {
+            playingList.loadFromDir(playingPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
+        }
+        MMLog.log(TAG,"updatePlayingList() = " + playingPath);
+        if(FileUtils.isExists(downloadPath)) {
+            this.favoriteList.loadFromDir(downloadPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
+        }
+        MMLog.log(TAG,"updatePlayingList() = " + downloadPath);
+    }
     public void addSource(String Url) {
         Movie movie = new Movie(Url);
         String filename = FileUtils.getFileName(movie.getsUrl());
@@ -392,19 +403,22 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
 
     public synchronized void autoPlay() {
         //自动播放就是播放指定位置的第一个
+        if (isPlaying())
+            return;
         autoPlay(autoPlaySource);
     }
 
     public synchronized void autoPlay(int autoPlayType) {
         OMedia ooMedia = null;
         this.autoPlaySource = autoPlayType;
-        if (autoPlaySource < DataID.SESSION_SOURCE_ALL) return;
-        if (isPlaying())
-            return;
+        if (autoPlaySource == DataID.SESSION_SOURCE_NONE) return;
 
         switch (autoPlaySource) {
-            case DataID.SESSION_SOURCE_ALL:
             case DataID.SESSION_SOURCE_PLAYLIST:
+                ooMedia = playingList.getFirstItem();
+                break;
+            case DataID.SESSION_SOURCE_ALL:
+            case DataID.SESSION_SOURCE_FAVORITELIST:
                 if (favoriteList.getCount() > 0)
                     ooMedia = favoriteList.getFirstItem();//优先切换到第二收藏列表，优先播放收藏列表
                 else
@@ -422,7 +436,7 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
     }
 
     @Override
-    public void OnEventCallBack(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
+    public void onEventPlayerStatus(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
         if (this.callback != null) {
             //this.callback.OnEventCallBack(EventType, TimeChanged, LengthChanged, PositionChanged, OutCount, ChangedType, ChangedID, Buffering, Length);
             Message msg = playHandler.obtainMessage();
@@ -453,15 +467,22 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
     }
 
     @Override
-    public void onRequestComplete(String Result, int Index) {
+    public void onEventRequest(String Result, int Index) {
         //MLog.log(TAG, "onRequestComplete," + Result + "," + Index + ",autoPlaySource = " + autoPlaySource);
+        if (autoPlaySource == DataID.SESSION_SOURCE_FAVORITELIST) //立即跳转到收藏列表
+        {
+            if (favoriteList.getTAG().equals(Result)) {
+                if (!isPlaying() || !favoriteList.exist(oMedia)) {
+                    autoPlay(autoPlaySource);
+                }
+            }
+        }
     }
 
     private void playEventHandler(int playOrder) {
         switch (playOrder) {
             case DataID.PLAY_MANAGER_PLAY_ORDER0://播放第一个
-                if (!isPlaying())
-                    autoPlay(autoPlaySource);
+                autoPlay();
                 break;
             case DataID.PLAY_MANAGER_PLAY_ORDER1://强制播放第一个
                 autoPlay(autoPlaySource);
@@ -495,7 +516,7 @@ public class TPlayManager implements PlayerCallback, NormalRequestCallback {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            callback.OnEventCallBack(msg.what, msg.arg1, msg.arg1, msg.arg1, 0, 0, 0, 0, msg.arg2);
+            callback.onEventPlayerStatus(msg.what, msg.arg1, msg.arg1, msg.arg1, 0, 0, 0, 0, msg.arg2);
         }
     };
 

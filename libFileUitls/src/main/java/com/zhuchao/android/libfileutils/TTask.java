@@ -1,48 +1,47 @@
 package com.zhuchao.android.libfileutils;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 
-import com.zhuchao.android.callbackevent.CallbackFunction;
-import com.zhuchao.android.callbackevent.CallBackHandler;
+import com.zhuchao.android.callbackevent.InvokeFunction;
+import com.zhuchao.android.callbackevent.TaskCallback;
 import com.zhuchao.android.utils.MMLog;
 
 public class TTask extends Thread {
     private final String TAG = "TTask";
     protected String tTag = null;
-    protected CallbackFunction callbackFunction = null;
-    protected CallBackHandler callBackHandler = null;
+    protected InvokeFunction invokeFunction = null;
+    protected TaskCallback taskCallback = null;
     protected Bundle Properties = null;
     protected boolean isActive = false;
 
-    public TTask(String tag, CallbackFunction callbackFunction) {
+    public TTask(String tag, InvokeFunction invokeFunction) {
         this.tTag = tag;
-        this.callbackFunction = callbackFunction;
+        this.invokeFunction = invokeFunction;
         this.Properties = new Bundle();
     }
 
-    public TTask(String tag, CallbackFunction callbackFunction, CallBackHandler CallBackHandler) {
+    public TTask(String tag, InvokeFunction invokeFunction, TaskCallback TaskCallback) {
         this.tTag = tag;
-        this.callbackFunction = callbackFunction;
-        this.callBackHandler = CallBackHandler;
+        this.invokeFunction = invokeFunction;
+        this.taskCallback = TaskCallback;
         this.Properties = new Bundle();
     }
 
-    public TTask call(CallbackFunction callFunction) {
-        callbackFunction = callFunction;
+    public TTask call(InvokeFunction callFunction) {
+        invokeFunction = callFunction;
         return this;
     }
 
-    public TTask callbackHandler(CallBackHandler CallBackHandler) {
-        this.callBackHandler = CallBackHandler;
+    public TTask callbackHandler(TaskCallback TaskCallback) {
+        this.taskCallback = TaskCallback;
         return this;
     }
 
-    public CallBackHandler getCallBackHandler() {
-        return callBackHandler;
+    public TaskCallback getCallBackHandler() {
+        return taskCallback;
     }
 
-    public String gettTag() {
+    public String getTTag() {
         return tTag;
     }
 
@@ -50,7 +49,7 @@ public class TTask extends Thread {
         return this.getId();
     }
 
-    public void settTag(String tTag) {
+    public void setTTag(String tTag) {
         this.tTag = tTag;
     }
 
@@ -64,7 +63,7 @@ public class TTask extends Thread {
 
     @Override
     public synchronized void start() {
-        if(this.isAlive() || this.isActive) return;
+        if (this.isAlive() || this.isActive) return;
         isActive = true;
         super.start();
     }
@@ -72,30 +71,20 @@ public class TTask extends Thread {
     @Override
     public void run() {
         super.run();
-        if (callbackFunction == null) {
+        if (invokeFunction == null) {
             MMLog.log(TAG, "call TTask function null,nothing to do break TTask,tTag = " + tTag);
             free();
             return;
         }
 
-        if (TextUtils.isEmpty(this.tTag)) {
-            free();
-            MMLog.log(TAG, "invalid PTask name/tag finished,tag = " + tTag);
-            return;
-        }
-        try {
-            MMLog.log(TAG, "call TTask function tTag = " + tTag);
-            callbackFunction.call(this.tTag);//asynchronous
-        } catch (Exception e) {
-            MMLog.e(TAG,"run() "+ e.getMessage());
-        }
+        MMLog.log(TAG, "invoke TTask function tTag = " + tTag);
+        invokeFunction.call(this.tTag);//asynchronous
 
-        while (isActive)
-        {
+        while (isActive) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                MMLog.e(TAG,"run() "+ e.getMessage());
+                MMLog.e(TAG, "run() " + e.getMessage());
             }
         }
     }

@@ -164,7 +164,7 @@ public class AppsUtils {
                 AllAppInfors.add(appInfor);
 
                 if (mAppsCallback != null)
-                    mAppsCallback.OnAppsChanged(SCANING_ACTION, appInfor.toString());
+                    mAppsCallback.onAppsChanged(SCANING_ACTION, appInfor.toString());
 
             }
 
@@ -183,7 +183,7 @@ public class AppsUtils {
         }//for
         //&& size0 != AllAppInfors.size()
         if ((mAppsCallback != null)) {
-            mAppsCallback.OnAppsChanged(SCANING_COMPLETE_ACTION, null);
+            mAppsCallback.onAppsChanged(SCANING_COMPLETE_ACTION, null);
         }
 
         //int i = 0;

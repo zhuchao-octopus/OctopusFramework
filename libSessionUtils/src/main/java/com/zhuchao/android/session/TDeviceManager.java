@@ -1,7 +1,5 @@
 package com.zhuchao.android.session;
 
-import android.content.SharedPreferences;
-
 import com.zhuchao.android.libfileutils.ObjectList;
 import com.zhuchao.android.serialport.SerialPort;
 import com.zhuchao.android.serialport.SerialPortFinder;
@@ -10,12 +8,12 @@ import com.zhuchao.android.utils.MMLog;
 import java.io.IOException;
 
 public class TDeviceManager {
-    private static final String TAG = "TDeviceManager";
-    private static ObjectList deviceList = new ObjectList();
+    private final String TAG = "TDeviceManager";
+    private ObjectList deviceList = new ObjectList();
     //private static ObjectList deviceAll = new ObjectList();
-    public static SerialPortFinder serialPortFinder = new SerialPortFinder();
+    public SerialPortFinder serialPortFinder = new SerialPortFinder();
 
-    public static SerialPort getDevice(String devicePath, int baudrate)
+    public SerialPort getDevice(String devicePath, int baudrate)
     {
         SerialPort serialPort = (SerialPort)deviceList.getObject(devicePath);
         if(serialPort == null) {
@@ -25,7 +23,7 @@ public class TDeviceManager {
                            .stopBits(1) // 停止位，默认1；1:1位停止位；2:2位停止位
                            .parity(0) // 校验位；0:无校验位(NONE，默认)；1:奇校验位(ODD);2:偶校验位(EVEN)
                            .build();
-                deviceList.add(devicePath,serialPort);
+                deviceList.addItem(devicePath,serialPort);
             } catch (IOException e) {
                 //e.printStackTrace();
                 MMLog.e(TAG, "getSerialPort() returns null " + e.toString());
@@ -35,7 +33,7 @@ public class TDeviceManager {
         return serialPort;
     }
 
-    public static String[] getAllDevices()
+    public String[] getAllDevices()
     {
         String[] devices =  serialPortFinder.getAllDevicesPath();
         for(String str :devices)
@@ -43,7 +41,7 @@ public class TDeviceManager {
         return devices;
     }
 
-    public static void closeSerialPort(String devicePath)
+    public void closeSerialPort(String devicePath)
     {
         SerialPort serialPort = null;
         serialPort = (SerialPort)deviceList.getObject(devicePath);

@@ -634,7 +634,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         }
 
         if (playerEventCallBack != null)
-            playerEventCallBack.OnEventCallBack(
+            playerEventCallBack.onEventPlayerStatus(
                     playStatus,
                     lPosition,
                     lPosition,

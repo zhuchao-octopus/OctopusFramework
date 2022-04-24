@@ -430,7 +430,7 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     @Override
-    public void OnEventCallBack(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
+    public void onEventPlayerStatus(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
         switch (EventType) {
             //case PlaybackEvent.Status_NothingIdle:
             //    break;
@@ -449,7 +449,7 @@ public class OMedia implements Serializable, PlayerCallback {
                 break;
         }
         if (this.callback != null) {
-            callback.OnEventCallBack(EventType, TimeChanged, LengthChanged, PositionChanged, OutCount, ChangedType, ChangedID, Buffering
+            callback.onEventPlayerStatus(EventType, TimeChanged, LengthChanged, PositionChanged, OutCount, ChangedType, ChangedID, Buffering
                     , Length);
         }
     }
