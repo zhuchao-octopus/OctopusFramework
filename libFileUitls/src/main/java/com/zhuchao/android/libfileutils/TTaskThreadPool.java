@@ -1,7 +1,9 @@
 package com.zhuchao.android.libfileutils;
 
 import static com.zhuchao.android.libfileutils.FileUtils.md5;
+
 import android.text.TextUtils;
+
 import com.zhuchao.android.utils.MMLog;
 
 public class TTaskThreadPool extends ObjectList {
@@ -49,6 +51,10 @@ public class TTaskThreadPool extends ObjectList {
         return (TTask) getObject(tag);
     }
 
+    public void delTask(String tag) {
+        delete(tag);
+    }
+
     private String disguiseName(String Name) {
         return md5(Name);
     }
@@ -71,13 +77,13 @@ class PTask extends TTask {
             return;
         }
 
-        if (TTaskThreadPool.existObject(tTag))
-        {
+        if (TTaskThreadPool.existObject(tTag)) {
             MMLog.log(TAG, "start PTask...  tTag = " + tTag);
             super.run(); //执行父类 TTask
             //最终结束任务，从任务池中清除掉
             TTaskThreadPool.delete(this.tTag);
-            MMLog.log(TAG, "PTask successfully completed the task,remove from task pool tag = " + tTag);
+            MMLog.log(TAG, "PTask complete successfully,remove from task pool tag = " + tTag);
+            //MMLog.log(TAG, "PTask complete successfully ,tag = " + tTag);
         } else {
             MMLog.log(TAG, "not found PTask object in pool,break tag = " + tTag);
         }

@@ -5,7 +5,7 @@ ext {
     GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libPlayerUtils'
-    PUBLISH_VERSION = '2.3'
+    PUBLISH_VERSION = '2.4'
 }
 
 afterEvaluate {

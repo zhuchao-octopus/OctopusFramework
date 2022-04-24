@@ -54,7 +54,9 @@ public class DataID {
     public static final int TASK_STATUS_NONE = 300;
     public static final int TASK_STATUS_PROGRESSING = TASK_STATUS_NONE + 1;
     public static final int TASK_STATUS_SUCCESS = TASK_STATUS_PROGRESSING + 1;
-    public static final int TASK_STATUS_ERROR = TASK_STATUS_SUCCESS + 1;
+    public static final int TASK_STATUS_FINISHED = TASK_STATUS_SUCCESS + 1;
+    public static final int TASK_STATUS_ERROR = TASK_STATUS_FINISHED + 1;
+
     //登录的ID
 
     public static void setOplayerSessionRootUrl(String oplayerSessionRootUrl) {

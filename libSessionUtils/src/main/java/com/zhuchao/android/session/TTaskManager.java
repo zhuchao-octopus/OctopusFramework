@@ -44,6 +44,22 @@ public class TTaskManager {
         return tTaskThreadPool.getCount();
     }
 
+    public TTask getTaskByTag(String tag) {
+        return tTaskThreadPool.getTaskByTag(tag);
+    }
+
+    public TTask getTaskByName(String tag) {
+        return tTaskThreadPool.getTaskByName(tag);
+    }
+
+    public void delTask(TTask tTask)
+    {
+        tTask.free();
+        tTaskThreadPool.delTask(tTask.getTTag());
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //request task
     public TTask requestPost(final String fromUrl, String bodyJson) {
@@ -210,8 +226,7 @@ public class TTaskManager {
                             //break;
                         case DataID.TASK_STATUS_PROGRESSING:
                         case DataID.TASK_STATUS_SUCCESS:
-                            if ((progress == total) && (progress > 0) && (status == DataID.TASK_STATUS_SUCCESS))
-                            {
+                            if ((progress == total) && (progress > 0) && (status == DataID.TASK_STATUS_SUCCESS)) {
                                 MMLog.log(TAG, "download complete, from " + fromUrl + " total size = " + total);
                                 if (FileUtils.renameFile(f1, f2))
                                     MMLog.log(TAG, "download save file complete, to " + f2);
@@ -220,8 +235,7 @@ public class TTaskManager {
                                 tTask.free();//下载完成，释放任务等待模式
                             }
 
-                            if (tTask.getCallBackHandler() != null)
-                            {
+                            if (tTask.getCallBackHandler() != null) {
                                 Message msg = taskHandler.obtainMessage();
                                 msg.obj = tTask;
                                 tTask.getProperties().putString("tag", tag);
