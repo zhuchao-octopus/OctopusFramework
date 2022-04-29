@@ -1,29 +1,29 @@
 package com.zhuchao.android.video;
 
 
+import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.libfileutils.FileUtils.NotEmptyString;
+import static com.zhuchao.android.playerutil.PlayerManager.MPLAYER;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.view.SurfaceView;
 import android.view.TextureView;
+
+import com.zhuchao.android.callbackevent.PlaybackEvent;
+import com.zhuchao.android.callbackevent.PlayerCallback;
+import com.zhuchao.android.libfileutils.FileUtils;
+import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.libfileutils.MediaFile;
+import com.zhuchao.android.playerutil.PlayControl;
+import com.zhuchao.android.playerutil.PlayerManager;
+import com.zhuchao.android.storageutils.SPreference;
 
 import java.io.FileDescriptor;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
-
-import com.zhuchao.android.callbackevent.PlaybackEvent;
-import com.zhuchao.android.callbackevent.PlayerCallback;
-import com.zhuchao.android.databaseutil.SPreference;
-import com.zhuchao.android.libfileutils.FileUtils;
-import com.zhuchao.android.libfileutils.MediaFile;
-import com.zhuchao.android.playerutil.PlayControl;
-import com.zhuchao.android.playerutil.PlayerManager;
-import com.zhuchao.android.utils.MMLog;
-
-import static com.zhuchao.android.playerutil.PlayerManager.MPLAYER;
 
 
 
@@ -130,6 +130,12 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     private OMedia play(String url) {
+        getOPlayer();
+        if (!isPlayerReady())
+        {
+            MMLog.log(TAG, "oMedia play failed no player found, check your context");
+            return null;
+        }
         getOPlayer().setSource(url);
         getOPlayer().play();
         return this;
@@ -474,7 +480,7 @@ public class OMedia implements Serializable, PlayerCallback {
     public void save() {
         if (movie == null) return;
         if (context == null) return;
-        if (TextUtils.isEmpty(movie.getsUrl())) return;
+        if(EmptyString(movie.getsUrl())) return;
         String md5 = FileUtils.md5(movie.getsUrl());
         //SPreference.saveSharedPreferences(mContext, md5, "name", mMovie.getMovieName());
         //SPreference.saveSharedPreferences(mContext, md5, "url", mMovie.getSourceUrl());
@@ -484,7 +490,7 @@ public class OMedia implements Serializable, PlayerCallback {
     public void load() {
         if (movie == null) return;
         if (context == null) return;
-        if (TextUtils.isEmpty(movie.getsUrl())) return;
+        if(EmptyString(movie.getsUrl())) return;
         String md5 = FileUtils.md5(movie.getsUrl());
         playTime = SPreference.getLong(context, md5, "playTime");
     }
@@ -495,7 +501,7 @@ public class OMedia implements Serializable, PlayerCallback {
             bf = true;
         else if (FileUtils.isExists(movie.getsUrl()))
             bf = MediaFile.isMediaFile(movie.getsUrl());
-        else if (!TextUtils.isEmpty(cachePath) && FileUtils.isExists(cachePath + "/" + movie.getName()))
+        else if (NotEmptyString(cachePath) && FileUtils.isExists(cachePath + "/" + movie.getName()))
             bf = MediaFile.isMediaFile(cachePath + "/" + movie.getName());
         return bf;
     }

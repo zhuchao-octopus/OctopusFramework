@@ -1,9 +1,12 @@
 package com.zhuchao.android.netutil;
 
+import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
+
 import com.zhuchao.android.callbackevent.HttpCallback;
 import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.libfileutils.FileUtils;
-import com.zhuchao.android.utils.MMLog;
+import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.libfileutils.ObjectList;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -14,10 +17,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -45,14 +50,29 @@ public class HttpUtils {
     public OkHttpClient getOkHttpClient() {
         return okHttpClient;
     }
-
-    //异步请求
-    public static void request(final String tag, final String fromUrl, final HttpCallback RequestCallBack) {
-        HttpUtils.getInstance().getOkHttpClient().newCall(new Request.Builder().url(fromUrl).build()).enqueue(new Callback() {
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void requestPost(final String tag, final String fromUrl, ObjectList requestParams, final HttpCallback RequestCallBack) {
+        //RequestBody requestBody = new FormBody.Builder().build();
+        FormBody.Builder formBody = new FormBody.Builder();
+        Iterator<Map.Entry<String, Object>> it = requestParams.getAll().entrySet().iterator();
+        while (it.hasNext())
+        {
+            Map.Entry<String, Object> entry = it.next();
+            formBody.add(entry.getKey(),entry.getValue().toString());
+        }
+        RequestBody requestBody = formBody.build();
+        Request request = new Request.Builder()
+                .url(fromUrl)
+                .post(requestBody)
+                .build();
+        HttpUtils.getInstance().getOkHttpClient().newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                MMLog.log(TAG, "request onFailure from " + fromUrl);
-                //MMLog.log(TAG, e.toString());
+            public void onFailure(Call call, IOException e)
+            {
+                //MMLog.log(TAG, "request onFailure from " + fromUrl);
+                //MMLog.e(TAG, e.toString());
                 ResultCallBack(tag,fromUrl,"",0,0,e.toString(),DataID.TASK_STATUS_ERROR,RequestCallBack);
             }
 
@@ -68,38 +88,7 @@ public class HttpUtils {
                         ResultCallBack(tag,fromUrl,"",0,0,"",DataID.TASK_STATUS_ERROR,RequestCallBack);
                     }
                 } catch (IOException e) {
-                    MMLog.e(TAG, "request().onResponse " + e.getMessage());
-                    ResultCallBack(tag,fromUrl,"",0,0,e.toString(),DataID.TASK_STATUS_ERROR,RequestCallBack);
-                }
-            }
-        });
-    }
-
-    public static void requestPost(final String tag, final String fromUrl, String bodyJson, final HttpCallback RequestCallBack) {
-        //RequestBody body = new FormBody.Builder().build();
-        MediaType mediaType = MediaType.parse("application/json;charset=utf-8");
-        RequestBody requestBody = RequestBody.create(String.valueOf(bodyJson), mediaType);
-        HttpUtils.getInstance().getOkHttpClient().newCall(new Request.Builder().url(fromUrl).post(requestBody).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                MMLog.log(TAG, "request onFailure from " + fromUrl);
-                //MMLog.log(TAG, e.toString());
-                ResultCallBack(tag,fromUrl,"",0,0,e.toString(),DataID.TASK_STATUS_ERROR,RequestCallBack);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String result = null;
-                try {
-                    if (response != null && response.isSuccessful()) {
-                        result = response.body().string();
-                        ResultCallBack(tag,fromUrl,"",0,0,result,DataID.TASK_STATUS_SUCCESS,RequestCallBack);
-                    } else {
-                        MMLog.log(TAG, "Request failed from " + fromUrl);
-                        ResultCallBack(tag,fromUrl,"",0,0,"",DataID.TASK_STATUS_ERROR,RequestCallBack);
-                    }
-                } catch (IOException e) {
-                    MMLog.e(TAG, "request().onResponse " + e.getMessage());
+                    //MMLog.e(TAG, "request().onResponse " + e.getMessage());
                     ResultCallBack(tag,fromUrl,"",0,0,e.toString(),DataID.TASK_STATUS_ERROR,RequestCallBack);
                 }
             }
@@ -107,12 +96,17 @@ public class HttpUtils {
     }
 
     public static void requestGet(final String tag, final String fromUrl, final HttpCallback RequestCallBack) {
+       if(EmptyString(fromUrl))
+        {
+            //MMLog.log(TAG, "Expected URL scheme 'http' or 'https' but no scheme was found  fromUrl " + fromUrl);
+            ResultCallBack(tag,fromUrl,"",0,0,"fromUrl = null",DataID.TASK_STATUS_ERROR,RequestCallBack);
+            return;
+        }
         HttpUtils.getInstance().getOkHttpClient().newCall(new Request.Builder().url(fromUrl).get().build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                MMLog.log(TAG, "request onFailure from " + fromUrl);
-                //MMLog.log(TAG, e.toString());
-                ResultCallBack(tag,fromUrl,"",0,0,e.toString(),DataID.TASK_STATUS_ERROR,RequestCallBack);
+                //MMLog.e(TAG, e.toString());
+                ResultCallBack(tag,fromUrl,"",0,0,"fromUrl = "+fromUrl+","+e.toString(),DataID.TASK_STATUS_ERROR,RequestCallBack);
             }
 
             @Override
@@ -123,12 +117,12 @@ public class HttpUtils {
                         result = response.body().string();
                         ResultCallBack(tag,fromUrl,"",0,0,result,DataID.TASK_STATUS_SUCCESS,RequestCallBack);
                     } else {
-                        MMLog.log(TAG, "Request failed from " + fromUrl);
+                        //MMLog.log(TAG, "Request failed from " + fromUrl);
                         ResultCallBack(tag,fromUrl,"",0,0,"",DataID.TASK_STATUS_ERROR,RequestCallBack);
                     }
                 } catch (IOException e) {
-                    MMLog.e(TAG, "request().onResponse " + e.getMessage());
-                    ResultCallBack(tag,fromUrl,"",0,0,e.toString(),DataID.TASK_STATUS_ERROR,RequestCallBack);
+                    //MMLog.e(TAG, "request().onResponse " + e.getMessage());
+                    ResultCallBack(tag,fromUrl,"",0,0,"fromUrl = "+fromUrl+","+e.toString(),DataID.TASK_STATUS_ERROR,RequestCallBack);
                 }
             }
         });
@@ -145,8 +139,8 @@ public class HttpUtils {
                 .enqueue(new Callback() {//asynchronous
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        MMLog.log(TAG, "download onFailure from " + fromUrl);
-                        //MMLog.log(TAG, e.toString());
+                        //MMLog.e(TAG, e.toString());
+                        //MMLog.log(TAG, "download onFailure from " + fromUrl);
                         ResultCallBack(tag,fromUrl,toUrl,0,0,e.toString(),DataID.TASK_STATUS_ERROR,RequestCallBack);
                     }
 
@@ -184,11 +178,11 @@ public class HttpUtils {
                                 inputStream.close();
                                 ResultCallBack(tag,fromUrl,toUrl,downloadLengthSum,contentLength,"SUCCESS",DataID.TASK_STATUS_SUCCESS,RequestCallBack);
                             } else {
-                                MMLog.log(TAG, "download failed from " + fromUrl);
+                                //MMLog.log(TAG, "download failed from " + fromUrl);
                                 ResultCallBack(tag,fromUrl,toUrl,0,0,"",DataID.TASK_STATUS_ERROR,RequestCallBack);
                             }
                         } catch (Exception e) {
-                            MMLog.e(TAG, "download().onResponse " + e.getMessage());
+                            //.e(TAG, "download() response " + e.getMessage());
                             ResultCallBack(tag,fromUrl,toUrl,0,0,e.toString(),DataID.TASK_STATUS_ERROR,RequestCallBack);
                         }
                     }

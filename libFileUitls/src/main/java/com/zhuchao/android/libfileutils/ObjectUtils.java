@@ -8,13 +8,6 @@ import java.io.ObjectOutputStream;
 
 public class ObjectUtils {
 
-
-
-    /**
-     * 文件转化为Object
-     * @param fis
-     * @return byte[]
-     */
     public static Object file2Object(FileInputStream fis) {
 
         //FileInputStream fis = null;

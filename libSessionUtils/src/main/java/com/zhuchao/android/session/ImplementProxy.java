@@ -9,10 +9,10 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.zhuchao.android.callbackevent.HttpCallback;
 import com.zhuchao.android.libfileutils.DataID;
+import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.netutil.HttpUtils;
 import com.zhuchao.android.session.PaserBean.IdNameBean;
 import com.zhuchao.android.session.PaserBean.MovieListBean;
-import com.zhuchao.android.utils.MMLog;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -22,13 +22,13 @@ import java.util.Map;
 
 public class ImplementProxy implements HttpCallback {
     public final String TAG = "ImplementProxy";
-    private com.zhuchao.android.session.SessionCallback SessionCallback = null;
+    private com.zhuchao.android.callbackevent.SessionCallback SessionCallback = null;
 
     private Map<Integer, String> mVideoCategory = null;// = new HashMap<Integer, String>();
     private Map<Integer, String> mVideoType = null;// = new HashMap<Integer, String>();
     private MovieListBean mMovieListBean = null;
 
-    public ImplementProxy(com.zhuchao.android.session.SessionCallback sessionCallback) {
+    public ImplementProxy(com.zhuchao.android.callbackevent.SessionCallback sessionCallback) {
         SessionCallback = sessionCallback;
     }
 
@@ -44,17 +44,6 @@ public class ImplementProxy implements HttpCallback {
         return mMovieListBean;
     }
 
-    public Map<Integer, String> JsonToMap(String JsonStr) {
-        Gson gson = new GsonBuilder().serializeNulls().disableHtmlEscaping().create();
-        try {
-            return gson.fromJson(JsonStr, new TypeToken<Map<Integer, String>>() {
-            }.getType());
-        } catch (JsonSyntaxException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public Map<Integer, String> jsonIdNameArrayToMap(String jsonStr) {
         JsonParser parser = new JsonParser();
         JsonArray jsonArray = parser.parse(jsonStr).getAsJsonArray();
@@ -67,6 +56,17 @@ public class ImplementProxy implements HttpCallback {
                 map.put(idNameBean.getId(), idNameBean.getName());
         }
         return map;
+    }
+
+    public Map<Integer, String> JsonToMap(String JsonStr) {
+        Gson gson = new GsonBuilder().serializeNulls().disableHtmlEscaping().create();
+        try {
+            return gson.fromJson(JsonStr, new TypeToken<Map<Integer, String>>() {
+            }.getType());
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String MapToJson(Map<Integer, String> map) {

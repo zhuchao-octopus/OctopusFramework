@@ -1,5 +1,8 @@
 package com.zhuchao.android.session;
 
+import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.libfileutils.FileUtils.NotEmptyString;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -7,15 +10,14 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.text.TextUtils;
 import android.view.SurfaceView;
 
 import com.zhuchao.android.callbackevent.NormalCallback;
 import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
-import com.zhuchao.android.libfileutils.FileUtils;
 import com.zhuchao.android.libfileutils.DataID;
-import com.zhuchao.android.utils.MMLog;
+import com.zhuchao.android.libfileutils.FileUtils;
+import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.video.Movie;
 import com.zhuchao.android.video.OMedia;
 import com.zhuchao.android.video.VideoList;
@@ -69,28 +71,28 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     public synchronized void startPlay(OMedia oMedia) {
         if (oMediaLoading) {
-            MMLog.log(TAG, "oMedia is loading ！！！！！！ status = " + getPlayerStatus());
+            MMLog.log(TAG, "oMedia is loading! status = " + getPlayerStatus());
             return;
         }
         if (surfaceView == null) {
-            MMLog.log(TAG, "no surfaceView ！！！！！！");
+            MMLog.log(TAG, "surfaceView  is not ready! return");
             return;
         }
 
         if (oMedia == null) {
-            MMLog.log(TAG, "There is no media to play！！！");
+            MMLog.log(TAG, "There is no media to play!");
             return;
         } else if (!oMedia.isAvailable(playingPath)) {
-            MMLog.log(TAG, "The Source is not available! ---> " + oMedia.getMovie().getsUrl());
+            MMLog.log(TAG, "The oMedia is not available! ---> " + oMedia.getMovie().getsUrl());
             return;
         }
 
-        MMLog.log(TAG, "StartPlay --> " + oMedia.getMovie().getsUrl());
+        MMLog.log(TAG, "StartPlay--> " + oMedia.getMovie().getsUrl());
         this.oMediaLoading = true;
         this.oMedia = oMedia;
         this.oMedia.setMagicNum(MagicNum);
         this.oMedia.with(context);
-        this.oMedia.setNormalRate();
+        //this.oMedia.setNormalRate();
         this.oMedia.callback(this);
         this.oMedia.onView(surfaceView);//set surface view
         this.oMedia.playCache(downloadPath);//set source
@@ -194,7 +196,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     public synchronized void playNext() {
         OMedia oo = getNextAvailable();//获取下一个有效的资源
         if (oo != null) {
-            MMLog.log(TAG, "Go Next = " + oo.getPathName());
+            MMLog.log(TAG, "Go to next = " + oo.getPathName());
             startPlay(oo);
         } else {
             MMLog.log(TAG, "Next = null,go to auto play");
@@ -277,9 +279,13 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         return downloadPath;
     }
 
-    public synchronized void setDownloadPath(String downloadPath) {
-        this.downloadPath = downloadPath;
-        this.favoriteList.loadFromDir(downloadPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
+    public synchronized void setDownloadPath(String downloadDirectory) {
+        this.downloadPath = FileUtils.getDownloadDir(downloadDirectory);//播放目录和，下载缓存目录不一样;
+        if(EmptyString(downloadPath)) {
+            MMLog.log(TAG, "get getDownloadDir() failed downloadPath = " + this.downloadPath);
+            return;
+        }
+        this.favoriteList.loadFromDir(this.downloadPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
     }
 
     public void updatePlayingList()
@@ -295,9 +301,9 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     }
     public void addSource(String Url) {
         Movie movie = new Movie(Url);
-        String filename = FileUtils.getFileName(movie.getsUrl());
-        if (!TextUtils.isEmpty(filename))
-            movie.setName(filename);
+        String fileName = FileUtils.getFileName(movie.getsUrl());
+        if(NotEmptyString(fileName))
+            movie.setName(fileName);
         playingList.add(new OMedia(movie));
     }
 
@@ -369,7 +375,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     private OMedia getNextAvailable() {
         OMedia ooMedia = null;
-        MMLog.log(TAG, "available Count = " + playingList.getCount() + " | " + favoriteList.getCount());
+        MMLog.log(TAG, "getNextAvailable() Count = " + playingList.getCount() + " | " + favoriteList.getCount());
         if (favoriteList.exist(oMedia))
             ooMedia = favoriteList.getNextAvailable(oMedia);
         else
@@ -386,7 +392,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     private OMedia getPreAvailable() {
         OMedia ooMedia = null;
-        MMLog.log(TAG, "available Count = " + playingList.getCount() + " | " + favoriteList.getCount());
+        MMLog.log(TAG, "getPreAvailable() Count = " + playingList.getCount() + " | " + favoriteList.getCount());
         if (favoriteList.exist(oMedia))
             ooMedia = favoriteList.getPreAvailable(oMedia);
         else

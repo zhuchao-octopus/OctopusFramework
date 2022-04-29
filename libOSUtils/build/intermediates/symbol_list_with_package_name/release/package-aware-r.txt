@@ -1,2 +1,0 @@
-com.zhuchao.android.serialport
-string app_name

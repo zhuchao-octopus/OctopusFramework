@@ -1,5 +1,7 @@
 package com.zhuchao.android.playerutil;
 
+import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
+
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
@@ -7,7 +9,7 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 
 import com.zhuchao.android.callbackevent.PlayerCallback;
-import com.zhuchao.android.utils.MMLog;
+import com.zhuchao.android.libfileutils.MMLog;
 
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
@@ -22,7 +24,7 @@ import java.util.Map;
 //import org.videolan.libvlc.MediaPlayCallback;
 
 public class OPlayer extends PlayControl {
-    private String TAG = "OPlayer>>>";
+    private String TAG = "OPlayer>>>>";
     private MediaPlayer mMediaPlayer = null;
     private Media media = null;
     private LibVLC FLibVLC = null;
@@ -97,7 +99,7 @@ public class OPlayer extends PlayControl {
             media.release();
             media = null;
         }
-        if (filePath.isEmpty()) return;
+        if(EmptyString(filePath))return;
         if (filePath.startsWith("http") || filePath.startsWith("ftp") || filePath.startsWith("file")) {
             Uri uri = Uri.parse(filePath);
             setSource(uri);

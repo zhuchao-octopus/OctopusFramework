@@ -1,54 +1,81 @@
 package com.zhuchao.android.session;
 
-import com.zhuchao.android.libfileutils.ObjectList;
-import com.zhuchao.android.serialport.SerialPort;
-import com.zhuchao.android.serialport.SerialPortFinder;
-import com.zhuchao.android.utils.MMLog;
+import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.libfileutils.FileUtils.NotEmptyString;
 
-import java.io.IOException;
+import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.libfileutils.ObjectList;
+import com.zhuchao.android.serialport.SerialPortFinder;
+import com.zhuchao.android.serialport.TUartFile;
 
 public class TDeviceManager {
     private final String TAG = "TDeviceManager";
-    private ObjectList deviceList = new ObjectList();
-    //private static ObjectList deviceAll = new ObjectList();
-    public SerialPortFinder serialPortFinder = new SerialPortFinder();
+    private ObjectList deviceList = null;
+    private SerialPortFinder uartFinder = null;
 
-    public SerialPort getDevice(String devicePath, int baudrate)
-    {
-        SerialPort serialPort = (SerialPort)deviceList.getObject(devicePath);
-        if(serialPort == null) {
-            try {
-                serialPort = SerialPort.newBuilder(devicePath, baudrate) // 串口地址地址，波特率
-                           .dataBits(8) // 数据位,默认8；可选值为5~8
-                           .stopBits(1) // 停止位，默认1；1:1位停止位；2:2位停止位
-                           .parity(0) // 校验位；0:无校验位(NONE，默认)；1:奇校验位(ODD);2:偶校验位(EVEN)
-                           .build();
-                deviceList.addItem(devicePath,serialPort);
-            } catch (IOException e) {
-                //e.printStackTrace();
-                MMLog.e(TAG, "getSerialPort() returns null " + e.toString());
-                serialPort = null;
-            }
-        }
-        return serialPort;
+    public TDeviceManager() {
+        this.deviceList = new ObjectList();;
+        this.uartFinder = new SerialPortFinder();
     }
 
-    public String[] getAllDevices()
+    public synchronized TUartFile getDevice(String devicePath, int baudrate) {
+        TUartFile tUartFile = (TUartFile) deviceList.getObject(devicePath);
+        if (tUartFile == null) {
+            tUartFile = new TUartFile(devicePath, baudrate);
+            if (tUartFile != null)
+                deviceList.addItem(devicePath, tUartFile);
+            else
+                MMLog.log(TAG,"open device failed "+ devicePath);
+        }
+        return tUartFile;
+    }
+
+    public synchronized TUartFile getDevice(String devicePath) {
+        TUartFile tUartFile = null;
+        if(deviceList.getCount()>0 && NotEmptyString(devicePath))
+            tUartFile= (TUartFile) deviceList.getObject(devicePath);
+        return tUartFile;
+    }
+
+    public TUartFile startUart(String devicePath, int baudrate)
     {
-        String[] devices =  serialPortFinder.getAllDevicesPath();
-        for(String str :devices)
-            MMLog.log(TAG,str);
+        if(EmptyString(devicePath) || baudrate <= 0)
+        {
+            MMLog.log(TAG,"invalid device information parameter "+ devicePath);
+            return null;
+        }
+        TUartFile tUartFile = getDevice(devicePath,baudrate);
+        if(tUartFile != null) {
+            tUartFile.startPoolingRead();
+        }
+        else
+            MMLog.log(TAG,"get device failed "+ devicePath);
+        return tUartFile;
+    }
+    public String[] getAllDevices() {
+        String[] devices = uartFinder.getAllDevicesPath();
         return devices;
     }
 
-    public void closeSerialPort(String devicePath)
-    {
-        SerialPort serialPort = null;
-        serialPort = (SerialPort)deviceList.getObject(devicePath);
-        if(serialPort != null)
-        {
-            deviceList.delete(serialPort);
-            serialPort.close();
+    public void printAllDevice() {
+        String[] devices = uartFinder.getAllDevicesPath();
+        for (String str : devices)
+            MMLog.log(TAG, str);
+    }
+
+    public void close(String devicePath) {
+        TUartFile tUartFile = (TUartFile) deviceList.getObject(devicePath);
+        if (tUartFile != null) {
+            deviceList.delete(tUartFile);
+            tUartFile.closeDevice();
         }
+    }
+
+    public void closeAllUartFile()
+    {
+      for(Object obj:deviceList.getAllObject())
+      {
+          ((TUartFile)obj).closeDevice();
+      }
     }
 }

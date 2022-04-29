@@ -6,10 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
 public class ObjectList {
+    private final String TAG = "ObjectList";
     private HashMap<String, Object> FHashMap;
 
     public ObjectList() {
@@ -71,6 +73,130 @@ public class ObjectList {
         return randomValue;
     }
 
+    public void putString(String key, String value) {
+        FHashMap.put(key, value);
+    }
+
+    public void putLong(String key, Long value) {
+        FHashMap.put(key, value);
+    }
+
+    public void putInt(String key, int value) {
+        FHashMap.put(key, value);
+    }
+
+    public void putFloat(String key, float value) {
+        FHashMap.put(key, value);
+    }
+
+    public void putBoolean(String key, boolean value) {
+        FHashMap.put(key, value);
+    }
+
+    public void putObject(String key, Object value) {
+        FHashMap.put(key, value);
+    }
+
+    public String getString(String key) {
+        Object o = FHashMap.get(key);
+        if (o == null) return null;
+        try {
+            return (String) o;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public String getString(String key,String defaultValue) {
+        Object o = FHashMap.get(key);
+        if (o == null) return defaultValue;
+        try {
+            return (String) o;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    public int getInt(String key) {
+        Object o = FHashMap.get(key);
+        if (o == null) return 0;
+        try {
+            return (int) o;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    public int getInt(String key, int defaultValue) {
+        Object o = FHashMap.get(key);
+        if (o == null) return defaultValue;
+        try {
+            return (int) o;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    public Long getLong(String key) {
+        Object o = FHashMap.get(key);
+        if (o == null) return 0L;
+        try {
+            return (Long) o;
+        } catch (Exception e) {
+            return 0L;
+        }
+    }
+
+    public Long getLong(String key, Long defaultValue) {
+        Object o = FHashMap.get(key);
+        if (o == null) return defaultValue;
+        try {
+            return (Long) o;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    public Float getFloat(String key) {
+        Object o = FHashMap.get(key);
+        if (o == null) return 0.00f;
+        try {
+            return (Float) o;
+        } catch (Exception e) {
+            return 0.00f;
+        }
+    }
+
+    public Float getLong(String key, Float defaultValue) {
+        Object o = FHashMap.get(key);
+        if (o == null) return defaultValue;
+        try {
+            return (Float) o;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    public boolean getBoolean(String key) {
+        Object o = FHashMap.get(key);
+        if (o == null) return false;
+        try {
+            return (boolean) o;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean getBoolean(String key, boolean defaultValue) {
+        Object o = FHashMap.get(key);
+        if (o == null) return defaultValue;
+        try {
+            return (boolean) o;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
     public boolean existObject(String Name) {
         return FHashMap.containsKey(Name);
     }
@@ -79,9 +205,20 @@ public class ObjectList {
         return FHashMap;
     }
 
+    public Collection<Object> getAllObject() {
+        return FHashMap.values();
+    }
+
     public int getCount() {
         return FHashMap.size();
     }
+
+    public void printAll() {
+        for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
+            MMLog.log(TAG, m.getKey() + ":" + m.getValue().toString());
+        }
+    }
+
 
     public void saveObject(String filePath) {
         FileOutputStream outStream = null;

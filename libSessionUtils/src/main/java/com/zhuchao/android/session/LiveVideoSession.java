@@ -1,15 +1,17 @@
 package com.zhuchao.android.session;
 
-import android.content.Context;
-import android.text.TextUtils;
+import static com.zhuchao.android.libfileutils.FileUtils.NotEmptyString;
 
-import com.zhuchao.android.libfileutils.FileUtils;
-import com.zhuchao.android.libfileutils.MediaFile;
+import android.content.Context;
+
+import com.zhuchao.android.callbackevent.SessionCallback;
 import com.zhuchao.android.libfileutils.DataID;
+import com.zhuchao.android.libfileutils.FileUtils;
+import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.libfileutils.MediaFile;
 import com.zhuchao.android.libfileutils.bean.LMusic;
 import com.zhuchao.android.libfileutils.bean.LVideo;
 import com.zhuchao.android.session.PaserBean.MovieListBean;
-import com.zhuchao.android.utils.MMLog;
 import com.zhuchao.android.video.Movie;
 import com.zhuchao.android.video.OMedia;
 import com.zhuchao.android.video.VideoList;
@@ -203,9 +205,9 @@ public class LiveVideoSession implements SessionCallback {
             List<LVideo> lVideos = FileUtils.getVideos(context);
             for (LVideo lVideo : lVideos) {
                 Movie movie = new Movie(lVideo.getPath());
-                String filename = getFileName(movie.getsUrl());
-                if (!TextUtils.isEmpty(filename))
-                    movie.setName(filename);
+                String fileName = getFileName(movie.getsUrl());
+                if(NotEmptyString(fileName))
+                    movie.setName(fileName);
                 OMedia oMedia = new OMedia(movie);
                 videoList.add(oMedia);
             }
@@ -213,9 +215,9 @@ public class LiveVideoSession implements SessionCallback {
             List<LMusic> lMusics = FileUtils.getMusics(context);
             for (LMusic lmusic : lMusics) {
                 Movie movie = new Movie(lmusic.getPath());
-                String filename = getFileName(movie.getsUrl());
-                if (!TextUtils.isEmpty(filename))
-                    movie.setName(filename);
+                String fileName = getFileName(movie.getsUrl());
+                if(NotEmptyString(fileName))
+                    movie.setName(fileName);
                 OMedia oMedia = new OMedia(movie);
                 videoList.add(oMedia);
             }
@@ -225,9 +227,9 @@ public class LiveVideoSession implements SessionCallback {
             List<String> imgList = FileUtils.getLocalImageList();
             for (String img : imgList) {
                 Movie movie = new Movie(img);
-                String filename = getFileName(movie.getsUrl());
-                if (!TextUtils.isEmpty(filename))
-                    movie.setName(filename);
+                String fileName = getFileName(movie.getsUrl());
+                if(NotEmptyString(fileName))
+                    movie.setName(fileName);
                 OMedia oMedia = new OMedia(movie);
                 videoList.add(oMedia);
             }
@@ -238,9 +240,9 @@ public class LiveVideoSession implements SessionCallback {
         List<String> FileList = MediaFile.getMediaFiles(FilePath, fType);
         for (int i = 0; i < FileList.size(); i++) {
             Movie movie = new Movie(FileList.get(i));
-            String filename = getFileName(movie.getsUrl());
-            if (!TextUtils.isEmpty(filename))
-                movie.setName(filename);
+            String fileName = getFileName(movie.getsUrl());
+            if(NotEmptyString(fileName))
+                movie.setName(fileName);
             OMedia oMedia = new OMedia(movie);
             videoList.add(oMedia);
         }
@@ -257,9 +259,9 @@ public class LiveVideoSession implements SessionCallback {
         if (!f) {
             for (int i = 0; i < FileList.size(); i++) {
                 Movie movie = new Movie(FileList.get(i));
-                String filename = getFileName(movie.getsUrl());
-                if (!TextUtils.isEmpty(filename))
-                    movie.setName(filename);
+                String fileName = getFileName(movie.getsUrl());
+                if(NotEmptyString(fileName))
+                    movie.setName(fileName);
                 OMedia oMedia = new OMedia(movie);
                 videoList.add(oMedia);
             }
@@ -281,8 +283,8 @@ public class LiveVideoSession implements SessionCallback {
     }
 
     @Override
-    public synchronized void OnSessionComplete(int sessionId, String result) {
-        switch (sessionId) {
+    public synchronized void OnSessionComplete(int sID, String result) {
+        switch (sID) {
             case DataID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
             case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
             case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
@@ -306,7 +308,7 @@ public class LiveVideoSession implements SessionCallback {
         }
 
         if (userSessionCallback != null)
-            userSessionCallback.OnSessionComplete(sessionId, result);
+            userSessionCallback.OnSessionComplete(sID, result);
     }
 
 }

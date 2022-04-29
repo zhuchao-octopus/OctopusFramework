@@ -25,7 +25,6 @@ import com.zhuchao.android.libfileutils.bean.FileBean;
 import com.zhuchao.android.libfileutils.bean.ImgFolderBean;
 import com.zhuchao.android.libfileutils.bean.LMusic;
 import com.zhuchao.android.libfileutils.bean.LVideo;
-import com.zhuchao.android.utils.MMLog;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -56,13 +55,22 @@ import java.util.List;
 import java.util.Map;
 
 public class FileUtils {
-    private final static String TAG = "FilesManager";
+    private final static String TAG = "FileUtils";
     public static final int TYPE_DOC = 0;
     public static final int TYPE_APK = 1;
     public static final int TYPE_ZIP = 2;
 
+    public static boolean EmptyString(String str) {
+        return TextUtils.isEmpty(str);
+    }
+
+    public static boolean NotEmptyString(String str) {
+        return !TextUtils.isEmpty(str);
+    }
+
     public static boolean isExists(String filePath) {
-        if (TextUtils.isEmpty(filePath)) return false;
+        if (EmptyString(filePath)) return false;
+
         if (filePath.startsWith("http:") ||
                 filePath.startsWith("https:") ||
                 filePath.startsWith("ftp:") ||
@@ -79,6 +87,16 @@ public class FileUtils {
         }
     }
 
+    public static boolean existDirectory(String filePath) {
+        if (EmptyString(filePath)) return false;
+        File file = new File(filePath);
+        if (file.exists() && file.isDirectory())
+            return true;
+        else
+            return false;
+    }
+
+    //无法获得不存在资源的文件名
     public static String getFileName(String filePath) {
         String fileName = filePath;
         if (filePath.startsWith("http:") ||
@@ -86,7 +104,7 @@ public class FileUtils {
                 filePath.startsWith("ftp:") ||
                 filePath.startsWith("rtp:") ||
                 filePath.startsWith("rtsp:") ||
-                filePath.startsWith("mms:")) {
+                filePath.startsWith("mms:")) {//url的文件名
             int lastSlash = filePath.lastIndexOf('/');
             if (lastSlash >= 0) {
                 lastSlash++;
@@ -97,7 +115,8 @@ public class FileUtils {
                     }
                 }
             }
-        } else {
+        } else//本地文件名
+        {
             File file = new File(filePath);
             if (file.exists()) {
                 if (file.isFile())
@@ -107,6 +126,18 @@ public class FileUtils {
             }
         }
         return null;
+    }
+
+    //存在文件的判断
+    public static int checkFilePath(String filePath) {
+        if (EmptyString(filePath)) return 0;
+        File file = new File(filePath);
+        if (file.isFile())
+            return 1;
+        else if (file.isDirectory())
+            return 2;
+        else
+            return 0;
     }
 
     public static long getFileSize(String fileName) {
@@ -152,22 +183,18 @@ public class FileUtils {
         try {
             File fromFile = new File(fromFilePathName);
             File newFile = new File(newFilePathName);
-            if (!fromFile.exists())
-            {
-                MMLog.log(TAG,"fromFile not exist "+fromFile);
+            if (!fromFile.exists()) {
+                MMLog.log(TAG, "fromFile not exist " + fromFile);
                 return false;
             }
-            if (!newFile.exists())
-            {  //  确保新的文件名不存在
+            if (!newFile.exists()) {  //  确保新的文件名不存在
                 bRet = fromFile.renameTo(newFile);
-            }
-            else
-            {
-                MMLog.log(TAG,"file already exist "+newFilePathName);
+            } else {
+                MMLog.log(TAG, "file already exist " + newFilePathName);
             }
         } catch (Exception e) {
             //e.printStackTrace();
-            MMLog.log(TAG,"renameFile failed to "+newFilePathName);
+            MMLog.log(TAG, "renameFile failed to " + newFilePathName);
         }
         return bRet;
     }
@@ -231,7 +258,7 @@ public class FileUtils {
             FileChannel fileChannel_t = (FileChannel.open(tf, EnumSet.of(StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)));
             l = fileChannel_t.transferFrom(fileChannel_f, 0L, fileChannel_f.size());
         } catch (IOException ex) {
-            System.err.println(ex);
+            //System.err.println(ex);
         }
         return l;
     }
@@ -299,17 +326,16 @@ public class FileUtils {
      * @param filename
      * @return
      */
-    public static String getExtFromFileFullName(String filename) {
-        int dotPosition = filename.lastIndexOf('.');
+    public static String getExtFromFileFullName(String fileName) {
+        int dotPosition = fileName.lastIndexOf('.');
         if (dotPosition != -1) {
-            return filename.substring(dotPosition + 1);
+            return fileName.substring(dotPosition + 1);
         }
         return "";
     }
 
-    public static String getFileNameFromFileFullName(String filename) {
-        File file = new File(filename);
-
+    public static String getFileNameFromFileFullName(String fileName) {
+        File file = new File(fileName);
         if (file.exists()) {
             return file.getName();
         }
@@ -438,7 +464,6 @@ public class FileUtils {
                 int duration = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));// 时长
                 int time = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));// 歌曲的id
                 // int albumId = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
-
                 LMusic music = new LMusic(name, path, album, artist, size, duration);
                 musics.add(music);
             }
@@ -627,16 +652,33 @@ public class FileUtils {
         }
     }
 
+    //获取目录，没有就创建
     public static String getDownloadDir(String downloadDir) {
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyDownload/";
-        if (!TextUtils.isEmpty(downloadDir)) {
-            path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + downloadDir + "/";
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/";
+        if (existDirectory(downloadDir))
+            return downloadDir;
+        if (NotEmptyString(downloadDir))
+            path = downloadDir;
+        if (existDirectory(path)) {
+            return path;
         }
-        File file = new File(path);
-        if (!file.exists()) {
-            file.mkdirs();
+        File file = null;
+        try {
+            file = new File(path);
+            if (file.exists() && file.isFile()) {
+                return null;//是一个已经存在的文件，返回
+            } else {
+                file.mkdirs();//创建目录
+                //MMLog.log(TAG,"make dir = " + path);
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            MMLog.e(TAG, e.toString());
         }
-        return path;
+        if (file != null)
+            return file.getAbsolutePath();
+        else
+            return null;
     }
 
     public static List<String> ReadTxtFile(String filePath) {

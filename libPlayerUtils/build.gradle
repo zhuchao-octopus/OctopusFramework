@@ -45,8 +45,8 @@ android {
 
 dependencies {
     //implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(path: ':libOSUtils')
-    implementation project(path: ':libFileUitls')
     implementation project(path: ':libDecodeCore')
     implementation project(path: ':libCallbackEvent')
+    implementation project(path: ':libFileUitls')
+    implementation project(path: ':libGosUtils')
 }

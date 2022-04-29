@@ -14,11 +14,10 @@
 
 package com.zhuchao.android.video;
 
-import android.content.Context;
-import android.text.TextUtils;
-import android.widget.ImageView;
+import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
 
-//import com.bumptech.glide.Glide;
+import android.content.Context;
+import android.widget.ImageView;
 
 import java.io.Serializable;
 
@@ -47,7 +46,7 @@ import java.io.Serializable;
 
     public Movie(final String sourceUrl) {
         this.sUrl = sourceUrl;
-        if(TextUtils.isEmpty(this.sUrl)) return;
+        if(EmptyString(sUrl)) return;
         this.mName =  this.sUrl.substring(this.sUrl.lastIndexOf("/") + 1);
     }
 

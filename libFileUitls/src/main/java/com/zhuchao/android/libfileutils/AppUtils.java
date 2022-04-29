@@ -1,13 +1,13 @@
 package com.zhuchao.android.libfileutils;
 
+import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
+
 import android.app.ActivityManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
-
-import com.zhuchao.android.utils.MMLog;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class AppUtils {
                 MMLog.log(TAG,"getForegroundActivityName topClassName="+topClassName);
             }
         }
-        if(TextUtils.isEmpty(topClassName))
+        if(EmptyString(topClassName))
         {
             List<ActivityManager.RunningAppProcessInfo> appProcessInfoList = activityManager.getRunningAppProcesses();
             for (ActivityManager.RunningAppProcessInfo processInfo : appProcessInfoList)

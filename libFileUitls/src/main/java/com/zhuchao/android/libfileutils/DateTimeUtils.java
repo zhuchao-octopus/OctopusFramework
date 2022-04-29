@@ -7,8 +7,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.provider.Settings;
 
-import com.zhuchao.android.utils.MMLog;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

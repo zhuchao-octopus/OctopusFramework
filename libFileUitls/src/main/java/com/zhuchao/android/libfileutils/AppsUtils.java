@@ -1,5 +1,7 @@
 package com.zhuchao.android.libfileutils;
 
+import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,13 +13,11 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.text.TextUtils;
 
 import androidx.core.content.FileProvider;
 
 import com.zhuchao.android.callbackevent.AppsCallback;
 import com.zhuchao.android.libfileutils.bean.AppInfor;
-import com.zhuchao.android.utils.MMLog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -199,7 +199,7 @@ public class AppsUtils {
     }
 
     public boolean isTheAppExist(String packageName) {
-        if (TextUtils.isEmpty(packageName))
+        if(EmptyString(packageName))
             return false;
         try {
             ApplicationInfo info = mContext.getPackageManager().getApplicationInfo(packageName, 0);
@@ -291,11 +291,9 @@ public class AppsUtils {
     }
 
     public boolean startTheApp(AppInfor infor) {
-
-        if (TextUtils.isEmpty(infor.getPackageName())) {
+        if (EmptyString(infor.getPackageName())) {
             return false;
         }
-
         Intent intent = mPackageManager.getLaunchIntentForPackage(infor.getPackageName());
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -309,7 +307,7 @@ public class AppsUtils {
     }
 
     public boolean startTheApp(String packageName) {
-        if (TextUtils.isEmpty(packageName)) {
+        if (EmptyString(packageName)) {
             return false;
         }
         Intent intent = mPackageManager.getLaunchIntentForPackage(packageName);
@@ -348,9 +346,8 @@ public class AppsUtils {
     }
 
     public boolean startTheAppByName(String name) {
-        if (TextUtils.isEmpty(name)) {
+        if(EmptyString(name))
             return false;
-        }
         AppInfor Info = getAppInforByName(name);
         String packageName = Info.getPackageName();
         Intent intent = mPackageManager.getLaunchIntentForPackage(packageName);

@@ -1,34 +1,31 @@
 package com.zhuchao.android.libfileutils;
 
-import android.os.Bundle;
-
-import com.zhuchao.android.callbackevent.InvokeFunction;
+import com.zhuchao.android.callbackevent.InvokeInterface;
 import com.zhuchao.android.callbackevent.TaskCallback;
-import com.zhuchao.android.utils.MMLog;
 
 public class TTask extends Thread {
     private final String TAG = "TTask";
     protected String tTag = null;
-    protected InvokeFunction invokeFunction = null;
+    protected InvokeInterface invokeInterface = null;
     protected TaskCallback taskCallback = null;
-    protected Bundle Properties = null;
-    protected boolean isActive = false;
+    protected ObjectList properties = null;
+    protected boolean isKeeping = false;
 
-    public TTask(String tag, InvokeFunction invokeFunction) {
+    public TTask(String tag, InvokeInterface invokeInterface) {
         this.tTag = tag;
-        this.invokeFunction = invokeFunction;
-        this.Properties = new Bundle();
+        this.invokeInterface = invokeInterface;
+        this.properties = new ObjectList();
     }
 
-    public TTask(String tag, InvokeFunction invokeFunction, TaskCallback TaskCallback) {
+    public TTask(String tag, InvokeInterface invokeInterface, TaskCallback TaskCallback) {
         this.tTag = tag;
-        this.invokeFunction = invokeFunction;
+        this.invokeInterface = invokeInterface;
         this.taskCallback = TaskCallback;
-        this.Properties = new Bundle();
+        this.properties = new ObjectList();
     }
 
-    public TTask call(InvokeFunction callFunction) {
-        invokeFunction = callFunction;
+    public TTask invoke(InvokeInterface callFunction) {
+        invokeInterface = callFunction;
         return this;
     }
 
@@ -53,34 +50,59 @@ public class TTask extends Thread {
         this.tTag = tTag;
     }
 
-    public Bundle getProperties() {
-        return Properties;
+    public ObjectList getProperties() {
+        return properties;
+    }
+
+    public boolean isKeeping() {
+        return isKeeping;
     }
 
     public void free() {
-        isActive = false;
+        isKeeping = false;
+    }
+
+    public void freeFree() {
+        properties.clear();
+        isKeeping = false;
+        invokeInterface = null;
     }
 
     @Override
     public synchronized void start() {
-        if (this.isAlive() || this.isActive) return;
-        isActive = true;
-        super.start();
+        if (this.isAlive() || this.isKeeping) {
+            MMLog.log(TAG, "TTask already been started  isActive = " + isKeeping);
+            return;
+        }
+       if(properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED)
+       {
+           MMLog.log(TAG, "TTask already finished, no need to run again!");
+           return;
+       }
+        try {
+            isKeeping = true;
+            super.start();
+        } catch (Exception e) {
+            // e.printStackTrace();
+            isKeeping = false;
+            MMLog.log(TAG, "TTask start failed " + e.toString());
+        }
     }
 
     @Override
     public void run() {
         super.run();
-        if (invokeFunction == null) {
+        if (invokeInterface == null) {
             MMLog.log(TAG, "call TTask function null,nothing to do break TTask,tTag = " + tTag);
             free();
             return;
         }
 
-        MMLog.log(TAG, "invoke TTask function tTag = " + tTag);
-        invokeFunction.call(this.tTag);//asynchronous
-
-        while (isActive) {
+        if(invokeInterface != null) {//召唤。。。
+            MMLog.log(TAG, "invoke TTask demon tTag = " + tTag);
+            invokeInterface.doAction(this.tTag);//asynchronous
+        }
+        while (isKeeping) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

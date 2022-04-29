@@ -11,10 +11,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.zhuchao.android.libfileutils.FileUtils;
+import com.zhuchao.android.callbackevent.SessionCallback;
 import com.zhuchao.android.libfileutils.DataID;
-import com.zhuchao.android.netutil.NetUtils;
-import com.zhuchao.android.utils.MMLog;
+import com.zhuchao.android.libfileutils.FileUtils;
+import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.netutil.TNetUtils;
 import com.zhuchao.android.video.OMedia;
 
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class TSourceManager implements SessionCallback {
             public void run() {
                 try {
                     while (true) {
-                        if (NetUtils.isInternetOk()) {
+                        if (TNetUtils.isInternetOk()) {
                             updateCategorySession(); //  初始化线程
                             break;
                         }
@@ -308,13 +309,13 @@ public class TSourceManager implements SessionCallback {
     }
 
     @Override
-    public void OnSessionComplete(int sessionId, String result) {
+    public void OnSessionComplete(int sID, String result) {
         Message msg = Message.obtain();
-        switch (sessionId) {
+        switch (sID) {
             case DataID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
             case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
             case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
-                msg.what = sessionId;//返回的是分类下面的内容，内容实体已经在相应会话中被处理
+                msg.what = sID;//返回的是分类下面的内容，内容实体已经在相应会话中被处理
                 myHandler.sendMessage(msg);
                 break;
             case DataID.SESSION_TYPE_GET_MOVIELIST_VID:
@@ -331,7 +332,7 @@ public class TSourceManager implements SessionCallback {
                     if (categorySession.getVideoCategoryNameList().size() > 0) {
                         initInternetCategorySessions(); //根据类别信息初始化会话对象数组
                         initStage = 2;//初始化分类信息完成
-                        msg.what = sessionId;
+                        msg.what = sID;
                         myHandler.sendMessage(msg);//通知初始化分类信息完成，下一部初始化分类下面的内容
                         return;
                     }

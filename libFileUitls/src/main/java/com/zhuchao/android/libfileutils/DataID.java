@@ -1,6 +1,9 @@
 package com.zhuchao.android.libfileutils;
 
 
+import java.util.Iterator;
+import java.util.Map;
+
 public class DataID {
     public static final int DB_VERSION = 1;
     //public static final String DB_DIRECTORY = CommonValues.application.getFilesDir().getPath();
@@ -52,16 +55,43 @@ public class DataID {
     public static final int PLAY_MANAGER_PLAY_ORDER6 = PLAY_MANAGER_PLAY_ORDER5 + 1;
 
     public static final int TASK_STATUS_NONE = 300;
-    public static final int TASK_STATUS_PROGRESSING = TASK_STATUS_NONE + 1;
+    public static final int TASK_STATUS_START = TASK_STATUS_NONE + 1;
+    public static final int TASK_STATUS_PROGRESSING = TASK_STATUS_START + 1;
     public static final int TASK_STATUS_SUCCESS = TASK_STATUS_PROGRESSING + 1;
-    public static final int TASK_STATUS_FINISHED = TASK_STATUS_SUCCESS + 1;
-    public static final int TASK_STATUS_ERROR = TASK_STATUS_FINISHED + 1;
+    public static final int TASK_STATUS_FINISHED = TASK_STATUS_SUCCESS + 1; //内部使用
+    public static final int TASK_STATUS_ALL_FINISHED = TASK_STATUS_FINISHED + 1;
+    public static final int TASK_STATUS_ERROR = TASK_STATUS_ALL_FINISHED + 1;
 
-    //登录的ID
 
-    public static void setOplayerSessionRootUrl(String oplayerSessionRootUrl) {
-        if (oplayerSessionRootUrl != null)
-            OPLAYER_SESSION_ROOT_URL = oplayerSessionRootUrl;
+    public static final int DEVICE_TYPE = 400;
+    public static final int DEVICE_TYPE_FILE = DEVICE_TYPE + 1;
+    public static final int DEVICE_TYPE_UART = DEVICE_TYPE_FILE + 1;
+
+
+    public static final int DEVICE_EVENT = 500;
+    public static final int DEVICE_EVENT_OPEN = DEVICE_EVENT + 1;
+    public static final int DEVICE_EVENT_READ = DEVICE_EVENT_OPEN + 1;
+    public static final int DEVICE_EVENT_WRITE = DEVICE_EVENT_READ + 1;
+    public static final int DEVICE_EVENT_CLOSE = DEVICE_EVENT_WRITE + 1;
+    public static final int DEVICE_EVENT_ERROR = DEVICE_EVENT_CLOSE + 1;
+
+    public static final String TASK_STATUS_INTERNAL_ = "_status_";
+
+    public static String getRequestUrl(String fromUrl, ObjectList requestParams) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(fromUrl);
+        try {
+            Iterator<Map.Entry<String, Object>> it = requestParams.getAll().entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String, Object> entry = it.next();
+                builder.append(entry.getKey() + "=" + entry.getValue().toString() + "&");
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+        if (builder == null)
+            return "Sorry i am can not ";
+        return builder.toString();
     }
 
     public static String getActionUrl(int sessionId, String categoryName, int pageIndexOrVid) {

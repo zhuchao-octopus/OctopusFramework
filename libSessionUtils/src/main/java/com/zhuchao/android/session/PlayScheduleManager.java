@@ -6,8 +6,9 @@ import android.os.Environment;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.zhuchao.android.libfileutils.FileUtils;
+import com.zhuchao.android.callbackevent.SessionCallback;
 import com.zhuchao.android.libfileutils.DataID;
+import com.zhuchao.android.libfileutils.FileUtils;
 import com.zhuchao.android.session.PaserBean.ScheduleVideoBean;
 import com.zhuchao.android.session.PaserBean.ScheduleVideoRootBean;
 import com.zhuchao.android.video.ScheduleMedia;
@@ -68,9 +69,9 @@ public class PlayScheduleManager implements SessionCallback {
         }
     }
     @Override
-    public void OnSessionComplete(int sessionId, String result) {
+    public void OnSessionComplete(int sID, String result) {
         int Count=0;
-        if (sessionId == DataID.TASK_STATUS_SUCCESS)
+        if (sID == DataID.TASK_STATUS_SUCCESS)
         {
             ScheduleVideoRootBean scheduleVideoRootBean = null;
             try {
@@ -103,7 +104,7 @@ public class PlayScheduleManager implements SessionCallback {
                 }
 
                 if (userSessionCallback != null)
-                    userSessionCallback.OnSessionComplete(sessionId, result);
+                    userSessionCallback.OnSessionComplete(sID, result);
 
             } catch (JsonSyntaxException e) {
                 e.printStackTrace();

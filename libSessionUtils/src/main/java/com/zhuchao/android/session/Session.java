@@ -2,9 +2,6 @@ package com.zhuchao.android.session;
 
 import java.io.Serializable;
 
-
-//{"sourceId":"1000","vedioID":"7895"，"list":[]}
-
 class Session implements Serializable {
 
     protected int SId;
@@ -21,7 +18,7 @@ class Session implements Serializable {
         this.SId = SId;
     }
 
-    protected void doStart()
+    protected void doAction()
     {
 
     }

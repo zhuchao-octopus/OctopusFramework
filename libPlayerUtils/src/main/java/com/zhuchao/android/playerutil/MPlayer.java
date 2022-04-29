@@ -13,7 +13,7 @@ import android.view.TextureView;
 
 import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
-import com.zhuchao.android.utils.MMLog;
+import com.zhuchao.android.libfileutils.MMLog;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         MediaPlayer.OnVideoSizeChangedListener,
         SurfaceHolder.Callback {
 
-    private final String TAG = "MPlayer>>>";
+    private final String TAG = "MPlayer>>>>";
     private MediaPlayer mediaPlayer = null;
     private ProgressThread progressThread = null;
     private static int playStatus = PlaybackEvent.Status_NothingIdle;
@@ -46,7 +46,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void setSource(String filePath) {
         try {
-            resetComponent(false);
+            ResetComponent(false);
             playStatus = PlaybackEvent.Status_Opening;
             CallbackProgress(0);
             mediaPlayer.setDataSource(filePath);
@@ -65,7 +65,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void setSource(Uri uri) {
         try {
-            resetComponent(false);
+            ResetComponent(false);
             playStatus = PlaybackEvent.Status_Opening;
             CallbackProgress(0);
             mediaPlayer.setDataSource(mContext, uri);
@@ -84,7 +84,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void setSource(AssetFileDescriptor afd) {
         try {
-            resetComponent(false);
+            ResetComponent(false);
             playStatus = PlaybackEvent.Status_Opening;
             CallbackProgress(0);
             mediaPlayer.setDataSource(afd);
@@ -103,7 +103,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void setSource(FileDescriptor fd) {
         try {
-            resetComponent(false);
+            ResetComponent(false);
             playStatus = PlaybackEvent.Status_Opening;
             CallbackProgress(0);
             mediaPlayer.setDataSource(fd);
@@ -140,8 +140,8 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         if (surfaceView == mSurfaceView) return;
         free();
         setSurfaceView(surfaceView);
-        resetComponent(false);
-        MMLog.log(TAG, "re attached surface view successful");
+        ResetComponent(false);
+        MMLog.log(TAG, "surfaceView reattached successful");
     }
 
     @Override
@@ -307,7 +307,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void setRate(float v) {
         try {
-            if ((mediaPlayer != null) && (mediaPlayer.isPlaying()))
+            if ((mediaPlayer != null) )//&& (mediaPlayer.isPlaying())
                 mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(v));
         } catch (Exception e) {
             MMLog.e(TAG, "setRate() " + e.toString() + " v = " + v);
@@ -515,8 +515,8 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         playStatus = PlaybackEvent.Status_NothingIdle;
     }
 
-    public synchronized void resetComponent(boolean nf) {
-        MMLog.d(TAG, "resetComponent() nf = " + nf);
+    private synchronized void ResetComponent(boolean nf) {
+        MMLog.d(TAG, "ResetComponent nf = " + nf);
         if (nf) free();
 
         try {
@@ -524,7 +524,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                 mediaPlayer = new MediaPlayer();
             mediaPlayer.reset();//必须调用mediaPlayer.prepareAsync();
         } catch (Exception e) {
-            MMLog.e(TAG, "resetComponent() create failed " + e.toString());
+            MMLog.e(TAG, "ResetComponent create failed " + e.toString());
             mediaPlayer = null;
             playStatus = PlaybackEvent.Status_Error;
             return;
@@ -535,11 +535,11 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                 mSurfaceView.getHolder().addCallback(this);
                 if (mSurfaceView.getHolder() != null) {
                     mediaPlayer.setDisplay(mSurfaceView.getHolder());
-                } else MMLog.log(TAG, "resetComponent().mSurfaceView.getHolder() = null");
-            } else MMLog.log(TAG, "resetComponent().mSurfaceView = null");
+                } else MMLog.log(TAG, "ResetComponent.mSurfaceView.getHolder() = null");
+            } else MMLog.log(TAG, "ResetComponent.mSurfaceView = null");
 
         } catch (Exception e) {
-            MMLog.e(TAG, "resetComponent() mSurfaceView " + e.toString());
+            MMLog.e(TAG, "ResetComponent mSurfaceView " + e.toString());
             //这里可能报异常，setSource后要重新 setSurfaceView
             //setSurfaceView 异常，依然可以播放，此处异常不重要
         }

@@ -1,6 +1,7 @@
 package com.zhuchao.android.libfileutils;
 
-import android.text.TextUtils;
+import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.libfileutils.FileUtils.NotEmptyString;
 
 import com.zhuchao.android.callbackevent.NormalCallback;
 
@@ -80,7 +81,8 @@ public class FilesFinger extends ObjectList {
     }
 
     private boolean fileTypesMatch(String fileName) {
-        if (TextUtils.isEmpty(fileName)) return false;
+        if (EmptyString(fileName)) return false;
+
         if (fileTypes.size() <= 0) return true;
         for (String ext : fileTypes) {
             if (ext.equals(".*")) return true;
@@ -145,7 +147,7 @@ public class FilesFinger extends ObjectList {
         @Override
         public void run() {
             super.run();
-            if (!TextUtils.isEmpty(tag))
+            if(NotEmptyString(tag))
                 getFiles(tag);
             if (RequestCallBack != null)
                 RequestCallBack.onEventRequest("TimeElapsed:" + (System.currentTimeMillis() - lStart) + "ms-->" + tag, count);

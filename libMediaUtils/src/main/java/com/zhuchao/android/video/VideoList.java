@@ -14,13 +14,13 @@
 
 package com.zhuchao.android.video;
 
-import android.text.TextUtils;
+import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
 
 import com.zhuchao.android.callbackevent.NormalCallback;
-import com.zhuchao.android.libfileutils.FileUtils;
-import com.zhuchao.android.libfileutils.MediaFile;
 import com.zhuchao.android.libfileutils.DataID;
-import com.zhuchao.android.utils.MMLog;
+import com.zhuchao.android.libfileutils.FileUtils;
+import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.libfileutils.MediaFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public class VideoList {
     }
 
     public void add(String fileName) {
-        if (TextUtils.isEmpty(fileName)) return;
+        if(EmptyString(fileName)) return;
         OMedia oMedia = new OMedia(fileName);
         add(oMedia);
     }
@@ -106,8 +106,13 @@ public class VideoList {
             oPre.setNext(oNext);
         if (oNext != null)
             oNext.setPre(oPre);
+
+        if(oMedia.equals(firstItem))
+            firstItem = oNext;
+        else if(oMedia.equals(lastItem))
+            lastItem = oPre;
+
         FHashMap.remove(oMedia.md5());
-        //MMLog.log(TAG, "delete");
     }
 
     public void delete(String fileName) {
