@@ -100,7 +100,7 @@ public class TTask extends Thread {
 
         if(invokeInterface != null) {//召唤。。。
             MMLog.log(TAG, "invoke TTask demon tTag = " + tTag);
-            invokeInterface.doAction(this.tTag);//asynchronous
+            invokeInterface.CALLTODO(this.tTag);//asynchronous
         }
         while (isKeeping) {
             try {

@@ -45,6 +45,6 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':libFileUitls')
+    api project(path: ':libFileUitls')
 }
 

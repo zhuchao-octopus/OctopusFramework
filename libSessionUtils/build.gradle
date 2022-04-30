@@ -44,10 +44,10 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':libCallbackEvent')
-    implementation project(path: ':libFileUitls')
-    implementation project(path: ':libGosUtils')
-    implementation project(path: ':libNetUtils')
-    implementation project(path: ':libMediaUtils')
-    implementation 'com.google.code.gson:gson:2.8.8'
+    api project(path: ':libCallbackEvent')
+    api project(path: ':libFileUitls')
+    api project(path: ':libGosUtils')
+    api project(path: ':libNetUtils')
+    api project(path: ':libMediaUtils')
+    api 'com.google.code.gson:gson:2.8.8'
 }

@@ -95,7 +95,7 @@ public class TTaskManager {
         TTask tTask = tTaskThreadPool.createTask(tag);
         tTask.invoke(new InvokeInterface() {
             @Override
-            public void doAction(String tag) {
+            public void CALLTODO(String tag) {
                 long lStartTick = System.currentTimeMillis();
                 int lCounter = 0;
                 while (tTask.getCallBackHandler() != null)
@@ -123,7 +123,7 @@ public class TTaskManager {
         TTask tTask = tTaskThreadPool.createTask(tag);
             tTask.invoke(new InvokeInterface() {
             @Override
-            public void doAction(String tag) {
+            public void CALLTODO(String tag) {
                 long lStartTick = System.currentTimeMillis();
                 int lCounter = 0;
                 while (tTask.getCallBackHandler() != null)
@@ -160,7 +160,7 @@ public class TTaskManager {
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.invoke(new InvokeInterface() {
             @Override
-            public void doAction(String tag) {
+            public void CALLTODO(String tag) {
                 HttpUtils.requestGet(tag, fromUrl, new HttpCallback() {
                     @Override
                     public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
@@ -197,7 +197,7 @@ public class TTaskManager {
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.invoke(new InvokeInterface() {
             @Override
-            public void doAction(String tag) {
+            public void CALLTODO(String tag) {
                 HttpUtils.requestPost(tag, fromUrl, bodyParams, new HttpCallback() {
                     @Override
                     public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
@@ -247,7 +247,7 @@ public class TTaskManager {
         tTask.getProperties().putString("toPath", toPath);
         tTask.invoke(new InvokeInterface() {
             @Override
-            public void doAction(String tag) {
+            public void CALLTODO(String tag) {
                 download(tag, fromUrl, toPath);
             }
         });

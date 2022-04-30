@@ -55,7 +55,7 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':libCallbackEvent')
-    implementation project(path: ':libFileUitls')
+    api project(path: ':libCallbackEvent')
+    api project(path: ':libFileUitls')
 }
 

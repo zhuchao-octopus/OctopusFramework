@@ -2,7 +2,8 @@ package com.zhuchao.android.serialport;
 
 import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
 
-import com.zhuchao.android.callbackevent.DeviceListenerCallback;
+import com.zhuchao.android.callbackevent.DeviceCourierEventListener;
+import com.zhuchao.android.callbackevent.EventCourier;
 import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.libfileutils.MMLog;
 
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class TUartFile {
+public class TUartFile implements DeviceCourierEventListener {
     private final String TAG = "TUartFile";
     private SerialPort serialPort = null;
     private ReadThread readThread = null;
@@ -22,7 +23,7 @@ public class TUartFile {
     private static int frame_size = 9;
     private static String frame_end_hex = "7E";
     private static String f_separator = " ";
-    private DeviceListenerCallback deviceListenerCallback = null;
+    private DeviceCourierEventListener deviceEventListener = null;
 
     public TUartFile(String devicePath, int baudrate) {
         if (EmptyString(devicePath) || (baudrate <= 0)) {
@@ -36,16 +37,10 @@ public class TUartFile {
                     .parity(0) // 校验位；0:无校验位(NONE，默认)；1:奇校验位(ODD);2:偶校验位(EVEN)
                     .build();
             MMLog.log(TAG, "device open successfully," + toDeviceString());
-            if (deviceListenerCallback != null) {//处理一帧数据
-                deviceListenerCallback.onDeviceEvent(this, DataID.DEVICE_TYPE_UART, DataID.DEVICE_EVENT_OPEN, null);
-            }
         } catch (IOException e) {
             //e.printStackTrace();
             MMLog.e(TAG, "getSerialPort() returns null " + e.toString() + "," + devicePath + " " + baudrate);
             serialPort = null;
-            if (deviceListenerCallback != null) {//处理一帧数据
-                deviceListenerCallback.onDeviceEvent(this, DataID.DEVICE_TYPE_UART, DataID.DEVICE_EVENT_ERROR, null);
-            }
         }
     }
 
@@ -73,9 +68,6 @@ public class TUartFile {
         if (serialPort != null) {
             serialPort.tryClose();
             serialPort = null;
-            if (deviceListenerCallback != null) {//处理一帧数据
-                deviceListenerCallback.onDeviceEvent(this, DataID.DEVICE_TYPE_UART, DataID.DEVICE_EVENT_CLOSE, null);
-            }
         }
     }
 
@@ -84,9 +76,7 @@ public class TUartFile {
             MMLog.d(TAG, "device can not work ");
             return;
         }
-        if (deviceListenerCallback != null) {//处理一帧数据
-            deviceListenerCallback.onDeviceEvent(this, DataID.DEVICE_TYPE_UART, DataID.DEVICE_EVENT_WRITE, null);
-        }
+
         try {
             if (serialPort.getOutputStream() != null) {
                 serialPort.getOutputStream().write(bytes);
@@ -98,8 +88,14 @@ public class TUartFile {
         }
     }
 
-    public void callback(DeviceListenerCallback deviceListenerCallback) {
-        this.deviceListenerCallback = deviceListenerCallback;
+    private void dispatchCourier(EventCourier eventCourier) {
+        if (deviceEventListener != null) {//处理一帧数据
+            deviceEventListener.onCourierEvent(eventCourier);
+        }
+    }
+
+    public void callback(DeviceCourierEventListener deviceEventListener) {
+        this.deviceEventListener = deviceEventListener;
     }
 
     public boolean isReadyPooling() {
@@ -143,6 +139,10 @@ public class TUartFile {
         TUartFile.f_separator = f_separator;
     }
 
+    public String getTAG() {
+        return TAG;
+    }
+
     public String toDeviceString() {
         String str = serialPort.getDevice().getAbsolutePath();
         str += "," + serialPort.getBaudrate();
@@ -153,15 +153,30 @@ public class TUartFile {
         return str;
     }
 
+    public String getDeviceTag() {
+        if (isReadyPooling())
+            return serialPort.getDevice().getAbsolutePath();
+        return " ";
+    }
+
+    @Override
+    public synchronized boolean onCourierEvent(EventCourier eventCourier) {
+        if (eventCourier.getId() == DataID.DEVICE_EVENT_WRITE
+                && eventCourier.getTag().equals(serialPort.getDevice().getAbsolutePath()))
+        {
+            writeBytes(eventCourier.getDatas());
+            return true;
+        }
+        return false;
+    }
+
     private class ReadThread extends Thread {
         @Override
         public void run() {
             super.run();
             try {
-                while (serialPort.isDeviceReady())
-                {
-                    if (serialPort.getInputStream().available() >= frame_size)
-                    {
+                while (serialPort.isDeviceReady()) {
+                    if (serialPort.getInputStream().available() >= frame_size) {
                         byte[] readData = new byte[serialPort.getInputStream().available()];
                         int size = serialPort.getInputStream().read(readData);
                         if (size <= 0) continue;
@@ -207,9 +222,8 @@ public class TUartFile {
                         }
                         //MMLog.log(TAG,"UART:"+BufferToHexStr(bytes,f_separator));
                         byteArrayList.clear();
-                        if (deviceListenerCallback != null) {//处理一帧数据
-                            deviceListenerCallback.onDeviceEvent(this, DataID.DEVICE_TYPE_UART, DataID.DEVICE_EVENT_READ, bytes);
-                        }
+                        //处理一帧数据
+                        dispatchCourier(new EventCourier(serialPort.getDevice().getAbsolutePath(), DataID.DEVICE_EVENT_READ, bytes));
                     }
                 } catch (Exception e) {
                     //e.printStackTrace();

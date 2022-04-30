@@ -44,15 +44,15 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':libCallbackEvent')
-    implementation project(path: ':libFileUitls')
-    implementation project(path: ':libGosUtils')
-    implementation('com.google.code.gson:gson:2.8.8')
+    api project(path: ':libCallbackEvent')
+    api project(path: ':libFileUitls')
+    api project(path: ':libGosUtils')
+    api('com.google.code.gson:gson:2.8.8')
     // define a BOM and its version
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.3"))
+    api(platform("com.squareup.okhttp3:okhttp-bom:4.9.3"))
     // define any required OkHttp artifacts without version
-    implementation("com.squareup.okhttp3:okhttp:4.9.3")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+    api("com.squareup.okhttp3:okhttp:4.9.3")
+    api("com.squareup.okhttp3:logging-interceptor:4.9.3")
 
 }
 
