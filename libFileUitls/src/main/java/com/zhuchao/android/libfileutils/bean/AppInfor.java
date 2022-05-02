@@ -6,42 +6,24 @@ import android.graphics.drawable.Drawable;
 //import androidx.annotation.NonNull;
 
 public class AppInfor  {
-
-    /**
-     * 程序的名字
-     */
-    private String Name;
-    /**
-     * 包名
-     */
+    private ApplicationInfo mApplicationInfo;
     private String PackageName;
-
-
-    /**
-     * 图片的icon
-     */
+    private String Name;
     private Drawable Icon;
     /**
      * 程序大小
      */
     private long Size;
-
     /**
      * 表示到底是用户app还是系统app
      * 如果表示为true 就是用户app
      * 如果是false表示系统app
      */
     private boolean UserApp;
-
-    /**
-     * 放置的位置
-     */
-    private boolean Rom;
+    private boolean Rom; //安装位置
     private String SourceDir;
-
-    private ApplicationInfo mApplicationInfo;
     private long VersionCode = 0;
-
+    private String VersionCodeName = "";
 
     public AppInfor() {}
 
@@ -108,6 +90,14 @@ public class AppInfor  {
 
     public void setVersionCode(long versionCode) {
         VersionCode = versionCode;
+    }
+
+    public String getVersionCodeName() {
+        return VersionCodeName;
+    }
+
+    public void setVersionCodeName(String versionCodeName) {
+        VersionCodeName = versionCodeName;
     }
 
     public String getSourceDir() {

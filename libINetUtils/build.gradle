@@ -4,8 +4,8 @@ apply plugin: 'maven-publish'
 ext {
     GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
-    PUBLISH_ARTIFACT_ID = 'libPlayerUtils'
-    PUBLISH_VERSION = '2.4'
+    PUBLISH_ARTIFACT_ID = 'libINetUtils'
+    PUBLISH_VERSION = '2.0'
 }
 
 afterEvaluate {
@@ -18,8 +18,8 @@ afterEvaluate {
                 version PUBLISH_VERSION
             }
         }
-        repositories{
-            maven{
+        repositories {
+            maven {
                 allowInsecureProtocol true
                 url GITHUB_REPO_PATH
             }
@@ -44,8 +44,14 @@ android {
 }
 
 dependencies {
-    api project(path: ':libDecodeCore')
     api project(path: ':libCallbackEvent')
     api project(path: ':libFileUitls')
-    api project(path: ':libJosUtils')
+
+    api(platform("com.squareup.okhttp3:okhttp-bom:4.9.3"))
+    api("com.squareup.okhttp3:okhttp:4.9.3")
+    api("com.squareup.okhttp3:logging-interceptor:4.9.3")
+    api("com.google.code.gson:gson:2.9.0")
 }
+
+
+

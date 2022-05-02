@@ -4,8 +4,8 @@ apply plugin: 'maven-publish'
 ext {
     GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
-    PUBLISH_ARTIFACT_ID = 'libPlayerUtils'
-    PUBLISH_VERSION = '2.4'
+    PUBLISH_ARTIFACT_ID = 'libJosUtils'
+    PUBLISH_VERSION = '1.1'
 }
 
 afterEvaluate {
@@ -18,8 +18,8 @@ afterEvaluate {
                 version PUBLISH_VERSION
             }
         }
-        repositories{
-            maven{
+        repositories {
+            maven {
                 allowInsecureProtocol true
                 url GITHUB_REPO_PATH
             }
@@ -32,6 +32,12 @@ android {
     defaultConfig {
         minSdkVersion 24
         targetSdkVersion 32
+        externalNativeBuild {
+            cmake {
+                cppFlags "-frtti -fexceptions"
+                abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+            }
+        }
     }
 
     buildTypes {
@@ -41,11 +47,15 @@ android {
         }
     }
 
+    externalNativeBuild {
+        cmake {
+            path 'CMakeLists.txt'
+        }
+    }
 }
 
 dependencies {
-    api project(path: ':libDecodeCore')
     api project(path: ':libCallbackEvent')
     api project(path: ':libFileUitls')
-    api project(path: ':libJosUtils')
 }
+

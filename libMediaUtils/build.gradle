@@ -47,10 +47,11 @@ android {
 dependencies {
     api project(path: ':libCallbackEvent')
     api project(path: ':libFileUitls')
-    api project(path: ':libPersistentUtils')
-    api project(path: ':libGosUtils')
+    api project(path: ':libHoldPersistUtils')
+    api project(path: ':libINetUtils')
+    api project(path: ':libJosUtils')
     api project(path: ':libPlayerUtils')
-    api project(path: ':libNetUtils')
+
 
 
 }

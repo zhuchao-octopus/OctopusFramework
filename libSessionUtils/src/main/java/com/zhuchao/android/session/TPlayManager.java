@@ -375,7 +375,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     private OMedia getNextAvailable() {
         OMedia ooMedia = null;
-        MMLog.log(TAG, "getNextAvailable() Count = " + playingList.getCount() + " | " + favoriteList.getCount());
+        MMLog.log(TAG, "getNextAvailable() playingList.count = "+playingList.getCount()+" favoriteList.count = "+favoriteList.getCount());
         if (favoriteList.exist(oMedia))
             ooMedia = favoriteList.getNextAvailable(oMedia);
         else
@@ -433,11 +433,13 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             default:
                 break;
         }
+
+        MMLog.log(TAG, "playingList.count = "+playingList.getCount()+",favoriteList.count = "+favoriteList.getCount());
         if (ooMedia != null) {
             MMLog.log(TAG, "Auto play " + ooMedia.getPathName());
             startPlay(ooMedia);
         } else {
-            MMLog.log(TAG, "No oMedia found in playing list");
+           //MMLog.log(TAG, "No oMedia found in playing list");
         }
     }
 

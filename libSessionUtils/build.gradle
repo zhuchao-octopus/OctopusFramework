@@ -46,8 +46,7 @@ android {
 dependencies {
     api project(path: ':libCallbackEvent')
     api project(path: ':libFileUitls')
-    api project(path: ':libGosUtils')
-    api project(path: ':libNetUtils')
+    api project(path: ':libJosUtils')
+    api project(path: ':libINetUtils')
     api project(path: ':libMediaUtils')
-    api 'com.google.code.gson:gson:2.8.8'
 }

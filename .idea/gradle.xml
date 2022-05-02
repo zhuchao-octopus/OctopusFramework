@@ -14,10 +14,10 @@
             <option value="$PROJECT_DIR$/libCallbackEvent" />
             <option value="$PROJECT_DIR$/libDecodeCore" />
             <option value="$PROJECT_DIR$/libFileUitls" />
-            <option value="$PROJECT_DIR$/libGosUtils" />
+            <option value="$PROJECT_DIR$/libHoldPersistUtils" />
+            <option value="$PROJECT_DIR$/libINetUtils" />
+            <option value="$PROJECT_DIR$/libJosUtils" />
             <option value="$PROJECT_DIR$/libMediaUtils" />
-            <option value="$PROJECT_DIR$/libNetUtils" />
-            <option value="$PROJECT_DIR$/libPersistentUtils" />
             <option value="$PROJECT_DIR$/libPlayerUtils" />
             <option value="$PROJECT_DIR$/libSessionUtils" />
           </set>
