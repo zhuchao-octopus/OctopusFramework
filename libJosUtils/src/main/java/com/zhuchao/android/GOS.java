@@ -7,8 +7,8 @@ import java.lang.reflect.Method;
 
 public class GOS {
     private static final String TAG = "GOS";
-    public static Method methodGetProperty = null;
-    public static Method methodSetProperty = null;
+    private static Method methodGetProperty = null;
+    private static Method methodSetProperty = null;
     public static final String OUTPUT_HDMI = "hdmi";
     public static final String OUTPUT_I2S = "i2s";
     public static final String OUTPUT_USB = "usb";
@@ -72,43 +72,43 @@ public class GOS {
         return false;
     }
 
+    public static void setAudioOutputPolicy(String policyName,String val) {
+        setSystemProperty(policyName,val);
+    }
+
+    public static void setAudioInputPolicy(String policyName,String val) {
+        setSystemProperty(policyName,val);
+    }
+
+    public static String getAudioOutputPolicy(String policyName) {
+        return getSystemProperty(policyName);
+    }
+
+    public static String getAudioInputPolicy(String policyName) {
+        return getSystemProperty(policyName);
+    }
+
     public static String t507GetSystemProperty(String key) {
-         return   com.zhuchao.android.JGOS.get(key);
+        return com.zhuchao.android.T507HGOS.get(key);
     }
 
-    public static boolean t507SetSystemProperty(String key, String val) {
-
-    }
-
-    public static void setAudioOutputPolicy(String policyName) {
-
-    }
-
-    public static void setAudioInputPolicy(String policyName) {
-
-    }
-
-    public static String getAudioOutputPolicy() {
-        return null;
-    }
-
-    public static String getAudioInputPolicy() {
-        return null;
+    public static void t507SetSystemProperty(String key, String val) {
+        com.zhuchao.android.T507HGOS.set(key,val);
     }
 
     public static void t507SetAudioOutputPolicy(String policyName) {
-
+        com.zhuchao.android.T507HGOS.SetAudioOutputPolicy(policyName);
     }
 
     public static void t507SetAudioInputPolicy(String policyName) {
-
+        com.zhuchao.android.T507HGOS.SetAudioInputPolicy(policyName);
     }
 
     public static String t507GetAudioOutputPolicy() {
-        return null;
+        return com.zhuchao.android.T507HGOS.GetAudioOutputPolicy();
     }
 
     public static String t507GetAudioInputPolicy() {
-        return null;
+        return com.zhuchao.android.T507HGOS.GetAudioInputPolicy();
     }
 }
