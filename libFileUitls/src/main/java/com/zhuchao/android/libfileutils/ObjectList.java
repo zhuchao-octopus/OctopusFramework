@@ -34,14 +34,8 @@ public class ObjectList {
         FHashMap.remove(Name);
     }
 
-    public void delete(Object Obj) {
-        FHashMap.remove(Obj);
-    }
-
-    public void delete(int Index) {
-        Object Obj = getObject(Index);
-        if (Obj != null)
-            FHashMap.remove(Obj);
+    public void delete(String key, Object Obj) {
+        FHashMap.remove(key,Obj);
     }
 
     public void clear() {

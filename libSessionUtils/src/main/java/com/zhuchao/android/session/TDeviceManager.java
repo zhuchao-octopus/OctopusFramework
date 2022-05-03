@@ -66,7 +66,7 @@ public class TDeviceManager {
     public void close(String devicePath) {
         TUartFile tUartFile = (TUartFile) deviceList.getObject(devicePath);
         if (tUartFile != null) {
-            deviceList.delete(tUartFile);
+            deviceList.delete(devicePath);
             tUartFile.closeDevice();
         }
     }

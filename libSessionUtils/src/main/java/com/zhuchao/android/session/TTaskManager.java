@@ -75,7 +75,10 @@ public class TTaskManager {
         tTask.freeFree();
         tTaskThreadPool.delTask(tTask.getTTag());
     }
-
+    public void deleteTask(TTask tTask) {
+        tTask.freeFree();
+        tTaskThreadPool.delTask(tTask.getTTag());
+    }
     public List<TTask> getAllTask() {
         List<TTask> allTasks = new ArrayList();//(tTaskThreadPool.getAllObject());
         Collection<Object> objects = tTaskThreadPool.getAllObject();

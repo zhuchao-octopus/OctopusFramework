@@ -81,7 +81,7 @@ public class TUartFile implements DeviceCourierEventListener {
             if (serialPort.getOutputStream() != null) {
                 serialPort.getOutputStream().write(bytes);
                 serialPort.getOutputStream().flush();
-                MMLog.d(TAG, "device write data " + BufferToHexStr(bytes," "));
+                MMLog.d(TAG, "device write data " + BufferToHexStr(bytes, " "));
             }
         } catch (IOException e) {
             MMLog.d(TAG, "device write failed " + e.toString());
@@ -139,10 +139,6 @@ public class TUartFile implements DeviceCourierEventListener {
         TUartFile.f_separator = f_separator;
     }
 
-    public String getTAG() {
-        return TAG;
-    }
-
     public String toDeviceString() {
         String str = serialPort.getDevice().getAbsolutePath();
         str += "," + serialPort.getBaudrate();
@@ -162,8 +158,7 @@ public class TUartFile implements DeviceCourierEventListener {
     @Override
     public synchronized boolean onCourierEvent(EventCourier eventCourier) {
         if (eventCourier.getId() == DataID.DEVICE_EVENT_WRITE
-                && eventCourier.getTag().equals(serialPort.getDevice().getAbsolutePath()))
-        {
+                && eventCourier.getTag().equals(serialPort.getDevice().getAbsolutePath())) {
             writeBytes(eventCourier.getDatas());
             return true;
         }
