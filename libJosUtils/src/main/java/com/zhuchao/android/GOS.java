@@ -1,5 +1,7 @@
 package com.zhuchao.android;
 
+import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
+
 import com.zhuchao.android.libfileutils.MMLog;
 
 import java.lang.reflect.InvocationTargetException;
@@ -17,6 +19,7 @@ public class GOS {
     public static final String INPUT_I2S = "i2s";
     public static final String INPUT_USB = "usb";
     public static final String INPUT_BT = "bt";
+    public static final String INPUT_CODEC = "codec";
     public static final String INPUT_BUILD_IN_MIC = "build.in.mic";
     public static final String INPUT_USB_MIC = "usb.mic";
     public static final String INPUT_BT_MIC = "bt.mic";
@@ -72,12 +75,12 @@ public class GOS {
         return false;
     }
 
-    public static void setAudioOutputPolicy(String policyName,String val) {
-        setSystemProperty(policyName,val);
+    public static void setAudioOutputPolicy(String policyName, String val) {
+        setSystemProperty(policyName, val);
     }
 
-    public static void setAudioInputPolicy(String policyName,String val) {
-        setSystemProperty(policyName,val);
+    public static void setAudioInputPolicy(String policyName, String val) {
+        setSystemProperty(policyName, val);
     }
 
     public static String getAudioOutputPolicy(String policyName) {
@@ -93,7 +96,7 @@ public class GOS {
     }
 
     public static void t507SetSystemProperty(String key, String val) {
-        com.zhuchao.android.T507HGOS.set(key,val);
+        com.zhuchao.android.T507HGOS.set(key, val);
     }
 
     public static void t507SetAudioOutputPolicy(String policyName) {
@@ -110,5 +113,44 @@ public class GOS {
 
     public static String t507GetAudioInputPolicy() {
         return com.zhuchao.android.T507HGOS.GetAudioInputPolicy();
+    }
+
+    public static boolean t507IsI2SMic() {
+        String str = t507GetAudioInputPolicy();
+        if (EmptyString(str)) return false;
+        if (str.startsWith(INPUT_I2S) || str.startsWith(INPUT_BUILD_IN_MIC))
+            return true;
+        else
+            return false;
+    }
+
+    public static boolean t507IsUSBMic() {
+        String str = t507GetAudioInputPolicy();
+        if (EmptyString(str)) return false;
+        if (str.startsWith(INPUT_USB))
+            return true;
+        else
+            return false;
+    }
+
+    public static boolean t507IsCodecMic() {
+        String str = t507GetAudioInputPolicy();
+        if (EmptyString(str)) return false;
+        if (str.startsWith(INPUT_CODEC))
+            return true;
+        else
+            return false;
+    }
+
+    public static void t507SetUSBMiCAudioInput() {
+        t507SetAudioInputPolicy(INPUT_USB);
+    }
+
+    public static void t507SetI2SMiCAudioInput() {
+        t507SetAudioInputPolicy(INPUT_I2S);
+    }
+
+    public static void t507SetCodecMicAudioInput() {
+        t507SetAudioInputPolicy(INPUT_CODEC);
     }
 }
