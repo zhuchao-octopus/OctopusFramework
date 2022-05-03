@@ -57,5 +57,6 @@ android {
 dependencies {
     api project(path: ':libCallbackEvent')
     api project(path: ':libFileUitls')
+    implementation files('libs\\libT507h.jar')
 }
 
