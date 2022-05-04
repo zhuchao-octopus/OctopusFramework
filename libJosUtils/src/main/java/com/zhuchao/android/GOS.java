@@ -15,6 +15,7 @@ public class GOS {
     public static final String OUTPUT_I2S = "i2s";
     public static final String OUTPUT_USB = "usb";
     public static final String OUTPUT_BT = "bt";
+    public static final String OUTPUT_CODEC = "codec";
     public static final String INPUT_HDMI = "hdmi";
     public static final String INPUT_I2S = "i2s";
     public static final String INPUT_USB = "usb";
@@ -91,6 +92,8 @@ public class GOS {
         return getSystemProperty(policyName);
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //t507
     public static String t507GetSystemProperty(String key) {
         return com.zhuchao.android.T507HGOS.get(key);
     }
@@ -115,7 +118,7 @@ public class GOS {
         return com.zhuchao.android.T507HGOS.GetAudioInputPolicy();
     }
 
-    public static boolean t507IsI2SMic() {
+    public static boolean t507IsI2SMicAudioInput() {
         String str = t507GetAudioInputPolicy();
         if (EmptyString(str)) return false;
         if (str.startsWith(INPUT_I2S) || str.startsWith(INPUT_BUILD_IN_MIC))
@@ -124,7 +127,7 @@ public class GOS {
             return false;
     }
 
-    public static boolean t507IsUSBMic() {
+    public static boolean t507IsUSBMicAudioInput() {
         String str = t507GetAudioInputPolicy();
         if (EmptyString(str)) return false;
         if (str.startsWith(INPUT_USB))
@@ -133,7 +136,7 @@ public class GOS {
             return false;
     }
 
-    public static boolean t507IsCodecMic() {
+    public static boolean t507IsCodecMicAudioInput() {
         String str = t507GetAudioInputPolicy();
         if (EmptyString(str)) return false;
         if (str.startsWith(INPUT_CODEC))
@@ -152,5 +155,79 @@ public class GOS {
 
     public static void t507SetCodecMicAudioInput() {
         t507SetAudioInputPolicy(INPUT_CODEC);
+    }
+
+    public static void t507SetHDMIAudioOutput() {
+        t507SetAudioOutputPolicy(OUTPUT_HDMI);
+    }
+
+    public static void t507SetI2sAudioOutput() {
+        t507SetAudioOutputPolicy(OUTPUT_I2S);
+    }
+
+    public static void t507SetCodecAudioOutput() {
+        t507SetAudioOutputPolicy(OUTPUT_CODEC);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //通用
+    public static String GetAudioOutputPolicy() {
+        return com.zhuchao.android.T507HGOS.GetAudioOutputPolicy();
+    }
+
+    public static String GetAudioInputPolicy() {
+        return com.zhuchao.android.T507HGOS.GetAudioInputPolicy();
+    }
+
+    public static boolean IsI2SMicAudioInput() {
+        String str = t507GetAudioInputPolicy();
+        if (EmptyString(str)) return false;
+        if (str.startsWith(INPUT_I2S) || str.startsWith(INPUT_BUILD_IN_MIC))
+            return true;
+        else
+            return false;
+    }
+
+    public static boolean IsUSBMicAudioInput() {
+        String str = t507GetAudioInputPolicy();
+        if (EmptyString(str)) return false;
+        if (str.startsWith(INPUT_USB))
+            return true;
+        else
+            return false;
+    }
+
+    public static boolean IsCodecMicAudioInput() {
+        String str = t507GetAudioInputPolicy();
+        if (EmptyString(str)) return false;
+        if (str.startsWith(INPUT_CODEC))
+            return true;
+        else
+            return false;
+    }
+
+    public static void SetUSBMiCAudioInput() {
+        t507SetAudioInputPolicy(INPUT_USB);
+    }
+
+    public static void SetI2SMiCAudioInput() {
+        t507SetAudioInputPolicy(INPUT_I2S);
+    }
+
+    public static void SetCodecMicAudioInput() {
+        t507SetAudioInputPolicy(INPUT_CODEC);
+    }
+
+    public static void SetHDMIAudioOutput() {
+        t507SetAudioOutputPolicy(OUTPUT_HDMI);
+    }
+
+    public static void SetI2sAudioOutput() {
+        t507SetAudioOutputPolicy(OUTPUT_I2S);
+    }
+
+    public static void SetCodecAudioOutput() {
+        t507SetAudioOutputPolicy(OUTPUT_CODEC);
     }
 }
