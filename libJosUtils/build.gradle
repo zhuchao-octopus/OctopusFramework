@@ -55,10 +55,11 @@ android {
 }
 
 dependencies {
-    implementation files('libs\\T507HGOS.jar')
-    implementation files('libs/T507HGOS.jar')
+    implementation files('libs\\javalib.jar')
+    implementation files('libs/javalib.jar')
     api project(path: ':libCallbackEvent')
     api project(path: ':libFileUitls')
+
 
 }
 

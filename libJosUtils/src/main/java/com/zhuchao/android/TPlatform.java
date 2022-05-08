@@ -7,7 +7,7 @@ import com.zhuchao.android.libfileutils.MMLog;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class GOS {
+public class TPlatform {
     private static final String TAG = "GOS";
     private static Method methodGetProperty = null;
     private static Method methodSetProperty = null;
@@ -95,27 +95,27 @@ public class GOS {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //t507
     public static String t507GetSystemProperty(String key) {
-        return com.zhuchao.android.T507HGOS.get(key);
+        return com.zhuchao.android.TGOS.get(key);
     }
 
     public static void t507SetSystemProperty(String key, String val) {
-        com.zhuchao.android.T507HGOS.set(key, val);
+        com.zhuchao.android.TGOS.set(key, val);
     }
 
     public static void t507SetAudioOutputPolicy(String policyName) {
-        com.zhuchao.android.T507HGOS.SetAudioOutputPolicy(policyName);
+        com.zhuchao.android.TGOS.SetAudioOutputPolicy(policyName);
     }
 
     public static void t507SetAudioInputPolicy(String policyName) {
-        com.zhuchao.android.T507HGOS.SetAudioInputPolicy(policyName);
+        com.zhuchao.android.TGOS.SetAudioInputPolicy(policyName);
     }
 
     public static String t507GetAudioOutputPolicy() {
-        return com.zhuchao.android.T507HGOS.GetAudioOutputPolicy();
+        return com.zhuchao.android.TGOS.GetAudioOutputPolicy();
     }
 
     public static String t507GetAudioInputPolicy() {
-        return com.zhuchao.android.T507HGOS.GetAudioInputPolicy();
+        return com.zhuchao.android.TGOS.GetAudioInputPolicy();
     }
 
     public static boolean t507IsI2SMicAudioInput() {
@@ -172,12 +172,12 @@ public class GOS {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //通用
-    public static String GetAudioOutputPolicy() {
-        return com.zhuchao.android.T507HGOS.GetAudioOutputPolicy();
+    public static String getAudioOutputPolicy() {
+        return com.zhuchao.android.TGOS.GetAudioOutputPolicy();
     }
 
-    public static String GetAudioInputPolicy() {
-        return com.zhuchao.android.T507HGOS.GetAudioInputPolicy();
+    public static String getAudioInputPolicy() {
+       return com.zhuchao.android.TGOS.GetAudioInputPolicy();
     }
 
     public static boolean IsI2SMicAudioInput() {
