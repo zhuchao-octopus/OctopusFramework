@@ -68,9 +68,8 @@ public class FileUtils {
         return !TextUtils.isEmpty(str);
     }
 
-    public static boolean isExists(String filePath) {
+    public static boolean existFile(String filePath) {
         if (EmptyString(filePath)) return false;
-
         if (filePath.startsWith("http:") ||
                 filePath.startsWith("https:") ||
                 filePath.startsWith("ftp:") ||
@@ -78,13 +77,18 @@ public class FileUtils {
                 filePath.startsWith("rtsp:") ||
                 filePath.startsWith("mms:"))
             return true;
+
         try {
             File file = new File(filePath);
-            return file.exists();
+            if(file.exists() && file.isFile())
+                return true;
+            else
+                return false;
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            //e.printStackTrace();
+            MMLog.log(TAG,e.toString());
         }
+        return false;
     }
 
     public static boolean existDirectory(String filePath) {
@@ -538,17 +542,16 @@ public class FileUtils {
         Cursor c = null;
         try {
             c = mContentResolver.query(MediaStore.Files.getContentUri("external"), new String[]{"_id", "_data", "_size"}, null, null, null);
-            int dataindex = c.getColumnIndex(MediaStore.Files.FileColumns.DATA);
-            int sizeindex = c.getColumnIndex(MediaStore.Files.FileColumns.SIZE);
+            int dataIndex = c.getColumnIndex(MediaStore.Files.FileColumns.DATA);
+            int sizeIndex = c.getColumnIndex(MediaStore.Files.FileColumns.SIZE);
 
             while (c.moveToNext()) {
-                String path = c.getString(dataindex);
-
+                String path = c.getString(dataIndex);
                 if (FileUtils.getFileType(path) == fileType) {
-                    if (!FileUtils.isExists(path)) {
+                    if (!FileUtils.existFile(path)) {
                         continue;
                     }
-                    long size = c.getLong(sizeindex);
+                    long size = c.getLong(sizeIndex);
                     FileBean fileBean = new FileBean(path, FileUtils.getFileIconByPath(path));
                     files.add(fileBean);
                 }

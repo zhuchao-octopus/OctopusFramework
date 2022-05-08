@@ -184,7 +184,7 @@ public class TSourceManager implements SessionCallback {
         if (mThreadLock3) return;
         if (filePath == null) return;
         //if (FileList == null) return;
-        if (!FileUtils.isExists(filePath)) return;
+        if (!FileUtils.existDirectory(filePath)) return;
         registerFileBroadcastReceiver();
         fileSession.getVideos().clear();
         new Thread() {

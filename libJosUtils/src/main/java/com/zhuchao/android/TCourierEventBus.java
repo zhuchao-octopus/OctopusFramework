@@ -33,6 +33,8 @@ public class TCourierEventBus implements InvokeInterface {
     }
 
     public void post(EventCourier eventCourier) {
+        if (couriers_A == null || couriers_B == null)
+            return;
         try {
             if (busy_A)
                 couriers_B.add(eventCourier);
@@ -51,13 +53,14 @@ public class TCourierEventBus implements InvokeInterface {
 
     @Override
     public void CALLTODO(String tag) {
-        boolean ret = false;
+        //boolean ret = false;
         while (keepDoing) {
-            //for (EventCourier eventCourier : couriers)
-            busy_A = true;
-            poolingAB(couriers_A);
-            busy_A = false;
-            poolingAB(couriers_B);
+            if (couriers_A != null && couriers_B != null) {
+                busy_A = true;
+                poolingAB(couriers_A);
+                busy_A = false;
+                poolingAB(couriers_B);
+            }
         }
     }
 
@@ -75,8 +78,8 @@ public class TCourierEventBus implements InvokeInterface {
             }
             couriers.clear();
         } catch (Exception e) {
-            couriers.clear();
-            MMLog.e(TAG, "CALLTODO FAILED " + e.toString());
+            //couriers.clear();
+            MMLog.e(TAG, "poolingAB FAILED " + e.toString());
         }
     }
 

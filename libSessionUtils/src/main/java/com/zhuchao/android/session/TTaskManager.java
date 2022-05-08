@@ -292,7 +292,7 @@ public class TTaskManager {
         tTask.getProperties().putString("downloadingPathFileName", downloadingPathFileName);
         tTask.getProperties().putString("localPathFileName", localPathFileName);
         if (!this.reDownload) {
-            if (FileUtils.isExists(localPathFileName)) {
+            if (FileUtils.existFile(localPathFileName)) {
                 MMLog.log(TAG, "download stop,file already exist --> " + localPathFileName);
                 tTask.free();
                 return;//已经完成下载，不再重复下载

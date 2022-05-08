@@ -73,7 +73,7 @@ public class TUartFile implements DeviceCourierEventListener {
 
     public void writeBytes(byte[] bytes) {
         if (!isReadyPooling()) {
-            MMLog.d(TAG, "device can not work ");
+            MMLog.d(TAG, "device does not work ");
             return;
         }
 
@@ -81,7 +81,7 @@ public class TUartFile implements DeviceCourierEventListener {
             if (serialPort.getOutputStream() != null) {
                 serialPort.getOutputStream().write(bytes);
                 serialPort.getOutputStream().flush();
-                MMLog.d(TAG, "device write data " + BufferToHexStr(bytes, " "));
+                MMLog.d(TAG, "device write data " + BufferToHexStr(bytes, " ")+" "+toDeviceString());
             }
         } catch (IOException e) {
             MMLog.d(TAG, "device write failed " + e.toString());

@@ -121,7 +121,7 @@ public class OMedia implements Serializable, PlayerCallback {
             return play(assetFileDescriptor);
         else if (fileDescriptor != null)
             return play(fileDescriptor);
-        else if (FileUtils.isExists(cachedFile))//缓存优先与在线播放
+        else if (FileUtils.existFile(cachedFile))//缓存优先与在线播放
             return play(cachedFile);
         else if (uri != null)
             return play(uri);
@@ -499,9 +499,9 @@ public class OMedia implements Serializable, PlayerCallback {
         boolean bf = false;
         if (this.uri != null || this.assetFileDescriptor != null || this.fileDescriptor != null)
             bf = true;
-        else if (FileUtils.isExists(movie.getsUrl()))
+        else if (FileUtils.existFile(movie.getsUrl()))
             bf = MediaFile.isMediaFile(movie.getsUrl());
-        else if (NotEmptyString(cachePath) && FileUtils.isExists(cachePath + "/" + movie.getName()))
+        else if (NotEmptyString(cachePath) && FileUtils.existFile(cachePath + "/" + movie.getName()))
             bf = MediaFile.isMediaFile(cachePath + "/" + movie.getName());
         return bf;
     }

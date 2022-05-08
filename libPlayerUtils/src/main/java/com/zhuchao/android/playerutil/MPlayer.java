@@ -33,6 +33,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     private static int playStatus = PlaybackEvent.Status_NothingIdle;
     private static long lDuration = 0;
     private static long lPosition = 0;
+
     public MPlayer(Context context, PlayerCallback callback) {
         super(context, callback);
         playStatus = PlaybackEvent.Status_NothingIdle;
@@ -184,6 +185,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     //.play();
     @Override
     public void play() {
+        if (mediaPlayer == null) return;
         try {
             asyncPlayProcess(playStatus);
         } catch (Exception e) {
@@ -193,6 +195,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     @Override
     public void pause() {
+        if (mediaPlayer == null) return;
         mediaPlayer.pause();
         playStatus = PlaybackEvent.Status_Paused;
     }
@@ -211,10 +214,10 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     @Override
     public void stop() {
+        if (mediaPlayer == null) return;
         if (playStatus == PlaybackEvent.Status_Stopped) return;
         try {
-            if (mediaPlayer != null)
-                mediaPlayer.stop();
+            mediaPlayer.stop();
         } catch (IllegalStateException e) {
             MMLog.e(TAG, "stop() " + e.toString());
         }
@@ -307,7 +310,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void setRate(float v) {
         try {
-            if ((mediaPlayer != null) )//&& (mediaPlayer.isPlaying())
+            if ((mediaPlayer != null))//&& (mediaPlayer.isPlaying())
                 mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(v));
         } catch (Exception e) {
             MMLog.e(TAG, "setRate() " + e.toString() + " v = " + v);
@@ -449,6 +452,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void onSeekComplete(MediaPlayer mediaPlayer) {
         MMLog.log(TAG, "onSeekComplete:" + mediaPlayer.toString());
+        if (mediaPlayer == null) return;
         asyncPlayProcess(PlaybackEvent.Status_SEEKING);
     }
 
@@ -530,14 +534,12 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             return;
         }
 
-        try {
-            if (mSurfaceView != null) {
+        try
+        {
+            if (mSurfaceView != null && (mSurfaceView.getHolder() != null)) {
                 mSurfaceView.getHolder().addCallback(this);
-                if (mSurfaceView.getHolder() != null) {
-                    mediaPlayer.setDisplay(mSurfaceView.getHolder());
-                } else MMLog.log(TAG, "ResetComponent.mSurfaceView.getHolder() = null");
+                //mediaPlayer.setDisplay(mSurfaceView.getHolder());
             } else MMLog.log(TAG, "ResetComponent.mSurfaceView = null");
-
         } catch (Exception e) {
             MMLog.e(TAG, "ResetComponent mSurfaceView " + e.toString());
             //这里可能报异常，setSource后要重新 setSurfaceView
@@ -570,12 +572,14 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                         free();
                         playStatus = PlaybackEvent.Status_Ended;
                         MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
+                        return;
                     } catch (Exception e) {
                         MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
                         playStatus = PlaybackEvent.Status_RESETING;
                         free();
                         MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
                         playStatus = PlaybackEvent.Status_Ended;
+                        return;
                     }
                     mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                         @Override

@@ -19,43 +19,38 @@ import android.text.TextUtils;
 
 import androidx.core.content.FileProvider;
 
-import com.zhuchao.android.callbackevent.AppsCallback;
-import com.zhuchao.android.libfileutils.bean.AppInfor;
+import com.zhuchao.android.callbackevent.ApplicationChangedCallback;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class AppUtils {
-    private static final String TAG = "MyAppsManager";
+public class TAppUtils {
+    private static final String TAG = "AppUtils";
     public static final String UNINSTALL_ACTION = "UNINSTALL";
     public static final String INSTALL_ACTION = "INSTALL";
     public static final String SCANING_ACTION = "SCANING";
     public static final String SCANING_COMPLETE_ACTION = "SCANINGCOMPLETE";
-    public static final String ADDTOMYAPPS_ACTION = "ADDTOMYAPPS";
-    public static final String DELFROMMYAPPS_ACTION = "DELFROMMYAPPS";
-    public static final String USED_HISTORY_ACTION = "USEDHISTORY";
-    public static final String HOT_CLEAR_ACTION = "HOTCLEAR";
-    private static Context mContext;
-    private AppsCallback mAppsCallback = null;
+
+    private Context mContext;
+    private ApplicationChangedCallback mApplicationChangedCallback = null;
     //private ExecutorService mExecutorService;
     private PackageManager mPackageManager;
-    private List<AppInfor> AllAppInfo = new ArrayList<AppInfor>();
-    private List<AppInfor> UserAppInfors = new ArrayList<AppInfor>();
-    private List<String> Filter = new ArrayList<String>();
+    private List<AppInfo> AllAppInfo = null;
+    //private List<AppInfor> UserAppInfors = new ArrayList<AppInfor>();
+    //private List<String> Filter = new ArrayList<String>();
 
 
-    public AppUtils(Context context) {
+    public TAppUtils(Context context) {
         mContext = context;
-        mAppsCallback = null;
+        mApplicationChangedCallback = null;
         mPackageManager = mContext.getPackageManager();
-       // mExecutorService = Executors.newSingleThreadExecutor();
-        getAllAppsInfor();
+        AllAppInfo = new ArrayList<AppInfo>();
+        //mExecutorService = Executors.newSingleThreadExecutor();
+        updateApplicationInfo();
     }
 
-    public List<AppInfor> getAllAppInfo() {
+    public List<AppInfo> getAllAppInfo() {
         return AllAppInfo;
     }
 
@@ -65,64 +60,51 @@ public class AppUtils {
         List<PackageInfo> installedPackages = mPackageManager.getInstalledPackages(0);
         //遍历每个安装包，获取对应的信息
         for (PackageInfo packageInfo : installedPackages) {
-            final AppInfor appInfor = new AppInfor();
-            appInfor.setApplicationInfo(packageInfo.applicationInfo);
-            appInfor.setVersionCode(packageInfo.versionCode);
-            appInfor.setVersionCodeName(packageInfo.versionName);
+            final AppInfo appInfo = new AppInfo();
+            appInfo.setApplicationInfo(packageInfo.applicationInfo);
+            appInfo.setVersionCode(packageInfo.versionCode);
+            appInfo.setVersionCodeName(packageInfo.versionName);
             //得到icon
             Drawable drawable = packageInfo.applicationInfo.loadIcon(mPackageManager);
-            appInfor.setIcon(drawable);
+            appInfo.setIcon(drawable);
             //得到程序的名字
             String apkName = packageInfo.applicationInfo.loadLabel(mPackageManager).toString();
-            appInfor.setName(apkName);
+            appInfo.setName(apkName);
             //得到程序的包名
             String packageName = packageInfo.packageName;
-            appInfor.setPackageName(packageName);
+            appInfo.setPackageName(packageName);
             //得到程序的资源文件夹
             String sourceDir = packageInfo.applicationInfo.sourceDir;
-            appInfor.setSourceDir(sourceDir);
+            appInfo.setFilePath(sourceDir);
             File file = new File(sourceDir);
             //得到apk的大小
             long size = file.length();
-            appInfor.setSize(size);
+            appInfo.setSize(size);
             //获取到安装应用程序的标记
             int flags = packageInfo.applicationInfo.flags;
             if ((flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
                 //表示系统app
-                appInfor.setUserApp(false);
+                appInfo.setUserApp(false);
             } else {
                 //表示用户app
-                appInfor.setUserApp(true);
+                appInfo.setUserApp(true);
             }
             if ((flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0) {
                 //表示在sd卡
-                appInfor.setRom(false);
+                appInfo.setRom(false);
             } else {
                 //表示内存
-                appInfor.setRom(true);
+                appInfo.setRom(true);
             }
-            if (!AllAppInfo.contains(appInfor)) {
-                AllAppInfo.add(appInfor);
+            if (!AllAppInfo.contains(appInfo)) {
+                AllAppInfo.add(appInfo);
+                callUserCallback(packageName);
             }
         }//for
-        if ((mAppsCallback != null)) {
-            mAppsCallback.onAppsChanged(SCANING_COMPLETE_ACTION, null);
-        }
+        callUserCallback(null);
     }
 
-    public boolean isAppInstalled(String packageName) {
-        if (EmptyString(packageName))
-            return false;
-        try {
-            ApplicationInfo info = mContext.getPackageManager().getApplicationInfo(packageName, 0);
-            return info.enabled;
-        } catch (PackageManager.NameNotFoundException e) {
-            //e.printStackTrace();
-            return false;
-        }
-    }
-
-    public void registerAppsReceiver() {
+    public void registerApplicationsReceiver() {
         try {
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
@@ -135,7 +117,8 @@ public class AppUtils {
             intentFilter.addDataScheme("package");
             mContext.registerReceiver(AppChangedReceiver, intentFilter);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.log(TAG, e.toString());
         }
     }
 
@@ -144,7 +127,6 @@ public class AppUtils {
             if (AppChangedReceiver != null)
                 if (mContext != null)
                     mContext.unregisterReceiver(AppChangedReceiver);
-
         } catch (Exception e) {
             //e.printStackTrace();
         }
@@ -154,25 +136,48 @@ public class AppUtils {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            MMLog.log(TAG, "BroadcastReceiver:" + intent.getAction());
-            if (action.equals(Intent.ACTION_PACKAGE_ADDED)) {
-                //UpdateAppsInfor();
-            }
-            if (action.equals(Intent.ACTION_PACKAGE_REMOVED)) {
-                //UpdateAppsInfor();
-            }
-            if (action.equals(Intent.ACTION_PACKAGE_REPLACED)) {
-                // UpdateAppsInfor();
+            //MMLog.log(TAG, "BroadcastReceiver:" + intent.getAction());
+            switch (action) {
+                case Intent.ACTION_PACKAGE_ADDED:
+                case Intent.ACTION_PACKAGE_REMOVED:
+                case Intent.ACTION_PACKAGE_REPLACED: {
+                    updateApplicationInfo();
+                }
             }
         }
     };
 
-    public void free() {
-        unRegAppReceiver();
+    private void updateApplicationInfo() {
+        ThreadUtils.runThread(new Runnable() {
+            @Override
+            public void run() {
+                getAllAppsInfor();
+            }
+        });
     }
 
-    public AppInfor getAppInfor(String packageName) {
-        for (AppInfor Info : AllAppInfo) {
+    private void callUserCallback(String packageName) {
+        if ((mApplicationChangedCallback != null)) {
+            ThreadUtils.runOnMainUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mApplicationChangedCallback.onApplicationChanged(SCANING_COMPLETE_ACTION, packageName);
+                }
+            });
+        }
+    }
+
+    public void setApplicationChangedListener(ApplicationChangedCallback applicationChangedCallback) {
+        mApplicationChangedCallback = applicationChangedCallback;
+    }
+
+    public void free() {
+        unRegAppReceiver();
+        AllAppInfo.clear();
+    }
+
+    public AppInfo getAppInfo(String packageName) {
+        for (AppInfo Info : AllAppInfo) {
             if (Info == null) continue;
             if (packageName == null) return null;
             if (packageName.equals(Info.getPackageName()))
@@ -181,117 +186,19 @@ public class AppUtils {
         return null;
     }
 
-    public AppInfor getAppInfor(int id) {
-        if (AllAppInfo.size() == 0) {
-            return null;
-        }
-        if (id < 0) {
-            return null;
-        }
-        if (id >= AllAppInfo.size()) {
-            return null;
-        }
-
-        return AllAppInfo.get(id);
-    }
-
-    public AppInfor getAppInforByName(String Name) {
-        for (AppInfor Info : AllAppInfo) {
-            if (Name.equals(Info.getName()))
+    public AppInfo getAppInfoByName(String Name) {
+        for (AppInfo Info : AllAppInfo) {
+            if (Info.getName().equals(Name))
                 return Info;
         }
         return null;
     }
 
-    public boolean startTheApp(AppInfor infor) {
-        if (EmptyString(infor.getPackageName())) {
-            return false;
-        }
-        Intent intent = mPackageManager.getLaunchIntentForPackage(infor.getPackageName());
-        if (intent != null) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(intent);
-            MMLog.log(TAG, "LaunchApp>>>>" + infor.getPackageName());
+    public boolean existApp(String packageName) {
+        if (getAppInfo(packageName) != null)
             return true;
-        } else {
-            MMLog.log(TAG, "LaunchApp not found>>>>" + infor.getPackageName());
+        else
             return false;
-        }
-    }
-
-    public boolean startAppByPackage(String packageName) {
-        if (EmptyString(packageName)) {
-            return false;
-        }
-        Intent intent = mPackageManager.getLaunchIntentForPackage(packageName);
-        if (intent != null) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(intent);
-            MMLog.log(TAG, "LaunchApp>>>>" + packageName);
-            return true;
-        } else {
-            MMLog.log(TAG, "LaunchApp not found>>>>" + packageName);
-            return false;
-        }
-    }
-
-    public boolean startApp(int id) {
-        if (AllAppInfo.size() == 0) {
-            return false;
-        }
-        if (id < 0) {
-            return false;
-        }
-        if (id >= AllAppInfo.size()) {
-            return false;
-        }
-        String packageName = AllAppInfo.get(id).getPackageName();
-        Intent intent = mPackageManager.getLaunchIntentForPackage(packageName);
-        if (intent != null) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(intent);
-            MMLog.log(TAG, "LaunchApp>>>>" + packageName);
-            return true;
-        } else {
-            MMLog.log(TAG, "LaunchApp not found>>>>" + packageName);
-            return false;
-        }
-    }
-
-    public boolean startApp(String name) {
-        if (EmptyString(name))
-            return false;
-        AppInfor Info = getAppInforByName(name);
-        String packageName = Info.getPackageName();
-        Intent intent = mPackageManager.getLaunchIntentForPackage(packageName);
-        if (intent != null) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(intent);
-            MMLog.log(TAG, "LaunchApp>>>>" + packageName);
-            return true;
-        } else {
-            MMLog.log(TAG, "LaunchApp not found>>>>" + packageName);
-            return false;
-        }
-    }
-
-    public void install(String filePath) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Uri contentUri = FileProvider.getUriForFile(mContext, BuildConfig.LIBRARY_PACKAGE_NAME + ".fileProvider", new File(filePath));
-            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
-        } else {
-            intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        }
-        mContext.startActivity(intent);
-    }
-
-    public void uninstall(String packageName) {
-        Uri uri = Uri.parse("package:" + packageName);
-        Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-        mContext.startActivity(intent);
     }
 
     public static String getVersionName(Context context, String packageName) {
@@ -314,6 +221,57 @@ public class AppUtils {
         } catch (PackageManager.NameNotFoundException e) {
             return "";
         }
+    }
+
+    public static boolean isAppInstalled(Context context, String packageName) {
+        if (EmptyString(packageName))
+            return false;
+        try {
+            ApplicationInfo info = context.getPackageManager().getApplicationInfo(packageName, 0);
+            return info.enabled;
+        } catch (PackageManager.NameNotFoundException e) {
+            //e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean startApp(Context context, String packageName) {
+        if (EmptyString(packageName)) {
+            return false;
+        }
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+            MMLog.log(TAG, "LaunchApp>>>>" + packageName);
+            return true;
+        } else {
+            MMLog.log(TAG, "LaunchApp not found>>>>" + packageName);
+            return false;
+        }
+    }
+
+    public static void install(Context context, String filePath) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(context, BuildConfig.LIBRARY_PACKAGE_NAME + ".fileProvider", new File(filePath));
+            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+        } else {
+            intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        context.startActivity(intent);
+    }
+
+    public static void uninstall(Context context, String packageName) {
+        Uri uri = Uri.parse("package:" + packageName);
+        Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+        context.startActivity(intent);
+    }
+
+    public static boolean isForegroundApp(Context context) {
+        return TextUtils.equals(getForegroundActivityName(context), context.getPackageName());
     }
 
     public static String getForegroundActivityName(Context context) {
@@ -340,11 +298,6 @@ public class AppUtils {
             }
         }
         return topClassName;
-    }
-
-
-    public static boolean isForegroundApp(Context context) {
-        return TextUtils.equals(getForegroundActivityName(context), context.getPackageName());
     }
 
     /**
@@ -415,4 +368,118 @@ public class AppUtils {
         return null;
     }
 
+
+   public static class AppInfo {
+        private ApplicationInfo applicationInfo;
+        private String packageName;
+        private String name;
+        private Drawable icon;
+        private long size;
+        private boolean isUserApp;//用户APP 还是系统APP
+        private boolean isRom; //安装位置
+        private String filePath;//文件位置
+        private long versionCode = 0;
+        private String versionCodeName = "0";
+
+        public AppInfo() {
+        }
+
+       public AppInfo(String name, Drawable icon) {
+           this.name = name;
+           this.icon = icon;
+       }
+
+       public ApplicationInfo getApplicationInfo() {
+            return applicationInfo;
+        }
+
+        public void setApplicationInfo(ApplicationInfo applicationInfo) {
+            this.applicationInfo = applicationInfo;
+        }
+
+        public String getPackageName() {
+            return packageName;
+        }
+
+        public void setPackageName(String packageName) {
+            this.packageName = packageName;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Drawable getIcon() {
+            return icon;
+        }
+
+        public void setIcon(Drawable icon) {
+            this.icon = icon;
+        }
+
+        public long getSize() {
+            return size;
+        }
+
+        public void setSize(long size) {
+            this.size = size;
+        }
+
+        public boolean isUserApp() {
+            return isUserApp;
+        }
+
+        public void setUserApp(boolean userApp) {
+            this.isUserApp = userApp;
+        }
+
+        public boolean isRom() {
+            return isRom;
+        }
+
+        public void setRom(boolean rom) {
+            this.isRom = rom;
+        }
+
+        public String getFilePath() {
+            return filePath;
+        }
+
+        public void setFilePath(String filePath) {
+            this.filePath = filePath;
+        }
+
+        public long getVersionCode() {
+            return versionCode;
+        }
+
+        public void setVersionCode(long versionCode) {
+            this.versionCode = versionCode;
+        }
+
+        public String getVersionCodeName() {
+            return versionCodeName;
+        }
+
+        public void setVersionCodeName(String versionCodeName) {
+            this.versionCodeName = versionCodeName;
+        }
+
+        @Override
+        public String toString() {
+            String str = "Name=" + name +
+                    ",Version=" + versionCode +
+                    ",PackageName=" + packageName +
+                    ",Ico=" + icon +
+                    ",Size=" + size +
+                    ",User=" + isUserApp +
+                    ",Rom=" + isRom +
+                    ",Path=" + filePath;
+            return str;
+        }
+    }
 }

@@ -290,11 +290,11 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     public void updatePlayingList()
     {
-        if (FileUtils.isExists(playingPath)) {
+        if (FileUtils.existDirectory(playingPath)) {
             playingList.loadFromDir(playingPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
         }
         MMLog.log(TAG,"updatePlayingList() = " + playingPath);
-        if(FileUtils.isExists(downloadPath)) {
+        if(FileUtils.existDirectory(downloadPath)) {
             this.favoriteList.loadFromDir(downloadPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
         }
         MMLog.log(TAG,"updatePlayingList() = " + downloadPath);

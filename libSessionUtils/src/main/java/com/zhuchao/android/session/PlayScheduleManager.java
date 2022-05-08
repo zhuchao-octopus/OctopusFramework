@@ -192,7 +192,7 @@ public class PlayScheduleManager implements SessionCallback {
     }
     public void copySchedulePlay(String SourDir,String DesDir)
     {
-        if(!FileUtils.isExists(SourDir+"/SchedulePlay.text")) return;
+        if(!FileUtils.existFile(SourDir+"/SchedulePlay.text")) return;
         File file = new File(DesDir);
         if (!file.exists())
             file.mkdir();

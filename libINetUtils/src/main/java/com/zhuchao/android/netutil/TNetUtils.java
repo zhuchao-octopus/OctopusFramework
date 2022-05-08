@@ -13,7 +13,6 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -32,9 +31,7 @@ import java.net.SocketException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
