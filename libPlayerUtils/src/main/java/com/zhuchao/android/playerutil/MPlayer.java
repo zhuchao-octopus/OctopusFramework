@@ -205,7 +205,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         if (mediaPlayer == null) return;
         if (mediaPlayer.isPlaying()) {
             pause();
-            MMLog.log(TAG, "playPause pause directly playStatus=" + playStatus);
+            MMLog.log(TAG, "playPause.pause playStatus=" + playStatus);
         } else {
             asyncPlayProcess(playStatus);
         }
@@ -512,7 +512,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             if (progressThread != null)
                 progressThread.finish();
             progressThread = null;
-            playStatus = PlaybackEvent.Status_NothingIdle;
+            //playStatus = PlaybackEvent.Status_NothingIdle;
         } catch (Exception e) {
             MMLog.e(TAG, "free() " + e.toString());
         }
@@ -520,8 +520,10 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     }
 
     private synchronized void ResetComponent(boolean nf) {
-        MMLog.d(TAG, "ResetComponent nf = " + nf);
-        if (nf) free();
+        MMLog.d(TAG, "ResetComponent nf = " + nf + ",playStatus = " + playStatus);
+        if (nf || (playStatus == PlaybackEvent.Status_Error)) {
+            free();
+        }
 
         try {
             if (mediaPlayer == null)
@@ -534,8 +536,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             return;
         }
 
-        try
-        {
+        try {
             if (mSurfaceView != null && (mSurfaceView.getHolder() != null)) {
                 mSurfaceView.getHolder().addCallback(this);
                 //mediaPlayer.setDisplay(mSurfaceView.getHolder());
@@ -567,18 +568,18 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                     try {
                         mediaPlayer.prepareAsync();
                     } catch (IllegalStateException e) {
-                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
-                        playStatus = PlaybackEvent.Status_RESETING;
-                        free();
-                        playStatus = PlaybackEvent.Status_Ended;
+                        //MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
+                        //playStatus = PlaybackEvent.Status_RESETING;
+                        //free();
+                        playStatus = PlaybackEvent.Status_Error;
                         MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
                         return;
                     } catch (Exception e) {
+                        //MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
+                        //playStatus = PlaybackEvent.Status_RESETING;
+                        //free();
                         MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
-                        playStatus = PlaybackEvent.Status_RESETING;
-                        free();
-                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
-                        playStatus = PlaybackEvent.Status_Ended;
+                        playStatus = PlaybackEvent.Status_Error;
                         return;
                     }
                     mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -599,7 +600,6 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                 case PlaybackEvent.Status_Playing:
                     MMLog.log(TAG, "asyncPlayProcess is playing playStatus = " + Status);
                     break;
-
                 case PlaybackEvent.Status_Paused:
                 case PlaybackEvent.Status_SEEKING:
                     MMLog.log(TAG, "asyncPlayProcess start to play directly playStatus = " + Status);

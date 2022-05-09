@@ -57,9 +57,11 @@ public class TCourierEventBus implements InvokeInterface {
         while (keepDoing) {
             if (couriers_A != null && couriers_B != null) {
                 busy_A = true;
-                poolingAB(couriers_A);
+                if(couriers_A.size() > 0)
+                   poolingAB(couriers_A);
                 busy_A = false;
-                poolingAB(couriers_B);
+                if(couriers_B.size() > 0)
+                   poolingAB(couriers_B);
             }
         }
     }
