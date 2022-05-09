@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.zhuchao.android.GOS;
+import com.zhuchao.android.TPlatform;
 import com.zhuchao.android.libfileutils.MMLog;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,7 +24,9 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String str = GOS.t507GetSystemProperty("wifi.direct.interface");
+                String str = TPlatform.t507GetSystemProperty("wifi.direct.interface");
+                MMLog.log(TAG,"t507GetSystemProperty = "+str);
+                str = TPlatform.getAudioOutputPolicy();
                 MMLog.log(TAG,"t507GetSystemProperty = "+str);
             }
         });
