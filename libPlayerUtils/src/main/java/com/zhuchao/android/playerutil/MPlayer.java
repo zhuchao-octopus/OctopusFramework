@@ -461,6 +461,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
         playStatus = PlaybackEvent.Status_Error;
         MMLog.e(TAG, "onError:" + i + "," + i1 + " playStatus = " + playStatus);
+        free();//出错主动复位
         return false;//return false to call OnCompletionListener.onCompletion()方法。
     }
 
@@ -571,7 +572,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                     } catch (IllegalStateException e) {
                         //MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
                         playStatus = PlaybackEvent.Status_RESETING;
-                        free();
+                        free();//出错主动复位
                         //playStatus = PlaybackEvent.Status_Error;
                         MMLog.e(TAG, "asyncPlayProcess().prepareAsync() reset status to " + "playStatus = " + playStatus + " " + e.toString());
                         return;
