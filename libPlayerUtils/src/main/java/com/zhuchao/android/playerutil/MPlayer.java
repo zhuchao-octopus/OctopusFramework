@@ -569,10 +569,10 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                         mediaPlayer.prepareAsync();
                     } catch (IllegalStateException e) {
                         //MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
-                        //playStatus = PlaybackEvent.Status_RESETING;
-                        //free();
-                        playStatus = PlaybackEvent.Status_Error;
-                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
+                        playStatus = PlaybackEvent.Status_RESETING;
+                        free();
+                        //playStatus = PlaybackEvent.Status_Error;
+                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() reset status to " + "playStatus = " + playStatus + " " + e.toString());
                         return;
                     } catch (Exception e) {
                         //MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());

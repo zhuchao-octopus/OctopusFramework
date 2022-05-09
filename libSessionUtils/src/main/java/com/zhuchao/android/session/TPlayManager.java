@@ -459,7 +459,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         switch (EventType) {
             case PlaybackEvent.Status_NothingIdle:
                 if (autoPlaySource >= DataID.SESSION_SOURCE_ALL) {
-                    playEventHandler(DataID.PLAY_MANAGER_PLAY_ORDER0);
+                    MMLog.log(TAG, "OnEventCallBack.EventType = " + EventType + ", " + oMedia.getPathName());
+                    playEventHandler(playOrder);
                 }
                 break;
             case PlaybackEvent.Status_Opening:
