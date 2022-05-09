@@ -173,6 +173,9 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         MMLog.log(TAG, "playPause() playStatus = " + oMedia.getPlayStatus());
         switch (oMedia.getPlayStatus()) {
             case PlaybackEvent.Status_NothingIdle:
+                MMLog.log(TAG, "PlaybackEvent.Status_NothingIdle go next");
+                playNext();//play next
+                break;
             case PlaybackEvent.Status_Opening:
                 oMedia.play();
                 break;

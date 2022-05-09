@@ -76,7 +76,11 @@ public class TUartFile implements DeviceCourierEventListener {
             MMLog.d(TAG, "device does not work ");
             return;
         }
-
+        if(bytes.length < 0)
+        {
+            MMLog.d(TAG, "no data to write ");
+            return;
+        }
         try {
             if (serialPort.getOutputStream() != null) {
                 serialPort.getOutputStream().write(bytes);
@@ -157,9 +161,12 @@ public class TUartFile implements DeviceCourierEventListener {
 
     @Override
     public synchronized boolean onCourierEvent(EventCourier eventCourier) {
+        if(serialPort == null) return false;
         if (eventCourier.getId() == DataID.DEVICE_EVENT_WRITE
-                && eventCourier.getTag().equals(serialPort.getDevice().getAbsolutePath())) {
-            writeBytes(eventCourier.getDatas());
+                && eventCourier.getTag().equals(serialPort.getDevice().getAbsolutePath()))
+        {
+            if(eventCourier != null && eventCourier.getDatas() !=null)
+               writeBytes(eventCourier.getDatas());
             return true;
         }
         return false;
