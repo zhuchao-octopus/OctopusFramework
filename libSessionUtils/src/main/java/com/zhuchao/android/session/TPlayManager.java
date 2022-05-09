@@ -172,10 +172,10 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         }
         MMLog.log(TAG, "playPause() playStatus = " + oMedia.getPlayStatus());
         switch (oMedia.getPlayStatus()) {
-            case PlaybackEvent.Status_NothingIdle:
-                MMLog.log(TAG, "PlaybackEvent.Status_NothingIdle go next");
-                playNext();//play next
-                break;
+            //case PlaybackEvent.Status_NothingIdle:
+                //MMLog.log(TAG, "PlaybackEvent.Status_NothingIdle go next");
+           //     playNext();//play next
+           //     break;
             case PlaybackEvent.Status_Opening:
                 oMedia.play();
                 break;
@@ -190,6 +190,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                 break;
             case PlaybackEvent.Status_Ended:
             case PlaybackEvent.Status_Error:
+            case PlaybackEvent.Status_NothingIdle:
             default:
                 playNext();//play next
                 break;
@@ -458,11 +459,6 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         }
         switch (EventType) {
             case PlaybackEvent.Status_NothingIdle:
-                if (autoPlaySource >= DataID.SESSION_SOURCE_ALL) {
-                    MMLog.log(TAG, "OnEventCallBack.EventType = " + EventType + ", " + oMedia.getPathName());
-                    playEventHandler(playOrder);
-                }
-                break;
             case PlaybackEvent.Status_Opening:
             case PlaybackEvent.Status_Buffering:
             case PlaybackEvent.Status_Playing:
