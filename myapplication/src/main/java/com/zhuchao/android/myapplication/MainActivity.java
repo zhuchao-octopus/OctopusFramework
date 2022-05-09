@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
                 String str = TPlatform.t507GetSystemProperty("wifi.direct.interface");
                 MMLog.log(TAG,"t507GetSystemProperty = "+str);
                 str = TPlatform.getAudioOutputPolicy();
-                MMLog.log(TAG,"t507GetSystemProperty = "+str);
+                MMLog.log(TAG,"getAudioOutputPolicy = "+str);
             }
         });
 
