@@ -203,9 +203,10 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void playPause() {
         if (mediaPlayer == null) return;
-        if (mediaPlayer.isPlaying()) {
+        //if (mediaPlayer.isPlaying()) {
+        if (playStatus == PlaybackEvent.Status_Playing) {
             pause();
-            MMLog.log(TAG, "playPause.pause playStatus=" + playStatus);
+            MMLog.log(TAG, "playPause.pause playStatus = " + playStatus);
         } else {
             asyncPlayProcess(playStatus);
         }
@@ -459,7 +460,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
         playStatus = PlaybackEvent.Status_Error;
-        MMLog.log(TAG, "onError:" + i + "," + i1 + " playStatus = " + playStatus);
+        MMLog.e(TAG, "onError:" + i + "," + i1 + " playStatus = " + playStatus);
         return false;//return false to call OnCompletionListener.onCompletion()方法。
     }
 
