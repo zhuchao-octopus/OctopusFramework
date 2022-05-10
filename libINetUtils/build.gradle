@@ -47,10 +47,9 @@ dependencies {
     api project(path: ':libCallbackEvent')
     api project(path: ':libFileUitls')
 
-    api(platform("com.squareup.okhttp3:okhttp-bom:4.9.3"))
-    api("com.squareup.okhttp3:okhttp:4.9.3")
-    api("com.squareup.okhttp3:logging-interceptor:4.9.3")
-    api("com.google.code.gson:gson:2.9.0")
+    api ('com.google.code.gson:gson:2.9.0')
+    api('com.squareup.okhttp3:okhttp:5.0.0-alpha.7')
+    api ('com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.7')
 }
 
 
