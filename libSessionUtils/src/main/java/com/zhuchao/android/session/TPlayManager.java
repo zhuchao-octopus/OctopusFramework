@@ -224,14 +224,14 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             MMLog.log(TAG, "setSurfaceView = null");
             return;
         }
-        if (sfView.equals(this.surfaceView)) {
-            MMLog.log(TAG, "setSurfaceView same surface view = " + sfView.getId());
-            return;
-        }
+        //if (sfView.equals(this.surfaceView)) {
+        //    MMLog.log(TAG, "setSurfaceView same surface view = " + sfView.getId());
+        //    return;
+        //}
         this.surfaceView = sfView;
-        if (oMedia != null) {
-            oMedia.setSurfaceView(this.surfaceView);
-        }
+        //if (oMedia != null) {
+       //     oMedia.setSurfaceView(this.surfaceView);
+       // }
     }
 
     public void setOption(String option) {
@@ -459,6 +459,12 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         }
         switch (EventType) {
             case PlaybackEvent.Status_NothingIdle:
+                if (autoPlaySource >= DataID.SESSION_SOURCE_ALL) //立即跳转到收藏列表
+                {
+                    MMLog.log(TAG, "OnEventCallBack.EventType = " + EventType + ", " + oMedia.getPathName());
+                    playEventHandler(playOrder);//继续播放，跳到上一首或下一首
+                }
+                break;
             case PlaybackEvent.Status_Opening:
             case PlaybackEvent.Status_Buffering:
             case PlaybackEvent.Status_Playing:

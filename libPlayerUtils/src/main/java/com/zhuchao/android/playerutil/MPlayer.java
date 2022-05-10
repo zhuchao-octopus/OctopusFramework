@@ -47,7 +47,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void setSource(String filePath) {
         try {
-            ResetComponent(false);
+            PreparePlayerComponent();
             playStatus = PlaybackEvent.Status_Opening;
             CallbackProgress(0);
             mediaPlayer.setDataSource(filePath);
@@ -66,7 +66,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void setSource(Uri uri) {
         try {
-            ResetComponent(false);
+            PreparePlayerComponent();
             playStatus = PlaybackEvent.Status_Opening;
             CallbackProgress(0);
             mediaPlayer.setDataSource(mContext, uri);
@@ -85,7 +85,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void setSource(AssetFileDescriptor afd) {
         try {
-            ResetComponent(false);
+            PreparePlayerComponent();
             playStatus = PlaybackEvent.Status_Opening;
             CallbackProgress(0);
             mediaPlayer.setDataSource(afd);
@@ -104,7 +104,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void setSource(FileDescriptor fd) {
         try {
-            ResetComponent(false);
+            PreparePlayerComponent();
             playStatus = PlaybackEvent.Status_Opening;
             CallbackProgress(0);
             mediaPlayer.setDataSource(fd);
@@ -124,9 +124,17 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void setSurfaceView(SurfaceView surfaceView) {
         if (surfaceView == null) return;
-        if (surfaceView == mSurfaceView) return;
         mSurfaceView = surfaceView;
         mTextureView = null;
+        MMLog.d(TAG, "setSurfaceView to  " + surfaceView.toString());
+        try {
+            if (mSurfaceView != null && (mSurfaceView.getHolder() != null)) {
+                mSurfaceView.getHolder().addCallback(this);
+                //mediaPlayer.setDisplay(mSurfaceView.getHolder());
+            } else MMLog.log(TAG, "setSurfaceView = null");
+        } catch (Exception e) {
+            MMLog.e(TAG, "setSurfaceView mSurfaceView "+e.toString());
+        }
     }
 
     @Override
@@ -139,9 +147,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     public void reAttachSurfaceView(SurfaceView surfaceView) {
         if (surfaceView == null) return;
         if (surfaceView == mSurfaceView) return;
-        free();
         setSurfaceView(surfaceView);
-        ResetComponent(false);
         MMLog.log(TAG, "surfaceView reattached successful");
     }
 
@@ -187,7 +193,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     public void play() {
         if (mediaPlayer == null) return;
         try {
-            asyncPlayProcess(playStatus);
+            AsyncPlayProcess(playStatus);
         } catch (Exception e) {
             MMLog.e(TAG, "play() " + "playStatus = " + playStatus + " " + e.getMessage());
         }
@@ -208,7 +214,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             pause();
             MMLog.log(TAG, "playPause.pause playStatus = " + playStatus);
         } else {
-            asyncPlayProcess(playStatus);
+            AsyncPlayProcess(playStatus);
         }
 
     }
@@ -219,6 +225,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         if (playStatus == PlaybackEvent.Status_Stopped) return;
         try {
             mediaPlayer.stop();
+            ResetSurfaceView();
         } catch (IllegalStateException e) {
             MMLog.e(TAG, "stop() " + e.toString());
         }
@@ -448,8 +455,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
         //playStatus = PlaybackEvent.Status_Error;
         MMLog.e(TAG, "onError:" + i + "," + i1 + " playStatus = " + playStatus);
-        //free();//出错主动复位
-        //CallbackProgress(0);//主动通知错误，避免假死现象
+        ResetPlayerComponent();
         return false;//return false to call OnCompletionListener.onCompletion()方法。
     }
 
@@ -463,7 +469,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     public void onSeekComplete(MediaPlayer mediaPlayer) {
         MMLog.log(TAG, "onSeekComplete:" + mediaPlayer.toString());
         if (mediaPlayer == null) return;
-        asyncPlayProcess(PlaybackEvent.Status_SEEKING);
+        AsyncPlayProcess(PlaybackEvent.Status_SEEKING);
     }
 
     @Override
@@ -488,6 +494,14 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
         MMLog.log(TAG, "surfaceChanged," + surfaceHolder.toString());
+        try {
+            if (mediaPlayer != null && surfaceHolder != null) {
+                mediaPlayer.setDisplay(surfaceHolder);
+                //surfaceHolder.setFixedSize(mediaPlayer.getVideoWidth(), mediaPlayer.getVideoHeight());
+            }
+        } catch (Exception e) {
+            MMLog.e(TAG, "surfaceChanged() " + e.toString());
+        }
     }
 
     @Override
@@ -505,7 +519,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         try {
             //mediaPlayer.stop();
             mediaPlayer.reset();
-            //mSurfaceView.getHolder().removeCallback(this);
+            ResetSurfaceView();
             mediaPlayer.setOnCompletionListener(null);
             mediaPlayer.setOnSeekCompleteListener(null);
             mediaPlayer.setOnErrorListener(null);
@@ -515,39 +529,27 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             if (progressThread != null)
                 progressThread.finish();
             progressThread = null;
-            //playStatus = PlaybackEvent.Status_NothingIdle;
+
         } catch (Exception e) {
             MMLog.e(TAG, "free() " + e.toString());
         }
         playStatus = PlaybackEvent.Status_NothingIdle;
     }
 
-    private synchronized void ResetComponent(boolean nf) {
-        MMLog.d(TAG, "ResetComponent nf = " + nf + ",playStatus = " + playStatus);
-        if (nf || (playStatus == PlaybackEvent.Status_Error)) {
-            free();
+    private synchronized void PreparePlayerComponent() {
+        MMLog.d(TAG, "PreparePlayerComponent() ,playStatus = " + playStatus);
+        if (playStatus == PlaybackEvent.Status_Error) {
+            ResetPlayerComponent();
         }
-
         try {
             if (mediaPlayer == null)
                 mediaPlayer = new MediaPlayer();
             mediaPlayer.reset();//必须调用mediaPlayer.prepareAsync();
         } catch (Exception e) {
-            MMLog.e(TAG, "ResetComponent create failed " + e.toString());
+            MMLog.e(TAG, "PreparePlayerComponent create failed " + e.toString());
             mediaPlayer = null;
             playStatus = PlaybackEvent.Status_Error;
             return;
-        }
-
-        try {
-            if (mSurfaceView != null && (mSurfaceView.getHolder() != null)) {
-                mSurfaceView.getHolder().addCallback(this);
-                //mediaPlayer.setDisplay(mSurfaceView.getHolder());
-            } else MMLog.log(TAG, "ResetComponent.mSurfaceView = null");
-        } catch (Exception e) {
-            MMLog.e(TAG, "ResetComponent mSurfaceView " + e.toString());
-            //这里可能报异常，setSource后要重新 setSurfaceView
-            //setSurfaceView 异常，依然可以播放，此处异常不重要
         }
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setOnCompletionListener(this);
@@ -558,12 +560,34 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         StartPlayProgressThread(); //开启进度 pooling 线程
     }
 
-    private synchronized void asyncPlayProcess(int Status) {
-        MMLog.log(TAG, "asyncPlayProcess() playStatus = " + Status);
+    private synchronized void ResetPlayerComponent() {
+        if (mediaPlayer == null) return;
+        try {
+            mediaPlayer.reset();
+            mediaPlayer.setOnCompletionListener(null);
+            mediaPlayer.setOnSeekCompleteListener(null);
+            mediaPlayer.setOnErrorListener(null);
+            mediaPlayer.setOnBufferingUpdateListener(null);
+            mediaPlayer.release();
+            mediaPlayer = null;
+        } catch (Exception e) {
+            MMLog.e(TAG, "ResetPlayerComponent() " + e.toString());
+        }
+    }
+
+    private void ResetSurfaceView()
+    {
+        if (mSurfaceView != null && (mSurfaceView.getHolder() != null))
+            mSurfaceView.getHolder().removeCallback(this);
+        mSurfaceView = null;
+    }
+    //错误处理，播放状态异常内部自动复位
+    private synchronized void AsyncPlayProcess(int Status) {
+        MMLog.log(TAG, "AsyncPlayProcess() enter, playStatus = " + Status);
         try {
             switch (Status) {
                 case PlaybackEvent.Status_NothingIdle:
-                    MMLog.log(TAG, "asyncPlayProcess player is idle, nothing to do playStatus = " + Status);
+                    MMLog.log(TAG, "AsyncPlayProcess() player is idle, nothing to do playStatus = " + Status);
                     break;
                 case PlaybackEvent.Status_Stopped:
                 case PlaybackEvent.Status_Opening:
@@ -571,12 +595,12 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                     mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                         @Override
                         public void onPrepared(MediaPlayer mp) {
-                            MMLog.log(TAG, "asyncPlayProcess start to play async... playStatus = " + Status);
+                            MMLog.log(TAG, "AsyncPlayProcess() async start playing ... playStatus = " + Status);
                             playStatus = PlaybackEvent.Status_Playing;
                             try {
                                 lDuration = mediaPlayer.getDuration();
                             } catch (Exception e) {
-                                MMLog.e(TAG, "asyncPlayProcess().getDuration() " + "playStatus = " + playStatus + " " + e.toString());
+                                MMLog.e(TAG, "AsyncPlayProcess().getDuration() " + "playStatus = " + playStatus + " " + e.toString());
                             }
                             mp.start();
                         }
@@ -584,43 +608,37 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                     try {
                         mediaPlayer.prepareAsync();
                     } catch (IllegalStateException e) {
-                        //playStatus = PlaybackEvent.Status_RESETING;
-                        //free();//出错主动复位
-                        //MMLog.e(TAG, "asyncPlayProcess().prepareAsync() reset status to " + "playStatus = " + playStatus + " " + e.toString());
-                        //CallbackProgress(0);//主动通知错误，避免假死现象，进入空闲模式
-
-                        playStatus = PlaybackEvent.Status_Error;//主动跳到下一曲
-                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
-                    } catch (Exception e) {
-                        //playStatus = PlaybackEvent.Status_RESETING;
-                        //free();//出错主动复位
-                        //MMLog.e(TAG, "asyncPlayProcess().prepareAsync() reset status to " + "playStatus = " + playStatus + " " + e.toString());
-                        //CallbackProgress(0);//主动通知错误，避免假死现象，进入空闲模式
-
+                        //onError() 复位后进入end模式跳到下一曲
                         playStatus = PlaybackEvent.Status_Error;
-                        MMLog.e(TAG, "asyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
+                        MMLog.e(TAG, "AsyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
+                    } catch (Exception e) {//其它异常
+                        playStatus = PlaybackEvent.Status_RESETING;
+                        playStatus = PlaybackEvent.Status_Error;
+                        ResetPlayerComponent();//自动复位
+                        //MMLog.e(TAG, "asyncPlayProcess().prepareAsync() reset status to " + "playStatus = " + playStatus + " " + e.toString());
+                        MMLog.e(TAG, "AsyncPlayProcess().prepareAsync() " + "playStatus = " + playStatus + " " + e.toString());
                     }
                     break;
                 case PlaybackEvent.Status_Buffering:
                 case PlaybackEvent.Status_Playing:
-                    MMLog.log(TAG, "asyncPlayProcess is playing playStatus = " + Status);
+                    MMLog.log(TAG, "AsyncPlayProcess is playing playStatus = " + Status);
                     break;
                 case PlaybackEvent.Status_Paused:
                 case PlaybackEvent.Status_SEEKING:
-                    MMLog.log(TAG, "asyncPlayProcess start to play directly playStatus = " + Status);
+                    MMLog.log(TAG, "AsyncPlayProcess start to play directly playStatus = " + Status);
                     playStatus = PlaybackEvent.Status_Playing;
                     mediaPlayer.start();
                     break;
                 case PlaybackEvent.Status_Ended:
                 case PlaybackEvent.Status_Error:
                 default:
-                    MMLog.log(TAG, "asyncPlayProcess do nothing end/error, playStatus = " + Status);
+                    MMLog.log(TAG, "AsyncPlayProcess do nothing end/error, playStatus = " + Status);
                     break;
             }
         } catch (IllegalStateException e) {
-            MMLog.e(TAG, "asyncPlayProcess() " + "playStatus = " + playStatus + " " + e.toString());
+            MMLog.e(TAG, "AsyncPlayProcess() " + "playStatus = " + playStatus + " " + e.toString());
         } catch (Exception e) {
-            MMLog.e(TAG, "asyncPlayProcess() " + "playStatus = " + playStatus + " " + e.toString());
+            MMLog.e(TAG, "AsyncPlayProcess() " + "playStatus = " + playStatus + " " + e.toString());
         }
     }
 
