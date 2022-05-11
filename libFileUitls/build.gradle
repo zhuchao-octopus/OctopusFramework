@@ -54,5 +54,6 @@ task copyJniLibs(type: Copy) {
 
 dependencies {
     api project(path: ':libCallbackEvent')
-    implementation 'androidx.appcompat:appcompat:1.3.1'
+    api('androidx.appcompat:appcompat:1.3.1')
+    api('androidx.annotation:annotation:1.3.0-alpha01')
 }

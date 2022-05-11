@@ -175,24 +175,30 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public OMedia onView(SurfaceView playView) {
-        getOPlayer().setSurfaceView(playView);
+        setSurfaceView(playView);
         return this;
     }
 
     public void setSurfaceView(SurfaceView surfaceView) {
         if (surfaceView == null) return;
+        if (getOPlayer().getSurfaceView() == surfaceView)
+        {
+          return;
+        }
         //if (!isPlayerReady()) return;//此处允许重新获取播放对象
         if (getOPlayer().getSurfaceView() == null) {
             getOPlayer().setSurfaceView(surfaceView);
         } else if (getOPlayer().getTAG().startsWith(MPLAYER)) {
-            stop();
-            getOPlayer().reAttachSurfaceView(surfaceView);
-            //play();
+            reAttachSurfaceView(surfaceView);
         } else {
-            getOPlayer().stop();
-            getOPlayer().reAttachSurfaceView(surfaceView);
+            reAttachSurfaceView(surfaceView);
             //getOPlayer().resume();
         }
+    }
+
+    public void reAttachSurfaceView(SurfaceView surfaceView)
+    {
+        getOPlayer().reAttachSurfaceView(surfaceView);
     }
 
     public void setSurfaceView(TextureView textureView) {

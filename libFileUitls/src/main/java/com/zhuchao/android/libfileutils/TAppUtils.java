@@ -223,6 +223,18 @@ public class TAppUtils {
         }
     }
 
+    public boolean isAppInstalled(String packageName) {
+        if (EmptyString(packageName))
+            return false;
+        try {
+            ApplicationInfo info = mContext.getPackageManager().getApplicationInfo(packageName, 0);
+            return info.enabled;
+        } catch (PackageManager.NameNotFoundException e) {
+            //e.printStackTrace();
+            return false;
+        }
+    }
+
     public static boolean isAppInstalled(Context context, String packageName) {
         if (EmptyString(packageName))
             return false;
@@ -235,6 +247,22 @@ public class TAppUtils {
         }
     }
 
+    public boolean startApp(String packageName) {
+        if (EmptyString(packageName)) {
+            return false;
+        }
+        Intent intent = mContext.getPackageManager().getLaunchIntentForPackage(packageName);
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+            MMLog.log(TAG, "startApp ... " + packageName);
+            return true;
+        } else {
+            MMLog.log(TAG, "app not found " + packageName);
+            return false;
+        }
+    }
+
     public static boolean startApp(Context context, String packageName) {
         if (EmptyString(packageName)) {
             return false;
@@ -243,12 +271,25 @@ public class TAppUtils {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
-            MMLog.log(TAG, "LaunchApp>>>>" + packageName);
+            MMLog.log(TAG, "startApp ... " + packageName);
             return true;
         } else {
-            MMLog.log(TAG, "LaunchApp not found>>>>" + packageName);
+            MMLog.log(TAG, "app not found " + packageName);
             return false;
         }
+    }
+
+    public void install(String filePath) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(mContext, BuildConfig.LIBRARY_PACKAGE_NAME + ".fileProvider", new File(filePath));
+            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+        } else {
+            intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        mContext.startActivity(intent);
     }
 
     public static void install(Context context, String filePath) {
@@ -262,6 +303,12 @@ public class TAppUtils {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
         context.startActivity(intent);
+    }
+
+    public void uninstall(String packageName) {
+        Uri uri = Uri.parse("package:" + packageName);
+        Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+        mContext.startActivity(intent);
     }
 
     public static void uninstall(Context context, String packageName) {
@@ -369,7 +416,7 @@ public class TAppUtils {
     }
 
 
-   public static class AppInfo {
+    public static class AppInfo {
         private ApplicationInfo applicationInfo;
         private String packageName;
         private String name;
@@ -384,12 +431,12 @@ public class TAppUtils {
         public AppInfo() {
         }
 
-       public AppInfo(String name, Drawable icon) {
-           this.name = name;
-           this.icon = icon;
-       }
+        public AppInfo(String name, Drawable icon) {
+            this.name = name;
+            this.icon = icon;
+        }
 
-       public ApplicationInfo getApplicationInfo() {
+        public ApplicationInfo getApplicationInfo() {
             return applicationInfo;
         }
 
