@@ -7,6 +7,7 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 
 import com.zhuchao.android.callbackevent.PlayerCallback;
+import com.zhuchao.android.callbackevent.PlayerStatusInfo;
 
 import java.io.FileDescriptor;
 import java.util.Map;
@@ -18,11 +19,17 @@ public abstract class PlayControl {
     protected TextureView mTextureView = null;
     protected SurfaceView mSurfaceView = null;
     protected Boolean hwDecoderEnabled = true;
-    protected int volumeValue = 30;
+    protected int DefaultVolumeValue = 50;
+    protected PlayerStatusInfo playerStatusInfo;
+
 
     public PlayControl(Context context, PlayerCallback callback) {
         mContext = context;
         playerEventCallBack = callback;
+        playerStatusInfo = new PlayerStatusInfo();
+        playerStatusInfo.setVolume(DefaultVolumeValue);
+        playerStatusInfo.setSurfacePrepared(false);
+        playerStatusInfo.setSourcePrepared(false);
     }
 
     public abstract String getTAG();
@@ -116,6 +123,10 @@ public abstract class PlayControl {
     public abstract void setAudioTrack(int index);
 
     public abstract void deselectTrack(int index);
+
+    public PlayerStatusInfo getPlayerStatusInfo() {
+        return playerStatusInfo;
+    }
 
     public abstract void free();
 

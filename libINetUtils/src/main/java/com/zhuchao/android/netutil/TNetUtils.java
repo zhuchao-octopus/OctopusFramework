@@ -142,7 +142,7 @@ public class TNetUtils {
         networkInformation.isConnected = isLocalNetConnected();
         networkInformation.netType = getConnectType();
         networkInformation.localIP = getLocalIpAddress();
-        networkInformation.MAC = getEthernetMacFromFile();//this.getLanMac();
+        networkInformation.MAC = getDeviceMAC();
         networkInformation.wifiMAC = getWiFiMacAddress();//this.getWifiMac();
         if (isAvailable())
             GetInternetIp();
@@ -278,7 +278,6 @@ public class TNetUtils {
         return "00:00:00:00:00:00";
     }
 
-
     // 从系统文件中获取以太网MAC地址
     public static String getEthernetMacFromFile() {
         String sMac = null;
@@ -288,7 +287,7 @@ public class TNetUtils {
         }
         if (EmptyString(sMac)) {
             try {
-                return sMac = loadFileAsString("/sys/class/net/wlan0/address").toUpperCase().substring(0, 17);
+                sMac = loadFileAsString("/sys/class/net/wlan0/address").toUpperCase().substring(0, 17);
             } catch (IOException e) {
             }
         }
@@ -367,12 +366,11 @@ public class TNetUtils {
             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
                 NetworkInterface networkInterface = en.nextElement();
                 for (Enumeration<InetAddress> enumeration = networkInterface
-                        .getInetAddresses(); enumeration.hasMoreElements(); )
-                {
+                        .getInetAddresses(); enumeration.hasMoreElements(); ) {
                     InetAddress inetAddress = enumeration.nextElement();
-                    if (!inetAddress.isLoopbackAddress() ) {
+                    if (!inetAddress.isLoopbackAddress()) {
                         String ip = inetAddress.getHostAddress();
-                        if(MatcherIP4(ip)) return ip;
+                        if (MatcherIP4(ip)) return ip;
                     }
                 }
             }

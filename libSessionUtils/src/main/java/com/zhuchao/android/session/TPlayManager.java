@@ -17,14 +17,13 @@ import androidx.annotation.NonNull;
 import com.zhuchao.android.callbackevent.NormalCallback;
 import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
+import com.zhuchao.android.callbackevent.PlayerStatusInfo;
 import com.zhuchao.android.libfileutils.DataID;
 import com.zhuchao.android.libfileutils.FileUtils;
 import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.video.Movie;
 import com.zhuchao.android.video.OMedia;
 import com.zhuchao.android.video.VideoList;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.FileDescriptor;
 
@@ -44,7 +43,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     private VideoList playingList = null;
     private VideoList favoriteList = null;
     private long lStartTick = 0;
-    private int bLastPlayerStatus = 0;
+    //private int bLastErrorStatus = 0;
 
     public TPlayManager(Context mContext, SurfaceView sfView) {
         this.context = mContext;
@@ -153,12 +152,12 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         if (oMedia != null) {
             oMedia.stop();
             oMedia.free();
+            oMedia = null;
         }
     }
 
     public synchronized void resumePlay() {
         if (oMedia != null) {
-            oMedia.setSurfaceView(this.surfaceView);
             oMedia.resume();
         } else {
             autoPlay();
@@ -178,17 +177,18 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         MMLog.log(TAG, "playPause() playStatus = " + oMedia.getPlayStatus());
         switch (oMedia.getPlayStatus()) {
             //case PlaybackEvent.Status_NothingIdle:
-                //MMLog.log(TAG, "PlaybackEvent.Status_NothingIdle go next");
-           //     playNext();//play next
-           //     break;
+            //MMLog.log(TAG, "PlaybackEvent.Status_NothingIdle go next");
+            //     playNext();//play next
+            //     break;
             case PlaybackEvent.Status_Opening:
-                oMedia.play();
-                break;
             case PlaybackEvent.Status_Buffering:
                 break;
             case PlaybackEvent.Status_Playing:
             case PlaybackEvent.Status_Paused:
-                oMedia.playPause();
+                if (oMedia.getFPlayer() != null && oMedia.getFPlayer().getPlayerStatusInfo().isSourcePrepared())
+                    oMedia.playPause();
+                else
+                    autoPlay();
                 break;
             case PlaybackEvent.Status_Stopped:
                 resumePlay();
@@ -235,13 +235,22 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         //    MMLog.log(TAG, "setSurfaceView same surface view = " + sfView.getId());
         //    return;
         //}
-        if (oMedia != null && oMedia.isPlaying()) {//立即生效
+        if (oMedia != null) {
             oMedia.setSurfaceView(this.surfaceView);
         }
     }
 
-    public synchronized void setSurfaceViewDelay(@NonNull  SurfaceView sfView) {
+    public synchronized void setSurfaceViewDelay(@NonNull SurfaceView sfView) {
         this.surfaceView = sfView;
+    }
+
+    public synchronized void attachSurfaceView(@NonNull SurfaceView sfView)
+    {
+        this.surfaceView = sfView;
+        if(oMedia != null)
+        {
+            oMedia.reAttachSurfaceView(surfaceView);
+        }
     }
 
     public void setOption(String option) {
@@ -295,28 +304,28 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     public synchronized void setDownloadPath(String downloadDirectory) {
         this.downloadPath = FileUtils.getDownloadDir(downloadDirectory);//播放目录和，下载缓存目录不一样;
-        if(EmptyString(downloadPath)) {
+        if (EmptyString(downloadPath)) {
             MMLog.log(TAG, "get getDownloadDir() failed downloadPath = " + this.downloadPath);
             return;
         }
         this.favoriteList.loadFromDir(this.downloadPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
     }
 
-    public void updatePlayingList()
-    {
+    public void updatePlayingList() {
         if (FileUtils.existDirectory(playingPath)) {
             playingList.loadFromDir(playingPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
         }
-        MMLog.log(TAG,"updatePlayingList() = " + playingPath);
-        if(FileUtils.existDirectory(downloadPath)) {
+        MMLog.log(TAG, "updatePlayingList() = " + playingPath);
+        if (FileUtils.existDirectory(downloadPath)) {
             this.favoriteList.loadFromDir(downloadPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
         }
-        MMLog.log(TAG,"updatePlayingList() = " + downloadPath);
+        MMLog.log(TAG, "updatePlayingList() = " + downloadPath);
     }
+
     public void addSource(String Url) {
         Movie movie = new Movie(Url);
         String fileName = FileUtils.getFileName(movie.getsUrl());
-        if(NotEmptyString(fileName))
+        if (NotEmptyString(fileName))
             movie.setName(fileName);
         playingList.add(new OMedia(movie));
     }
@@ -389,7 +398,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     private OMedia getNextAvailable() {
         OMedia ooMedia = null;
-        MMLog.log(TAG, "getNextAvailable() playingList.count = "+playingList.getCount()+" favoriteList.count = "+favoriteList.getCount());
+        MMLog.log(TAG, "getNextAvailable() playingList.count = " + playingList.getCount() + " favoriteList.count = " + favoriteList.getCount());
         if (favoriteList.exist(oMedia))
             ooMedia = favoriteList.getNextAvailable(oMedia);
         else
@@ -447,31 +456,33 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             default:
                 break;
         }
-        String str = " (playingList = "+playingList.getCount()+",favoriteList = "+favoriteList.getCount()+")";
+        String str = " (playingList = " + playingList.getCount() + ",favoriteList = " + favoriteList.getCount() + ")";
         if (ooMedia != null) {
-            MMLog.log(TAG, "Auto play " + ooMedia.getPathName() +str);
+            MMLog.log(TAG, "Auto play    " + ooMedia.getPathName() + str);
+            ooMedia.setRestorePlay(true);
             startPlay(ooMedia);
         } else {
-           //MMLog.log(TAG, "No oMedia found in playing list");
+            //MMLog.log(TAG, "No oMedia found in playing list");
         }
     }
 
     @Override
-    public void onEventPlayerStatus(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
+    public void onEventPlayerStatus(PlayerStatusInfo playerStatusInfo) {
         if (this.callback != null) {
             //this.callback.OnEventCallBack(EventType, TimeChanged, LengthChanged, PositionChanged, OutCount, ChangedType, ChangedID, Buffering, Length);
             Message msg = playHandler.obtainMessage();
-            msg.what = EventType;
-            msg.arg1 = (int) PositionChanged;
-            msg.arg2 = (int) Length;
+            msg.obj = playerStatusInfo;
+            msg.what = playerStatusInfo.getEventType();
+            msg.arg1 = (int) playerStatusInfo.getPositionChanged();
+            msg.arg2 = (int) playerStatusInfo.getLengthChanged();
             playHandler.sendMessage(msg);
         }
 
-        switch (EventType) {
+        switch (playerStatusInfo.getEventType()) {
             case PlaybackEvent.Status_NothingIdle:
                 if (autoPlaySource >= DataID.SESSION_SOURCE_ALL) //立即跳转到收藏列表
                 {
-                    MMLog.log(TAG, "OnEventCallBack.EventType = " + EventType + ", " + oMedia.getPathName());
+                    MMLog.log(TAG, "OnEventCallBack.EventType = " + playerStatusInfo.getEventType() + ", " + oMedia.getPathName());
                     playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                 }
                 break;
@@ -483,13 +494,11 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             case PlaybackEvent.MediaChanged:
                 break;
             case PlaybackEvent.Status_Ended:
-                MMLog.log(TAG, "OnEventCallBack.EventType = " + EventType + ", " + oMedia.getPathName());
+                MMLog.log(TAG, "OnEventCallBack.EventType = Status_Ended, " + oMedia.getPathName());
                 playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                 break;
             case PlaybackEvent.Status_Error:
-                bLastPlayerStatus = EventType;
-                //stopFree();
-                MMLog.log(TAG, "OnEventCallBack.EventType = " + EventType + ", " + oMedia.getPathName());
+                MMLog.log(TAG, "OnEventCallBack.EventType = Status_Error, stop play " + oMedia.getPathName());
                 playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                 break;
         }
@@ -545,19 +554,28 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if(bLastPlayerStatus == PlaybackEvent.Status_Error)
-            {
-               if(msg.what == PlaybackEvent.Status_Playing)
-               {
-                   try {
-                       oMedia.reAttachSurfaceView(surfaceView);
-                       bLastPlayerStatus = 0;
-                   } catch (Exception e) {
-                       //e.printStackTrace();
-                   }
-               }
+            PlayerStatusInfo playerStatusInfo = (PlayerStatusInfo) msg.obj;
+            if (oMedia == null || oMedia.getFPlayer() == null) return;
+
+            switch (playerStatusInfo.getEventType()) {
+                //case PlaybackEvent.Status_NothingIdle:
+                //case PlaybackEvent.Status_Opening:
+                case PlaybackEvent.Status_Buffering:
+                case PlaybackEvent.Status_Playing:
+                //case PlaybackEvent.Status_Paused:
+                //case PlaybackEvent.Status_Stopped:
+                    if (playerStatusInfo.isSurfacePrepared() == false)
+                    {
+                        //oMedia.reAttachSurfaceView(surfaceView);
+                        //playerStatusInfo.setLastError(0);
+                        MMLog.log(TAG,"playerStatusInfo.isSurfacePrepared() = false");
+                    }
+                    break;
+                case PlaybackEvent.Status_Ended:
+                case PlaybackEvent.Status_Error:
+                break;
             }
-            callback.onEventPlayerStatus(msg.what, msg.arg1, msg.arg1, msg.arg1, 0, 0, 0, 0, msg.arg2);
+            callback.onEventPlayerStatus(playerStatusInfo);
         }
     };
 

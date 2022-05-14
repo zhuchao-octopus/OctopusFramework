@@ -11,8 +11,11 @@ import android.net.Uri;
 import android.view.SurfaceView;
 import android.view.TextureView;
 
+import androidx.annotation.NonNull;
+
 import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
+import com.zhuchao.android.callbackevent.PlayerStatusInfo;
 import com.zhuchao.android.libfileutils.FileUtils;
 import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.libfileutils.MediaFile;
@@ -179,21 +182,20 @@ public class OMedia implements Serializable, PlayerCallback {
         return this;
     }
 
-    public void setSurfaceView(SurfaceView surfaceView) {
-        if (surfaceView == null) return;
+    public void setSurfaceView(@NonNull SurfaceView surfaceView) {
         if (getOPlayer().getSurfaceView() == surfaceView)
         {
           return;
         }
         //if (!isPlayerReady()) return;//此处允许重新获取播放对象
-        if (getOPlayer().getSurfaceView() == null) {
-            getOPlayer().setSurfaceView(surfaceView);
-        } else if (getOPlayer().getTAG().startsWith(MPLAYER)) {
-            reAttachSurfaceView(surfaceView);
-        } else {
-            reAttachSurfaceView(surfaceView);
+        //if (getOPlayer().getSurfaceView() == null) {
+        getOPlayer().setSurfaceView(surfaceView);
+        //} else if (getOPlayer().getTAG().startsWith(MPLAYER)) {
+        //    reAttachSurfaceView(surfaceView);
+        //} else {
+        //    reAttachSurfaceView(surfaceView);
             //getOPlayer().resume();
-        }
+        //}
     }
 
     public void reAttachSurfaceView(SurfaceView surfaceView)
@@ -219,14 +221,19 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public void stop() {
-        if (isPlayerReady())
-        {
-            if (getOPlayer().isPlaying())
+        try {
+            if (isPlayerReady())
             {
-                playTime = getTime();
-                MMLog.log(TAG, "oMedia stop playTime = " + playTime);
+                if (getOPlayer().getPlayerStatusInfo().getEventType() != PlaybackEvent.Status_Stopped)
+                {
+                    playTime = getTime();
+                    MMLog.log(TAG, "oMedia stop, stopTime = " + playTime);
+                }
+                getOPlayer().stop();
             }
-            getOPlayer().stop();
+        } catch (Exception e) {
+            //e.printStackTrace();
+            MMLog.log(TAG, e.toString());
         }
     }
 
@@ -235,6 +242,7 @@ public class OMedia implements Serializable, PlayerCallback {
         {//允许此处创建新的播放器
             if (getOPlayer().getTAG().startsWith(MPLAYER)) {
                 restorePlay = true;
+                MMLog.log(TAG, "oMedia resume, resumeTime = " + playTime);
                 play();
             } else {
                 getOPlayer().resume();
@@ -441,18 +449,23 @@ public class OMedia implements Serializable, PlayerCallback {
         return movie.getName();
     }
 
+    public void setRestorePlay(boolean restorePlay) {
+        this.restorePlay = restorePlay;
+    }
+
     @Override
-    public void onEventPlayerStatus(int EventType, long TimeChanged, long LengthChanged, float PositionChanged, int OutCount, int ChangedType, int ChangedID, float Buffering, long Length) {
-        switch (EventType) {
+    public void onEventPlayerStatus(PlayerStatusInfo playerStatusInfo) {
+        switch (playerStatusInfo.getEventType()) {
             //case PlaybackEvent.Status_NothingIdle:
             //    break;
+            case PlaybackEvent.Status_HasPrepared:
+                if (restorePlay && playerStatusInfo.isSourcePrepared())
+                    restorePlay(playerStatusInfo.getTimeChanged(), playerStatusInfo.getLengthChanged());
+                break;
             case PlaybackEvent.Status_Opening:
             case PlaybackEvent.Status_Buffering:
             case PlaybackEvent.Status_Playing:
             case PlaybackEvent.Status_Paused:
-                if (restorePlay)
-                    restorePlay(PositionChanged, Length);
-                break;
             case PlaybackEvent.Status_Stopped:
                 break;
             case PlaybackEvent.Status_Ended:
@@ -461,8 +474,7 @@ public class OMedia implements Serializable, PlayerCallback {
                 break;
         }
         if (this.callback != null) {
-            callback.onEventPlayerStatus(EventType, TimeChanged, LengthChanged, PositionChanged, OutCount, ChangedType, ChangedID, Buffering
-                    , Length);
+            callback.onEventPlayerStatus(playerStatusInfo);
         }
     }
 
@@ -472,11 +484,13 @@ public class OMedia implements Serializable, PlayerCallback {
 
     private void restorePlay(float position, long Length) {
         try {
-            if (((position + 100) < playTime) && (playTime <= Length) && (Length > 0)) {//播放进度恢复
-                MMLog.log(TAG, "OnEventCallBack go to position " + position + "->" + playTime + " Total Length = " + Length);
+            if (((position + 100) < playTime) && (playTime < Length - 100) && (Length > 100)) {//播放进度恢复
+                MMLog.log(TAG, "OnEventCallBack seek to position " + position + "->" + playTime + " Length = " + Length);
                 setTime(playTime);
                 restorePlay = false;
             }
+            else
+                MMLog.log(TAG, "OnEventCallBack seek to position " + position + "->" + playTime + " Length = " + Length);
         } catch (Exception e) {
             //e.printStackTrace();
             MMLog.e(TAG, "restorePlay() " + e.toString());
@@ -543,6 +557,10 @@ public class OMedia implements Serializable, PlayerCallback {
                 //    break;
             }
         }
+        return FPlayer;
+    }
+
+    public PlayControl getFPlayer() {
         return FPlayer;
     }
 

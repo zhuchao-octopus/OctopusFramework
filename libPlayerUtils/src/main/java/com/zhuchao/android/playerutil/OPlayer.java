@@ -8,13 +8,16 @@ import android.net.Uri;
 import android.view.SurfaceView;
 import android.view.TextureView;
 
+import androidx.annotation.NonNull;
+
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.libfileutils.MMLog;
 
-import org.videolan.libvlc.IVLCVout;
+//import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.interfaces.IVLCVout;
 
 import java.io.FileDescriptor;
 import java.util.ArrayList;
@@ -39,18 +42,15 @@ public class OPlayer extends PlayControl {
     private MediaPlayer.EventListener mEventListener = new MediaPlayer.EventListener() {
         @Override
         public void onEvent(MediaPlayer.Event event) {
+            playerStatusInfo.setEventType(mMediaPlayer.getPlayerState());
+            playerStatusInfo.setPositionChanged(event.getPositionChanged());
+            playerStatusInfo.setTimeChanged(event.getTimeChanged());
+            playerStatusInfo.setLengthChanged(event.getLengthChanged());//getLength()
+            playerStatusInfo.setOutCount(event.getVoutCount());
+            playerStatusInfo.setChangedType(event.getEsChangedType());
+            playerStatusInfo.setBuffering(event.getBuffering());
             if (playerEventCallBack != null)
-                playerEventCallBack.onEventPlayerStatus(
-                        //event.type,
-                        mMediaPlayer.getPlayerState(),
-                        event.getTimeChanged(),
-                        event.getLengthChanged(),
-                        event.getPositionChanged(),
-                        event.getVoutCount(),
-                        event.getEsChangedType(),
-                        event.getEsChangedID(),
-                        event.getBuffering(),
-                        getLength());
+                playerEventCallBack.onEventPlayerStatus(playerStatusInfo);
         }
     };
 
@@ -66,10 +66,11 @@ public class OPlayer extends PlayControl {
             mMediaPlayer.setEventListener(mEventListener);
             vlcVout = mMediaPlayer.getVLCVout();
             vlcVout.addCallback(mIVLCVoutCallBack);
-            mMediaPlayer.setVolume(volumeValue);
+            mMediaPlayer.setVolume(DefaultVolumeValue);
             //MLog.log(TAG,"OPlayer=========>");
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.log(TAG, e.toString());
         }
     }
 
@@ -87,24 +88,28 @@ public class OPlayer extends PlayControl {
             mMediaPlayer.setEventListener(mEventListener);
             vlcVout = mMediaPlayer.getVLCVout();
             vlcVout.addCallback(mIVLCVoutCallBack);
-            mMediaPlayer.setVolume(volumeValue);
+            mMediaPlayer.setVolume(DefaultVolumeValue);
             //MLog.log(TAG, "OPlayer=========>");
         } catch (IllegalStateException e) {
-            e.printStackTrace();
+            MMLog.log(TAG, e.toString());
         }
     }
 
-    public void setSource(String filePath) {
+    private void freeMedia() {
         if (media != null) {
             media.release();
             media = null;
         }
-        if(EmptyString(filePath))return;
+    }
+
+    public void setSource(@NonNull String filePath) {
+        if (EmptyString(filePath)) return;
         if (filePath.startsWith("http") || filePath.startsWith("ftp") || filePath.startsWith("file")) {
             Uri uri = Uri.parse(filePath);
             setSource(uri);
             return;
         }
+        freeMedia();
         media = new Media(FLibVLC, filePath);
         //media.addOption(":no-audio");
         media.addOption(":fullscreen");
@@ -115,17 +120,14 @@ public class OPlayer extends PlayControl {
         //media.addOption(":sout-mux-caching=10000");//输出缓存
         setHWDecoderEnabled(true);
         mMediaPlayer.setMedia(media);
+        playerStatusInfo.setSourcePrepared(true);
         //mMediaPlayer.setAspectRatio(null);
         //mMediaPlayer.setScale(0);
-        mMediaPlayer.setVolume(volumeValue);
+        mMediaPlayer.setVolume(DefaultVolumeValue);
     }
 
-    public void setSource(Uri uri) {
-        if (media != null) {
-            media.release();
-            media = null;
-        }
-        if (uri == null) return;
+    public void setSource(@NonNull Uri uri) {
+        freeMedia();
         media = new Media(FLibVLC, uri);
         //media.addOption(":no-audio");
         media.addOption(":fullscreen");
@@ -136,17 +138,14 @@ public class OPlayer extends PlayControl {
         //media.addOption(":sout-mux-caching=10000");//输出缓存
         setHWDecoderEnabled(true);
         mMediaPlayer.setMedia(media);
+        playerStatusInfo.setSourcePrepared(true);
         //mMediaPlayer.setAspectRatio(null);
         //mMediaPlayer.setScale(0);
-        mMediaPlayer.setVolume(volumeValue);
+        mMediaPlayer.setVolume(DefaultVolumeValue);
     }
 
-    public void setSource(AssetFileDescriptor afd) {
-        if (media != null) {
-            media.release();
-            media = null;
-        }
-        if (afd == null) return;
+    public void setSource(@NonNull AssetFileDescriptor afd) {
+        freeMedia();
         media = new Media(FLibVLC, afd);
         //media.addOption(":no-audio");
         media.addOption(":fullscreen");
@@ -157,17 +156,14 @@ public class OPlayer extends PlayControl {
         //media.addOption(":sout-mux-caching=10000");//输出缓存
         setHWDecoderEnabled(true);
         mMediaPlayer.setMedia(media);
+        playerStatusInfo.setSourcePrepared(true);
         //mMediaPlayer.setAspectRatio(null);
         //mMediaPlayer.setScale(0);
-        mMediaPlayer.setVolume(volumeValue);
+        mMediaPlayer.setVolume(DefaultVolumeValue);
     }
 
-    public void setSource(FileDescriptor fd) {
-        if (media != null) {
-            media.release();
-            media = null;
-        }
-        if (fd == null) return;
+    public void setSource(@NonNull FileDescriptor fd) {
+        freeMedia();
         media = new Media(FLibVLC, fd);
         //media.addOption(":no-audio");
         media.addOption(":fullscreen");
@@ -178,19 +174,20 @@ public class OPlayer extends PlayControl {
         //media.addOption(":sout-mux-caching=10000");//输出缓存
         setHWDecoderEnabled(true);
         mMediaPlayer.setMedia(media);
+        playerStatusInfo.setSourcePrepared(true);
         //mMediaPlayer.setAspectRatio(null);
         //mMediaPlayer.setScale(0);
-        mMediaPlayer.setVolume(volumeValue);
+        mMediaPlayer.setVolume(DefaultVolumeValue);
     }
 
-    public void setSurfaceView(SurfaceView surfaceView) {
+    public void setSurfaceView(@NonNull SurfaceView surfaceView) {
+
         vlcVout = this.mMediaPlayer.getVLCVout();
-        if (surfaceView == null) return;
-        if (mSurfaceView != null)
-            if (mSurfaceView.equals(surfaceView)) return;
+        if (surfaceView.equals(mSurfaceView)) return;
+
         if (vlcVout.areViewsAttached())
             vlcVout.detachViews();
-        vlcVout.addCallback(mIVLCVoutCallBack);
+
         vlcVout.setVideoView(surfaceView);
         vlcVout.attachViews();
         mTextureView = null;
@@ -198,13 +195,13 @@ public class OPlayer extends PlayControl {
         mSurfaceView.getHolder().setKeepScreenOn(true);
     }
 
-    public void setTextureView(TextureView textureView) {
-        if (textureView == null) return;
-        if (mTextureView != null)
-            if (mTextureView.equals(textureView)) return;
+    public void setTextureView(@NonNull TextureView textureView) {
+
+        if (textureView.equals(mTextureView)) return;
+
         if (vlcVout.areViewsAttached())
             vlcVout.detachViews();
-        vlcVout.addCallback(mIVLCVoutCallBack);
+
         vlcVout.setVideoView(textureView);
         vlcVout.attachViews();
         mSurfaceView = null;
@@ -218,12 +215,12 @@ public class OPlayer extends PlayControl {
                 vlcVout.detachViews();
             return;
         }
+
         if (vlcVout.areViewsAttached())
             vlcVout.detachViews();
         vlcVout.setVideoView(surfaceView);
         vlcVout.attachViews();
-        //vlcVout.removeCallback(mIVLCVoutCallBack);
-        //vlcVout.addCallback(mIVLCVoutCallBack);
+
         mSurfaceView = surfaceView;
         mTextureView = null;
         MMLog.log(TAG, "re attached surface view successful");
@@ -234,10 +231,10 @@ public class OPlayer extends PlayControl {
         mTextureView = textureView;
         if (vlcVout.areViewsAttached())
             vlcVout.detachViews();
-        //vlcVout.removeCallback(mIVLCVoutCallBack);
+
         vlcVout.setVideoView(mTextureView);
         vlcVout.attachViews();
-        //vlcVout.addCallback(mIVLCVoutCallBack);
+
         mTextureView = textureView;
         mSurfaceView = null;
     }
@@ -285,15 +282,12 @@ public class OPlayer extends PlayControl {
     }
 
     public void stop() {
-        if (mMediaPlayer == null) return;
         if (mMediaPlayer.getPlayerState() != Media.State.Stopped)
             mMediaPlayer.stop();
     }
 
     public void resume() {
-        if (mMediaPlayer != null) {
-            mMediaPlayer.play();
-        }
+        mMediaPlayer.play();
     }
 
     public void free() {
@@ -333,13 +327,13 @@ public class OPlayer extends PlayControl {
     }
 
     public void setVolume(int var1) {
-        volumeValue = var1;
-        mMediaPlayer.setVolume(volumeValue);
+        DefaultVolumeValue = var1;
+        mMediaPlayer.setVolume(DefaultVolumeValue);
     }
 
     public int getVolume() {
-        volumeValue = mMediaPlayer.getVolume();
-        return volumeValue;
+        DefaultVolumeValue = mMediaPlayer.getVolume();
+        return DefaultVolumeValue;
     }
 
     public Long getTime() {
@@ -432,8 +426,12 @@ public class OPlayer extends PlayControl {
     class IVLCVoutCallBack implements IVLCVout.Callback, IVLCVout.OnNewVideoLayoutListener {
         @Override
         public void onNewVideoLayout(IVLCVout vlcVout, int width, int height, int visibleWidth, int visibleHeight, int sarNum, int sarDen) {
-            MMLog.log(TAG, "IVLCVoutCallBack ---> width=" + width + ",height=" + height + ",visibleWidth=" + visibleWidth + ",visibleHeight=" + visibleHeight
-                    + ",sarNum=" + sarNum + ",sarDen=" + sarDen);
+            //MMLog.log(TAG, "IVLCVoutCallBack ---> width=" + width + ",height=" + height + ",visibleWidth=" + visibleWidth + ",visibleHeight=" + visibleHeight
+            //        + ",sarNum=" + sarNum + ",sarDen=" + sarDen);
+            playerStatusInfo.setVideoH(height);
+            playerStatusInfo.setVideoW(width);
+            playerStatusInfo.setSurfaceH(visibleHeight);
+            playerStatusInfo.setSurfaceW(visibleWidth);
         }
 
         @Override
@@ -444,13 +442,15 @@ public class OPlayer extends PlayControl {
             } else if (mTextureView != null) {
                 vlcVout.setWindowSize(mTextureView.getWidth(), mTextureView.getHeight());
             }
-            mMediaPlayer.setAspectRatio(null);
-            mMediaPlayer.setScale(0);
+            //mMediaPlayer.setAspectRatio(null);
+            //mMediaPlayer.setScale(0);
+            playerStatusInfo.setSurfacePrepared(true);
         }
 
         @Override
         public void onSurfacesDestroyed(IVLCVout ivlcVout) {
             //MLog.log(TAG, "IVLCVoutCallBack ---> onSurfacesDestroyed");
+            playerStatusInfo.setSurfacePrepared(false);
         }
     }
 }

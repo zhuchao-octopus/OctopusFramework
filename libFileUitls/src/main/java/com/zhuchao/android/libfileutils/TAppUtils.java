@@ -177,10 +177,10 @@ public class TAppUtils {
     }
 
     public AppInfo getAppInfo(String packageName) {
+        if (packageName == null) return null;
         for (AppInfo Info : AllAppInfo) {
-            if (Info == null) continue;
-            if (packageName == null) return null;
-            if (packageName.equals(Info.getPackageName()))
+            //if (Info == null) continue;
+            if (packageName == Info.getPackageName())
                 return Info;
         }
         return null;
