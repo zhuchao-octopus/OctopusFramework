@@ -54,7 +54,7 @@ public class TTaskThreadPool extends ObjectList {
         return (TTask) getObject(tag);
     }
 
-    public void delTask(String tag) {
+    public void deleteTask(String tag) {
         delete(tag);
     }
 

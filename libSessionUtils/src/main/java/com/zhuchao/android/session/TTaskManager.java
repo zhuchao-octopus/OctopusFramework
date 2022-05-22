@@ -71,13 +71,9 @@ public class TTaskManager {
         return tTaskThreadPool.getTaskByName(tag);
     }
 
-    public void delTask(TTask tTask) {
-        tTask.freeFree();
-        tTaskThreadPool.delTask(tTask.getTTag());
-    }
     public void deleteTask(TTask tTask) {
         tTask.freeFree();
-        tTaskThreadPool.delTask(tTask.getTTag());
+        tTaskThreadPool.deleteTask(tTask.getTTag());
     }
     public List<TTask> getAllTask() {
         List<TTask> allTasks = new ArrayList();//(tTaskThreadPool.getAllObject());
@@ -156,7 +152,7 @@ public class TTaskManager {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if(EmptyString(fromUrl)) {
             tTask.free();//释放无效的任务
-            delTask(tTask);
+            deleteTask(tTask);
             return tTask;
         }
 
@@ -194,7 +190,7 @@ public class TTaskManager {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if(EmptyString(fromUrl)) {
             tTask.free();//释放无效的任务
-            delTask(tTask);
+            deleteTask(tTask);
             return tTask;
         }
         tTask.getProperties().putString("fromUrl", fromUrl);
@@ -243,7 +239,7 @@ public class TTaskManager {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if(EmptyString(fromUrl))  {
             tTask.free();//释放无效的任务
-            delTask(tTask);
+            deleteTask(tTask);
             return tTask;
         }
         tTask.getProperties().putString("fromUrl", fromUrl);
@@ -275,7 +271,7 @@ public class TTaskManager {
             downloadingPathFileName = FileUtils.getDownloadDir(null) + fileName + D_EXT_NAME;
             localPathFileName = FileUtils.getDownloadDir(null) + fileName;
         } else {
-            String toToPath = FileUtils.getDownloadDir(toPath + "/");//确保目录被创建
+            String toToPath = FileUtils.getDownloadDir(toPath);//确保目录被创建
             if (!FileUtils.existDirectory(toToPath))//不存在目录
             {
                 MMLog.log(TAG, "download stop,create directory failed,toPath = " + toPath);

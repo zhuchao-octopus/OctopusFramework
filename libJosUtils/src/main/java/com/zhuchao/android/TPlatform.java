@@ -1,11 +1,13 @@
 package com.zhuchao.android;
 
 import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.libfileutils.FileUtils.NotEmptyString;
 
 import com.zhuchao.android.libfileutils.MMLog;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 public class TPlatform {
     private static final String TAG = "GOS";
@@ -93,33 +95,35 @@ public class TPlatform {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    //t507
-    public static String t507GetSystemProperty(String key) {
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static String GetSystemProperty(String key) {
         return com.zhuchao.android.TGOS.get(key);
     }
 
-    public static void t507SetSystemProperty(String key, String val) {
+    public static void SetSystemProperty(String key, String val) {
         com.zhuchao.android.TGOS.set(key, val);
     }
 
-    public static void t507SetAudioOutputPolicy(String policyName) {
+    public static void SetAudioOutputPolicy(String policyName) {
         com.zhuchao.android.TGOS.SetAudioOutputPolicy(policyName);
     }
 
-    public static void t507SetAudioInputPolicy(String policyName) {
+    public static void SetAudioInputPolicy(String policyName) {
         com.zhuchao.android.TGOS.SetAudioInputPolicy(policyName);
     }
 
-    public static String t507GetAudioOutputPolicy() {
+    public static String GetAudioOutputPolicy() {
         return com.zhuchao.android.TGOS.GetAudioOutputPolicy();
     }
 
-    public static String t507GetAudioInputPolicy() {
+    public static String GetAudioInputPolicy() {
         return com.zhuchao.android.TGOS.GetAudioInputPolicy();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //t507
     public static boolean t507IsI2SMicAudioInput() {
-        String str = t507GetAudioInputPolicy();
+        String str = GetAudioInputPolicy();
         if (EmptyString(str)) return false;
         if (str.startsWith(INPUT_I2S) || str.startsWith(INPUT_BUILD_IN_MIC))
             return true;
@@ -128,7 +132,7 @@ public class TPlatform {
     }
 
     public static boolean t507IsUSBMicAudioInput() {
-        String str = t507GetAudioInputPolicy();
+        String str = GetAudioInputPolicy();
         if (EmptyString(str)) return false;
         if (str.startsWith(INPUT_USB))
             return true;
@@ -137,7 +141,7 @@ public class TPlatform {
     }
 
     public static boolean t507IsCodecMicAudioInput() {
-        String str = t507GetAudioInputPolicy();
+        String str = GetAudioInputPolicy();
         if (EmptyString(str)) return false;
         if (str.startsWith(INPUT_CODEC))
             return true;
@@ -146,42 +150,34 @@ public class TPlatform {
     }
 
     public static void t507SetUSBMiCAudioInput() {
-        t507SetAudioInputPolicy(INPUT_USB);
+        SetAudioInputPolicy(INPUT_USB);
     }
 
     public static void t507SetI2SMiCAudioInput() {
-        t507SetAudioInputPolicy(INPUT_I2S);
+        SetAudioInputPolicy(INPUT_I2S);
     }
 
     public static void t507SetCodecMicAudioInput() {
-        t507SetAudioInputPolicy(INPUT_CODEC);
+        SetAudioInputPolicy(INPUT_CODEC);
     }
 
     public static void t507SetHDMIAudioOutput() {
-        t507SetAudioOutputPolicy(OUTPUT_HDMI);
+        SetAudioOutputPolicy(OUTPUT_HDMI);
     }
 
     public static void t507SetI2sAudioOutput() {
-        t507SetAudioOutputPolicy(OUTPUT_I2S);
+        SetAudioOutputPolicy(OUTPUT_I2S);
     }
 
     public static void t507SetCodecAudioOutput() {
-        t507SetAudioOutputPolicy(OUTPUT_CODEC);
+        SetAudioOutputPolicy(OUTPUT_CODEC);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //通用
-    public static String getAudioOutputPolicy() {
-        return com.zhuchao.android.TGOS.GetAudioOutputPolicy();
-    }
-
-    public static String getAudioInputPolicy() {
-       return com.zhuchao.android.TGOS.GetAudioInputPolicy();
-    }
-
     public static boolean IsI2SMicAudioInput() {
-        String str = t507GetAudioInputPolicy();
+        String str = GetAudioInputPolicy();
         if (EmptyString(str)) return false;
         if (str.startsWith(INPUT_I2S) || str.startsWith(INPUT_BUILD_IN_MIC))
             return true;
@@ -190,7 +186,7 @@ public class TPlatform {
     }
 
     public static boolean IsUSBMicAudioInput() {
-        String str = t507GetAudioInputPolicy();
+        String str = GetAudioInputPolicy();
         if (EmptyString(str)) return false;
         if (str.startsWith(INPUT_USB))
             return true;
@@ -199,7 +195,7 @@ public class TPlatform {
     }
 
     public static boolean IsCodecMicAudioInput() {
-        String str = t507GetAudioInputPolicy();
+        String str = GetAudioInputPolicy();
         if (EmptyString(str)) return false;
         if (str.startsWith(INPUT_CODEC))
             return true;
@@ -208,26 +204,41 @@ public class TPlatform {
     }
 
     public static void SetUSBMiCAudioInput() {
-        t507SetAudioInputPolicy(INPUT_USB);
+        SetAudioInputPolicy(INPUT_USB);
     }
 
     public static void SetI2SMiCAudioInput() {
-        t507SetAudioInputPolicy(INPUT_I2S);
+        SetAudioInputPolicy(INPUT_I2S);
     }
 
     public static void SetCodecMicAudioInput() {
-        t507SetAudioInputPolicy(INPUT_CODEC);
+        SetAudioInputPolicy(INPUT_CODEC);
     }
 
     public static void SetHDMIAudioOutput() {
-        t507SetAudioOutputPolicy(OUTPUT_HDMI);
+        SetAudioOutputPolicy(OUTPUT_HDMI);
     }
 
     public static void SetI2sAudioOutput() {
-        t507SetAudioOutputPolicy(OUTPUT_I2S);
+        SetAudioOutputPolicy(OUTPUT_I2S);
     }
 
     public static void SetCodecAudioOutput() {
-        t507SetAudioOutputPolicy(OUTPUT_CODEC);
+        SetAudioOutputPolicy(OUTPUT_CODEC);
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void resetDebugLogOnOffByProperty()
+    {
+      String  sOnOff =  GetSystemProperty(MMLog.LOG_SYSTEM_PROPERTY);
+      if (NotEmptyString(sOnOff) && sOnOff.toLowerCase(Locale.ROOT).contains("false"))
+      {
+        MMLog.setDebugOnOff(false);
+      }
+      else
+      {
+        MMLog.setDebugOnOff(true);
+      }
     }
 }

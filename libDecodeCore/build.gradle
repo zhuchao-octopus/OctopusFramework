@@ -43,3 +43,7 @@ afterEvaluate {
 
 dependencies {
 }
+
+//android {
+   // namespace 'com.zhuchao.android.decodecore'
+//}

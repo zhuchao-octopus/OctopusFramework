@@ -183,10 +183,10 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public void setSurfaceView(@NonNull SurfaceView surfaceView) {
-        if (getOPlayer().getSurfaceView() == surfaceView)
-        {
-          return;
-        }
+        //if (getOPlayer().getSurfaceView() == surfaceView)
+        //{
+        //  return;
+        //}
         //if (!isPlayerReady()) return;//此处允许重新获取播放对象
         //if (getOPlayer().getSurfaceView() == null) {
         getOPlayer().setSurfaceView(surfaceView);

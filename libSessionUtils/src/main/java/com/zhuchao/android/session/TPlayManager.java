@@ -152,7 +152,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         if (oMedia != null) {
             oMedia.stop();
             oMedia.free();
-            oMedia = null;
+            //oMedia = null;
         }
     }
 
@@ -191,7 +191,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                     autoPlay();
                 break;
             case PlaybackEvent.Status_Stopped:
-                resumePlay();
+                    resumePlay();
                 break;
             case PlaybackEvent.Status_Ended:
             case PlaybackEvent.Status_Error:
@@ -558,18 +558,18 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             if (oMedia == null || oMedia.getFPlayer() == null) return;
 
             switch (playerStatusInfo.getEventType()) {
-                //case PlaybackEvent.Status_NothingIdle:
-                //case PlaybackEvent.Status_Opening:
+                case PlaybackEvent.Status_NothingIdle:
+                case PlaybackEvent.Status_Opening:
                 case PlaybackEvent.Status_Buffering:
                 case PlaybackEvent.Status_Playing:
                 //case PlaybackEvent.Status_Paused:
                 //case PlaybackEvent.Status_Stopped:
-                    if (playerStatusInfo.isSurfacePrepared() == false)
-                    {
+                    //if (playerStatusInfo.isSurfacePrepared() == false)
+                    //{ 这里无法确定surface的状态，异步状态下surface状态不无法确定
                         //oMedia.reAttachSurfaceView(surfaceView);
                         //playerStatusInfo.setLastError(0);
-                        MMLog.log(TAG,"playerStatusInfo.isSurfacePrepared() = false");
-                    }
+                        //MMLog.log(TAG,"playerStatusInfo.isSurfacePrepared() = false");
+                    //}
                     break;
                 case PlaybackEvent.Status_Ended:
                 case PlaybackEvent.Status_Error:

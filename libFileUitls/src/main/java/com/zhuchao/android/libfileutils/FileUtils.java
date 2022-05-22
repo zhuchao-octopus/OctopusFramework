@@ -170,6 +170,7 @@ public class FileUtils {
 
     public static boolean deleteFiles(String filePath) {
         List<File> files = getFiles(filePath);
+        if(files == null) return true;
         if (files.size() != 0) {
             for (int i = 0; i < files.size(); i++) {
                 File file = files.get(i);

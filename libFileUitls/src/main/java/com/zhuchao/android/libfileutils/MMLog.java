@@ -6,45 +6,41 @@ import java.util.Properties;
 
 public class MMLog {
     private static final String MTAG = "MMLog";
-    private static final String LOG_SYSTEM_PROPERTY = "persist.app.log.on.off";
-    private static String debugOnOff = "false";
+    private static boolean debugLogOnOff = false;
 
-    public static void setDebugOnOff(String onOff) {
-        debugOnOff = onOff;
-    }
+    public static final String LOG_SYSTEM_PROPERTY = "com.zhuchao.android.log.OnOff";
 
-    public static void pollingDebug() {
-        Properties properties = System.getProperties();
-        debugOnOff = properties.getProperty(LOG_SYSTEM_PROPERTY);
+    public static void setDebugOnOff(boolean debugOnOff) {
+        MMLog.debugLogOnOff = debugOnOff;
     }
 
     public static void v(String TAG, String logMsg) {
-        if (debugOnOff.equals("true"))
+        if (debugLogOnOff)
             Log.v(MTAG + "." + TAG, logMsg);
     }
 
     public static void log(String TAG, String logMsg) {
-        if (debugOnOff.equals("true"))
+        if (debugLogOnOff)
             Log.d(MTAG + "." + TAG, logMsg);
     }
 
     public static void d(String TAG, String logMsg) {
-        if (debugOnOff.equals("true"))
+        if (debugLogOnOff)
             Log.d(MTAG + "." + TAG, logMsg);
     }
 
     public static void i(String TAG, String logMsg) {
-        if (debugOnOff.equals("true"))
+        if (debugLogOnOff)
             Log.i(MTAG + "." + TAG, logMsg);
     }
 
     public static void w(String TAG, String logMsg) {
-        if (debugOnOff.equals("true"))
+        if (debugLogOnOff)
             Log.w(MTAG + "." + TAG, logMsg);
     }
 
     public static void e(String TAG, String logMsg) {
-        if (debugOnOff.equals("true"))
+        if (debugLogOnOff)
             Log.e(MTAG + "." + TAG, logMsg);
     }
 }

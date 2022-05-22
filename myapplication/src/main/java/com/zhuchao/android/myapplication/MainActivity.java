@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.zhuchao.android.TCourierEventBus;
 import com.zhuchao.android.TPlatform;
+import com.zhuchao.android.callbackevent.EventCourier;
 import com.zhuchao.android.libfileutils.MMLog;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,17 +19,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
+        MMLog.setDebugOnOff(true);
         button = findViewById(R.id.button1);
-        MMLog.setDebugOnOff("true");
-
-
+        TCourierEventBus tCourierEventBus = new TCourierEventBus();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String str = TPlatform.t507GetSystemProperty("wifi.direct.interface");
-                MMLog.log(TAG,"t507GetSystemProperty = "+str);
-                str = TPlatform.getAudioOutputPolicy();
-                MMLog.log(TAG,"getAudioOutputPolicy = "+str);
+                //String str = TPlatform.GetSystemProperty("wifi.direct.interface");
+                //MMLog.log(TAG,"t507GetSystemProperty = "+str);
+                //str = TPlatform.GetAudioOutputPolicy();
+                //MMLog.log(TAG,"getAudioOutputPolicy = "+str);
+                tCourierEventBus.post(new EventCourier("test",0,null));
             }
         });
 

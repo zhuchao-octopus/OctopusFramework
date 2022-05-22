@@ -45,6 +45,7 @@ android {
             //path 'src/main/jni/Android.mk'
         }
     }
+    namespace 'com.zhuchao.android.libfileutils'
 }
 
 task copyJniLibs(type: Copy) {

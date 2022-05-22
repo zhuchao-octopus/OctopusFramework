@@ -6,6 +6,7 @@ import static com.zhuchao.android.libfileutils.FileUtils.NotEmptyString;
 import com.zhuchao.android.libfileutils.MMLog;
 import com.zhuchao.android.libfileutils.ObjectList;
 import com.zhuchao.android.serialport.SerialPortFinder;
+import com.zhuchao.android.serialport.TDevice;
 import com.zhuchao.android.serialport.TUartFile;
 
 public class TDeviceManager {
@@ -52,6 +53,7 @@ public class TDeviceManager {
             MMLog.log(TAG,"get device failed "+ devicePath);
         return tUartFile;
     }
+
     public String[] getAllDevices() {
         String[] devices = uartFinder.getAllDevicesPath();
         return devices;
@@ -71,11 +73,16 @@ public class TDeviceManager {
         }
     }
 
-    public void closeAllUartFile()
+    public void closeAllUartDevice()
     {
       for(Object obj:deviceList.getAllObject())
       {
-          ((TUartFile)obj).closeDevice();
+          TDevice device = ((TDevice)obj);
+          if(device.getDeviceType().contains("UART"))
+          {
+              device.closeDevice();
+              deviceList.delete(device.getDevicePath());
+          }
       }
     }
 }

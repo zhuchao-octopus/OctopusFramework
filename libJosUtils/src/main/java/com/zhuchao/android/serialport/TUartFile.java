@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class TUartFile implements DeviceCourierEventListener {
+public class TUartFile extends TDevice implements DeviceCourierEventListener {
     private final String TAG = "TUartFile";
     private SerialPort serialPort = null;
     private ReadThread readThread = null;
@@ -30,7 +30,8 @@ public class TUartFile implements DeviceCourierEventListener {
             MMLog.e(TAG, "invalid device parameter can not to open device," + devicePath + " " + baudrate);
             return;
         }
-        try {
+        try
+        {
             serialPort = SerialPort.newBuilder(devicePath, baudrate) // 串口地址地址，波特率
                     .dataBits(8) // 数据位,默认8；可选值为5~8
                     .stopBits(1) // 停止位，默认1；1:1位停止位；2:2位停止位
@@ -42,6 +43,8 @@ public class TUartFile implements DeviceCourierEventListener {
             MMLog.e(TAG, "getSerialPort() returns null " + e.toString() + "," + devicePath + " " + baudrate);
             serialPort = null;
         }
+        setDevicePath(devicePath);
+        setDeviceType("UART");
     }
 
     public void startPoolingRead() {
@@ -63,7 +66,7 @@ public class TUartFile implements DeviceCourierEventListener {
             MMLog.log(TAG, "device access failed do not start " + e.toString() + "," + toDeviceString());
         }
     }
-
+    @Override
     public void closeDevice() {
         if (serialPort != null) {
             serialPort.tryClose();

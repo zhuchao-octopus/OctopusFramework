@@ -123,7 +123,7 @@ public class TNetUtils {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            MMLog.log(TAG, "NetworkChanged " + action.toString());
+            //MMLog.log(TAG, "NetworkChanged " + action.toString());
             runThreadNotOnMainUIThread(new Runnable() {
                 @Override
                 public void run() {

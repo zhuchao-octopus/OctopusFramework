@@ -71,14 +71,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Vol +" />
+            android:text="s1" />
 
         <Button
             android:id="@+id/button7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Vol -" />
+            android:text="s2" />
+
+        <Button
+            android:id="@+id/button8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="other" />
 
     </LinearLayout>
 
@@ -94,7 +101,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="TextView11111111111111111111111111" />
-
     </LinearLayout>
 
 </LinearLayout>
