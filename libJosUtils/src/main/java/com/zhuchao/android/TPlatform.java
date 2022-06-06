@@ -18,6 +18,9 @@ public class TPlatform {
     public static final String OUTPUT_USB = "usb";
     public static final String OUTPUT_BT = "bt";
     public static final String OUTPUT_CODEC = "codec";
+    public static final String OUTPUT_HDMI_CODEC = "hdmicodec";
+    public static final String OUTPUT_ALL = "all";
+
     public static final String INPUT_HDMI = "hdmi";
     public static final String INPUT_I2S = "i2s";
     public static final String INPUT_USB = "usb";
@@ -120,6 +123,7 @@ public class TPlatform {
     public static String GetAudioInputPolicy() {
         return com.zhuchao.android.TGOS.GetAudioInputPolicy();
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //t507
     public static boolean t507IsI2SMicAudioInput() {
@@ -227,18 +231,21 @@ public class TPlatform {
         SetAudioOutputPolicy(OUTPUT_CODEC);
     }
 
+    public static void SetAudioOutput() {
+        SetAudioOutputPolicy(OUTPUT_ALL);
+    }
+
+    public static void SetAudioHdmiCodecOutput() {
+        SetAudioOutputPolicy(OUTPUT_HDMI_CODEC);
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void resetDebugLogOnOffByProperty()
-    {
-      String  sOnOff =  GetSystemProperty(MMLog.LOG_SYSTEM_PROPERTY);
-      if (NotEmptyString(sOnOff) && sOnOff.toLowerCase(Locale.ROOT).contains("false"))
-      {
-        MMLog.setDebugOnOff(false);
-      }
-      else
-      {
-        MMLog.setDebugOnOff(true);
-      }
+    public static void resetDebugLogOnOffByProperty() {
+        String sOnOff = GetSystemProperty(MMLog.LOG_SYSTEM_PROPERTY);
+        if (NotEmptyString(sOnOff) && sOnOff.toLowerCase(Locale.ROOT).contains("false")) {
+            MMLog.setDebugOnOff(false);
+        } else {
+            MMLog.setDebugOnOff(true);
+        }
     }
 }

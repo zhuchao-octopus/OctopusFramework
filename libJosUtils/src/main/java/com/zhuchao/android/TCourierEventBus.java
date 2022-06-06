@@ -14,22 +14,22 @@ import java.util.concurrent.locks.LockSupport;
 public class TCourierEventBus implements InvokeInterface {
     private final String TAG = "TCourierEventBus";
     private ObjectList InvokerList = null;
-    private ArrayList<EventCourier> couriers_A = null;
-    private ArrayList<EventCourier> couriers_B = null;
-    private ArrayList<EventCourier> couriers_MA = null;
-    private ArrayList<EventCourier> couriers_MB = null;
+    private ArrayList<EventCourier> CourierEvents_A = null;
+    private ArrayList<EventCourier> CourierEvents_B = null;
+    private ArrayList<EventCourier> CourierEvents_MainA = null;
+    private ArrayList<EventCourier> CourierEvents_MainB = null;
     private TTask tTask = null;
     private InvokeInterface invokeInterface = null;
     private boolean keepDoing = true;
-    private boolean busy_A = false;
-    private boolean busy_M = false;
+    private boolean couriersLock_A = false;
+    private boolean couriersLock_M = false;
 
     public TCourierEventBus() {
         InvokerList = new ObjectList();
-        couriers_A = new ArrayList<EventCourier>();
-        couriers_B = new ArrayList<EventCourier>();
-        couriers_MA = new ArrayList<EventCourier>();
-        couriers_MB = new ArrayList<EventCourier>();
+        CourierEvents_A = new ArrayList<EventCourier>();
+        CourierEvents_B = new ArrayList<EventCourier>();
+        CourierEvents_MainA = new ArrayList<EventCourier>();
+        CourierEvents_MainB = new ArrayList<EventCourier>();
         invokeInterface = this;
         keepDoing = true;
         tTask = new TTask(TAG, invokeInterface);
@@ -40,15 +40,15 @@ public class TCourierEventBus implements InvokeInterface {
     }
 
     public void postMainThread(EventCourier eventCourier) {
-        if (couriers_MA == null || couriers_MB == null)
+        if (CourierEvents_MainA == null || CourierEvents_MainB == null)
             return;
         try {
-            if (busy_M)
-                couriers_MB.add(eventCourier);
+            if (couriersLock_M)
+                CourierEvents_MainB.add(eventCourier);
             else
-                couriers_MA.add(eventCourier);
+                CourierEvents_MainA.add(eventCourier);
 
-            if (tTask != null && couriers_MA.size() > 0 && !tTask.isAlive()) {
+            if (tTask != null && CourierEvents_MainA.size() > 0 && !tTask.isAlive()) {
                 keepDoing = true;
                 tTask.start();
                 MMLog.log(TAG, "CourierEventBus start...");
@@ -62,15 +62,15 @@ public class TCourierEventBus implements InvokeInterface {
     }
 
     public void post(EventCourier eventCourier) {
-        if (couriers_A == null || couriers_B == null)
+        if (CourierEvents_A == null || CourierEvents_B == null)
             return;
         try {
-            if (busy_A)
-                couriers_B.add(eventCourier);
+            if (couriersLock_A)
+                CourierEvents_B.add(eventCourier);
             else
-                couriers_A.add(eventCourier);
+                CourierEvents_A.add(eventCourier);
 
-            if (tTask != null && couriers_A.size() > 0 && !tTask.isAlive()) {
+            if (tTask != null && CourierEvents_A.size() > 0 && !tTask.isAlive()) {
                 keepDoing = true;
                 tTask.start();
                 MMLog.log(TAG, "CourierEventBus start...");
@@ -88,36 +88,36 @@ public class TCourierEventBus implements InvokeInterface {
         //MMLog.log(TAG,"CALLTODO "+ keepDoing);
         while (keepDoing)
         {
-            if (couriers_A != null && couriers_B != null)
+            if (CourierEvents_A != null && CourierEvents_B != null)
             {
-                busy_A = true;
-                if (couriers_A.size() > 0) {
-                    poolingAB(couriers_A);
-                    couriers_A.clear();
+                couriersLock_A = true;
+                if (CourierEvents_A.size() > 0) {
+                    poolingAB(CourierEvents_A);
+                    CourierEvents_A.clear();
                 }
-                busy_A = false;
-                if (couriers_B.size() > 0) {
-                    poolingAB(couriers_B);
-                    couriers_B.clear();
+                couriersLock_A = false;
+                if (CourierEvents_B.size() > 0) {
+                    poolingAB(CourierEvents_B);
+                    CourierEvents_B.clear();
                 }
             }
 
-            if (couriers_MA != null && couriers_MB != null)
+            if (CourierEvents_MainA != null && CourierEvents_MainB != null)
             {
-                busy_M = true;
-                if (couriers_MA.size() > 0) {
-                    poolingABM(couriers_MA);
-                    couriers_MA.clear();
+                couriersLock_M = true;
+                if (CourierEvents_MainA.size() > 0) {
+                    poolingABM(CourierEvents_MainA);
+                    CourierEvents_MainA.clear();
                 }
-                busy_M = false;
-                if (couriers_MB.size() > 0) {
-                    poolingABM(couriers_MB);
-                    couriers_MB.clear();
+                couriersLock_M = false;
+                if (CourierEvents_MainB.size() > 0) {
+                    poolingABM(CourierEvents_MainB);
+                    CourierEvents_MainB.clear();
                 }
             }
 
             //MMLog.log(TAG,"A:"+couriers_A.size()+",B:"+couriers_B.size()+"AM:"+couriers_MA.size()+"BM:"+couriers_MB.size());
-            if ((couriers_A.size() <= 0) && (couriers_B.size() <= 0) && (couriers_MA.size() <= 0) && (couriers_MB.size() <= 0))
+            if ((CourierEvents_A.size() <= 0) && (CourierEvents_B.size() <= 0) && (CourierEvents_MainA.size() <= 0) && (CourierEvents_MainB.size() <= 0))
             {
                 try
                 {

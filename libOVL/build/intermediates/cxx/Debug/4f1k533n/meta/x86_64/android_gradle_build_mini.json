@@ -1,0 +1,27 @@
+{
+  "buildFiles": [
+    "F:\\StudioProjects\\OctopusFramework\\libOVL\\libcxx_helper\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "F:\\Android\\SDK\\cmake\\3.18.1\\bin\\ninja.exe",
+      "-C",
+      "F:\\StudioProjects\\OctopusFramework\\libOVL\\.cxx\\Debug\\4f1k533n\\x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "F:\\Android\\SDK\\cmake\\3.18.1\\bin\\ninja.exe",
+    "-C",
+    "F:\\StudioProjects\\OctopusFramework\\libOVL\\.cxx\\Debug\\4f1k533n\\x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "opencv_jni_shared::@6890427a1f51a3e7e1df": {
+      "artifactName": "opencv_jni_shared",
+      "abi": "x86_64",
+      "output": "F:\\StudioProjects\\OctopusFramework\\libOVL\\.cxx\\Debug\\4f1k533n\\x86_64\\libopencv_jni_shared.a",
+      "runtimeFiles": []
+    }
+  }
+}

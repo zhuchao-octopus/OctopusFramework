@@ -1,0 +1,24 @@
+                    Executable : F:\Android\SDK\cmake\3.18.1\bin\cmake.exe
+arguments : 
+-HF:\StudioProjects\OctopusFramework\libOVL\libcxx_helper
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_SYSTEM_VERSION=24
+-DANDROID_PLATFORM=android-24
+-DANDROID_ABI=x86
+-DCMAKE_ANDROID_ARCH_ABI=x86
+-DANDROID_NDK=F:\Android\SDK\ndk\21.1.6352462
+-DCMAKE_ANDROID_NDK=F:\Android\SDK\ndk\21.1.6352462
+-DCMAKE_TOOLCHAIN_FILE=F:\Android\SDK\ndk\21.1.6352462\build\cmake\android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=F:\Android\SDK\cmake\3.18.1\bin\ninja.exe
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=F:\StudioProjects\OctopusFramework\libOVL\build\intermediates\cxx\Debug\4f1k533n\obj\x86
+-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=F:\StudioProjects\OctopusFramework\libOVL\build\intermediates\cxx\Debug\4f1k533n\obj\x86
+-DCMAKE_BUILD_TYPE=Debug
+-BF:\StudioProjects\OctopusFramework\libOVL\.cxx\Debug\4f1k533n\x86
+-GNinja
+-DANDROID_STL=c++_shared
+jvmArgs : 
+
+
+                    Build command args: []
+                    Version: 2

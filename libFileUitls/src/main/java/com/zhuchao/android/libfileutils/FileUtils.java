@@ -19,6 +19,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.zhuchao.android.libfileutils.bean.FileBean;
@@ -80,13 +81,13 @@ public class FileUtils {
 
         try {
             File file = new File(filePath);
-            if(file.exists() && file.isFile())
+            if (file.exists() && file.isFile())
                 return true;
             else
                 return false;
         } catch (Exception e) {
             //e.printStackTrace();
-            MMLog.log(TAG,e.toString());
+            MMLog.log(TAG, e.toString());
         }
         return false;
     }
@@ -98,6 +99,13 @@ public class FileUtils {
             return true;
         else
             return false;
+    }
+
+    public static void CheckDirsExits(@NonNull String pathDir) {
+        if (EmptyString(pathDir)) return;
+        File dirs = new File(pathDir);
+        if (!dirs.exists())
+            dirs.mkdirs();
     }
 
     //无法获得不存在资源的文件名
@@ -132,18 +140,6 @@ public class FileUtils {
         return null;
     }
 
-    //存在文件的判断
-    public static int checkFilePath(String filePath) {
-        if (EmptyString(filePath)) return 0;
-        File file = new File(filePath);
-        if (file.isFile())
-            return 1;
-        else if (file.isDirectory())
-            return 2;
-        else
-            return 0;
-    }
-
     public static long getFileSize(String fileName) {
         try {
             File file = new File(fileName);
@@ -170,7 +166,7 @@ public class FileUtils {
 
     public static boolean deleteFiles(String filePath) {
         List<File> files = getFiles(filePath);
-        if(files == null) return true;
+        if (files == null) return true;
         if (files.size() != 0) {
             for (int i = 0; i < files.size(); i++) {
                 File file = files.get(i);
@@ -204,11 +200,11 @@ public class FileUtils {
         return bRet;
     }
 
-    public static void copy(String FromFile, String ToFile) {
+    public static boolean copy(String FromFile, String ToFile) {
         int byteRead = 0;
         try {
             File fFile = new File(FromFile);
-            if (fFile.exists()) { //文件存在时
+            if (fFile.exists() && fFile.isFile()) { //文件存在时
                 InputStream fStream = new FileInputStream(FromFile); //读入原文件
                 FileOutputStream tStream = new FileOutputStream(ToFile);
                 byte[] buffer = new byte[1024];
@@ -219,10 +215,13 @@ public class FileUtils {
                 }
                 fStream.close();
                 tStream.close();
+                return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            MMLog.log(TAG, e.toString());
+            return false;
         }
+        return true;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -233,7 +232,8 @@ public class FileUtils {
             Files.copy(ff, tf, NOFOLLOW_LINKS);
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.log(TAG, e.toString());
             return false;
         }
     }
@@ -248,7 +248,8 @@ public class FileUtils {
             fileChannel_f.transferTo(0L, fileChannel_f.size(), fileChannel_t);
             return true;
         } catch (IOException ex) {
-            System.err.println(ex);
+            //System.err.println(ex);
+            MMLog.log(TAG, ex.toString());
             return false;
         }
     }
@@ -264,6 +265,7 @@ public class FileUtils {
             l = fileChannel_t.transferFrom(fileChannel_f, 0L, fileChannel_f.size());
         } catch (IOException ex) {
             //System.err.println(ex);
+            MMLog.log(TAG, ex.toString());
         }
         return l;
     }
@@ -300,21 +302,33 @@ public class FileUtils {
         }
     }
 
-    /**
-     * 通过文件名获取文件图标
-     */
-    public static int getFileIconByPath(String path) {
-        path = path.toLowerCase();
-        int iconId = 0;//R.mipmap.ic_launcher;
-        return iconId;
-    }
-
-    /**
-     * 是否是图片文件
-     */
-    public static boolean isPicFile(String path) {
-        path = path.toLowerCase();
-        return path.endsWith(".jpg") || path.endsWith(".jpeg") || path.endsWith(".png");
+    //获取目录，没有就创建
+    public static String getDownloadDir(String downloadDir) {
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/";
+        if (existDirectory(downloadDir))
+            return downloadDir;
+        if (NotEmptyString(downloadDir))
+            path = downloadDir;
+        if (existDirectory(path)) {
+            return path;
+        }
+        File file = null;
+        try {
+            file = new File(path);
+            if (file.exists() && file.isFile()) {
+                return null;//是一个已经存在的文件，返回
+            } else {
+                file.mkdirs();//创建目录
+                //MMLog.log(TAG,"make dir = " + path);
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            MMLog.e(TAG, e.toString());
+        }
+        if (file != null)
+            return file.getAbsolutePath();
+        else
+            return null;
     }
 
     /**
@@ -325,21 +339,15 @@ public class FileUtils {
                 .getExternalStorageState());
     }
 
-    /**
-     * 从文件的全名得到文件的拓展名
-     *
-     * @param filename
-     * @return
-     */
-    public static String getExtFromFileFullName(String fileName) {
+    public static String getExtNameFromPathName(String fileName) {
         int dotPosition = fileName.lastIndexOf('.');
         if (dotPosition != -1) {
             return fileName.substring(dotPosition + 1);
         }
-        return "";
+        return null;
     }
 
-    public static String getFileNameFromFileFullName(String fileName) {
+    public static String getFileNameFromPathName(String fileName) {
         File file = new File(fileName);
         if (file.exists()) {
             return file.getName();
@@ -347,12 +355,15 @@ public class FileUtils {
         return null;
     }
 
-    /**
-     * 读取文件的修改时间
-     *
-     * @param f
-     * @return
-     */
+    public static String getFilePathFromPathName(String filePathName)
+    {
+        int dotPosition = filePathName.lastIndexOf('/');
+        if (dotPosition > 0) {
+            return filePathName.substring(0,dotPosition);
+        }
+        return null;
+    }
+
     public static String getModifiedTime(File f) {
         Calendar cal = Calendar.getInstance();
         long time = f.lastModified();
@@ -553,7 +564,7 @@ public class FileUtils {
                         continue;
                     }
                     long size = c.getLong(sizeIndex);
-                    FileBean fileBean = new FileBean(path, FileUtils.getFileIconByPath(path));
+                    FileBean fileBean = new FileBean(path,0);
                     files.add(fileBean);
                 }
             }
@@ -616,37 +627,6 @@ public class FileUtils {
         return folders;
     }
 
-    /**
-     * 通过图片文件夹的路径获取该目录下的图片
-     */
-    public static List<String> getImgListByDir(String dir) {
-        ArrayList<String> imgPaths = new ArrayList<>();
-        File directory = new File(dir);
-        if (directory == null || !directory.exists()) {
-            return imgPaths;
-        }
-        File[] files = directory.listFiles();
-        for (File file : files) {
-            String path = file.getAbsolutePath();
-            if (FileUtils.isPicFile(path)) {
-                imgPaths.add(path);
-            }
-        }
-        return imgPaths;
-    }
-
-    public static List<String> getLocalImageList() {
-        List<ImgFolderBean> folders = new ArrayList<ImgFolderBean>();
-        List<String> ImageList = new ArrayList<String>();
-        List<String> AllImageList = new ArrayList<String>();
-        for (ImgFolderBean key : folders) {
-            ImageList = getImgListByDir(key.getDir());
-            for (String imgFilePath : ImageList)
-                AllImageList.add(imgFilePath);
-        }
-        return AllImageList;
-    }
-
     public static String getDiskCachePath(Context context) {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                 || !Environment.isExternalStorageRemovable()) {
@@ -654,35 +634,6 @@ public class FileUtils {
         } else {
             return context.getCacheDir().getAbsolutePath();
         }
-    }
-
-    //获取目录，没有就创建
-    public static String getDownloadDir(String downloadDir) {
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/";
-        if (existDirectory(downloadDir))
-            return downloadDir;
-        if (NotEmptyString(downloadDir))
-            path = downloadDir;
-        if (existDirectory(path)) {
-            return path;
-        }
-        File file = null;
-        try {
-            file = new File(path);
-            if (file.exists() && file.isFile()) {
-                return null;//是一个已经存在的文件，返回
-            } else {
-                file.mkdirs();//创建目录
-                //MMLog.log(TAG,"make dir = " + path);
-            }
-        } catch (Exception e) {
-            //e.printStackTrace();
-            MMLog.e(TAG, e.toString());
-        }
-        if (file != null)
-            return file.getAbsolutePath();
-        else
-            return null;
     }
 
     public static List<String> ReadTxtFile(String filePath) {

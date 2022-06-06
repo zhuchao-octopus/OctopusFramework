@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.playerutil.dlna.IController;
 
 //import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
@@ -26,7 +27,7 @@ import java.util.Map;
 
 //import org.videolan.libvlc.MediaPlayCallback;
 
-public class OPlayer extends PlayControl {
+public class OPlayer extends PlayControl{
     private String TAG = "OPlayer>>>>";
     private MediaPlayer mMediaPlayer = null;
     private Media media = null;
@@ -453,5 +454,6 @@ public class OPlayer extends PlayControl {
             playerStatusInfo.setSurfacePrepared(false);
         }
     }
+
 }
 

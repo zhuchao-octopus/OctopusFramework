@@ -3,6 +3,8 @@ package com.zhuchao.android.libfileutils;
 import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
 import static com.zhuchao.android.libfileutils.FileUtils.md5;
 
+import java.util.Collection;
+
 public class TTaskThreadPool extends ObjectList {
     private final String TAG = "TaskThreadPool";
     private int maxThreadCount = 100;
@@ -68,6 +70,14 @@ public class TTaskThreadPool extends ObjectList {
 
     private void setTaskCounter(int taskCounter) {
         this.taskCounter = taskCounter;
+    }
+
+    public void free()
+    {
+        Collection<Object> objects = getAllObject();
+        for (Object o : objects) {
+            ((PTask) o).freeFree();
+        }
     }
 
     class PTask extends TTask {

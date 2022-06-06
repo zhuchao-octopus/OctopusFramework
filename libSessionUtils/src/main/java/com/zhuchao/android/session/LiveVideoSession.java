@@ -223,7 +223,7 @@ public class LiveVideoSession implements SessionCallback {
             }
         }
 
-        if (fType == DataID.MEDIA_TYPE_ID_PIC) {
+        /*if (fType == DataID.MEDIA_TYPE_ID_PIC) {
             List<String> imgList = FileUtils.getLocalImageList();
             for (String img : imgList) {
                 Movie movie = new Movie(img);
@@ -233,7 +233,7 @@ public class LiveVideoSession implements SessionCallback {
                 OMedia oMedia = new OMedia(movie);
                 videoList.add(oMedia);
             }
-        }
+        }*/
     }
 
     public void initMediasFromPath(Context context, String FilePath, Integer fType) {

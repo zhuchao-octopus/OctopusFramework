@@ -124,7 +124,7 @@ public class FilesFinger extends ObjectList {
                     sleepTime = 0;
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             if (file.isDirectory()) {
                 getFileList(file.listFiles());
@@ -143,14 +143,13 @@ public class FilesFinger extends ObjectList {
 
     private class ScanThread extends Thread {
         String tag = null;
-
         @Override
         public void run() {
             super.run();
             if(NotEmptyString(tag))
                 getFiles(tag);
             if (RequestCallBack != null)
-                RequestCallBack.onEventRequest("TimeElapsed:" + (System.currentTimeMillis() - lStart) + "ms-->" + tag, count);
+                RequestCallBack.onEventRequest("EndTimeElapsed:" + (System.currentTimeMillis() - lStart) + "ms-->" + tag, count);
             if (threadPool.indexOf(this) >= 0)
                 threadPool.remove(this);
         }
