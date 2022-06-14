@@ -1,9 +1,9 @@
 package com.zhuchao.android;
 
-import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
-import static com.zhuchao.android.libfileutils.FileUtils.NotEmptyString;
+import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
 
-import com.zhuchao.android.libfileutils.MMLog;
+import com.zhuchao.android.fileutils.MMLog;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

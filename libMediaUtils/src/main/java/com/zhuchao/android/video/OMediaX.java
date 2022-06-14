@@ -1,7 +1,7 @@
 package com.zhuchao.android.video;
 
-import com.zhuchao.android.playerutil.OPlayer;
-import com.zhuchao.android.playerutil.PlayerManager;
+import com.zhuchao.android.player.OPlayer;
+import com.zhuchao.android.player.PlayerManager;
 
 public class OMediaX extends OMedia{
     public OMediaX(String url) {

@@ -1,6 +1,6 @@
 package com.zhuchao.android.video;
 
-import com.zhuchao.android.libfileutils.DateTimeUtils;
+import com.zhuchao.android.fileutils.DateTimeUtils;
 
 public class ScheduleMedia extends OMedia {
     private int mID=0;

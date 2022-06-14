@@ -1,0 +1,37 @@
+{
+  "buildFiles": [
+    "F:\\StudioProjects\\OctopusFramework\\libOpenComputerVision\\libcxx_helper\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "F:\\Android\\SDK\\cmake\\3.18.1\\bin\\ninja.exe",
+      "-C",
+      "F:\\StudioProjects\\OctopusFramework\\libOpenComputerVision\\.cxx\\Debug\\t22374c5\\x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "F:\\Android\\SDK\\cmake\\3.18.1\\bin\\ninja.exe",
+    "-C",
+    "F:\\StudioProjects\\OctopusFramework\\libOpenComputerVision\\.cxx\\Debug\\t22374c5\\x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "opencv_jni_shared::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "x86",
+      "artifactName": "opencv_jni_shared",
+      "output": "F:\\StudioProjects\\OctopusFramework\\libOpenComputerVision\\.cxx\\Debug\\t22374c5\\x86\\libopencv_jni_shared.a"
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "F:\\Android\\SDK\\ndk\\21.1.6352462\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe",
+      "cppCompilerExecutable": "F:\\Android\\SDK\\ndk\\21.1.6352462\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

@@ -58,8 +58,8 @@ android {
 dependencies {
     implementation files('libs\\javalib.jar')
     implementation files('libs/javalib.jar')
-    api project(path: ':libCallbackEvent')
-    api project(path: ':libFileUitls')
+    implementation project(path: ':libCallbackEvent')
+    implementation project(path: ':libFileUitls')
 
 
 }

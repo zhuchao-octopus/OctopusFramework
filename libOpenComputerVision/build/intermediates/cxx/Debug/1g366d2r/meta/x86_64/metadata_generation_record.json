@@ -1,0 +1,44 @@
+[
+  {
+    "level_": 0,
+    "message_": "Start JSON generation. Platform version: 24 min SDK version: x86_64",
+    "file_": "F:\\StudioProjects\\OctopusFramework\\libOpenComputerVision\\libcxx_helper\\CMakeLists.txt",
+    "tag_": "debug|x86_64",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 297824548
+  },
+  {
+    "level_": 0,
+    "message_": "JSON \u0027F:\\StudioProjects\\OctopusFramework\\libOpenComputerVision\\.cxx\\Debug\\1g366d2r\\x86_64\\android_gradle_build.json\u0027 was up-to-date",
+    "file_": "F:\\StudioProjects\\OctopusFramework\\libOpenComputerVision\\libcxx_helper\\CMakeLists.txt",
+    "tag_": "debug|x86_64",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 2087987766
+  },
+  {
+    "level_": 0,
+    "message_": "JSON generation completed without problems",
+    "file_": "F:\\StudioProjects\\OctopusFramework\\libOpenComputerVision\\libcxx_helper\\CMakeLists.txt",
+    "tag_": "debug|x86_64",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {},
+      "fieldsDescending": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 1124740545
+  }
+]

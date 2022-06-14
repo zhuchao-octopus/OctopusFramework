@@ -1,3 +1,4 @@
 include ':libFileUitls', ':libJosUtils', ':libDecodeCore', ':libPlayerUtils', ':libSessionUtils', ':libINetUtils', ':libHoldPersistUtils', ':libMediaUtils', ':libCallbackEvent'
+include ':libOpenFaceDetection'
+include ':libOpenComputerVision'
 include ':myapplication'
-include ':libOVL'

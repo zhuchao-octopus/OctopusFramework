@@ -1,16 +1,16 @@
 package com.zhuchao.android.session;
 
-import static com.zhuchao.android.libfileutils.FileUtils.NotEmptyString;
+import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
 
 import android.content.Context;
 
 import com.zhuchao.android.callbackevent.SessionCallback;
-import com.zhuchao.android.libfileutils.DataID;
-import com.zhuchao.android.libfileutils.FileUtils;
-import com.zhuchao.android.libfileutils.MMLog;
-import com.zhuchao.android.libfileutils.MediaFile;
-import com.zhuchao.android.libfileutils.bean.LMusic;
-import com.zhuchao.android.libfileutils.bean.LVideo;
+import com.zhuchao.android.fileutils.DataID;
+import com.zhuchao.android.fileutils.FileUtils;
+import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fileutils.MediaFile;
+import com.zhuchao.android.fileutils.bean.LMusic;
+import com.zhuchao.android.fileutils.bean.LVideo;
 import com.zhuchao.android.session.PaserBean.MovieListBean;
 import com.zhuchao.android.video.Movie;
 import com.zhuchao.android.video.OMedia;

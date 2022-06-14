@@ -1,10 +1,10 @@
 package com.zhuchao.android.session;
 
-import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
-import static com.zhuchao.android.libfileutils.FileUtils.NotEmptyString;
+import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
 
-import com.zhuchao.android.libfileutils.MMLog;
-import com.zhuchao.android.libfileutils.ObjectList;
+import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fileutils.ObjectList;
 import com.zhuchao.android.serialport.SerialPortFinder;
 import com.zhuchao.android.serialport.TDevice;
 import com.zhuchao.android.serialport.TUartFile;

@@ -41,13 +41,13 @@ android {
         }
     }
     namespace 'com.zhuchao.android.session'
-
 }
 
 dependencies {
-    api project(path: ':libCallbackEvent')
-    api project(path: ':libFileUitls')
-    api project(path: ':libJosUtils')
-    api project(path: ':libINetUtils')
-    api project(path: ':libMediaUtils')
+    implementation project(path: ':libCallbackEvent')
+    implementation project(path: ':libFileUitls')
+    implementation project(path: ':libJosUtils')
+    implementation project(path: ':libINetUtils')
+    implementation project(path: ':libMediaUtils')
+    implementation project(path: ':libPlayerUtils')
 }

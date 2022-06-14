@@ -1,0 +1,29 @@
+-- Merging decision tree log ---
+manifest
+ADDED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml:2:1-6:12
+INJECTED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml:2:1-6:12
+INJECTED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml:2:1-6:12
+	package
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml:3:7-27
+		INJECTED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml
+		INJECTED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml
+	xmlns:android
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml:2:11-69
+uses-permission#android.permission.CAMERA
+ADDED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml:5:5-65
+	android:name
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml:5:22-62
+uses-sdk
+INJECTED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml
+INJECTED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml
+INJECTED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml
+INJECTED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml
+		INJECTED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml
+		INJECTED from F:\StudioProjects\OctopusFramework\libOpenComputerVision\java\AndroidManifest.xml

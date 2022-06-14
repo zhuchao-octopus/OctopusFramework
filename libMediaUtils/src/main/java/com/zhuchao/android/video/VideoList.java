@@ -14,13 +14,13 @@
 
 package com.zhuchao.android.video;
 
-import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
 
 import com.zhuchao.android.callbackevent.NormalCallback;
-import com.zhuchao.android.libfileutils.DataID;
-import com.zhuchao.android.libfileutils.FileUtils;
-import com.zhuchao.android.libfileutils.MMLog;
-import com.zhuchao.android.libfileutils.MediaFile;
+import com.zhuchao.android.fileutils.DataID;
+import com.zhuchao.android.fileutils.FileUtils;
+import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fileutils.MediaFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,6 +42,10 @@ public class VideoList {
             return o2.compareTo(o1);
         }
     });*/
+
+    public VideoList() {
+        RequestCallBack = null;
+    }
 
     public VideoList(NormalCallback requestCallBack) {
         RequestCallBack = requestCallBack;
@@ -87,7 +91,7 @@ public class VideoList {
     }
 
     public void add(String fileName) {
-        if(EmptyString(fileName)) return;
+        if (EmptyString(fileName)) return;
         OMedia oMedia = new OMedia(fileName);
         add(oMedia);
     }
@@ -107,9 +111,9 @@ public class VideoList {
         if (oNext != null)
             oNext.setPre(oPre);
 
-        if(oMedia.equals(firstItem))
+        if (oMedia.equals(firstItem))
             firstItem = oNext;
-        else if(oMedia.equals(lastItem))
+        else if (oMedia.equals(lastItem))
             lastItem = oPre;
 
         FHashMap.remove(oMedia.md5());
@@ -152,21 +156,13 @@ public class VideoList {
         return (OMedia) FHashMap.get(md5Key);
     }
 
-    public boolean exist(String fileName) {
-        String md5Key = FileUtils.md5(fileName);
-        return FHashMap.containsKey(md5Key);
-    }
-
-    public boolean exist(OMedia oMedia) {
-        return FHashMap.containsValue(oMedia);
-    }
-
     public OMedia findAny() {
         Random generator = new Random();
         Object[] values = FHashMap.values().toArray();
         Object randomValue = values[generator.nextInt(values.length)];
         return (OMedia) randomValue;
     }
+
     //跳过无效的资源对象
     public OMedia getNextAvailable(OMedia oMedia) {
         OMedia ooMedia = null;
@@ -175,10 +171,9 @@ public class VideoList {
             return firstItem;
 
         ooMedia = oMedia;//找下一个
-        for (int i = 0; i < getCount(); i++)
-        {
+        for (int i = 0; i < getCount(); i++) {
             ooMedia = ooMedia.getNext();
-             if((ooMedia != null) && (ooMedia.isAvailable(null)))
+            if ((ooMedia != null) && (ooMedia.isAvailable(null)))
                 return ooMedia;
         }
         return null;
@@ -191,13 +186,21 @@ public class VideoList {
             return lastItem;
 
         ooMedia = oMedia;//找下一个
-        for (int i = 0; i < getCount(); i++)
-        {
+        for (int i = 0; i < getCount(); i++) {
             ooMedia = ooMedia.getPre();
-            if((ooMedia != null) && (ooMedia.isAvailable(null)))
+            if ((ooMedia != null) && (ooMedia.isAvailable(null)))
                 return ooMedia;
         }
         return null;
+    }
+
+    public boolean exist(String fileName) {
+        String md5Key = FileUtils.md5(fileName);
+        return FHashMap.containsKey(md5Key);
+    }
+
+    public boolean exist(OMedia oMedia) {
+        return FHashMap.containsValue(oMedia);
     }
 
     public OMedia getFirstItem() {

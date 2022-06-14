@@ -18,7 +18,8 @@
             <option value="$PROJECT_DIR$/libINetUtils" />
             <option value="$PROJECT_DIR$/libJosUtils" />
             <option value="$PROJECT_DIR$/libMediaUtils" />
-            <option value="$PROJECT_DIR$/libOVL" />
+            <option value="$PROJECT_DIR$/libOpenComputerVision" />
+            <option value="$PROJECT_DIR$/libOpenFaceDetection" />
             <option value="$PROJECT_DIR$/libPlayerUtils" />
             <option value="$PROJECT_DIR$/libSessionUtils" />
             <option value="$PROJECT_DIR$/myapplication" />

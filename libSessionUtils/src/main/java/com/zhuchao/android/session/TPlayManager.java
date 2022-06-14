@@ -1,8 +1,5 @@
 package com.zhuchao.android.session;
 
-import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
-import static com.zhuchao.android.libfileutils.FileUtils.NotEmptyString;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -18,14 +15,14 @@ import com.zhuchao.android.callbackevent.NormalCallback;
 import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.callbackevent.PlayerStatusInfo;
-import com.zhuchao.android.libfileutils.DataID;
-import com.zhuchao.android.libfileutils.FileUtils;
-import com.zhuchao.android.libfileutils.MMLog;
-import com.zhuchao.android.video.Movie;
+import com.zhuchao.android.fileutils.DataID;
+import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fileutils.ObjectList;
 import com.zhuchao.android.video.OMedia;
 import com.zhuchao.android.video.VideoList;
 
 import java.io.FileDescriptor;
+import java.util.Collection;
 
 public class TPlayManager implements PlayerCallback, NormalCallback {
     private final String TAG = "PlayManager";
@@ -36,23 +33,26 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     private OMedia oMedia = null;
     private boolean oMediaLoading = false;
     private PlayerCallback callback = null;
-    private String playingPath = null;
-    private String downloadPath = null;
+    //private String playingPath = null;
+    //private String downloadPath = null;
     private int playOrder = DataID.PLAY_MANAGER_PLAY_ORDER2;
     private int autoPlaySource = DataID.SESSION_SOURCE_NONE;
-    private VideoList playingList = null;
-    private VideoList favoriteList = null;
+    //private VideoList defaultPlayingList = null;
+    //private VideoList favoriteList = null;
+    private ObjectList allPlayLists = null;
     private long lStartTick = 0;
     //private int bLastErrorStatus = 0;
 
     public TPlayManager(Context mContext, SurfaceView sfView) {
         this.context = mContext;
         this.surfaceView = sfView;
-        downloadPath = FileUtils.getDownloadDir(null);//播放目录和，下载缓存目录不一样
-        playingList = new VideoList(null);
-        favoriteList = new VideoList(this);
-        playingList.setTAG("PlayManager.VideoList0");
-        playingList.setTAG("PlayManager.VideoList1");
+        //downloadPath = FileUtils.getDownloadDir(null);//播放目录和，下载缓存目录不一样
+        //defaultPlayingList = new VideoList(null);
+        //favoriteList = new VideoList(this);
+        //defaultPlayingList.setTAG("PlayManager.VideoList0");
+        //favoriteList.setTAG("PlayManager.VideoList1");
+        allPlayLists = new ObjectList();
+        //PlayList.addItem("default", defaultPlayingList);
         setMagicNum(0);
     }
 
@@ -86,7 +86,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         if (oMedia == null) {
             MMLog.log(TAG, "There is no media to play!");
             return;
-        } else if (!oMedia.isAvailable(playingPath)) {
+        } else if (!oMedia.isAvailable(null)) {
             MMLog.log(TAG, "The oMedia is not available! ---> " + oMedia.getMovie().getsUrl());
             return;
         }
@@ -94,17 +94,18 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         MMLog.log(TAG, "StartPlay--> " + oMedia.getMovie().getsUrl());
         this.oMediaLoading = true;
         this.oMedia = oMedia;
-        this.oMedia.setMagicNum(MagicNum);
+        this.oMedia.setMagicNumber(MagicNum);
         this.oMedia.with(context);
         //this.oMedia.setNormalRate();
         this.oMedia.callback(this);
         this.oMedia.onView(surfaceView);//set surface view
-        this.oMedia.playCache(downloadPath);//set source
+        //this.oMedia.playCache(downloadPath);//set source
+        this.oMedia.play();
         this.oMediaLoading = false;
     }
 
     public synchronized void startPlay(String url) {
-        oMedia = playingList.findByPath(url);
+        oMedia = getOMediaFromPlayLists(url);// defaultPlayingList.findByPath(url);
         if (oMedia == null) {
             oMedia = new OMedia(url);
         }
@@ -112,7 +113,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     }
 
     public synchronized void startPlay(FileDescriptor FD) {
-        oMedia = playingList.findByPath(FD.toString());
+        oMedia =getOMediaFromPlayLists(FD.toString());// defaultPlayingList.findByPath(FD.toString());
         if (oMedia == null) {
             oMedia = new OMedia(FD);
         }
@@ -120,7 +121,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     }
 
     public synchronized void startPlay(AssetFileDescriptor AFD) {
-        oMedia = playingList.findByPath(AFD.toString());
+        oMedia = getOMediaFromPlayLists(AFD.toString());//defaultPlayingList.findByPath(AFD.toString());
         if (oMedia == null) {
             oMedia = new OMedia(AFD);
         }
@@ -128,18 +129,11 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     }
 
     public synchronized void startPlay(Uri uri) {
-        oMedia = playingList.findByPath(uri.getPath());
+        oMedia = getOMediaFromPlayLists(uri.getPath());//defaultPlayingList.findByPath(uri.getPath());
         if (oMedia == null) {
             oMedia = new OMedia(uri);
         }
         startPlay(oMedia);
-    }
-
-    public synchronized void startPlay(int Index) {
-        oMedia = getMedia(Index);
-        if (oMedia != null) {
-            startPlay(oMedia);
-        }
     }
 
     public synchronized void stopPlay() {
@@ -273,9 +267,9 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         return oMedia;
     }
 
-    public String getPlayingPath() {
-        return playingPath;
-    }
+    //public String getPlayingPath() {
+    //    return playingPath;
+    //}
 
     public int getPlayOrder() {
         return playOrder;
@@ -285,24 +279,42 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         this.playOrder = playOrder;
     }
 
-    public VideoList getPlayingList() {
-        return playingList;
+    //public VideoList getDefaultPlayingList() {
+    //    return defaultPlayingList;
+    //}
+
+    //public VideoList getFavoriteList() {
+    //    return favoriteList;
+    //}
+    public void addPlayList(String name,VideoList videoList)
+    {
+        allPlayLists.addItem(name,videoList);
     }
 
-    public VideoList getFavoriteList() {
-        return favoriteList;
+    public VideoList getPlayList(String name)
+    {
+        return (VideoList) allPlayLists.getObject(name);
     }
 
-    public synchronized void setPlayingPath(String CachedPath) {
-        this.playingPath = CachedPath;
-        playingList.loadFromDir(playingPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
+    public void DeletePlayList(String name)
+    {
+        allPlayLists.delete(name);
     }
 
-    public String getDownloadPath() {
-        return downloadPath;
+    public void DeleteALLPlayList() {
+        allPlayLists.clear();
     }
 
-    public synchronized void setDownloadPath(String downloadDirectory) {
+    //public synchronized void setPlayingPath(String CachedPath) {
+    //    this.playingPath = CachedPath;
+    //    defaultPlayingList.loadFromDir(playingPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
+    //}
+
+    //public String getDownloadPath() {
+    //    return downloadPath;
+    //}
+
+    /*public synchronized void setDownloadPath(String downloadDirectory) {
         this.downloadPath = FileUtils.getDownloadDir(downloadDirectory);//播放目录和，下载缓存目录不一样;
         if (EmptyString(downloadPath)) {
             MMLog.log(TAG, "get getDownloadDir() failed downloadPath = " + this.downloadPath);
@@ -313,7 +325,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     public void updatePlayingList() {
         if (FileUtils.existDirectory(playingPath)) {
-            playingList.loadFromDir(playingPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
+            defaultPlayingList.loadFromDir(playingPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
         }
         MMLog.log(TAG, "updatePlayingList() = " + playingPath);
         if (FileUtils.existDirectory(downloadPath)) {
@@ -327,39 +339,40 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         String fileName = FileUtils.getFileName(movie.getsUrl());
         if (NotEmptyString(fileName))
             movie.setName(fileName);
-        playingList.add(new OMedia(movie));
+        defaultPlayingList.add(new OMedia(movie));
     }
 
     public void addSource(FileDescriptor FD) {
         if (FD != null)
-            playingList.add(new OMedia(FD));
+            defaultPlayingList.add(new OMedia(FD));
     }
+
 
     public void addSource(AssetFileDescriptor AFD) {
         if (AFD != null)
-            playingList.add(new OMedia(AFD));
+            defaultPlayingList.add(new OMedia(AFD));
     }
 
     public void addSource(Uri uri) {
         if (uri != null)
-            playingList.add(new OMedia(uri));
+            defaultPlayingList.add(new OMedia(uri));
     }
 
     public OMedia getMedia(String url) {
-        OMedia oo = playingList.findByPath(oMedia.getMovie().getsUrl());
+        OMedia oo = defaultPlayingList.findByPath(oMedia.getMovie().getsUrl());
         return oo;
     }
 
     public OMedia getMedia(int Index) {
-        if (playingList.getCount() <= 0)
+        if (defaultPlayingList.getCount() <= 0)
             return null;
-        return playingList.findByIndex(Index);
+        return defaultPlayingList.findByIndex(Index);
     }
-
+*/
     public void setMagicNum(int magicNum) {
         MagicNum = magicNum;
         if (oMedia != null)
-            oMedia.setMagicNum(MagicNum);
+            oMedia.setMagicNumber(MagicNum);
     }
 
     public void setAutoPlaySource(int autoPlaySource) {
@@ -387,47 +400,88 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     public void free() {
         try {
-            playingList.clear();
-            playingList = null;
+            //defaultPlayingList.clear();
+            //defaultPlayingList = null;
             if (getPlayingMedia() != null)
                 getPlayingMedia().free();
+            allPlayLists.clear();
         } catch (Exception e) {
             MMLog.e(TAG, "free() " + e.toString());
         }
     }
 
     private OMedia getNextAvailable() {
-        OMedia ooMedia = null;
-        MMLog.log(TAG, "getNextAvailable() playingList.count = " + playingList.getCount() + " favoriteList.count = " + favoriteList.getCount());
-        if (favoriteList.exist(oMedia))
-            ooMedia = favoriteList.getNextAvailable(oMedia);
-        else
-            ooMedia = favoriteList.getNextAvailable(null);
-
-        if (ooMedia == null) {
-            if (playingList.exist(oMedia))
-                ooMedia = playingList.getNextAvailable(oMedia);
-            else
-                ooMedia = playingList.getNextAvailable(null);
+        Collection<Object> objects = allPlayLists.getAllObject();
+        if(oMedia == null)
+        {
+            for (Object o : objects)
+            {
+                OMedia oOMedia = ((VideoList)o).getNextAvailable(null);
+                if(oOMedia != null) return  oOMedia;
+            }
+            return null;
         }
-        return ooMedia;
+
+        for (Object o : objects)
+        {
+            OMedia oOMedia = ((VideoList)o).getNextAvailable(oMedia);
+            if(oOMedia != null) return  oOMedia;
+        }
+        return null;
     }
 
     private OMedia getPreAvailable() {
-        OMedia ooMedia = null;
-        MMLog.log(TAG, "getPreAvailable() Count = " + playingList.getCount() + " | " + favoriteList.getCount());
-        if (favoriteList.exist(oMedia))
-            ooMedia = favoriteList.getPreAvailable(oMedia);
-        else
-            ooMedia = favoriteList.getPreAvailable(null);
-
-        if (ooMedia == null) {
-            if (playingList.exist(oMedia))
-                ooMedia = playingList.getPreAvailable(oMedia);
-            else
-                ooMedia = playingList.getPreAvailable(null);
+        //OMedia ooMedia = null;
+        Collection<Object> objects = allPlayLists.getAllObject();
+        if(oMedia == null)
+        {
+            for (Object o : objects)
+            {
+                OMedia oOMedia = ((VideoList)o).getPreAvailable(null);
+                if(oOMedia != null) return  oOMedia;
+            }
+            return null;
         }
-        return ooMedia;
+
+        for (Object o : objects)
+        {
+            OMedia oOMedia = ((VideoList)o).getPreAvailable(oMedia);
+            if(oOMedia != null) return  oOMedia;
+        }
+        return null;
+    }
+
+    public OMedia getOMediaFromPlayLists(String urlPath)
+    {
+        Collection<Object> objects = allPlayLists.getAllObject();
+        for (Object o : objects)
+        {
+            OMedia oMedia = ((VideoList)o).findByPath(urlPath);
+            if(oMedia != null) return  oMedia;
+        }
+        return null;
+    }
+
+    public OMedia getFirstOMediaFromPlayLists()
+    {
+        Collection<Object> objects = allPlayLists.getAllObject();
+        for (Object o : objects)
+        {
+            OMedia oMedia = ((VideoList)o).getFirstItem();
+            if(oMedia != null) return  oMedia;
+        }
+        return null;
+    }
+
+    public OMedia getRandomOMediaFromPlayLists()
+    {
+        Collection<Object> objects = allPlayLists.getAllObject();
+        for (Object o : objects)
+        {
+            OMedia oMedia = ((VideoList)o).findAny();
+            if(oMedia != null) return  oMedia;
+        }
+        return null;
     }
 
     public synchronized void autoPlay() {
@@ -444,21 +498,21 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
         switch (autoPlaySource) {
             case DataID.SESSION_SOURCE_PLAYLIST:
-                ooMedia = playingList.getFirstItem();
-                break;
+                //ooMedia = defaultPlayingList.getFirstItem();
+                //break;
             case DataID.SESSION_SOURCE_ALL:
             case DataID.SESSION_SOURCE_FAVORITELIST:
-                if (favoriteList.getCount() > 0)
-                    ooMedia = favoriteList.getFirstItem();//优先切换到第二收藏列表，优先播放收藏列表
-                else
-                    ooMedia = playingList.getFirstItem();
+                //if (favoriteList.getCount() > 0)
+                //    ooMedia = favoriteList.getFirstItem();//优先切换到第二收藏列表，优先播放收藏列表
+                //
+                    ooMedia = getFirstOMediaFromPlayLists();//defaultPlayingList.getFirstItem();
                 break;
             default:
                 break;
         }
-        String str = " (playingList = " + playingList.getCount() + ",favoriteList = " + favoriteList.getCount() + ")";
+        //String str = " (playingList = " + defaultPlayingList.getCount() + ",favoriteList = " + favoriteList.getCount() + ")";
         if (ooMedia != null) {
-            MMLog.log(TAG, "Auto play    " + ooMedia.getPathName() + str);
+            //MMLog.log(TAG, "Auto play    " + ooMedia.getPathName() + str);
             ooMedia.setRestorePlay(true);
             startPlay(ooMedia);
         } else {
@@ -507,19 +561,19 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     @Override
     public void onEventRequest(String Result, int Index) {
         //MLog.log(TAG, "onRequestComplete," + Result + "," + Index + ",autoPlaySource = " + autoPlaySource);
-        if (autoPlaySource == DataID.SESSION_SOURCE_FAVORITELIST) //立即跳转到收藏列表
+        /*if (autoPlaySource == DataID.SESSION_SOURCE_FAVORITELIST) //立即跳转到收藏列表
         {
             if (favoriteList.getTAG().equals(Result)) {
                 if (!isPlaying() || !favoriteList.exist(oMedia)) {
                     autoPlay(autoPlaySource);
                 }
             }
-        }
+        }*/
     }
 
     private void playEventHandler(int playOrder) {
         switch (playOrder) {
-            case DataID.PLAY_MANAGER_PLAY_ORDER0://播放第一个
+            case DataID.PLAY_MANAGER_PLAY_ORDER0://自动播放第一个
                 autoPlay();
                 break;
             case DataID.PLAY_MANAGER_PLAY_ORDER1://强制播放第一个
@@ -541,7 +595,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                 break;
             case DataID.PLAY_MANAGER_PLAY_ORDER5://随机播放
                 if (!isPlaying())
-                    startPlay(playingList.findAny());
+                    startPlay(getRandomOMediaFromPlayLists());
                 break;
             case DataID.PLAY_MANAGER_PLAY_ORDER6:
             default:

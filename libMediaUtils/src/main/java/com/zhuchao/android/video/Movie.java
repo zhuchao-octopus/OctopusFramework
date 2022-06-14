@@ -14,7 +14,7 @@
 
 package com.zhuchao.android.video;
 
-import static com.zhuchao.android.libfileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
 
 import android.content.Context;
 import android.widget.ImageView;
