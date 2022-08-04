@@ -27,19 +27,24 @@ import com.zhuchao.android.fileutils.bean.ImgFolderBean;
 import com.zhuchao.android.fileutils.bean.LMusic;
 import com.zhuchao.android.fileutils.bean.LVideo;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -64,12 +69,12 @@ public class FileUtils {
     public static boolean EmptyString(String str) {
         return TextUtils.isEmpty(str);
     }
+
     public static boolean NotEmptyString(String str) {
         return !TextUtils.isEmpty(str);
     }
 
-    public static boolean isExternalLinks(String filePath)
-    {
+    public static boolean isExternalLinks(String filePath) {
         if (EmptyString(filePath)) return false;
         if (filePath.startsWith("http:") ||
                 filePath.startsWith("https:") ||
@@ -78,7 +83,7 @@ public class FileUtils {
                 filePath.startsWith("rtsp:") ||
                 filePath.startsWith("mms:"))
             return true;
-      return false;
+        return false;
     }
 
     public static boolean existFile(String filePath) {
@@ -153,32 +158,28 @@ public class FileUtils {
     }
 
     @SuppressLint({"SetWorldReadable", "SetWorldWritable"})
-    public static void setFilePermissions(String filePath)
-    {
+    public static void setFilePermissions(String filePath) {
         File file = new File(filePath);
-        if (file.exists())
-        {
+        if (file.exists()) {
             try {
-                file.setReadable(true,false);
-                file.setWritable(true,false);
+                file.setReadable(true, false);
+                file.setWritable(true, false);
             } catch (Exception e) {
                 //e.printStackTrace();
-                MMLog.log(TAG,e.toString());
+                MMLog.log(TAG, e.toString());
             }
         }
     }
 
-    public static void setFilePermissions2(String filePath)
-    {
+    public static void setFilePermissions2(String filePath) {
         File file = new File(filePath);
-        if (file.exists())
-        {
+        if (file.exists()) {
             try {
-                String permissionsCmd = "chmod -R 777 "+filePath;
+                String permissionsCmd = "chmod -R 777 " + filePath;
                 Runtime.getRuntime().exec(permissionsCmd);
             } catch (Exception e) {
                 //e.printStackTrace();
-                MMLog.log(TAG,e.toString());
+                MMLog.log(TAG, e.toString());
             }
         }
     }
@@ -243,23 +244,19 @@ public class FileUtils {
         return bRet;
     }
 
-    public static boolean copy(String FromFile, String ToFile) {
-        int byteRead = 0;
+    public static boolean streamCopy(String FromFile, String ToFile) {
         try {
-            File fFile = new File(FromFile);
-            if (fFile.exists() && fFile.isFile()) { //文件存在时
-                InputStream fStream = new FileInputStream(FromFile); //读入原文件
-                FileOutputStream tStream = new FileOutputStream(ToFile);
-                byte[] buffer = new byte[1024];
-                //int length;
-                while ((byteRead = fStream.read(buffer)) != -1) {
-                    //bytesum += byteread; //字节数 文件大小
-                    tStream.write(buffer, 0, byteRead);
-                }
-                fStream.close();
-                tStream.close();
-                return true;
+            InputStream inputStream = new FileInputStream(FromFile); //读入原文件
+            OutputStream outputStream = new FileOutputStream(ToFile);
+            byte[] buffer = new byte[1024];
+            int byteRead = 0;
+
+            while ((byteRead = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, byteRead);
             }
+            inputStream.close();
+            outputStream.close();
+            //return true;
         } catch (Exception e) {
             MMLog.log(TAG, e.toString());
             return false;
@@ -281,14 +278,20 @@ public class FileUtils {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    //@RequiresApi(api = Build.VERSION_CODES.O)
     public static boolean channelTransferTo(String fromFile, String toFile) {
-        final Path ff = Paths.get(fromFile);
-        final Path tf = Paths.get(toFile);
+        //final Path ff = Paths.get(fromFile);
+        //final Path tf = Paths.get(toFile);
         try {
-            FileChannel fileChannel_f = (FileChannel.open(ff, EnumSet.of(StandardOpenOption.READ)));
-            FileChannel fileChannel_t = (FileChannel.open(tf, EnumSet.of(StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)));
+            FileChannel fileChannel_f = new FileInputStream(fromFile).getChannel();
+            FileChannel fileChannel_t = new FileOutputStream(toFile).getChannel();
+
+            //FileChannel fileChannel_f = (FileChannel.open(ff, EnumSet.of(StandardOpenOption.READ)));
+            //FileChannel fileChannel_t = (FileChannel.open(tf, EnumSet.of(StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)));
             fileChannel_f.transferTo(0L, fileChannel_f.size(), fileChannel_t);
+            fileChannel_f.close();
+            fileChannel_t.close();
+
             return true;
         } catch (IOException ex) {
             //System.err.println(ex);
@@ -311,6 +314,55 @@ public class FileUtils {
             MMLog.log(TAG, ex.toString());
         }
         return l;
+    }
+
+    public static boolean bufferCopyFile(String fromFile, String toFile) {
+        FileInputStream fileInputStream = null;
+        FileOutputStream fileOutputStream = null;
+        FileChannel fileChannelOutput = null;
+        FileChannel fileChannelInput = null;
+        BufferedInputStream inbuff = null;
+        BufferedOutputStream outbuff = null;
+        try {
+            fileInputStream = new FileInputStream(fromFile);
+            inbuff = new BufferedInputStream(fileInputStream);
+            fileOutputStream = new FileOutputStream(toFile); // 新建文件输出流并对它进行缓冲
+            outbuff = new BufferedOutputStream(fileOutputStream);
+            //int fileVolume = (int) (dirSize / (1024 * 1024));
+            fileChannelOutput = fileOutputStream.getChannel();
+            fileChannelInput = fileInputStream.getChannel();
+            ByteBuffer buffer = ByteBuffer.allocate(65536);
+            //long transferSize = 0;
+            //int progress = 0;
+            while (fileChannelInput.read(buffer) != -1) {
+                buffer.flip();
+                fileChannelOutput.write(buffer);
+                buffer.clear();
+            }
+
+        } catch (FileNotFoundException e) {
+            MMLog.e("CopyPasteUtil", "CopyPasteUtil copyFile error:" + e.getMessage());
+            return false;
+        } catch (IOException e) {
+            MMLog.e("CopyPasteUtil", "CopyPasteUtil copyFile error:" + e.getMessage());
+            return false;
+        }
+        finally
+        {
+            try {
+                outbuff.flush();
+                inbuff.close();
+                outbuff.close();
+                fileOutputStream.close();
+                fileInputStream.close();
+                fileChannelOutput.close();
+                fileChannelInput.close();
+                return true;
+            } catch (IOException e) {
+                //e.printStackTrace();
+                return false;
+            }
+        }
     }
 
     public static List<File> getFiles(String filePath) {
@@ -398,11 +450,10 @@ public class FileUtils {
         return null;
     }
 
-    public static String getFilePathFromPathName(String filePathName)
-    {
+    public static String getFilePathFromPathName(String filePathName) {
         int dotPosition = filePathName.lastIndexOf('/');
         if (dotPosition > 0) {
-            return filePathName.substring(0,dotPosition);
+            return filePathName.substring(0, dotPosition);
         }
         return null;
     }
@@ -607,7 +658,7 @@ public class FileUtils {
                         continue;
                     }
                     long size = c.getLong(sizeIndex);
-                    FileBean fileBean = new FileBean(path,0);
+                    FileBean fileBean = new FileBean(path, 0);
                     files.add(fileBean);
                 }
             }

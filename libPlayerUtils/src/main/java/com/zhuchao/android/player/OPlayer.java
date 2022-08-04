@@ -10,6 +10,7 @@ import android.view.TextureView;
 
 import androidx.annotation.NonNull;
 
+import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.fileutils.MMLog;
 
@@ -182,8 +183,8 @@ public class OPlayer extends PlayControl {
     }
 
     public void setSurfaceView(@NonNull SurfaceView surfaceView) {
-
-        vlcVout = this.mMediaPlayer.getVLCVout();
+        if (mMediaPlayer == null) return;
+        vlcVout = mMediaPlayer.getVLCVout();
         if (surfaceView.equals(mSurfaceView)) return;
 
         if (vlcVout.areViewsAttached())
@@ -380,7 +381,10 @@ public class OPlayer extends PlayControl {
     }
 
     public int getPlayerStatus() {
-        return mMediaPlayer.getPlayerState();
+        if (mMediaPlayer != null)
+            return mMediaPlayer.getPlayerState();
+        else
+            return PlaybackEvent.Status_Ended;
     }
 
     public void setRate(float v) {
@@ -469,8 +473,8 @@ public class OPlayer extends PlayControl {
             } else if (mTextureView != null) {
                 vlcVout.setWindowSize(mTextureView.getWidth(), mTextureView.getHeight());
             }
-            //mMediaPlayer.setAspectRatio(null);
-            //mMediaPlayer.setScale(0);
+            mMediaPlayer.setAspectRatio(null);
+            mMediaPlayer.setScale(0);
             playerStatusInfo.setSurfacePrepared(true);
         }
 

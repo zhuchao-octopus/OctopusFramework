@@ -20,7 +20,7 @@ public class FilesFinger extends ObjectList {
     private List<ScanThread> threadPool = null;
     private long lStart = 0;
     private boolean bNeedProgress = true;
-    private boolean bMultiThreat = true;
+    private boolean bMultiThread = true;
     private long totalSize = 0;
     private List<String> fileTypes = null;
 
@@ -40,6 +40,10 @@ public class FilesFinger extends ObjectList {
         dirList = new ArrayList<String>();
         threadPool = new ArrayList<ScanThread>();
         fileTypes = new ArrayList<String>();
+    }
+
+    public void setMultiThread(boolean bMultiThread) {
+        this.bMultiThread = bMultiThread;
     }
 
     public void callBack(NormalCallback requestCallBack) {
@@ -156,7 +160,7 @@ public class FilesFinger extends ObjectList {
                 //e.printStackTrace();
             }
             if (file.isDirectory()) {
-                if (bMultiThreat)
+                if (bMultiThread)
                     searchDir(file.getAbsolutePath());
                 else
                     getFileList(file.listFiles());

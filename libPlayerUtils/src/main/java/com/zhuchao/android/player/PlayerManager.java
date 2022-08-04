@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class PlayerManager {
     private static PlayControl FOPlayer = null;
+    private static PlayControl FMPlayer = null;
     public static final String MPLAYER = "MPlayer";
     public static final String OPLAYER = "OPlayer";
 
@@ -35,19 +36,24 @@ public class PlayerManager {
     }
 
     public synchronized static PlayControl getSingleMPlayer(Context context, PlayerCallback callback) {
-        if (FOPlayer == null) {//重用已有的播放器
-            FOPlayer = new MPlayer(context, callback);
+        if (FMPlayer == null) {//重用已有的播放器
+            FMPlayer = new MPlayer(context, callback);
         }
-        return FOPlayer;
+        return FMPlayer;
     }
 
     public synchronized static PlayControl getMultiMPlayer(Context context, PlayerCallback callback) {
         return new MPlayer(context, callback);
     }
 
-    public synchronized static void free() {
+    public synchronized static void free()
+    {
         if (FOPlayer != null)
             FOPlayer.free();
         FOPlayer = null;
+
+        if (FMPlayer != null)
+            FMPlayer.free();
+        FMPlayer = null;
     }
 }

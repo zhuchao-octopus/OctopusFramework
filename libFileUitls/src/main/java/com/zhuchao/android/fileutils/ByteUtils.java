@@ -13,13 +13,25 @@ public class ByteUtils {
         return Integer.parseInt(hex, 16);
     }
 
-    public static int DoubleByteToInt(byte b1,byte b2)
-    {
-        int a =b1;
-            a= b1 <<8 +b2;
+    public static int DoubleBytesToInt(byte b1, byte b2) {
+        int a = b1;
+        a = a << 8 + b2;
         return a;
     }
-    public static  byte[] intToBytes(int in) {
+
+    public static int ThreeBytesToInt(byte b1, byte b2, byte b3) {
+        int a = DoubleBytesToInt(b1,b2);
+        a = a << 8 + b3;
+        return a;
+    }
+
+    public static int FourBytesToInt(byte b1, byte b2, byte b3, byte b4) {
+        int a = ThreeBytesToInt(b1,b2,b3);
+        a = a << 8 + b4;
+        return a;
+    }
+
+    public static byte[] intToBytes(int in) {
         byte[] b = new byte[4];
         b[3] = (byte) (in & 0xff);
         b[2] = (byte) (in >> 8 & 0xff);
@@ -27,6 +39,7 @@ public class ByteUtils {
         b[0] = (byte) (in >> 24 & 0xff);
         return b;
     }
+
     //Hex字符串转byte
     public static byte HexToByte(String inHex) {
         return (byte) Integer.parseInt(inHex, 16);
@@ -36,24 +49,25 @@ public class ByteUtils {
     public static long Hex2Long(String hex) {
         return Long.parseLong(hex, 16);
     }
+
     //-------------------------------------------------------
     //1字节转2个Hex字符
     public static String Byte2Hex(Byte inByte) {
         return String.format("%02x", inByte).toUpperCase();
     }
 
-    public static byte BytesAdd(byte[] inBytArr,int count)
-    {
-        byte aa=0;
+    public static byte BytesAdd(byte[] inBytArr, int count) {
+        byte aa = 0;
 
-        for(int i =0;i<count;i++)
+        for (int i = 0; i < count; i++)
             aa = (byte) (aa + Byte.valueOf(inBytArr[i]));
 
         return aa;
     }
+
     //-------------------------------------------------------
     //字节数组转转hex字符串
-    public static String BuffToHexStr(byte[] bytes,String separatorChars) {
+    public static String BuffToHexStr(byte[] bytes, String separatorChars) {
         StringBuilder strBuilder = new StringBuilder();
         for (byte valueOf : bytes) {
             strBuilder.append(Byte2Hex(Byte.valueOf(valueOf)));
@@ -61,6 +75,7 @@ public class ByteUtils {
         }
         return strBuilder.toString();
     }
+
     public static String BuffToHexStr(byte[] bytes) {
         StringBuilder strBuilder = new StringBuilder();
         for (byte valueOf : bytes) {
@@ -69,6 +84,7 @@ public class ByteUtils {
         }
         return strBuilder.toString();
     }
+
     //-------------------------------------------------------
     //字节数组转转hex字符串，可选长度
     public static String ByteArrToHexStr(byte[] inBytArr, int offset, int byteCount) {

@@ -89,6 +89,11 @@
             android:configChanges="keyboardHidden|orientation"
             android:exported="true"
             android:label="@string/title_activity_main2"/>
+        <activity
+            android:name=".MainActivity3"
+            android:screenOrientation="landscape"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="true" />
 
         <activity
             android:name=".MainActivity"

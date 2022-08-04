@@ -14,12 +14,13 @@
             <option value="$PROJECT_DIR$/libCallbackEvent" />
             <option value="$PROJECT_DIR$/libDecodeCore" />
             <option value="$PROJECT_DIR$/libFileUitls" />
-            <option value="$PROJECT_DIR$/libHoldPersistUtils" />
+            <option value="$PROJECT_DIR$/libGPersistUtils" />
+            <option value="$PROJECT_DIR$/libICameraController" />
             <option value="$PROJECT_DIR$/libINetUtils" />
-            <option value="$PROJECT_DIR$/libJosUtils" />
+            <option value="$PROJECT_DIR$/libJOSUtils" />
             <option value="$PROJECT_DIR$/libMediaUtils" />
             <option value="$PROJECT_DIR$/libOpenComputerVision" />
-            <option value="$PROJECT_DIR$/libOpenFaceDetection" />
+            <option value="$PROJECT_DIR$/libOpenDetection" />
             <option value="$PROJECT_DIR$/libPlayerUtils" />
             <option value="$PROJECT_DIR$/libSessionUtils" />
             <option value="$PROJECT_DIR$/myapplication" />

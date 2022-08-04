@@ -1,0 +1,83 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+
+ext {
+    GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
+    PUBLISH_GROUP_ID = 'com.zhuchao.android'
+    PUBLISH_ARTIFACT_ID = 'libOpenDetection'
+    PUBLISH_VERSION = '1.0'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+            }
+        }
+        repositories {
+            maven {
+                allowInsecureProtocol true
+                url GITHUB_REPO_PATH
+            }
+        }
+    }
+}
+
+android {
+    compileSdkVersion 32
+    defaultConfig {
+        minSdkVersion 25
+        targetSdkVersion 32
+        externalNativeBuild {
+            cmake {
+                arguments "-DOpenCV_DIR=" + project(':libOpenComputerVision').projectDir + "/native/jni",
+                        "-DANDROID_TOOLCHAIN=clang",
+                        "-DANDROID_STL=c++_shared"
+                targets "detection_based_tracker"
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            res.srcDirs = ['res']
+            manifest.srcFile 'AndroidManifest.xml'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path 'jni/CMakeLists.txt'
+        }
+    }
+}
+
+dependencies {
+    implementation project(path: ':libOpenComputerVision')
+    //implementation project(path: ':libICameraController')
+    //api project(path: ':libGPersistUtils')
+    implementation project(path: ':libCallbackEvent')
+    implementation project(path: ':libFileUitls')
+    implementation 'androidx.annotation:annotation:1.3.0'
+    implementation 'androidx.exifinterface:exifinterface:1.3.3'
+
+    implementation group: 'org.bytedeco', name: 'javacv-platform', version: '1.5.7'
+    //implementation group: 'org.bytedeco.javacpp-presets', name: 'opencv', version: '4.0.1-1.4.4', classifier: 'android-arm'
+    //implementation group: 'org.bytedeco.javacpp-presets', name: 'opencv', version: '3.4.2-1.4.2', classifier: 'android-x86'
+    //implementation group: 'org.bytedeco.javacpp-presets', name: 'ffmpeg', version: '4.1-1.4.4', classifier: 'android-arm'
+    //implementation group: 'org.bytedeco.javacpp-presets', name: 'ffmpeg', version: '4.0.1-1.4.2', classifier: 'android-x86'
+}
+
+
+
+

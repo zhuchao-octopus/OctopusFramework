@@ -198,12 +198,12 @@ public class PlayScheduleManager implements SessionCallback {
             file.mkdir();
 
         List<String> npf = FileUtils.ReadTxtFile(SourDir+"/SchedulePlay.text");
-        FileUtils.copy(SourDir+"/SchedulePlay.text",DesDir+"/SchedulePlay.text");
+        FileUtils.streamCopy(SourDir+"/SchedulePlay.text",DesDir+"/SchedulePlay.text");
 
         for (String str:npf)
         {
             String[] all=str.split(",");
-            FileUtils.copy(SourDir+"/"+all[0],DesDir+"/"+all[0]);
+            FileUtils.streamCopy(SourDir+"/"+all[0],DesDir+"/"+all[0]);
         }
 
     }

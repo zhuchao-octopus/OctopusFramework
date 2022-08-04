@@ -4,7 +4,10 @@
       <w>calltodo</w>
       <w>datas</w>
       <w>facedetect</w>
+      <w>mediastore</w>
       <w>mtag</w>
+      <w>ocvl</w>
+      <w>reconfig</w>
       <w>sout</w>
       <w>vout</w>
     </words>

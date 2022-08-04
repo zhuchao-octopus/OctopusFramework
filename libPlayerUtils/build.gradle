@@ -53,6 +53,6 @@ dependencies {
     implementation project(path: ':libINetUtils')
     implementation project(path: ':libCallbackEvent')
     implementation project(path: ':libFileUitls')
-    implementation project(path: ':libJosUtils')
+    implementation project(path: ':libJOSUtils')
 
 }

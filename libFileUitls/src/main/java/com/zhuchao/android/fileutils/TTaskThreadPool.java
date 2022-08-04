@@ -35,6 +35,7 @@ public class TTaskThreadPool extends ObjectList {
         }
 
         PTask pTask = new PTask(tag);
+        pTask.setTName(Name);
         addItem(tag, pTask);
         MMLog.log(TAG, "create PTask name = " + Name + ",tag = " + tag);
         //MMLog.log(TAG, "create PTask successfully in pool,tag = " + tag + ",total count:" + getCount()+"|"+taskCounter);
@@ -54,6 +55,12 @@ public class TTaskThreadPool extends ObjectList {
 
     public void deleteTask(String tag) {
         delete(tag);
+        MMLog.log(TAG, "delete task tag = " + tag);
+    }
+
+    public void deleteTask(TTask tTask) {
+        delete(tTask.getTTag());
+        MMLog.log(TAG, "delete task tag = " + tTask.getTTag()+",name = "+tTask.getTName());
     }
 
     private String disguiseName(String Name) {
@@ -77,7 +84,6 @@ public class TTaskThreadPool extends ObjectList {
 
     class PTask extends TTask {
         private final String TAG = "PTask";
-
         //private TTaskThreadPool TTaskThreadPool = null;
         public PTask(String tag) {
             super(tag, null);

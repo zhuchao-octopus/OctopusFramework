@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/StudioProjects/OctopusFramework/libOpenDetection/res/layout/face_detect_surface_view.xml" value="0.1984375" />
         <entry key="..\:/StudioProjects/OctopusFramework/libOpenFaceDetection/res/layout/face_detect_surface_view.xml" value="0.3453125" />
         <entry key="..\:/StudioProjects/OctopusFramework/myapplication/src/main/res/layout/activity_fullscreen.xml" value="0.26358695652173914" />
         <entry key="..\:/StudioProjects/OctopusFramework/myapplication/src/main/res/layout/activity_main.xml" value="0.25407608695652173" />

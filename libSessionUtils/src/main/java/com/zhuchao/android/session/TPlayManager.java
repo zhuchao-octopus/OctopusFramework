@@ -27,7 +27,7 @@ import java.util.Collection;
 public class TPlayManager implements PlayerCallback, NormalCallback {
     private final String TAG = "PlayManager";
     private final int ACTION_DELAY = 500;
-    private int MagicNum = 0;
+    private int magicNumber = 0;
     private Context context;
     private SurfaceView surfaceView = null;
     private OMedia oMedia = null;
@@ -53,7 +53,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         //favoriteList.setTAG("PlayManager.VideoList1");
         allPlayLists = new ObjectList();
         //PlayList.addItem("default", defaultPlayingList);
-        setMagicNum(0);
+        setMagicNumber(0);
     }
 
     public TPlayManager callback(PlayerCallback mCallback) {
@@ -94,7 +94,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         MMLog.log(TAG, "StartPlay--> " + oMedia.getMovie().getsUrl());
         this.oMediaLoading = true;
         this.oMedia = oMedia;
-        this.oMedia.setMagicNumber(MagicNum);
+        this.oMedia.setMagicNumber(magicNumber);
         this.oMedia.with(context);
         //this.oMedia.setNormalRate();
         this.oMedia.callback(this);
@@ -369,10 +369,10 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         return defaultPlayingList.findByIndex(Index);
     }
 */
-    public void setMagicNum(int magicNum) {
-        MagicNum = magicNum;
+    public void setMagicNumber(int magicNumber) {
+        this.magicNumber = magicNumber;
         if (oMedia != null)
-            oMedia.setMagicNumber(MagicNum);
+            oMedia.setMagicNumber(this.magicNumber);
     }
 
     public void setAutoPlaySource(int autoPlaySource) {

@@ -90,11 +90,39 @@
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'maven-publish'
 
 def openCVersionName = "4.5.5"
 def openCVersionCode = ((4 * 100 + 5) * 100 + 5) * 10 + 0
 
 println "OpenCV: " +openCVersionName + " " + project.buildscript.sourceFile
+
+ext {
+    GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
+    PUBLISH_GROUP_ID = 'com.zhuchao.android'
+    PUBLISH_ARTIFACT_ID = 'libOpenComputerVision'
+    PUBLISH_VERSION = '1.0'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+            }
+        }
+        repositories {
+            maven {
+                allowInsecureProtocol true
+                url GITHUB_REPO_PATH
+            }
+        }
+    }
+}
+
 
 android {
     compileSdkVersion 32
@@ -144,6 +172,7 @@ android {
             path (project.projectDir.toString() + '/libcxx_helper/CMakeLists.txt')
         }
     }
+
 }
 
 dependencies {

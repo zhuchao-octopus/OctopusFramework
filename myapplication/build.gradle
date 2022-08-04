@@ -25,8 +25,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    namespace 'com.zhuchao.android.myapplication'
 
+    namespace 'com.zhuchao.android.myapplication'
 
     packagingOptions {
         pickFirst 'lib/x86/libc++_shared.so'
@@ -44,17 +44,17 @@ android {
 }
 
 dependencies {
-
     implementation project(path: ':libCallbackEvent')
     implementation project(path: ':libDecodeCore')
     implementation project(path: ':libFileUitls')
-    implementation project(path: ':libJosUtils')
+    implementation project(path: ':libJOSUtils')
     implementation project(path: ':libINetUtils')
     implementation project(path: ':libMediaUtils')
     implementation project(path: ':libPlayerUtils')
     implementation project(path: ':libSessionUtils')
     implementation project(path: ':libOpenComputerVision')
-    implementation project(path: ':libOpenFaceDetection')
+    implementation project(path: ':libOpenDetection')
+    implementation project(path: ':libICameraController')
 
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'

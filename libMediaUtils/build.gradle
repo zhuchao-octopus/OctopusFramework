@@ -48,8 +48,8 @@ android {
 dependencies {
     implementation project(path: ':libCallbackEvent')
     implementation project(path: ':libFileUitls')
-    implementation project(path: ':libHoldPersistUtils')
+    implementation project(path: ':libGPersistUtils')
     implementation project(path: ':libINetUtils')
-    implementation project(path: ':libJosUtils')
+    implementation project(path: ':libJOSUtils')
     implementation project(path: ':libPlayerUtils')
 }

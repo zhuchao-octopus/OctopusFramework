@@ -29,6 +29,7 @@ import org.cybergarage.upnp.Device;
 import java.io.FileDescriptor;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -65,6 +66,8 @@ public class OMedia implements Serializable, PlayerCallback {
 
     public OMedia setMagicNumber(int magicNumber) {
         this.magicNumber = magicNumber;
+        //this.FPlayer =
+        free();
         getOPlayer();
         return this;
     }
@@ -225,23 +228,54 @@ public class OMedia implements Serializable, PlayerCallback {
         getOPlayer().play();
     }
 
-    public void pushTo(String fromHost, Device toDevice, boolean duplicated) {
+    public void pushTo(String fromHost, Device toDevice, boolean duplicated)
+    {
         boolean isExternalLinks = FileUtils.isExternalLinks(getPathName());
+
         if (!isExternalLinks) {
             getOPlayer().pushTo(movie.getsUrl(), duplicated);
             getOPlayer().play();
         }
+
         if (duplicated && isExternalLinks) {
             play();
         }
+
         if (isExternalLinks)
         {
             DLNAUtil.shareTo(getPathName(), toDevice);
             MMLog.log(TAG, "from device " + fromHost + " share to " + toDevice.getFriendlyName() + ",duplicated = " + duplicated);
         }
-        else {
+        else
+        {
             DLNAUtil.shareTo("rtsp://" + fromHost + ":8554/0", toDevice);
             MMLog.log(TAG, "from device " + fromHost + " push to " + toDevice.getFriendlyName() + ",duplicated = " + duplicated);
+        }
+    }
+
+    public void pushToDevices(String fromHost, ArrayList<Device> toDevices, boolean duplicated)
+    {
+        boolean isExternalLinks = FileUtils.isExternalLinks(getPathName());
+
+        if (!isExternalLinks) {
+            getOPlayer().pushTo(movie.getsUrl(), duplicated);
+            getOPlayer().play();
+        }
+
+        if (duplicated && isExternalLinks) {
+            play();
+        }
+
+        for(Device toDevice:toDevices)
+        {
+            //Device toDevice = (Device)device
+            if (isExternalLinks) {
+                DLNAUtil.shareTo(getPathName(), toDevice);
+                MMLog.log(TAG, "from device " + fromHost + " share to " + toDevice.getFriendlyName() + ",duplicated = " + duplicated);
+            } else {
+                DLNAUtil.shareTo("rtsp://" + fromHost + ":8554/0", toDevice);
+                MMLog.log(TAG, "from device " + fromHost + " push to " + toDevice.getFriendlyName() + ",duplicated = " + duplicated);
+            }
         }
     }
 
@@ -551,15 +585,18 @@ public class OMedia implements Serializable, PlayerCallback {
         if (this.uri != null || this.assetFileDescriptor != null || this.fileDescriptor != null)
             bf = true;
         else if (FileUtils.existFile(movie.getsUrl()))
-            bf = MediaFile.isMediaFile(movie.getsUrl());
+            bf = true;//MediaFile.isMediaFile(movie.getsUrl());
         else if (NotEmptyString(cachePath) && FileUtils.existFile(cachePath + "/" + movie.getName()))
             bf = MediaFile.isMediaFile(cachePath + "/" + movie.getName());
+        //else if (FileUtils.getExtNameFromPathName(movie.getsUrl().toLowerCase(Locale.ROOT).equals("flv")))
+         //   bf = true;
         return bf;
     }
 
     protected PlayControl getOPlayer() {
         if (this.context == null) return null;
-        if (FPlayer == null) {
+        if (FPlayer == null)
+        {
             switch (magicNumber) {
                 case 0:
                 default:

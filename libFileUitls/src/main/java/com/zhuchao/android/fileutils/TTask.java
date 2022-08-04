@@ -5,6 +5,7 @@ import com.zhuchao.android.callbackevent.TaskCallback;
 
 public class TTask extends Thread {
     private final String TAG = "TTask";
+    protected String tName = null;
     protected String tTag = null;
     protected InvokeInterface invokeInterface = null;
     protected TaskCallback taskCallback = null;
@@ -13,12 +14,14 @@ public class TTask extends Thread {
 
     public TTask(String tag, InvokeInterface invokeInterface) {
         this.tTag = tag;
+        this.tName = tag;
         this.invokeInterface = invokeInterface;
         this.properties = new ObjectList();
     }
 
     public TTask(String tag, InvokeInterface invokeInterface, TaskCallback TaskCallback) {
         this.tTag = tag;
+        this.tName = tag;
         this.invokeInterface = invokeInterface;
         this.taskCallback = TaskCallback;
         this.properties = new ObjectList();
@@ -50,6 +53,14 @@ public class TTask extends Thread {
         this.tTag = tTag;
     }
 
+    public String getTName() {
+        return tName;
+    }
+
+    public void setTName(String tName) {
+        this.tName = tName;
+    }
+
     public ObjectList getProperties() {
         return properties;
     }
@@ -66,6 +77,7 @@ public class TTask extends Thread {
         properties.clear();
         isKeeping = false;
         invokeInterface = null;
+        taskCallback = null;
     }
 
     @Override
@@ -99,11 +111,11 @@ public class TTask extends Thread {
             free();
             return;
         }
-
-        if(invokeInterface != null) {//召唤。。。
-            MMLog.log(TAG, "invoke TTask demon tTag = " + tTag);
-            invokeInterface.CALLTODO(this.tTag);//asynchronous
-        }
+        //android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+        setPriority(MAX_PRIORITY);
+        //召唤。。。
+        MMLog.log(TAG, "invoke TTask demon tTag = " + tTag);
+        invokeInterface.CALLTODO(this.tTag);//asynchronous
         while (isKeeping)
         {
             try

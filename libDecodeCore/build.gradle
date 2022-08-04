@@ -9,6 +9,26 @@ ext {
     PUBLISH_VERSION = '3.5.0'
 }
 
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                //artifact 'libvlc-all-3.5.0-eap8.aar'
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+            }
+        }
+        repositories {
+            maven {
+                allowInsecureProtocol true
+                url GITHUB_REPO_PATH
+            }
+        }
+    }
+
+}
+
 android {
     compileSdkVersion 32
     defaultConfig {
@@ -27,29 +47,8 @@ android {
             //path 'src/main/jni/Android.mk'
         }
     }
+
     namespace 'com.zhuchao.android.decodecore'
-
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                //from components.release
-                //artifact 'libvlc-all-3.5.0-eap8.aar'
-                groupId PUBLISH_GROUP_ID
-                artifactId PUBLISH_ARTIFACT_ID
-                version PUBLISH_VERSION
-            }
-        }
-        repositories {
-            maven {
-                allowInsecureProtocol true
-                url GITHUB_REPO_PATH
-            }
-        }
-    }
-
 }
 
 dependencies {

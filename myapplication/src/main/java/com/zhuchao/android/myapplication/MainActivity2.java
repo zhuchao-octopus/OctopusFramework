@@ -2,21 +2,13 @@ package com.zhuchao.android.myapplication;
 
 import android.os.Bundle;
 
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
-import com.zhuchao.android.facedetect.FdActivity;
+import com.zhuchao.android.detect.FdActivity;
 import com.zhuchao.android.myapplication.databinding.ActivityMain2Binding;
 
 public class MainActivity2 extends FdActivity {
@@ -34,10 +26,10 @@ public class MainActivity2 extends FdActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         /*
         //binding = ActivityMain2Binding.inflate(getLayoutInflater());
         //setContentView(binding.getRoot());
-
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
@@ -65,7 +57,8 @@ public class MainActivity2 extends FdActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         Log.i(TAG, "called onOptionsItemSelected; selected item: " + item);
         if (item == mItemFace50)
             setMinFaceSize(0.5f);

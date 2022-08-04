@@ -139,20 +139,20 @@ var activeTableTab = "activeTableTab";
                int&nbsp;texOut,
                int&nbsp;width,
                int&nbsp;height)</code>
-<div class="block">This method is invoked when a new preview frame from Camera is ready.</div>
+<div class="block">This method is invoked when a new cameraPreview frame from Camera is ready.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/opencv/android/CameraGLSurfaceView.CameraTextureListener.html#onCameraViewStarted-int-int-">onCameraViewStarted</a></span>(int&nbsp;width,
                    int&nbsp;height)</code>
-<div class="block">This method is invoked when camera preview has started.</div>
+<div class="block">This method is invoked when camera cameraPreview has started.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/opencv/android/CameraGLSurfaceView.CameraTextureListener.html#onCameraViewStopped--">onCameraViewStopped</a></span>()</code>
-<div class="block">This method is invoked when camera preview has been stopped for some reason.</div>
+<div class="block">This method is invoked when camera cameraPreview has been stopped for some reason.</div>
 </td>
 </tr>
 </table>
@@ -180,7 +180,7 @@ var activeTableTab = "activeTableTab";
                         int&nbsp;texOut,
                         int&nbsp;width,
                         int&nbsp;height)</pre>
-<div class="block">This method is invoked when a new preview frame from Camera is ready.</div>
+<div class="block">This method is invoked when a new cameraPreview frame from Camera is ready.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>texIn</code> - -  the OpenGL texture ID that contains frame in RGBA format</dd>
@@ -200,7 +200,7 @@ var activeTableTab = "activeTableTab";
 <h4>onCameraViewStarted</h4>
 <pre>void&nbsp;onCameraViewStarted(int&nbsp;width,
                          int&nbsp;height)</pre>
-<div class="block">This method is invoked when camera preview has started. After this method is invoked
+<div class="block">This method is invoked when camera cameraPreview has started. After this method is invoked
  the frames will start to be delivered to client via the onCameraFrame() callback.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -216,7 +216,7 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <h4>onCameraViewStopped</h4>
 <pre>void&nbsp;onCameraViewStopped()</pre>
-<div class="block">This method is invoked when camera preview has been stopped for some reason.
+<div class="block">This method is invoked when camera cameraPreview has been stopped for some reason.
  No frames will be delivered via onCameraFrame() callback after this method is called.</div>
 </li>
 </ul>
