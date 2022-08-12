@@ -131,8 +131,6 @@ android {
         minSdkVersion 25
         targetSdkVersion 32
 
-        versionCode openCVersionCode
-        versionName openCVersionName
 
         externalNativeBuild {
             cmake {
@@ -173,6 +171,22 @@ android {
         }
     }
 
+    //解决JavaCV中文件重复问题，远程依赖时一般无需添加，工程依赖时必须添加
+    packagingOptions {
+        pickFirst 'META-INF/native-image/android-x86_64/jnijavacpp/jni-config.json'
+        pickFirst 'META-INF/native-image/android-x86_64/jnijavacpp/reflect-config.json'
+
+        pickFirst 'META-INF/native-image/android-x86/jnijavacpp/jni-config.json'
+        pickFirst 'META-INF/native-image/android-x86/jnijavacpp/reflect-config.json'
+
+        pickFirst 'META-INF/native-image/android-arm64/jnijavacpp/jni-config.json'
+        pickFirst 'META-INF/native-image/android-arm64/jnijavacpp/reflect-config.json'
+
+        pickFirst 'META-INF/native-image/android-arm/jnijavacpp/jni-config.json'
+        pickFirst 'META-INF/native-image/android-arm/jnijavacpp/reflect-config.json'
+
+        pickFirst 'META-INF/native-image/ios-x86_64/jnijavacpp/reflect-config.json'
+    }
 }
 
 dependencies {

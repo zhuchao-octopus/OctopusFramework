@@ -45,11 +45,10 @@ android {
 }
 
 dependencies {
-    //implementation  project(path: ':libDecodeCore')
-    //implementation project(":libDecodeCore")
     api files('libs/clink210.jar')
-    //implementation  files('libs/libvlc-all-3.5.0-eap8.aar')
-    implementation 'org.videolan.android:libvlc-all:3.5.0-eap8'
+    compileOnly  files('libs/libvlc-all-3.5.0-eap8.aar')
+    //compileOnly 'org.videolan.android:libvlc-all:3.5.0-eap8'
+    //implementation project(path: ':libDecodeCore')
     implementation project(path: ':libINetUtils')
     implementation project(path: ':libCallbackEvent')
     implementation project(path: ':libFileUitls')

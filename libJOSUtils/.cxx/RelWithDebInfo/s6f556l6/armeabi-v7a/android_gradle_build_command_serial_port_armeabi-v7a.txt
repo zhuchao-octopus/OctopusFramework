@@ -1,7 +1,0 @@
-Executable : F:\Android\SDK\cmake\3.18.1\bin\ninja.exe
-arguments : 
--C
-F:\StudioProjects\OctopusFramework\libOSUtils\.cxx\RelWithDebInfo\s6f556l6\armeabi-v7a
-serial_port
-jvmArgs : 
-
