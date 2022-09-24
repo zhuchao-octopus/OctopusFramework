@@ -1,7 +1,7 @@
 package com.zhuchao.android;
 
-import com.zhuchao.android.callbackevent.CourierEventListener;
-import com.zhuchao.android.callbackevent.EventCourier;
+import com.zhuchao.android.fileutils.CourierEventListener;
+import com.zhuchao.android.fileutils.EventCourier;
 import com.zhuchao.android.callbackevent.InvokeInterface;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.ObjectList;
@@ -86,10 +86,8 @@ public class TCourierEventBus implements InvokeInterface {
     @Override
     public void CALLTODO(String tag) {
         //MMLog.log(TAG,"CALLTODO "+ keepDoing);
-        while (keepDoing)
-        {
-            if (CourierEvents_A != null && CourierEvents_B != null)
-            {
+        while (keepDoing) {
+            if (CourierEvents_A != null && CourierEvents_B != null) {
                 couriersLock_A = true;
                 if (CourierEvents_A.size() > 0) {
                     poolingAB(CourierEvents_A);
@@ -102,8 +100,7 @@ public class TCourierEventBus implements InvokeInterface {
                 }
             }
 
-            if (CourierEvents_MainA != null && CourierEvents_MainB != null)
-            {
+            if (CourierEvents_MainA != null && CourierEvents_MainB != null) {
                 couriersLock_M = true;
                 if (CourierEvents_MainA.size() > 0) {
                     poolingABM(CourierEvents_MainA);
@@ -117,19 +114,15 @@ public class TCourierEventBus implements InvokeInterface {
             }
 
             //MMLog.log(TAG,"A:"+couriers_A.size()+",B:"+couriers_B.size()+"AM:"+couriers_MA.size()+"BM:"+couriers_MB.size());
-            if ((CourierEvents_A.size() <= 0) && (CourierEvents_B.size() <= 0) && (CourierEvents_MainA.size() <= 0) && (CourierEvents_MainB.size() <= 0))
-            {
-                try
-                {
+            if ((CourierEvents_A.size() <= 0) && (CourierEvents_B.size() <= 0) && (CourierEvents_MainA.size() <= 0) && (CourierEvents_MainB.size() <= 0)) {
+                try {
                     //MMLog.log(TAG,"suspend!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
                     //tTask.wait();
                     LockSupport.park();
                     //MMLog.log(TAG,"suspend!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!2");
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     //e.printStackTrace();
-                    MMLog.log(TAG,e.toString());
+                    MMLog.log(TAG, e.toString());
                 }
             }
 
@@ -138,8 +131,7 @@ public class TCourierEventBus implements InvokeInterface {
 
     private void poolingAB(ArrayList<EventCourier> couriers) {
         try {
-            for (int i = 0; i < couriers.size(); i++)
-            {
+            for (int i = 0; i < couriers.size(); i++) {
                 EventCourier eventCourier = couriers.get(i);
                 if (eventCourier == null) {
                     continue; //couriers.remove(i);//丢弃
@@ -158,8 +150,7 @@ public class TCourierEventBus implements InvokeInterface {
 
     private void poolingABM(ArrayList<EventCourier> couriers) {
         try {
-            for (int i = 0; i < couriers.size(); i++)
-            {
+            for (int i = 0; i < couriers.size(); i++) {
                 EventCourier eventCourier = couriers.get(i);
                 if (eventCourier == null) {
                     continue; //couriers.remove(i);//丢弃

@@ -6,15 +6,30 @@ public class EventCourier {
     private byte[] datas;
     private Object obj;
 
+    public EventCourier(String tag, int id) {
+        this.tag = tag;
+        this.id = id;
+        this.datas = null;
+        this.obj = null;
+    }
+
     public EventCourier(String tag, int id, byte[] datas) {
         this.tag = tag;
         this.id = id;
         this.datas = datas;
+        this.obj = null;
     }
 
     public EventCourier(String tag, int id, Object obj) {
         this.tag = tag;
         this.id = id;
+        this.obj = obj;
+    }
+
+    public EventCourier(String tag, int id, byte[] datas, Object obj) {
+        this.tag = tag;
+        this.id = id;
+        this.datas = datas;
         this.obj = obj;
     }
 
@@ -50,6 +65,10 @@ public class EventCourier {
         this.obj = obj;
     }
 
+    public void setIntValue(int value)
+    {
+        datas = new
+    }
     //字节数组转转hex字符串
     public String dataToHexStr() {
         StringBuilder strBuilder = new StringBuilder();
