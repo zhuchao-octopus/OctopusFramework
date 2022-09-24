@@ -50,7 +50,10 @@ inline fun <reified T> FluentQuery.find(): List<T> = find(T::class.java)
  *
  * @return A FindMultiExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
 inline fun <reified T> FluentQuery.findAsync() = findAsync(T::class.java)
 
 /**
@@ -73,7 +76,10 @@ inline fun <reified T> FluentQuery.find(isEager: Boolean): List<T> = find(T::cla
  *            True to load the associated models, false not.
  * @return A FindMultiExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
 inline fun <reified T> FluentQuery.findAsync(isEager: Boolean) = findAsync(T::class.java, isEager)
 
 /**
@@ -95,7 +101,10 @@ inline fun <reified T> FluentQuery.findFirst(): T? = findFirst(T::class.java)
  *
  * @return A FindExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
 inline fun <reified T> FluentQuery.findFirstAsync(): FindExecutor<T> = findFirstAsync(T::class.java)
 
 /**
@@ -109,7 +118,8 @@ inline fun <reified T> FluentQuery.findFirstAsync(): FindExecutor<T> = findFirst
  *            True to load the associated models, false not.
  * @return An object with founded data from database, or null.
  */
-inline fun <reified T> FluentQuery.findFirst(isEager: Boolean): T? = findFirst(T::class.java, isEager)
+inline fun <reified T> FluentQuery.findFirst(isEager: Boolean): T? =
+    findFirst(T::class.java, isEager)
 
 /**
  * Finds the last record by the cluster parameters. You can use the below
@@ -183,7 +193,8 @@ inline fun <reified T> FluentQuery.average(column: String) = average(T::class.ja
  *
  * @return The maximum value on a given column.
  */
-inline fun <reified T, reified R> FluentQuery.max(columnName: String): R = max(T::class.java, columnName, R::class.java)
+inline fun <reified T, reified R> FluentQuery.max(columnName: String): R =
+    max(T::class.java, columnName, R::class.java)
 
 /**
  * Calculates the maximum value on a given column. The value is returned
@@ -201,7 +212,8 @@ inline fun <reified T, reified R> FluentQuery.max(columnName: String): R = max(T
  * The based on column to calculate.
  * @return The maximum value on a given column.
  */
-inline fun <reified R> FluentQuery.max(tableName: String, columnName: String): R = max(tableName, columnName, R::class.java)
+inline fun <reified R> FluentQuery.max(tableName: String, columnName: String): R =
+    max(tableName, columnName, R::class.java)
 
 /**
  * Calculates the minimum value on a given column. The value is returned
@@ -217,7 +229,8 @@ inline fun <reified R> FluentQuery.max(tableName: String, columnName: String): R
  * The based on column to calculate.
  * @return The minimum value on a given column.
  */
-inline fun <reified T, reified R> FluentQuery.min(columnName: String): R = min(T::class.java, columnName, R::class.java)
+inline fun <reified T, reified R> FluentQuery.min(columnName: String): R =
+    min(T::class.java, columnName, R::class.java)
 
 /**
  * Calculates the minimum value on a given column. The value is returned
@@ -235,7 +248,8 @@ inline fun <reified T, reified R> FluentQuery.min(columnName: String): R = min(T
  * The based on column to calculate.
  * @return The minimum value on a given column.
  */
-inline fun <reified R> FluentQuery.min(tableName: String, columnName: String): R = min(tableName, columnName, R::class.java)
+inline fun <reified R> FluentQuery.min(tableName: String, columnName: String): R =
+    min(tableName, columnName, R::class.java)
 
 /**
  * Calculates the sum of values on a given column. The value is returned
@@ -251,7 +265,8 @@ inline fun <reified R> FluentQuery.min(tableName: String, columnName: String): R
  * The based on column to calculate.
  * @return The sum value on a given column.
  */
-inline fun <reified T, reified R> FluentQuery.sum(columnName: String): R = sum(T::class.java, columnName, R::class.java)
+inline fun <reified T, reified R> FluentQuery.sum(columnName: String): R =
+    sum(T::class.java, columnName, R::class.java)
 
 /**
  * Calculates the sum of values on a given column. The value is returned
@@ -269,4 +284,5 @@ inline fun <reified T, reified R> FluentQuery.sum(columnName: String): R = sum(T
  * The based on column to calculate.
  * @return The sum value on a given column.
  */
-inline fun <reified R> FluentQuery.sum(tableName: String, columnName: String): R = sum(tableName, columnName, R::class.java)
+inline fun <reified R> FluentQuery.sum(tableName: String, columnName: String): R =
+    sum(tableName, columnName, R::class.java)

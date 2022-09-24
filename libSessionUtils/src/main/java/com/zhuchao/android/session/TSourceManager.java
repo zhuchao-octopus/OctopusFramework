@@ -199,7 +199,7 @@ public class TSourceManager implements SessionCallback {
     }
 
     private void initMobileSessionContent(final String DeviceName, final String DevicePath) {
-        MMLog.log(TAG, "initMobileSessionContent  " +DeviceName+":"+ DevicePath);
+        MMLog.log(TAG, "initMobileSessionContent  " + DeviceName + ":" + DevicePath);
         if (DeviceName == null) return;
         LiveVideoSession mSession = null;
 
@@ -462,7 +462,7 @@ public class TSourceManager implements SessionCallback {
                                 MMLog.log(TAG, "USB device detached, " + key + ":" + bundle.toString());
                         }
                         if (userSessionCallback != null)
-                            userSessionCallback.OnSessionComplete(-1, data+"");
+                            userSessionCallback.OnSessionComplete(-1, data + "");
                         break;
                     case "com.zhuchao.android.MEDIAFILE_SCAN_ACTION":
                         if (userSessionCallback != null && bundle != null)

@@ -37,9 +37,9 @@ public class NetworkInformation {
         this.regionName = "0";
         this.city = "0";
         this.timezone = "0";
-        lat=0.00;
-        lon=0.00;
-        organization="";
+        lat = 0.00;
+        lon = 0.00;
+        organization = "";
         isp = "";
         zip = "";
     }
@@ -120,24 +120,23 @@ public class NetworkInformation {
         return isConnected;
     }
 
-    public String toString()
-    {
-        String str ="" + isAvailable;
-        str += ","+isConnected;
-        str += ","+MAC;
-        str += ","+wifiMAC;
-        str += ","+wifiLevel;
-        str += ","+localIP;
-        str += ","+internetIP;
-        str += ","+country;
-        str += ","+countryCode;
-        str += ","+region;
-        str += ","+regionName;
-        str += ","+timezone;
-        str += ","+city;
-        str += ","+organization;
-        str += ","+isp;
-        str += ",("+lon+" "+lat+")";
+    public String toString() {
+        String str = "" + isAvailable;
+        str += "," + isConnected;
+        str += "," + MAC;
+        str += "," + wifiMAC;
+        str += "," + wifiLevel;
+        str += "," + localIP;
+        str += "," + internetIP;
+        str += "," + country;
+        str += "," + countryCode;
+        str += "," + region;
+        str += "," + regionName;
+        str += "," + timezone;
+        str += "," + city;
+        str += "," + organization;
+        str += "," + isp;
+        str += ",(" + lon + " " + lat + ")";
         return str;
     }
 }

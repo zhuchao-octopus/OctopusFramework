@@ -29,8 +29,8 @@ public class AverageExecutor extends AsyncExecutor {
 
     /**
      * Register a callback listener and async task will start executing right away.
-     * @param callback
-     *          Callback for average query in background.
+     *
+     * @param callback Callback for average query in background.
      */
     public void listen(AverageCallback callback) {
         cb = callback;
@@ -38,7 +38,7 @@ public class AverageExecutor extends AsyncExecutor {
     }
 
     public AverageCallback getListener() {
-        return  cb;
+        return cb;
     }
 
 }

@@ -15,7 +15,8 @@ public class TDeviceManager {
     private SerialPortFinder uartFinder = null;
 
     public TDeviceManager() {
-        this.deviceList = new ObjectList();;
+        this.deviceList = new ObjectList();
+        ;
         this.uartFinder = new SerialPortFinder();
     }
 
@@ -26,31 +27,28 @@ public class TDeviceManager {
             if (tUartFile != null)
                 deviceList.addItem(devicePath, tUartFile);
             else
-                MMLog.log(TAG,"open device failed "+ devicePath);
+                MMLog.log(TAG, "open device failed " + devicePath);
         }
         return tUartFile;
     }
 
     public synchronized TUartFile getDevice(String devicePath) {
         TUartFile tUartFile = null;
-        if(deviceList.getCount()>0 && NotEmptyString(devicePath))
-            tUartFile= (TUartFile) deviceList.getObject(devicePath);
+        if (deviceList.getCount() > 0 && NotEmptyString(devicePath))
+            tUartFile = (TUartFile) deviceList.getObject(devicePath);
         return tUartFile;
     }
 
-    public TUartFile startUart(String devicePath, int baudrate)
-    {
-        if(EmptyString(devicePath) || baudrate <= 0)
-        {
-            MMLog.log(TAG,"invalid device information parameter "+ devicePath);
+    public TUartFile startUart(String devicePath, int baudrate) {
+        if (EmptyString(devicePath) || baudrate <= 0) {
+            MMLog.log(TAG, "invalid device information parameter " + devicePath);
             return null;
         }
-        TUartFile tUartFile = getDevice(devicePath,baudrate);
-        if(tUartFile != null) {
+        TUartFile tUartFile = getDevice(devicePath, baudrate);
+        if (tUartFile != null) {
             tUartFile.startPoolingRead();
-        }
-        else
-            MMLog.log(TAG,"get device failed "+ devicePath);
+        } else
+            MMLog.log(TAG, "get device failed " + devicePath);
         return tUartFile;
     }
 
@@ -73,16 +71,13 @@ public class TDeviceManager {
         }
     }
 
-    public void closeAllUartDevice()
-    {
-      for(Object obj:deviceList.getAllObject())
-      {
-          TDevice device = ((TDevice)obj);
-          if(device.getDeviceType().contains("UART"))
-          {
-              device.closeDevice();
-              deviceList.delete(device.getDevicePath());
-          }
-      }
+    public void closeAllUartDevice() {
+        for (Object obj : deviceList.getAllObject()) {
+            TDevice device = ((TDevice) obj);
+            if (device.getDeviceType().contains("UART")) {
+                device.closeDevice();
+                deviceList.delete(device.getDevicePath());
+            }
+        }
     }
 }

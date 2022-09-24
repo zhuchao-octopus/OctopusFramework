@@ -2,8 +2,8 @@ package com.zhuchao.android.serialport;
 
 import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
 
-import com.zhuchao.android.callbackevent.DeviceCourierEventListener;
-import com.zhuchao.android.callbackevent.EventCourier;
+import com.zhuchao.android.fileutils.TCourierEventListener;
+import com.zhuchao.android.fileutils.EventCourier;
 import com.zhuchao.android.fileutils.DataID;
 import com.zhuchao.android.fileutils.MMLog;
 
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class TUartFile extends TDevice implements DeviceCourierEventListener {
+public class TUartFile extends TDevice implements TCourierEventListener {
     private final String TAG = "TUartFile";
     private SerialPort serialPort = null;
     private ReadThread readThread = null;
@@ -23,7 +23,7 @@ public class TUartFile extends TDevice implements DeviceCourierEventListener {
     private static int frame_size = 9;
     private static String frame_end_hex = "7E";
     private static String f_separator = " ";
-    private DeviceCourierEventListener deviceEventListener = null;
+    private TCourierEventListener deviceEventListener = null;
 
     public TUartFile(String devicePath, int baudrate) {
         if (EmptyString(devicePath) || (baudrate <= 0)) {
@@ -103,7 +103,15 @@ public class TUartFile extends TDevice implements DeviceCourierEventListener {
         }
     }
 
-    public void callback(DeviceCourierEventListener deviceEventListener) {
+    public void callback(TCourierEventListener deviceEventListener) {
+        this.deviceEventListener = deviceEventListener;
+    }
+
+    public void registerCallback(TCourierEventListener deviceEventListener) {
+        this.deviceEventListener = deviceEventListener;
+    }
+
+    public void registerReceivedCallback(TCourierEventListener deviceEventListener) {
         this.deviceEventListener = deviceEventListener;
     }
 
@@ -241,7 +249,7 @@ public class TUartFile extends TDevice implements DeviceCourierEventListener {
     public String BufferToHexStr(byte[] bytes, String separatorChars) {
         StringBuilder strBuilder = new StringBuilder();
         for (byte valueOf : bytes) {
-            strBuilder.append(ByteToHexStr(Byte.valueOf(valueOf)));
+            strBuilder.append(ByteToHexStr(valueOf));
             strBuilder.append(separatorChars);
         }
         return strBuilder.toString();

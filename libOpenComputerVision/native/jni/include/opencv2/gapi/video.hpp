@@ -15,94 +15,95 @@
 /** \defgroup gapi_video G-API Video processing functionality
  */
 
-namespace cv { namespace gapi {
+namespace cv {
+    namespace gapi {
 
 /** @brief Structure for the Kalman filter's initialization parameters.*/
 
-struct GAPI_EXPORTS KalmanParams
-{
-    // initial state
+        struct GAPI_EXPORTS KalmanParams
+                {
+                        // initial state
 
-    //! corrected state (x(k)): x(k)=x'(k)+K(k)*(z(k)-H*x'(k))
-    Mat state;
-    //! posteriori error estimate covariance matrix (P(k)): P(k)=(I-K(k)*H)*P'(k)
-    Mat errorCov;
+                        //! corrected state (x(k)): x(k)=x'(k)+K(k)*(z(k)-H*x'(k))
+                        Mat state;
+                //! posteriori error estimate covariance matrix (P(k)): P(k)=(I-K(k)*H)*P'(k)
+                Mat errorCov;
 
-    // dynamic system description
+                // dynamic system description
 
-    //! state transition matrix (A)
-    Mat transitionMatrix;
-    //! measurement matrix (H)
-    Mat measurementMatrix;
-    //! process noise covariance matrix (Q)
-    Mat processNoiseCov;
-    //! measurement noise covariance matrix (R)
-    Mat measurementNoiseCov;
-    //! control matrix (B) (Optional: not used if there's no control)
-    Mat controlMatrix;
-};
+                //! state transition matrix (A)
+                Mat transitionMatrix;
+                //! measurement matrix (H)
+                Mat measurementMatrix;
+                //! process noise covariance matrix (Q)
+                Mat processNoiseCov;
+                //! measurement noise covariance matrix (R)
+                Mat measurementNoiseCov;
+                //! control matrix (B) (Optional: not used if there's no control)
+                Mat controlMatrix;
+                };
 
 /**
  * @brief This namespace contains G-API Operations and functions for
  * video-oriented algorithms, like optical flow and background subtraction.
  */
-namespace  video
-{
-using GBuildPyrOutput  = std::tuple<GArray<GMat>, GScalar>;
+        namespace video {
+            using GBuildPyrOutput = std::tuple <GArray<GMat>, GScalar>;
 
-using GOptFlowLKOutput = std::tuple<cv::GArray<cv::Point2f>,
-                                    cv::GArray<uchar>,
-                                    cv::GArray<float>>;
+            using GOptFlowLKOutput = std::tuple<cv::GArray<cv::Point2f>,
+                    cv::GArray<uchar>,
+                    cv::GArray<float>>;
 
-G_TYPED_KERNEL(GBuildOptFlowPyramid, <GBuildPyrOutput(GMat,Size,GScalar,bool,int,int,bool)>,
-               "org.opencv.video.buildOpticalFlowPyramid")
-{
-    static std::tuple<GArrayDesc,GScalarDesc>
-            outMeta(GMatDesc,const Size&,GScalarDesc,bool,int,int,bool)
-    {
-        return std::make_tuple(empty_array_desc(), empty_scalar_desc());
-    }
-};
+            G_TYPED_KERNEL(GBuildOptFlowPyramid,
+            <
+            GBuildPyrOutput(GMat, Size, GScalar,
+            bool,int,int,bool)>,
+            "org.opencv.video.buildOpticalFlowPyramid") {
+            static std::tuple <GArrayDesc, GScalarDesc>
+            outMeta(GMatDesc, const Size &, GScalarDesc, bool, int, int, bool) {
+                return std::make_tuple(empty_array_desc(), empty_scalar_desc());
+            }
+        };
 
-G_TYPED_KERNEL(GCalcOptFlowLK,
-               <GOptFlowLKOutput(GMat,GMat,cv::GArray<cv::Point2f>,cv::GArray<cv::Point2f>,Size,
-                                 GScalar,TermCriteria,int,double)>,
-               "org.opencv.video.calcOpticalFlowPyrLK")
-{
-    static std::tuple<GArrayDesc,GArrayDesc,GArrayDesc> outMeta(GMatDesc,GMatDesc,GArrayDesc,
-                                                                GArrayDesc,const Size&,GScalarDesc,
-                                                                const TermCriteria&,int,double)
-    {
+        G_TYPED_KERNEL(GCalcOptFlowLK,
+        <
+        GOptFlowLKOutput(GMat, GMat, cv::GArray<cv::Point2f>, cv::GArray<cv::Point2f>, Size,
+                GScalar, TermCriteria,
+        int,double)>,
+        "org.opencv.video.calcOpticalFlowPyrLK") {
+        static std::tuple <GArrayDesc, GArrayDesc, GArrayDesc>
+        outMeta(GMatDesc, GMatDesc, GArrayDesc,
+                GArrayDesc, const Size &, GScalarDesc,
+                const TermCriteria &, int, double) {
+            return std::make_tuple(empty_array_desc(), empty_array_desc(), empty_array_desc());
+        }
+
+    };
+
+    G_TYPED_KERNEL(GCalcOptFlowLKForPyr,
+    <
+    GOptFlowLKOutput(cv::GArray<cv::GMat>, cv::GArray<cv::GMat>,
+            cv::GArray<cv::Point2f>, cv::GArray<cv::Point2f>, Size, GScalar,
+            TermCriteria,
+    int,double)>,
+    "org.opencv.video.calcOpticalFlowPyrLKForPyr") {
+    static std::tuple <GArrayDesc, GArrayDesc, GArrayDesc> outMeta(GArrayDesc, GArrayDesc,
+                                                                   GArrayDesc, GArrayDesc,
+                                                                   const Size &, GScalarDesc,
+                                                                   const TermCriteria &, int,
+                                                                   double) {
         return std::make_tuple(empty_array_desc(), empty_array_desc(), empty_array_desc());
     }
-
 };
 
-G_TYPED_KERNEL(GCalcOptFlowLKForPyr,
-               <GOptFlowLKOutput(cv::GArray<cv::GMat>,cv::GArray<cv::GMat>,
-                                 cv::GArray<cv::Point2f>,cv::GArray<cv::Point2f>,Size,GScalar,
-                                 TermCriteria,int,double)>,
-               "org.opencv.video.calcOpticalFlowPyrLKForPyr")
-{
-    static std::tuple<GArrayDesc,GArrayDesc,GArrayDesc> outMeta(GArrayDesc,GArrayDesc,
-                                                                GArrayDesc,GArrayDesc,
-                                                                const Size&,GScalarDesc,
-                                                                const TermCriteria&,int,double)
-    {
-        return std::make_tuple(empty_array_desc(), empty_array_desc(), empty_array_desc());
-    }
-};
-
-enum BackgroundSubtractorType
-{
+enum BackgroundSubtractorType {
     TYPE_BS_MOG2,
     TYPE_BS_KNN
 };
 
 /** @brief Structure for the Background Subtractor operation's initialization parameters.*/
 
-struct BackgroundSubtractorParams
-{
+struct BackgroundSubtractorParams {
     //! Type of the Background Subtractor operation.
     BackgroundSubtractorType operation = TYPE_BS_MOG2;
 
@@ -145,41 +146,51 @@ struct BackgroundSubtractorParams
                                                                             history(histLength),
                                                                             threshold(thrshld),
                                                                             detectShadows(detect),
-                                                                            learningRate(lRate){}
+                                                                            learningRate(lRate) {}
 };
 
-G_TYPED_KERNEL(GBackgroundSubtractor, <GMat(GMat, BackgroundSubtractorParams)>,
-               "org.opencv.video.BackgroundSubtractor")
+G_TYPED_KERNEL(GBackgroundSubtractor,
+<
+GMat(GMat, BackgroundSubtractorParams
+)>,
+"org.opencv.video.BackgroundSubtractor")
 {
-    static GMatDesc outMeta(const GMatDesc& in, const BackgroundSubtractorParams& bsParams)
-    {
-        GAPI_Assert(bsParams.history >= 0);
-        GAPI_Assert(bsParams.learningRate <= 1);
-        return in.withType(CV_8U, 1);
-    }
+static GMatDesc outMeta(const GMatDesc &in, const BackgroundSubtractorParams &bsParams) {
+    GAPI_Assert(bsParams.history >= 0);
+    GAPI_Assert(bsParams.learningRate <= 1);
+    return in.withType(CV_8U, 1);
+}
+
 };
 
-void checkParams(const cv::gapi::KalmanParams& kfParams,
-                 const cv::GMatDesc& measurement, const cv::GMatDesc& control = {});
+void checkParams(const cv::gapi::KalmanParams &kfParams,
+                 const cv::GMatDesc &measurement, const cv::GMatDesc &control = {});
 
-G_TYPED_KERNEL(GKalmanFilter, <GMat(GMat, GOpaque<bool>, GMat, KalmanParams)>,
-               "org.opencv.video.KalmanFilter")
+G_TYPED_KERNEL(GKalmanFilter,
+<
+GMat(GMat, GOpaque<bool>, GMat, KalmanParams
+)>,
+"org.opencv.video.KalmanFilter")
 {
-    static GMatDesc outMeta(const GMatDesc& measurement, const GOpaqueDesc&,
-                            const GMatDesc& control, const KalmanParams& kfParams)
-    {
-        checkParams(kfParams, measurement, control);
-        return measurement.withSize(Size(1, kfParams.transitionMatrix.rows));
-    }
+static GMatDesc outMeta(const GMatDesc &measurement, const GOpaqueDesc &,
+                        const GMatDesc &control, const KalmanParams &kfParams) {
+    checkParams(kfParams, measurement, control);
+    return measurement.withSize(Size(1, kfParams.transitionMatrix.rows));
+}
+
 };
 
-G_TYPED_KERNEL(GKalmanFilterNoControl, <GMat(GMat, GOpaque<bool>, KalmanParams)>, "org.opencv.video.KalmanFilterNoControl")
+G_TYPED_KERNEL(GKalmanFilterNoControl,
+<
+GMat(GMat, GOpaque<bool>, KalmanParams
+)>, "org.opencv.video.KalmanFilterNoControl")
 {
-    static GMatDesc outMeta(const GMatDesc& measurement, const GOpaqueDesc&, const KalmanParams& kfParams)
-    {
-        checkParams(kfParams, measurement);
-        return measurement.withSize(Size(1, kfParams.transitionMatrix.rows));
-    }
+static GMatDesc
+outMeta(const GMatDesc &measurement, const GOpaqueDesc &, const KalmanParams &kfParams) {
+    checkParams(kfParams, measurement);
+    return measurement.withSize(Size(1, kfParams.transitionMatrix.rows));
+}
+
 };
 } //namespace video
 
@@ -206,14 +217,16 @@ G_TYPED_KERNEL(GKalmanFilterNoControl, <GMat(GMat, GOpaque<bool>, KalmanParams)>
  - output pyramid.
  - number of levels in constructed pyramid. Can be less than maxLevel.
  */
-GAPI_EXPORTS std::tuple<GArray<GMat>, GScalar>
-buildOpticalFlowPyramid(const GMat     &img,
-                        const Size     &winSize,
-                        const GScalar  &maxLevel,
-                              bool      withDerivatives    = true,
-                              int       pyrBorder          = BORDER_REFLECT_101,
-                              int       derivBorder        = BORDER_CONSTANT,
-                              bool      tryReuseInputImage = true);
+GAPI_EXPORTS std::tuple<GArray < GMat>, GScalar
+>
+
+buildOpticalFlowPyramid(const GMat &img,
+                        const Size &winSize,
+                        const GScalar &maxLevel,
+                        bool withDerivatives = true,
+                        int pyrBorder = BORDER_REFLECT_101,
+                        int derivBorder = BORDER_CONSTANT,
+                        bool tryReuseInputImage = true);
 
 /** @brief Calculates an optical flow for a sparse feature set using the iterative Lucas-Kanade
 method with pyramids.
@@ -260,35 +273,37 @@ the flow for the corresponding features has been found, otherwise, it is set to 
 corresponding feature, type of the error measure can be set in flags parameter; if the flow wasn't
 found then the error is not defined (use the status parameter to find such cases).
  */
-GAPI_EXPORTS std::tuple<GArray<Point2f>, GArray<uchar>, GArray<float>>
-calcOpticalFlowPyrLK(const GMat            &prevImg,
-                     const GMat            &nextImg,
-                     const GArray<Point2f> &prevPts,
-                     const GArray<Point2f> &predPts,
-                     const Size            &winSize      = Size(21, 21),
-                     const GScalar         &maxLevel     = 3,
-                     const TermCriteria    &criteria     = TermCriteria(TermCriteria::COUNT |
-                                                                        TermCriteria::EPS,
-                                                                        30, 0.01),
-                           int              flags        = 0,
-                           double           minEigThresh = 1e-4);
+GAPI_EXPORTS std::tuple<GArray < Point2f>, GArray<uchar>, GArray<float>>
+
+calcOpticalFlowPyrLK(const GMat &prevImg,
+                     const GMat &nextImg,
+                     const GArray <Point2f> &prevPts,
+                     const GArray <Point2f> &predPts,
+                     const Size &winSize = Size(21, 21),
+                     const GScalar &maxLevel = 3,
+                     const TermCriteria &criteria = TermCriteria(TermCriteria::COUNT |
+                                                                 TermCriteria::EPS,
+                                                                 30, 0.01),
+                     int flags = 0,
+                     double minEigThresh = 1e-4);
 
 /**
 @overload
 @note Function textual ID is "org.opencv.video.calcOpticalFlowPyrLKForPyr"
 */
-GAPI_EXPORTS std::tuple<GArray<Point2f>, GArray<uchar>, GArray<float>>
-calcOpticalFlowPyrLK(const GArray<GMat>    &prevPyr,
-                     const GArray<GMat>    &nextPyr,
-                     const GArray<Point2f> &prevPts,
-                     const GArray<Point2f> &predPts,
-                     const Size            &winSize      = Size(21, 21),
-                     const GScalar         &maxLevel     = 3,
-                     const TermCriteria    &criteria     = TermCriteria(TermCriteria::COUNT |
-                                                                        TermCriteria::EPS,
-                                                                        30, 0.01),
-                           int              flags        = 0,
-                           double           minEigThresh = 1e-4);
+GAPI_EXPORTS std::tuple<GArray < Point2f>, GArray<uchar>, GArray<float>>
+
+calcOpticalFlowPyrLK(const GArray <GMat> &prevPyr,
+                     const GArray <GMat> &nextPyr,
+                     const GArray <Point2f> &prevPts,
+                     const GArray <Point2f> &predPts,
+                     const Size &winSize = Size(21, 21),
+                     const GScalar &maxLevel = 3,
+                     const TermCriteria &criteria = TermCriteria(TermCriteria::COUNT |
+                                                                 TermCriteria::EPS,
+                                                                 30, 0.01),
+                     int flags = 0,
+                     double minEigThresh = 1e-4);
 
 /** @brief Gaussian Mixture-based or K-nearest neighbours-based Background/Foreground Segmentation Algorithm.
 The operation generates a foreground mask.
@@ -300,7 +315,9 @@ The operation generates a foreground mask.
 @param src input image: Floating point frame is used without scaling and should be in range [0,255].
 @param bsParams Set of initialization parameters for Background Subtractor kernel.
 */
-GAPI_EXPORTS GMat BackgroundSubtractor(const GMat& src, const cv::gapi::video::BackgroundSubtractorParams& bsParams);
+GAPI_EXPORTS GMat
+
+BackgroundSubtractor(const GMat &src, const cv::gapi::video::BackgroundSubtractorParams &bsParams);
 
 /** @brief Standard Kalman filter algorithm <http://en.wikipedia.org/wiki/Kalman_filter>.
 
@@ -323,8 +340,10 @@ Otherwise, predicted state will be returned which corresponds to the call of
 cv::KalmanFilter::predict(control).
 @sa cv::KalmanFilter
 */
-GAPI_EXPORTS GMat KalmanFilter(const GMat& measurement, const GOpaque<bool>& haveMeasurement,
-                               const GMat& control, const cv::gapi::KalmanParams& kfParams);
+GAPI_EXPORTS GMat
+
+KalmanFilter(const GMat &measurement, const GOpaque<bool> &haveMeasurement,
+             const GMat &control, const cv::gapi::KalmanParams &kfParams);
 
 /** @overload
 The case of Standard Kalman filter algorithm when there is no control in a dynamic system.
@@ -342,23 +361,25 @@ at a particular iteration.
 
 @sa cv::KalmanFilter
  */
-GAPI_EXPORTS GMat KalmanFilter(const GMat& measurement, const GOpaque<bool>& haveMeasurement,
-                               const cv::gapi::KalmanParams& kfParams);
+GAPI_EXPORTS GMat
+
+KalmanFilter(const GMat &measurement, const GOpaque<bool> &haveMeasurement,
+             const cv::gapi::KalmanParams &kfParams);
 
 //! @} gapi_video
 } //namespace gapi
 } //namespace cv
 
 
-namespace cv { namespace detail {
-template<> struct CompileArgTag<cv::gapi::video::BackgroundSubtractorParams>
-{
-    static const char* tag()
-    {
-        return "org.opencv.video.background_substractor_params";
-    }
-};
-}  // namespace detail
+namespace cv {
+    namespace detail {
+        template<>
+        struct CompileArgTag<cv::gapi::video::BackgroundSubtractorParams> {
+            static const char *tag() {
+                return "org.opencv.video.background_substractor_params";
+            }
+        };
+    }  // namespace detail
 }  // namespace cv
 
 #endif // OPENCV_GAPI_VIDEO_HPP

@@ -102,7 +102,7 @@ public class ImplementProxy implements HttpCallback {
             MMLog.log(TAG, "URL 错误为空.");
         } else {
             MMLog.log(TAG, "performanceUrl = " + url);
-            HttpUtils.asynchronousGet(String.valueOf(sessionId),url, sessionId,this);
+            HttpUtils.asynchronousGet(String.valueOf(sessionId), url, sessionId, this);
         }
     }
 
@@ -118,31 +118,31 @@ public class ImplementProxy implements HttpCallback {
     }
 
     @Override
-    public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status){
-            switch ((int) progress) {
-                case DataID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
-                case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
-                case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
-                case DataID.SESSION_TYPE_GET_MOVIELIST_VID:
-                case DataID.SESSION_TYPE_GET_MOVIELIST_VNAME:
-                case DataID.SESSION_TYPE_GET_MOVIELIST_AREA:
-                case DataID.SESSION_TYPE_GET_MOVIELIST_YEAR:
-                case DataID.SESSION_TYPE_GET_MOVIELIST_ACTOR:
-                case DataID.SESSION_TYPE_GET_MOVIELIST_VIP:
-                case DataID.SESSION_TYPE_GET_MOVIE_TYPE:
-                    mMovieListBean = parseJSonToMovieListBean(result);
-                    break;
-                case DataID.SESSION_TYPE_GET_MOVIE_CATEGORY:
-                    mVideoCategory = jsonIdNameArrayToMap(result);
-                    break;
-                default://默认尝试转化成视频列表
-                    // mMovieListBean = parseJSonToMovieListBean(result);
-                    break;
-            }
-
-            if (SessionCallback != null)
-                SessionCallback.OnSessionComplete((int) progress, result);
+    public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
+        switch ((int) progress) {
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ALLTV:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_VID:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_VNAME:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_AREA:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_YEAR:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_ACTOR:
+            case DataID.SESSION_TYPE_GET_MOVIELIST_VIP:
+            case DataID.SESSION_TYPE_GET_MOVIE_TYPE:
+                mMovieListBean = parseJSonToMovieListBean(result);
+                break;
+            case DataID.SESSION_TYPE_GET_MOVIE_CATEGORY:
+                mVideoCategory = jsonIdNameArrayToMap(result);
+                break;
+            default://默认尝试转化成视频列表
+                // mMovieListBean = parseJSonToMovieListBean(result);
+                break;
         }
+
+        if (SessionCallback != null)
+            SessionCallback.OnSessionComplete((int) progress, result);
+    }
 }
 
 

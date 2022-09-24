@@ -16,7 +16,9 @@
 }
 
 #if !defined(GAPI_STANDALONE)
+
 #include <opencv2/core/base.hpp>
+
 #define GAPI_Assert CV_Assert
 
 #if defined _DEBUG || defined CV_STATIC_ANALYSIS

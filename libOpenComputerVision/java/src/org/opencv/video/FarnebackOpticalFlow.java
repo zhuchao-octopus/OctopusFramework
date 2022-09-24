@@ -3,19 +3,21 @@
 //
 package org.opencv.video;
 
-import org.opencv.video.DenseOpticalFlow;
-import org.opencv.video.FarnebackOpticalFlow;
-
 // C++: class FarnebackOpticalFlow
+
 /**
  * Class computing a dense optical flow using the Gunnar Farneback's algorithm.
  */
 public class FarnebackOpticalFlow extends DenseOpticalFlow {
 
-    protected FarnebackOpticalFlow(long addr) { super(addr); }
+    protected FarnebackOpticalFlow(long addr) {
+        super(addr);
+    }
 
     // internal usage only
-    public static FarnebackOpticalFlow __fromPtr__(long addr) { return new FarnebackOpticalFlow(addr); }
+    public static FarnebackOpticalFlow __fromPtr__(long addr) {
+        return new FarnebackOpticalFlow(addr);
+    }
 
     //
     // C++:  int cv::FarnebackOpticalFlow::getNumLevels()
@@ -208,7 +210,6 @@ public class FarnebackOpticalFlow extends DenseOpticalFlow {
     }
 
 
-
     // C++:  int cv::FarnebackOpticalFlow::getNumLevels()
     private static native int getNumLevels_0(long nativeObj);
 
@@ -259,13 +260,21 @@ public class FarnebackOpticalFlow extends DenseOpticalFlow {
 
     // C++: static Ptr_FarnebackOpticalFlow cv::FarnebackOpticalFlow::create(int numLevels = 5, double pyrScale = 0.5, bool fastPyramids = false, int winSize = 13, int numIters = 10, int polyN = 5, double polySigma = 1.1, int flags = 0)
     private static native long create_0(int numLevels, double pyrScale, boolean fastPyramids, int winSize, int numIters, int polyN, double polySigma, int flags);
+
     private static native long create_1(int numLevels, double pyrScale, boolean fastPyramids, int winSize, int numIters, int polyN, double polySigma);
+
     private static native long create_2(int numLevels, double pyrScale, boolean fastPyramids, int winSize, int numIters, int polyN);
+
     private static native long create_3(int numLevels, double pyrScale, boolean fastPyramids, int winSize, int numIters);
+
     private static native long create_4(int numLevels, double pyrScale, boolean fastPyramids, int winSize);
+
     private static native long create_5(int numLevels, double pyrScale, boolean fastPyramids);
+
     private static native long create_6(int numLevels, double pyrScale);
+
     private static native long create_7(int numLevels);
+
     private static native long create_8();
 
     // native support for java finalize()

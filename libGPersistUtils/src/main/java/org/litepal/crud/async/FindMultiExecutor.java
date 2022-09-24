@@ -29,8 +29,8 @@ public class FindMultiExecutor<T> extends AsyncExecutor {
 
     /**
      * Register a callback listener and async task will start executing right away.
-     * @param callback
-     *          Callback for find multiple records in background.
+     *
+     * @param callback Callback for find multiple records in background.
      */
     public void listen(FindMultiCallback<T> callback) {
         cb = callback;
@@ -38,7 +38,7 @@ public class FindMultiExecutor<T> extends AsyncExecutor {
     }
 
     public FindMultiCallback<T> getListener() {
-        return  cb;
+        return cb;
     }
 
 }

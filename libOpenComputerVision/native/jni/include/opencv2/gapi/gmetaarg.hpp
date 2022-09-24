@@ -20,8 +20,7 @@
 #include <opencv2/gapi/gopaque.hpp>
 #include <opencv2/gapi/gframe.hpp>
 
-namespace cv
-{
+namespace cv {
 // FIXME: Rename to GMeta?
 // FIXME: user shouldn't deal with it - put to detail?
 // GMetaArg is an union type over descriptions of G-types which can serve as
@@ -33,47 +32,65 @@ namespace cv
 // this metadata is taken from arguments computation should operate on.
 //
 // The first type (monostate) is equal to "uninitialized"/"unresolved" meta.
-using GMetaArg = util::variant
-    < util::monostate
-    , GMatDesc
-    , GScalarDesc
-    , GArrayDesc
-    , GOpaqueDesc
-    , GFrameDesc
-    >;
-GAPI_EXPORTS std::ostream& operator<<(std::ostream& os, const GMetaArg &);
+    using GMetaArg = util::variant
+            <util::monostate, GMatDesc, GScalarDesc, GArrayDesc, GOpaqueDesc, GFrameDesc
+            >;
+    GAPI_EXPORTS std::ostream
+    &
+    operator<<(std::ostream
+    & os, const GMetaArg &);
 
-using GMetaArgs = std::vector<GMetaArg>;
+    using GMetaArgs = std::vector<GMetaArg>;
 
-namespace detail
-{
-    // These traits are used by GComputation::compile()
+    namespace detail {
+        // These traits are used by GComputation::compile()
 
-    // FIXME: is_constructible<T> doesn't work as variant doesn't do any SFINAE
-    // in its current template constructor
+        // FIXME: is_constructible<T> doesn't work as variant doesn't do any SFINAE
+        // in its current template constructor
 
-    template<typename T> struct is_meta_descr    : std::false_type {};
-    template<> struct is_meta_descr<GMatDesc>    : std::true_type {};
-    template<> struct is_meta_descr<GScalarDesc> : std::true_type {};
-    template<> struct is_meta_descr<GArrayDesc>  : std::true_type {};
-    template<> struct is_meta_descr<GOpaqueDesc> : std::true_type {};
+        template<typename T>
+        struct is_meta_descr : std::false_type {
+        };
+        template<>
+        struct is_meta_descr<GMatDesc> : std::true_type {
+        };
+        template<>
+        struct is_meta_descr<GScalarDesc> : std::true_type {
+        };
+        template<>
+        struct is_meta_descr<GArrayDesc> : std::true_type {
+        };
+        template<>
+        struct is_meta_descr<GOpaqueDesc> : std::true_type {
+        };
 
-    template<typename... Ts>
-    using are_meta_descrs = all_satisfy<is_meta_descr, Ts...>;
+        template<typename... Ts>
+        using are_meta_descrs = all_satisfy<is_meta_descr, Ts...>;
 
-    template<typename... Ts>
-    using are_meta_descrs_but_last = all_satisfy<is_meta_descr, typename all_but_last<Ts...>::type>;
+        template<typename... Ts>
+        using are_meta_descrs_but_last = all_satisfy<is_meta_descr, typename all_but_last<Ts...>::type>;
 
-} // namespace detail
+    } // namespace detail
 
 // Note: descr_of(std::vector<..>) returns a GArrayDesc, while
 //       descrs_of(std::vector<..>) returns an array of Meta args!
-class UMat;
-GAPI_EXPORTS cv::GMetaArgs descrs_of(const std::vector<cv::Mat> &vec);
-GAPI_EXPORTS cv::GMetaArgs descrs_of(const std::vector<cv::UMat> &vec);
-namespace gapi { namespace own {
-    GAPI_EXPORTS cv::GMetaArgs descrs_of(const std::vector<Mat> &vec);
-}} // namespace gapi::own
+    class UMat;
+
+    GAPI_EXPORTS cv::GMetaArgs
+
+    descrs_of(const std::vector <cv::Mat> &vec);
+
+    GAPI_EXPORTS cv::GMetaArgs
+
+    descrs_of(const std::vector <cv::UMat> &vec);
+
+    namespace gapi {
+        namespace own {
+            GAPI_EXPORTS cv::GMetaArgs
+
+            descrs_of(const std::vector <Mat> &vec);
+        }
+    } // namespace gapi::own
 
 } // namespace cv
 

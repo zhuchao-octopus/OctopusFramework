@@ -1,0 +1,2 @@
+ninja: Entering directory `F:\StudioProjects\OctopusFramework\libOpenDetection\.cxx\RelWithDebInfo\1s3b606r\armeabi-v7a'
+ninja: no work to do.

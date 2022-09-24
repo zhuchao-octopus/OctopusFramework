@@ -46,8 +46,7 @@ public class PlayerManager {
         return new MPlayer(context, callback);
     }
 
-    public synchronized static void free()
-    {
+    public synchronized static void free() {
         if (FOPlayer != null)
             FOPlayer.free();
         FOPlayer = null;

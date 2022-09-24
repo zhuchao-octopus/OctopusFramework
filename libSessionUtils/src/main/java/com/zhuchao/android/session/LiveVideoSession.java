@@ -48,8 +48,7 @@ public class LiveVideoSession implements SessionCallback {
     private int mTotalPages = 1;
 
 
-    private Map<Integer, String> videoCategoryNameList = new TreeMap<Integer, String>(new Comparator<Integer>()
-    {
+    private Map<Integer, String> videoCategoryNameList = new TreeMap<Integer, String>(new Comparator<Integer>() {
         @Override
         public int compare(Integer o1, Integer o2) {
             return o2.compareTo(o1);
@@ -206,7 +205,7 @@ public class LiveVideoSession implements SessionCallback {
             for (LVideo lVideo : lVideos) {
                 Movie movie = new Movie(lVideo.getPath());
                 String fileName = getFileName(movie.getsUrl());
-                if(NotEmptyString(fileName))
+                if (NotEmptyString(fileName))
                     movie.setName(fileName);
                 OMedia oMedia = new OMedia(movie);
                 videoList.add(oMedia);
@@ -216,7 +215,7 @@ public class LiveVideoSession implements SessionCallback {
             for (LMusic lmusic : lMusics) {
                 Movie movie = new Movie(lmusic.getPath());
                 String fileName = getFileName(movie.getsUrl());
-                if(NotEmptyString(fileName))
+                if (NotEmptyString(fileName))
                     movie.setName(fileName);
                 OMedia oMedia = new OMedia(movie);
                 videoList.add(oMedia);
@@ -241,7 +240,7 @@ public class LiveVideoSession implements SessionCallback {
         for (int i = 0; i < FileList.size(); i++) {
             Movie movie = new Movie(FileList.get(i));
             String fileName = getFileName(movie.getsUrl());
-            if(NotEmptyString(fileName))
+            if (NotEmptyString(fileName))
                 movie.setName(fileName);
             OMedia oMedia = new OMedia(movie);
             videoList.add(oMedia);
@@ -260,7 +259,7 @@ public class LiveVideoSession implements SessionCallback {
             for (int i = 0; i < FileList.size(); i++) {
                 Movie movie = new Movie(FileList.get(i));
                 String fileName = getFileName(movie.getsUrl());
-                if(NotEmptyString(fileName))
+                if (NotEmptyString(fileName))
                     movie.setName(fileName);
                 OMedia oMedia = new OMedia(movie);
                 videoList.add(oMedia);

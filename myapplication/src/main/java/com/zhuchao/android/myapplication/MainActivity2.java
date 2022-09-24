@@ -1,7 +1,6 @@
 package com.zhuchao.android.myapplication;
 
 import android.os.Bundle;
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -57,8 +56,7 @@ public class MainActivity2 extends FdActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         Log.i(TAG, "called onOptionsItemSelected; selected item: " + item);
         if (item == mItemFace50)
             setMinFaceSize(0.5f);

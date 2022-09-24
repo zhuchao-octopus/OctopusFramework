@@ -271,7 +271,7 @@ public class MediaFile {
      */
     public static boolean isMimeTypeMedia(String mimeType) {
         int fileType = getFileTypeForMimeType(mimeType);
-        return  isAudioFileType(fileType) ||
+        return isAudioFileType(fileType) ||
                 isVideoFileType(fileType) ||
                 isImageFileType(fileType) ||
                 isPlayListFileType(fileType);
@@ -365,18 +365,13 @@ public class MediaFile {
     private static void getMediaFileName(File[] files, List<String> FileList, int fileType) {
         if (files == null) return;  // 先判断目录是否为空，否则会报空指针
         String filePathName = null;
-        for (File file : files)
-        {
-            if (file.isDirectory())
-            {
+        for (File file : files) {
+            if (file.isDirectory()) {
                 getMediaFileName(file.listFiles(), FileList, fileType);
-            }
-            else
-            {
+            } else {
                 filePathName = file.getPath();// +"  "+ file.getName() ;
                 MediaFile.MediaFileType mm = MediaFile.getFileType(filePathName);
-                if (mm != null)
-                {
+                if (mm != null) {
                     if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == 100)) {
                         FileList.add(filePathName);//所有的媒体文件
                     } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == 101)) {

@@ -61,8 +61,8 @@ public class LitePalDB {
     /**
      * Construct a LitePalDB instance from the default configuration by litepal.xml. But database
      * name must be different than the default.
-     * @param dbName
-     *          Name of database.
+     *
+     * @param dbName Name of database.
      * @return A LitePalDB instance which used the default configuration in litepal.xml but with a specified database name.
      */
     public static LitePalDB fromDefault(String dbName) {
@@ -75,10 +75,9 @@ public class LitePalDB {
 
     /**
      * Construct a LitePalDB instance. Database name and version are necessary fields.
-     * @param dbName
-     *          Name of database.
-     * @param version
-     *          Version of database.
+     *
+     * @param dbName  Name of database.
+     * @param version Version of database.
      */
     public LitePalDB(String dbName, int version) {
         this.dbName = dbName;
@@ -127,8 +126,7 @@ public class LitePalDB {
     /**
      * Add a class name into the current mapping model list.
      *
-     * @param className
-     *            Full package class name.
+     * @param className Full package class name.
      */
     public void addClassName(String className) {
         getClassNames().add(className);

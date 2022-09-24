@@ -76,6 +76,16 @@ public class TNetUtils {
         }
     }
 
+    public void NetStatusChangedCallBack(NetworkStatusListener networkStatusListener) {
+        this.networkStatusListener = networkStatusListener;
+        updateStatus();
+    }
+
+    public void registerNetStatusCallback(NetworkStatusListener networkStatusListener) {
+        this.networkStatusListener = networkStatusListener;
+        updateStatus();
+    }
+
     private void registerNetStatusListener() {
         try {
             IntentFilter intentFilter = new IntentFilter();
@@ -87,7 +97,7 @@ public class TNetUtils {
         }
     }
 
-    public void unRegisterNetReceiver() {
+    private void unRegisterNetReceiver() {
         if (NetworkChangedReceiver != null) {
             mContext.unregisterReceiver(NetworkChangedReceiver);
             NetworkChangedReceiver = null;
@@ -102,11 +112,6 @@ public class TNetUtils {
                 networkStatusListener.onNetStatusChanged(networkInformation);
             }
         });
-    }
-
-    public void NetStatusChangedCallBack(NetworkStatusListener networkStatusListener) {
-        this.networkStatusListener = networkStatusListener;
-        updateStatus();
     }
 
     private synchronized void updateStatus() {
@@ -363,9 +368,8 @@ public class TNetUtils {
     public static String getLocalIpAddress() {
         try {
             Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
-            if(en == null) return null;
-            while (en.hasMoreElements())
-            {
+            if (en == null) return null;
+            while (en.hasMoreElements()) {
                 NetworkInterface networkInterface = en.nextElement();
                 for (Enumeration<InetAddress> enumeration = networkInterface
                         .getInetAddresses(); enumeration.hasMoreElements(); ) {

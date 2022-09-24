@@ -1,0 +1,8 @@
+# ninja log v5
+1	754	683890991	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	d35e328e3d6f230c
+755	1200	683890991	../../../../build/intermediates/cxx/RelWithDebInfo/3j260211/obj/x86/libserial_port.so	5335c5c3f3383ba6
+0	6	0	clean	5257a025ec128d60
+0	6	0	clean	5257a025ec128d60
+0	6	0	clean	5257a025ec128d60
+2	593	685708737	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	d35e328e3d6f230c
+593	1682	685708738	../../../../build/intermediates/cxx/RelWithDebInfo/3j260211/obj/x86/libserial_port.so	5335c5c3f3383ba6

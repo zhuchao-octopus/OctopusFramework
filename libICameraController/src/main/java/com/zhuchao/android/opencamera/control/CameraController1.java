@@ -10,8 +10,6 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.TextureView;
 
-//import net.sourceforge.opencamera.MyDebug;
-
 import com.zhuchao.android.opencamera.MyDebug;
 
 import java.io.IOException;

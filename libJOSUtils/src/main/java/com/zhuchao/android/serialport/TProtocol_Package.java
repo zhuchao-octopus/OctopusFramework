@@ -102,7 +102,7 @@ public class TProtocol_Package {
             case 1:
                 return buffer[start];
             case 2:
-                return ByteUtils.DoubleBytesToInt(buffer[start+1], buffer[start]);
+                return ByteUtils.DoubleBytesToInt(buffer[start + 1], buffer[start]);
             case 3:
                 return ByteUtils.ThreeBytesToInt(buffer[start], buffer[start + 1], buffer[start + 2]);
             case 4:

@@ -8,7 +8,8 @@
 #include "opencv2/core/cvdef.h"
 #include <memory>
 
-namespace cv { namespace parallel {
+namespace cv {
+    namespace parallel {
 #ifndef CV_API_CALL
 #define CV_API_CALL
 #endif
@@ -53,23 +54,23 @@ namespace cv { namespace parallel {
  *
  * @sa setParallelForBackend
  */
-class CV_EXPORTS ParallelForAPI
-{
-public:
-    virtual ~ParallelForAPI();
+        class CV_EXPORTS ParallelForAPI
+                {
+                        public:
+                        virtual ~ParallelForAPI();
 
-    typedef void (CV_API_CALL *FN_parallel_for_body_cb_t)(int start, int end, void* data);
+                        typedef void (CV_API_CALL *FN_parallel_for_body_cb_t)(int start, int end, void* data);
 
-    virtual void parallel_for(int tasks, FN_parallel_for_body_cb_t body_callback, void* callback_data) = 0;
+                        virtual void parallel_for(int tasks, FN_parallel_for_body_cb_t body_callback, void* callback_data) = 0;
 
-    virtual int getThreadNum() const = 0;
+                        virtual int getThreadNum() const = 0;
 
-    virtual int getNumThreads() const = 0;
+                        virtual int getNumThreads() const = 0;
 
-    virtual int setNumThreads(int nThreads) = 0;
+                        virtual int setNumThreads(int nThreads) = 0;
 
-    virtual const char* getName() const = 0;
-};
+                        virtual const char* getName() const = 0;
+                };
 
 /** @brief Replace OpenCV parallel_for backend
  *
@@ -77,14 +78,17 @@ public:
  *
  * @note This call is not thread-safe. Consider calling this function from the `main()` before any other OpenCV processing functions (and without any other created threads).
  */
-CV_EXPORTS void setParallelForBackend(const std::shared_ptr<ParallelForAPI>& api, bool propagateNumThreads = true);
+        CV_EXPORTS void setParallelForBackend(const std::shared_ptr <ParallelForAPI> &api,
+                                              bool propagateNumThreads = true);
 
 /** @brief Change OpenCV parallel_for backend
  *
  * @note This call is not thread-safe. Consider calling this function from the `main()` before any other OpenCV processing functions (and without any other created threads).
  */
-CV_EXPORTS_W bool setParallelForBackend(const std::string& backendName, bool propagateNumThreads = true);
+        CV_EXPORTS_W bool
+        setParallelForBackend(const std::string &backendName, bool propagateNumThreads = true);
 
 //! @}
-}}  // namespace
+    }
+}  // namespace
 #endif  // OPENCV_CORE_PARALLEL_BACKEND_HPP

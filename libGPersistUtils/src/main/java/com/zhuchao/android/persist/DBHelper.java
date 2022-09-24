@@ -25,9 +25,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static DBHelper getInstance() {
         // (dbHelper == null) {
-            //dbHelper = new DBHelper();
-       //     return dbHelper;
-       // }
+        //dbHelper = new DBHelper();
+        //     return dbHelper;
+        // }
         return dbHelper;
     }
 
@@ -76,7 +76,7 @@ public class DBHelper extends SQLiteOpenHelper {
             String p13 = cursor.getString(cursor.getColumnIndex("p13"));
             String p14 = cursor.getString(cursor.getColumnIndex("p14"));
 
-            list.add(String.valueOf(id) +','+name + ',' + p1 + ',' + p2 + ',' + p3 + ',' + p4 + ',' + p5 + ',' + p6 + ',' + p7 + ',' + p8 + ',' + p9 + ',' + p10 + ',' + p11 + ',' + p12 + ',' + p13 + ',' + p14);
+            list.add(String.valueOf(id) + ',' + name + ',' + p1 + ',' + p2 + ',' + p3 + ',' + p4 + ',' + p5 + ',' + p6 + ',' + p7 + ',' + p8 + ',' + p9 + ',' + p10 + ',' + p11 + ',' + p12 + ',' + p13 + ',' + p14);
             //MLog("--Main--", "selectis=========" + id + "==" + name + "==" + mon + "==" + address + "==" + number);
         }
         if (cursor != null) {
@@ -106,7 +106,7 @@ public class DBHelper extends SQLiteOpenHelper {
             String p13 = cursor.getString(cursor.getColumnIndex("p13"));
             String p14 = cursor.getString(cursor.getColumnIndex("p14"));
 
-            list.add(String.valueOf(id)+','+name + ',' + p1 + ',' + p2 + ',' + p3 + ',' + p4 + ',' + p5 + ',' + p6 + ',' + p7 + ',' + p8 + ',' + p9 + ',' + p10 + ',' + p11 + ',' + p12 + ',' + p13 + ',' + p14);
+            list.add(String.valueOf(id) + ',' + name + ',' + p1 + ',' + p2 + ',' + p3 + ',' + p4 + ',' + p5 + ',' + p6 + ',' + p7 + ',' + p8 + ',' + p9 + ',' + p10 + ',' + p11 + ',' + p12 + ',' + p13 + ',' + p14);
             //MLog("--Main--", "selectis=========" + id + "==" + name + "==" + mon + "==" + address + "==" + number);
         }
 
@@ -119,7 +119,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<String> selectData(String tableName, int Userid) {
         ArrayList<String> list = new ArrayList<String>();
         //Cursor cursor = db.query("CommonDB", null, null, null, null, null, null);
-        Cursor cursor = db.query(tableName, null, "id = ?",  new String[]{String.valueOf(Userid)}, null, null, null);
+        Cursor cursor = db.query(tableName, null, "id = ?", new String[]{String.valueOf(Userid)}, null, null, null);
         while (cursor.moveToNext()) {
 
             int id = cursor.getInt(cursor.getColumnIndex("id"));
@@ -139,7 +139,7 @@ public class DBHelper extends SQLiteOpenHelper {
             String p13 = cursor.getString(cursor.getColumnIndex("p13"));
             String p14 = cursor.getString(cursor.getColumnIndex("p14"));
 
-            list.add(String.valueOf(id)+','+name + ',' + p1 + ',' + p2 + ',' + p3 + ',' + p4 + ',' + p5 + ',' + p6 + ',' + p7 + ',' + p8 + ',' + p9 + ',' + p10 + ',' + p11 + ',' + p12 + ',' + p13 + ',' + p14);
+            list.add(String.valueOf(id) + ',' + name + ',' + p1 + ',' + p2 + ',' + p3 + ',' + p4 + ',' + p5 + ',' + p6 + ',' + p7 + ',' + p8 + ',' + p9 + ',' + p10 + ',' + p11 + ',' + p12 + ',' + p13 + ',' + p14);
             //MLog("--Main--", "selectis=========" + id + "==" + name + "==" + mon + "==" + address + "==" + number);
         }
 
@@ -149,10 +149,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public ArrayList<String> selectDataNameP1(String tableName, String name,String p1) {
+    public ArrayList<String> selectDataNameP1(String tableName, String name, String p1) {
         ArrayList<String> list = new ArrayList<String>();
         //Cursor cursor = db.query("CommonDB", null, null, null, null, null, null);
-        Cursor cursor = db.query(tableName, null,"name = ? and p1 = ?", new String[]{name,p1}, null, null, null);
+        Cursor cursor = db.query(tableName, null, "name = ? and p1 = ?", new String[]{name, p1}, null, null, null);
         while (cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex("id"));
             //String name = cursor.getString(cursor.getColumnIndex("name"));
@@ -171,7 +171,7 @@ public class DBHelper extends SQLiteOpenHelper {
             String p13 = cursor.getString(cursor.getColumnIndex("p13"));
             String p14 = cursor.getString(cursor.getColumnIndex("p14"));
 
-            list.add(String.valueOf(id)+','+name + ',' + p1 + ',' + p2 + ',' + p3 + ',' + p4 + ',' + p5 + ',' + p6 + ',' + p7 + ',' + p8 + ',' + p9 + ',' + p10 + ',' + p11 + ',' + p12 + ',' + p13 + ',' + p14);
+            list.add(String.valueOf(id) + ',' + name + ',' + p1 + ',' + p2 + ',' + p3 + ',' + p4 + ',' + p5 + ',' + p6 + ',' + p7 + ',' + p8 + ',' + p9 + ',' + p10 + ',' + p11 + ',' + p12 + ',' + p13 + ',' + p14);
             //MLog("--Main--", "selectis=========" + id + "==" + name + "==" + mon + "==" + address + "==" + number);
         }
 
@@ -198,13 +198,14 @@ public class DBHelper extends SQLiteOpenHelper {
         MMLog.log("--Main--", "删除了==============" + inde);
         return inde;
     }
-    public int delDataNameP1(String tableName, String name,String p1) {
-        int inde = db.delete(tableName, "name = ? and p1 = ?", new String[]{name,p1});
+
+    public int delDataNameP1(String tableName, String name, String p1) {
+        int inde = db.delete(tableName, "name = ? and p1 = ?", new String[]{name, p1});
         MMLog.log("--Main--", "删除了==============" + inde);
         return inde;
     }
 
-    public int modifyData(int id ,String tableName, String name, String p1, String p2, String p3, String p4, String p5, String p6, String p7, String p8, String p9, String p10, String p11, String p12, String p13, String p14) {
+    public int modifyData(int id, String tableName, String name, String p1, String p2, String p3, String p4, String p5, String p6, String p7, String p8, String p9, String p10, String p11, String p12, String p13, String p14) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
         contentValues.put("p1", p1);
@@ -247,6 +248,7 @@ public class DBHelper extends SQLiteOpenHelper {
         //MLog("--Main--", "修改了===============" + index);
         return index;
     }
+
     public int modifyDataByNameP1(String tableName, String name, String p1, String p2, String p3, String p4, String p5, String p6, String p7, String p8, String p9, String p10, String p11, String p12, String p13, String p14) {
         ContentValues contentValues = new ContentValues();
         //contentValues.put("name", name);
@@ -264,10 +266,11 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("p12", p12);
         contentValues.put("p13", p13);
         contentValues.put("p14", p14);
-        int index = db.update(tableName, contentValues, "name = ? and p1 = ?", new String[]{name,p1});
+        int index = db.update(tableName, contentValues, "name = ? and p1 = ?", new String[]{name, p1});
         //MLog("--Main--", "修改了===============" + index);
         return index;
     }
+
     /**
      * 添加数据
      * bsid 添加的数据ID
@@ -304,19 +307,18 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void updateData2(String tableName, String name, String p1, String p2, String p3, String p4, String p5, String p6, String p7, String p8, String p9, String p10, String p11, String p12, String p13, String p14) {
-        if (existsDataNameP1(tableName, name,p1))
+        if (existsDataNameP1(tableName, name, p1))
             modifyDataByNameP1(tableName, name, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14);
         else
             insertData(tableName, name, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14);
     }
 
-     /*
+    /*
      * 查询名字单个数据
      * @param name
      * @return
      */
-    public boolean existsData(String tableName, String name)
-    {
+    public boolean existsData(String tableName, String name) {
         //查询数据库
         Cursor cursor = db.query(tableName, null, "name = ?", new String[]{name}, null, null, null);
         while (cursor.moveToNext()) {
@@ -325,10 +327,9 @@ public class DBHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    public boolean existsDataNameP1(String tableName, String name,String p1)
-    {
+    public boolean existsDataNameP1(String tableName, String name, String p1) {
         //查询数据库
-        Cursor cursor = db.query(tableName, null, "name = ? and p1 = ?", new String[]{name,p1}, null, null, null);
+        Cursor cursor = db.query(tableName, null, "name = ? and p1 = ?", new String[]{name, p1}, null, null, null);
         while (cursor.moveToNext()) {
             return true;
         }

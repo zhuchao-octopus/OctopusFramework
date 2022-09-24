@@ -59,7 +59,6 @@ public class FdActivity extends CameraActivity implements CvCameraViewListener2 
     private Button button1;
 
 
-
     //////////////////////////////////////////////////////////////////////////////////////////////
     public FdActivity() {
         mDetectorName = new String[2];
@@ -149,17 +148,14 @@ public class FdActivity extends CameraActivity implements CvCameraViewListener2 
 
         MatOfRect faces = new MatOfRect();
 
-        if (mDetectorType == JAVA_DETECTOR)
-        {
+        if (mDetectorType == JAVA_DETECTOR) {
             if (mJavaDetector != null)
                 mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
                         new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
-        }
-        else if (mDetectorType == NATIVE_DETECTOR) {
+        } else if (mDetectorType == NATIVE_DETECTOR) {
             if (mNativeDetector != null)
                 mNativeDetector.detect(mGray, faces);
-        }
-        else {
+        } else {
             Log.e(TAG, "Detection method is not selected!");
         }
 

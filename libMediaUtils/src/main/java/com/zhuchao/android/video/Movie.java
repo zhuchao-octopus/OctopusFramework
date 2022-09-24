@@ -24,7 +24,7 @@ import java.io.Serializable;
 /*
  * Movie class represents video entity with videoName, description, image thumbs and video url.
  */
- public class Movie implements Serializable {
+public class Movie implements Serializable {
     //static final long serialVersionUID = 727566175075960653L;
     private int mId;
     private int sId;
@@ -46,11 +46,11 @@ import java.io.Serializable;
 
     public Movie(final String sourceUrl) {
         this.sUrl = sourceUrl;
-        if(EmptyString(sUrl)) return;
-        this.mName =  this.sUrl.substring(this.sUrl.lastIndexOf("/") + 1);
+        if (EmptyString(sUrl)) return;
+        this.mName = this.sUrl.substring(this.sUrl.lastIndexOf("/") + 1);
     }
 
-    public Movie(int movieId, String movieName, String movieType, String year, String region, String actor, String language, String sharpness, String description, String studio, String bgImageUrl, String cardImageUrl,int sourceId, String sourceUrl, String category, String date, int status) {
+    public Movie(int movieId, String movieName, String movieType, String year, String region, String actor, String language, String sharpness, String description, String studio, String bgImageUrl, String cardImageUrl, int sourceId, String sourceUrl, String category, String date, int status) {
         this.mId = movieId;
         this.mName = movieName;
         this.mType = movieType;
@@ -200,10 +200,10 @@ import java.io.Serializable;
 
     public void loadResourceInto(Context mContext, String path, ImageView imageView, int preloadImg) {
         //Glide.with(mContext)
-    //            .load(path)
-                //.placeholder(preloadImg)
-                //.diskCacheStrategy(DiskCacheStrategy.NONE)
-     //           .into(imageView);
+        //            .load(path)
+        //.placeholder(preloadImg)
+        //.diskCacheStrategy(DiskCacheStrategy.NONE)
+        //           .into(imageView);
     }
 
 }

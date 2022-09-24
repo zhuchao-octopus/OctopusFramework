@@ -1,0 +1,7 @@
+Executable : F:\Android\SDK\cmake\3.18.1\bin\ninja.exe
+arguments : 
+-C
+F:\StudioProjects\OctopusFramework\libOpenFaceDetection\.cxx\Debug\2s4c5dw3\x86
+detection_based_tracker
+jvmArgs : 
+

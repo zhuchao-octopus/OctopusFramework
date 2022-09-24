@@ -12,19 +12,16 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.zhuchao.android.TPlatform;
 import com.zhuchao.android.callbackevent.TaskCallback;
 import com.zhuchao.android.fileutils.DataID;
-import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.TTask;
 import com.zhuchao.android.player.dlna.DLNAContainer;
 import com.zhuchao.android.player.dlna.DLNAUtil;
 import com.zhuchao.android.session.TTaskManager;
-import com.zhuchao.android.video.OMedia;
 
 import org.cybergarage.upnp.Device;
 
@@ -41,10 +38,11 @@ public class MainActivity extends Activity {
     private Button button6;
     private Button button7;
     private Button button8;
-    private TextView textView1,textView2;
+    private TextView textView1, textView2;
     private SurfaceView surfaceView;
     private List<Device> devices;
     private org.cybergarage.upnp.Device ktdevice;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +55,8 @@ public class MainActivity extends Activity {
         button7 = findViewById(R.id.button7);
         button8 = findViewById(R.id.button8);
         surfaceView = findViewById(R.id.surfaceView1);
-        textView1= findViewById(R.id.textView1);
-        textView2= findViewById(R.id.textView2);
+        textView1 = findViewById(R.id.textView1);
+        textView2 = findViewById(R.id.textView2);
 
         TTaskManager tTaskManager = new TTaskManager(getApplicationContext());
         //TCourierEventBus tCourierEventBus = new TCourierEventBus();
@@ -75,9 +73,9 @@ public class MainActivity extends Activity {
                 //oMedia.setMagicNumber(2);
                 //oMedia.with(MainActivity.this).playOn(surfaceView);
 
-               //devices = DLNAUtil.getDLNADevices();
-               //MMLog.log(TAG,"ktdevice = " + ktdevice.getFriendlyName());
-               //DLNAUtil.shareTo(ktdevice,"rtsp://192.168.110.103:8554/1");
+                //devices = DLNAUtil.getDLNADevices();
+                //MMLog.log(TAG,"ktdevice = " + ktdevice.getFriendlyName());
+                //DLNAUtil.shareTo(ktdevice,"rtsp://192.168.110.103:8554/1");
                 /*long tick = System.currentTimeMillis();
                 FileUtils.bufferCopyFile("/storage/4AAD-3A12/shinektv_songlib/sata2/753045.mpg","/mnt/WanC/sata2/bufferCopyFile.mpg");
                 MMLog.log(TAG,"bufferCopyFile take up time: "+(System.currentTimeMillis() - tick));
@@ -122,25 +120,24 @@ public class MainActivity extends Activity {
 
 
                 TTask tTask2 = tTaskManager.copyDirectory("/storage/4AAD-3A12/shinektv_songlib/sata2",
-                        "/mnt/WanC/sata2").callbackHandler(new TaskCallback()
-                {
+                        "/mnt/WanC/sata2").callbackHandler(new TaskCallback() {
                     @Override
                     public void onEventTask(Object obj, int status) {
-                        TTask ot = (TTask)(obj);
+                        TTask ot = (TTask) (obj);
                         //MMLog.log(TAG, "Index:"+ot.getProperties().getInt("filesCount") +","+ot.getProperties().getString("fromFile"));
-                        String str = " totalCount: "+ot.getProperties().getInt("totalCount");
-                        str = str + " totalSize: "+ot.getProperties().getLong("totalSize");
-                        str = str + " copiedCount: "+ot.getProperties().getInt("copiedCount");
+                        String str = " totalCount: " + ot.getProperties().getInt("totalCount");
+                        str = str + " totalSize: " + ot.getProperties().getLong("totalSize");
+                        str = str + " copiedCount: " + ot.getProperties().getInt("copiedCount");
                         //str = str + " copySpeed: "+ot.getProperties().getFloat("copySpeed");
-                        str = str + " takeUpTime: "+ot.getProperties().getLong("takeUpTime");
+                        str = str + " takeUpTime: " + ot.getProperties().getLong("takeUpTime");
                         textView2.setText(str);
-                        if(ot.getProperties().getInt("status")== DataID.TASK_STATUS_FINISHED) {
+                        if (ot.getProperties().getInt("status") == DataID.TASK_STATUS_FINISHED) {
                             MMLog.log(TAG, "copy all finished.");
                             tTaskManager.deleteTask(ot);
                         }
                     }
                 });
-                tTask2.getProperties().putInt("copyMethod",1);
+                tTask2.getProperties().putInt("copyMethod", 1);
                 tTask2.start();
             }
         });
@@ -149,13 +146,13 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 String str = TPlatform.GetSystemProperty("navigation.layout.type");
-                MMLog.log(TAG,"t507GetSystemProperty = "+str);
+                MMLog.log(TAG, "t507GetSystemProperty = " + str);
                 DLNAUtil.setDLNADeviceListener(new DLNAContainer.DeviceChangeListener() {
                     @Override
                     public void onDeviceChange(org.cybergarage.upnp.Device device) {
-                      MMLog.log(TAG,device.getFriendlyName());
-                      if(device.getFriendlyName().contains("客厅电视"))
-                        ktdevice = device;
+                        MMLog.log(TAG, device.getFriendlyName());
+                        if (device.getFriendlyName().contains("客厅电视"))
+                            ktdevice = device;
                     }
                 });
                 DLNAUtil.startDLNAService(getApplicationContext());
@@ -163,8 +160,7 @@ public class MainActivity extends Activity {
         });
         button7.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, MainActivity2.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -172,15 +168,13 @@ public class MainActivity extends Activity {
         });
         button8.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, MainActivity3.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
     }
-
 
 
     public void requestAuthorization() {

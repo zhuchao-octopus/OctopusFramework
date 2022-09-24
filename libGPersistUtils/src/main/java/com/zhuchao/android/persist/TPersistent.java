@@ -24,32 +24,32 @@ public class TPersistent implements SharedPreferences, SharedPreferences.Editor 
 
     @Override
     public String getString(String s, String s1) {
-        return sharedPreferences.getString(s,s1);
+        return sharedPreferences.getString(s, s1);
     }
 
     @Override
     public Set<String> getStringSet(String s, Set<String> set) {
-        return sharedPreferences.getStringSet(s,set);
+        return sharedPreferences.getStringSet(s, set);
     }
 
     @Override
     public int getInt(String s, int i) {
-        return sharedPreferences.getInt(s,i);
+        return sharedPreferences.getInt(s, i);
     }
 
     @Override
     public long getLong(String s, long l) {
-        return sharedPreferences.getLong(s,l);
+        return sharedPreferences.getLong(s, l);
     }
 
     @Override
     public float getFloat(String s, float v) {
-        return sharedPreferences.getFloat(s,v);
+        return sharedPreferences.getFloat(s, v);
     }
 
     @Override
     public boolean getBoolean(String s, boolean b) {
-        return sharedPreferences.getBoolean(s,b);
+        return sharedPreferences.getBoolean(s, b);
     }
 
     @Override
@@ -74,32 +74,32 @@ public class TPersistent implements SharedPreferences, SharedPreferences.Editor 
 
     @Override
     public Editor putString(String s, String s1) {
-         return editor.putString(s,s1);
+        return editor.putString(s, s1);
     }
 
     @Override
     public Editor putStringSet(String s, Set<String> set) {
-        return editor.putStringSet(s,set);
+        return editor.putStringSet(s, set);
     }
 
     @Override
     public Editor putInt(String s, int i) {
-        return editor.putInt(s,i);
+        return editor.putInt(s, i);
     }
 
     @Override
     public Editor putLong(String s, long l) {
-        return editor.putLong(s,l);
+        return editor.putLong(s, l);
     }
 
     @Override
     public Editor putFloat(String s, float v) {
-        return editor.putFloat(s,v);
+        return editor.putFloat(s, v);
     }
 
     @Override
     public Editor putBoolean(String s, boolean b) {
-        return editor.putBoolean(s,b);
+        return editor.putBoolean(s, b);
     }
 
     @Override

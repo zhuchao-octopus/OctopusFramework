@@ -35,7 +35,7 @@ public class ObjectList {
     }
 
     public void delete(String key, Object Obj) {
-        FHashMap.remove(key,Obj);
+        FHashMap.remove(key, Obj);
     }
 
     public void clear() {
@@ -101,7 +101,17 @@ public class ObjectList {
         }
     }
 
-    public String getString(String key,String defaultValue) {
+    public String get(String key, String defaultValue) {
+        Object o = FHashMap.get(key);
+        if (o == null) return defaultValue;
+        try {
+            return (String) o;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    public String getString(String key, String defaultValue) {
         Object o = FHashMap.get(key);
         if (o == null) return defaultValue;
         try {

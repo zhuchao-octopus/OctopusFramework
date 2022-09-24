@@ -1,9 +1,5 @@
 package org.opencv.android;
 
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.List;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.ImageFormat;
@@ -23,11 +19,14 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.ViewGroup.LayoutParams;
 
-import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class is an implementation of the Bridge View between OpenCV and Java Camera.
@@ -101,11 +100,8 @@ public class JavaCamera2View extends CameraBridgeViewBase {
             }
             if (mCameraType == CameraBridgeViewBase.CAMERA_ID_ANY) {
                 mCameraID = camList[mCameraIndex];
-            }
-            else
-            {
-                for (String cameraID : camList)
-                {
+            } else {
+                for (String cameraID : camList) {
                     CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraID);
                     if ((mCameraType == CameraBridgeViewBase.CAMERA_ID_BACK &&
                             characteristics.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_BACK) ||
@@ -119,11 +115,9 @@ public class JavaCamera2View extends CameraBridgeViewBase {
             }
             ////////////////////////////////////////////////////////////////////////////////////////
             if (mCameraID != null) {
-                Log.i(LOGTAG, "Opening camera: mCameraID = " + mCameraID+",mCameraIndex = "+mCameraIndex);
+                Log.i(LOGTAG, "Opening camera: mCameraID = " + mCameraID + ",mCameraIndex = " + mCameraIndex);
                 manager.openCamera(mCameraID, mStateCallback, mBackgroundHandler);
-            }
-            else
-            { // make JavaCamera2View behaves in the same way as JavaCameraView
+            } else { // make JavaCamera2View behaves in the same way as JavaCameraView
                 Log.i(LOGTAG, "Trying to open camera with the value (" + mCameraType + ")");
                 if (mCameraType < camList.length) {
                     mCameraID = camList[mCameraType];

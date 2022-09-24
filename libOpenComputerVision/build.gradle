@@ -95,7 +95,7 @@ apply plugin: 'maven-publish'
 def openCVersionName = "4.5.5"
 def openCVersionCode = ((4 * 100 + 5) * 100 + 5) * 10 + 0
 
-println "OpenCV: " +openCVersionName + " " + project.buildscript.sourceFile
+println "OpenCV: " + openCVersionName + " " + project.buildscript.sourceFile
 
 ext {
     GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
@@ -125,11 +125,11 @@ afterEvaluate {
 
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 25
-        targetSdkVersion 32
+        targetSdkVersion 33
 
 
         externalNativeBuild {
@@ -167,26 +167,16 @@ android {
 
     externalNativeBuild {
         cmake {
-            path (project.projectDir.toString() + '/libcxx_helper/CMakeLists.txt')
+            path(project.projectDir.toString() + '/libcxx_helper/CMakeLists.txt')
+        }
+    }
+    packagingOptions {
+        resources {
+            pickFirsts += ['META-INF/native-image/android-x86_64/jnijavacpp/jni-config.json', 'META-INF/native-image/android-x86_64/jnijavacpp/reflect-config.json', 'META-INF/native-image/android-x86/jnijavacpp/jni-config.json', 'META-INF/native-image/android-x86/jnijavacpp/reflect-config.json', 'META-INF/native-image/android-arm64/jnijavacpp/jni-config.json', 'META-INF/native-image/android-arm64/jnijavacpp/reflect-config.json', 'META-INF/native-image/android-arm/jnijavacpp/jni-config.json', 'META-INF/native-image/android-arm/jnijavacpp/reflect-config.json', 'META-INF/native-image/ios-x86_64/jnijavacpp/reflect-config.json']
         }
     }
 
     //解决JavaCV中文件重复问题，远程依赖时一般无需添加，工程依赖时必须添加
-    packagingOptions {
-        pickFirst 'META-INF/native-image/android-x86_64/jnijavacpp/jni-config.json'
-        pickFirst 'META-INF/native-image/android-x86_64/jnijavacpp/reflect-config.json'
-
-        pickFirst 'META-INF/native-image/android-x86/jnijavacpp/jni-config.json'
-        pickFirst 'META-INF/native-image/android-x86/jnijavacpp/reflect-config.json'
-
-        pickFirst 'META-INF/native-image/android-arm64/jnijavacpp/jni-config.json'
-        pickFirst 'META-INF/native-image/android-arm64/jnijavacpp/reflect-config.json'
-
-        pickFirst 'META-INF/native-image/android-arm/jnijavacpp/jni-config.json'
-        pickFirst 'META-INF/native-image/android-arm/jnijavacpp/reflect-config.json'
-
-        pickFirst 'META-INF/native-image/ios-x86_64/jnijavacpp/reflect-config.json'
-    }
 }
 
 dependencies {

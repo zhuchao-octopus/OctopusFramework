@@ -3,30 +3,34 @@
 //
 package org.opencv.photo;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
-import org.opencv.photo.AlignExposures;
 import org.opencv.utils.Converters;
 
+import java.util.List;
+
 // C++: class AlignMTB
+
 /**
  * This algorithm converts images to median threshold bitmaps (1 for pixels brighter than median
  * luminance and 0 otherwise) and than aligns the resulting bitmaps using bit operations.
- *
+ * <p>
  * It is invariant to exposure, so exposure values and camera response are not necessary.
- *
+ * <p>
  * In this implementation new image regions are filled with zeros.
- *
+ * <p>
  * For more information see CITE: GW03 .
  */
 public class AlignMTB extends AlignExposures {
 
-    protected AlignMTB(long addr) { super(addr); }
+    protected AlignMTB(long addr) {
+        super(addr);
+    }
 
     // internal usage only
-    public static AlignMTB __fromPtr__(long addr) { return new AlignMTB(addr); }
+    public static AlignMTB __fromPtr__(long addr) {
+        return new AlignMTB(addr);
+    }
 
     //
     // C++:  void cv::AlignMTB::process(vector_Mat src, vector_Mat dst, Mat times, Mat response)
@@ -46,8 +50,8 @@ public class AlignMTB extends AlignExposures {
     /**
      * Short version of process, that doesn't take extra arguments.
      *
-     *     @param src vector of input images
-     *     @param dst vector of aligned images
+     * @param src vector of input images
+     * @param dst vector of aligned images
      */
     public void process(List<Mat> src, List<Mat> dst) {
         Mat src_mat = Converters.vector_Mat_to_Mat(src);
@@ -62,10 +66,10 @@ public class AlignMTB extends AlignExposures {
 
     /**
      * Calculates shift between two images, i. e. how to shift the second image to correspond it with the
-     *     first.
+     * first.
      *
-     *     @param img0 first image
-     *     @param img1 second image
+     * @param img0 first image
+     * @param img1 second image
      * @return automatically generated
      */
     public Point calculateShift(Mat img0, Mat img1) {
@@ -80,9 +84,9 @@ public class AlignMTB extends AlignExposures {
     /**
      * Helper function, that shift Mat filling new regions with zeros.
      *
-     *     @param src input image
-     *     @param dst result image
-     *     @param shift shift value
+     * @param src   input image
+     * @param dst   result image
+     * @param shift shift value
      */
     public void shiftMat(Mat src, Mat dst, Point shift) {
         shiftMat_0(nativeObj, src.nativeObj, dst.nativeObj, shift.x, shift.y);
@@ -96,9 +100,9 @@ public class AlignMTB extends AlignExposures {
     /**
      * Computes median threshold and exclude bitmaps of given image.
      *
-     *     @param img input image
-     *     @param tb median threshold bitmap
-     *     @param eb exclude bitmap
+     * @param img input image
+     * @param tb  median threshold bitmap
+     * @param eb  exclude bitmap
      */
     public void computeBitmaps(Mat img, Mat tb, Mat eb) {
         computeBitmaps_0(nativeObj, img.nativeObj, tb.nativeObj, eb.nativeObj);
@@ -163,7 +167,6 @@ public class AlignMTB extends AlignExposures {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
 
 
     // C++:  void cv::AlignMTB::process(vector_Mat src, vector_Mat dst, Mat times, Mat response)

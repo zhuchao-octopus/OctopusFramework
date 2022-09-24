@@ -13,35 +13,49 @@
 #include <opencv2/gapi/gmat.hpp>
 #include <opencv2/gapi/gkernel.hpp>
 
-namespace cv { namespace gapi {
-namespace nn {
-namespace parsers {
-    using GRects      = GArray<Rect>;
-    using GDetections = std::tuple<GArray<Rect>, GArray<int>>;
+namespace cv {
+    namespace gapi {
+        namespace nn {
+            namespace parsers {
+                using GRects = GArray<Rect>;
+                using GDetections = std::tuple <GArray<Rect>, GArray<int>>;
 
-    G_TYPED_KERNEL(GParseSSDBL, <GDetections(GMat, GOpaque<Size>, float, int)>,
-                   "org.opencv.nn.parsers.parseSSD_BL") {
-        static std::tuple<GArrayDesc,GArrayDesc> outMeta(const GMatDesc&, const GOpaqueDesc&, float, int) {
+                G_TYPED_KERNEL(GParseSSDBL,
+                <
+                GDetections(GMat, GOpaque<Size>,
+                float, int)>,
+                "org.opencv.nn.parsers.parseSSD_BL") {
+                static std::tuple <GArrayDesc, GArrayDesc>
+                outMeta(const GMatDesc &, const GOpaqueDesc &, float, int) {
+                    return std::make_tuple(empty_array_desc(), empty_array_desc());
+                }
+            };
+
+            G_TYPED_KERNEL(GParseSSD,
+            <
+            GRects(GMat, GOpaque<Size>,
+            float, bool, bool)>,
+            "org.opencv.nn.parsers.parseSSD") {
+            static GArrayDesc outMeta(const GMatDesc &, const GOpaqueDesc &, float, bool, bool) {
+                return empty_array_desc();
+            }
+        };
+
+        G_TYPED_KERNEL(GParseYolo,
+        <
+        GDetections(GMat, GOpaque<Size>,
+        float, float, std::vector<float>)>,
+        "org.opencv.nn.parsers.parseYolo") {
+        static std::tuple <GArrayDesc, GArrayDesc> outMeta(const GMatDesc &, const GOpaqueDesc &,
+                                                           float, float,
+                                                           const std::vector<float> &) {
             return std::make_tuple(empty_array_desc(), empty_array_desc());
         }
-    };
 
-    G_TYPED_KERNEL(GParseSSD, <GRects(GMat, GOpaque<Size>, float, bool, bool)>,
-                   "org.opencv.nn.parsers.parseSSD") {
-        static GArrayDesc outMeta(const GMatDesc&, const GOpaqueDesc&, float, bool, bool) {
-            return empty_array_desc();
-        }
-    };
-
-    G_TYPED_KERNEL(GParseYolo, <GDetections(GMat, GOpaque<Size>, float, float, std::vector<float>)>,
-                   "org.opencv.nn.parsers.parseYolo") {
-        static std::tuple<GArrayDesc, GArrayDesc> outMeta(const GMatDesc&, const GOpaqueDesc&,
-                                                          float, float, const std::vector<float>&) {
-            return std::make_tuple(empty_array_desc(), empty_array_desc());
-        }
-        static const std::vector<float>& defaultAnchors() {
-            static std::vector<float> anchors {
-                0.57273f, 0.677385f, 1.87446f, 2.06253f, 3.33843f, 5.47434f, 7.88282f, 3.52778f, 9.77052f, 9.16828f
+        static const std::vector<float> &defaultAnchors() {
+            static std::vector<float> anchors{
+                    0.57273f, 0.677385f, 1.87446f, 2.06253f, 3.33843f, 5.47434f, 7.88282f, 3.52778f,
+                    9.77052f, 9.16828f
             };
             return anchors;
         }
@@ -64,10 +78,12 @@ detection is smaller than confidence threshold, detection is rejected.
 given label will get to the output.
 @return a tuple with a vector of detected boxes and a vector of appropriate labels.
 */
-GAPI_EXPORTS_W std::tuple<GArray<Rect>, GArray<int>> parseSSD(const GMat& in,
-                                                              const GOpaque<Size>& inSz,
-                                                              const float confidenceThreshold = 0.5f,
-                                                              const int   filterLabel = -1);
+GAPI_EXPORTS_W std::tuple<GArray < Rect>, GArray<int>>
+
+parseSSD(const GMat &in,
+         const GOpaque <Size> &inSz,
+         const float confidenceThreshold = 0.5f,
+         const int filterLabel = -1);
 
 /** @brief Parses output of SSD network.
 
@@ -86,11 +102,13 @@ the larger side of the rectangle.
 @param filterOutOfBounds If provided true, out-of-frame boxes are filtered.
 @return a vector of detected bounding boxes.
 */
-GAPI_EXPORTS_W GArray<Rect> parseSSD(const GMat& in,
-                                     const GOpaque<Size>& inSz,
-                                     const float confidenceThreshold,
-                                     const bool alignmentToSquare,
-                                     const bool filterOutOfBounds);
+GAPI_EXPORTS_W GArray<Rect>
+
+parseSSD(const GMat &in,
+         const GOpaque <Size> &inSz,
+         const float confidenceThreshold,
+         const bool alignmentToSquare,
+         const bool filterOutOfBounds);
 
 /** @brief Parses output of Yolo network.
 
@@ -113,26 +131,28 @@ If 1.f, nms is not performed and no boxes are rejected.
 <a href="https://github.com/openvinotoolkit/open_model_zoo/blob/master/models/public/yolo-v2-tiny-tf/yolo-v2-tiny-tf.md">documentation</a>.
 @return a tuple with a vector of detected boxes and a vector of appropriate labels.
 */
-GAPI_EXPORTS_W std::tuple<GArray<Rect>, GArray<int>> parseYolo(const GMat& in,
-                                                               const GOpaque<Size>& inSz,
-                                                               const float confidenceThreshold = 0.5f,
-                                                               const float nmsThreshold = 0.5f,
-                                                               const std::vector<float>& anchors
-                                                                   = nn::parsers::GParseYolo::defaultAnchors());
+GAPI_EXPORTS_W std::tuple<GArray < Rect>, GArray<int>>
+
+parseYolo(const GMat &in,
+          const GOpaque <Size> &inSz,
+          const float confidenceThreshold = 0.5f,
+          const float nmsThreshold = 0.5f,
+          const std::vector<float> &anchors
+          = nn::parsers::GParseYolo::defaultAnchors());
 
 } // namespace gapi
 } // namespace cv
 
 // Reimport parseSSD & parseYolo under their initial namespace
 namespace cv {
-namespace gapi {
-namespace streaming {
+    namespace gapi {
+        namespace streaming {
 
-using cv::gapi::parseSSD;
-using cv::gapi::parseYolo;
+            using cv::gapi::parseSSD;
+            using cv::gapi::parseYolo;
 
-} // namespace streaming
-} // namespace gapi
+        } // namespace streaming
+    } // namespace gapi
 } // namespace cv
 
 #endif // OPENCV_GAPI_PARSERS_HPP

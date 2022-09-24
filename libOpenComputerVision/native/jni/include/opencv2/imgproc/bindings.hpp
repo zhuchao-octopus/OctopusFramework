@@ -16,18 +16,17 @@ namespace cv {
  *
  * @sa HoughLines
  */
-CV_WRAP static inline
-void HoughLinesWithAccumulator(
-        InputArray image, OutputArray lines,
-        double rho, double theta, int threshold,
-        double srn = 0, double stn = 0,
-        double min_theta = 0, double max_theta = CV_PI
-)
-{
-    std::vector<Vec3f> lines_acc;
-    HoughLines(image, lines_acc, rho, theta, threshold, srn, stn, min_theta, max_theta);
-    Mat(lines_acc).copyTo(lines);
-}
+    CV_WRAP static inline
+    void HoughLinesWithAccumulator(
+            InputArray image, OutputArray lines,
+            double rho, double theta, int threshold,
+            double srn = 0, double stn = 0,
+            double min_theta = 0, double max_theta = CV_PI
+    ) {
+        std::vector <Vec3f> lines_acc;
+        HoughLines(image, lines_acc, rho, theta, threshold, srn, stn, min_theta, max_theta);
+        Mat(lines_acc).copyTo(lines);
+    }
 
 }  // namespace
 

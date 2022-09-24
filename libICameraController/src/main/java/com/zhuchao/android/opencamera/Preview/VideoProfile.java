@@ -2,7 +2,6 @@ package com.zhuchao.android.opencamera.Preview;
 
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 

@@ -1,21 +1,9 @@
 package com.zhuchao.android.opencamera.Preview;
 
-import android.content.Context;
-import android.graphics.Canvas;
-import android.location.Location;
-import android.net.Uri;
 import android.util.Log;
-import android.util.Pair;
-import android.view.MotionEvent;
 
 import com.zhuchao.android.opencamera.MyDebug;
-import com.zhuchao.android.opencamera.RawImage;
 import com.zhuchao.android.opencamera.control.CameraController;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Provides communication between the Preview and the rest of the application

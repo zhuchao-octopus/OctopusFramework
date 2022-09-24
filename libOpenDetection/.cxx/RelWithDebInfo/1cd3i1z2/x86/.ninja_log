@@ -1,0 +1,25 @@
+# ninja log v5
+0	1312	677419336	CMakeFiles/detection_based_tracker.dir/DetectionBasedTracker_jni.cpp.o	8b6ce29097b67a5a
+1314	1790	677419337	F:/StudioProjects/OctopusFramework/libOpenDetection/build/intermediates/cxx/RelWithDebInfo/1cd3i1z2/obj/x86/libdetection_based_tracker.so	737fa79e548ea065
+0	6	0	clean	5257a025ec128d60
+11	1638	677424648	CMakeFiles/detection_based_tracker.dir/DetectionBasedTracker_jni.cpp.o	8b6ce29097b67a5a
+1638	2352	677424648	F:/StudioProjects/OctopusFramework/libOpenDetection/build/intermediates/cxx/RelWithDebInfo/1cd3i1z2/obj/x86/libdetection_based_tracker.so	737fa79e548ea065
+0	7	0	clean	5257a025ec128d60
+0	6	0	clean	5257a025ec128d60
+3	1627	677497544	CMakeFiles/detection_based_tracker.dir/DetectionBasedTracker_jni.cpp.o	8b6ce29097b67a5a
+1627	2698	677497545	F:/StudioProjects/OctopusFramework/libOpenDetection/build/intermediates/cxx/RelWithDebInfo/1cd3i1z2/obj/x86/libdetection_based_tracker.so	737fa79e548ea065
+0	6	0	clean	5257a025ec128d60
+1	29	0	clean	5257a025ec128d60
+1	9	0	clean	5257a025ec128d60
+0	7	0	clean	5257a025ec128d60
+0	9	0	clean	5257a025ec128d60
+3	1687	677584241	CMakeFiles/detection_based_tracker.dir/DetectionBasedTracker_jni.cpp.o	8b6ce29097b67a5a
+1687	2712	677584242	F:/StudioProjects/OctopusFramework/libOpenDetection/build/intermediates/cxx/RelWithDebInfo/1cd3i1z2/obj/x86/libdetection_based_tracker.so	737fa79e548ea065
+0	6	0	clean	5257a025ec128d60
+0	7	0	clean	5257a025ec128d60
+0	8	0	clean	5257a025ec128d60
+2	1529	677657632	CMakeFiles/detection_based_tracker.dir/DetectionBasedTracker_jni.cpp.o	8b6ce29097b67a5a
+1529	2249	677657632	F:/StudioProjects/OctopusFramework/libOpenDetection/build/intermediates/cxx/RelWithDebInfo/1cd3i1z2/obj/x86/libdetection_based_tracker.so	737fa79e548ea065
+0	6	0	clean	5257a025ec128d60
+0	6	0	clean	5257a025ec128d60
+0	6	0	clean	5257a025ec128d60

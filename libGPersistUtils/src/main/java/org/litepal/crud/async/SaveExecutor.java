@@ -29,8 +29,8 @@ public class SaveExecutor extends AsyncExecutor {
 
     /**
      * Register a callback listener and async task will start executing right away.
-     * @param callback
-     *          Callback for save records in background.
+     *
+     * @param callback Callback for save records in background.
      */
     public void listen(SaveCallback callback) {
         cb = callback;
@@ -38,7 +38,7 @@ public class SaveExecutor extends AsyncExecutor {
     }
 
     public SaveCallback getListener() {
-        return  cb;
+        return cb;
     }
 
 }

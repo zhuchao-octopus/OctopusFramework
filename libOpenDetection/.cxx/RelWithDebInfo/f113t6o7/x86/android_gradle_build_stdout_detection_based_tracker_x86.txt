@@ -1,0 +1,3 @@
+ninja: Entering directory `F:\StudioProjects\OctopusFramework\libOpenDetection\.cxx\RelWithDebInfo\f113t6o7\x86'
+[1/2] Building CXX object CMakeFiles/detection_based_tracker.dir/DetectionBasedTracker_jni.cpp.o
+[2/2] Linking CXX shared library F:\StudioProjects\OctopusFramework\libOpenDetection\build\intermediates\cxx\RelWithDebInfo\f113t6o7\obj\x86\libdetection_based_tracker.so

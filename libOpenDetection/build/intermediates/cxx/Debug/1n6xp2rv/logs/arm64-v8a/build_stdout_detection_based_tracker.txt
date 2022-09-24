@@ -1,0 +1,2 @@
+ninja: Entering directory `F:\StudioProjects\OctopusFramework\libOpenDetection\.cxx\Debug\1n6xp2rv\arm64-v8a'
+ninja: no work to do.

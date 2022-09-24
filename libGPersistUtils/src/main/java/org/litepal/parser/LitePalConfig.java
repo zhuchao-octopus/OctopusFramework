@@ -21,6 +21,7 @@ import java.util.List;
 
 /**
  * Model for litepal.xml configuration file.
+ *
  * @author guolin
  * @since 2016/11/10
  */
@@ -94,8 +95,7 @@ public class LitePalConfig {
     /**
      * Add a class name into the current mapping model list.
      *
-     * @param className
-     *            Full package class name.
+     * @param className Full package class name.
      */
     public void addClassName(String className) {
         getClassNames().add(className);

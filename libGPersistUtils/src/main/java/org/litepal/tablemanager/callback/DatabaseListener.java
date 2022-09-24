@@ -18,6 +18,7 @@ package org.litepal.tablemanager.callback;
 
 /**
  * Callback for listening database create and upgrade events.
+ *
  * @author Tony Green
  * @since 2.0
  */

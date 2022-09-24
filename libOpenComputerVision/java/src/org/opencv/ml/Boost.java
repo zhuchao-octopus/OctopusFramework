@@ -3,21 +3,23 @@
 //
 package org.opencv.ml;
 
-import org.opencv.ml.Boost;
-import org.opencv.ml.DTrees;
-
 // C++: class Boost
+
 /**
  * Boosted tree classifier derived from DTrees
- *
+ * <p>
  * SEE: REF: ml_intro_boost
  */
 public class Boost extends DTrees {
 
-    protected Boost(long addr) { super(addr); }
+    protected Boost(long addr) {
+        super(addr);
+    }
 
     // internal usage only
-    public static Boost __fromPtr__(long addr) { return new Boost(addr); }
+    public static Boost __fromPtr__(long addr) {
+        return new Boost(addr);
+    }
 
     // C++: enum Types (cv.ml.Boost.Types)
     public static final int
@@ -33,6 +35,7 @@ public class Boost extends DTrees {
 
     /**
      * SEE: setBoostType
+     *
      * @return automatically generated
      */
     public int getBoostType() {
@@ -45,7 +48,8 @@ public class Boost extends DTrees {
     //
 
     /**
-     *  getBoostType SEE: getBoostType
+     * getBoostType SEE: getBoostType
+     *
      * @param val automatically generated
      */
     public void setBoostType(int val) {
@@ -59,6 +63,7 @@ public class Boost extends DTrees {
 
     /**
      * SEE: setWeakCount
+     *
      * @return automatically generated
      */
     public int getWeakCount() {
@@ -71,7 +76,8 @@ public class Boost extends DTrees {
     //
 
     /**
-     *  getWeakCount SEE: getWeakCount
+     * getWeakCount SEE: getWeakCount
+     *
      * @param val automatically generated
      */
     public void setWeakCount(int val) {
@@ -85,6 +91,7 @@ public class Boost extends DTrees {
 
     /**
      * SEE: setWeightTrimRate
+     *
      * @return automatically generated
      */
     public double getWeightTrimRate() {
@@ -97,7 +104,8 @@ public class Boost extends DTrees {
     //
 
     /**
-     *  getWeightTrimRate SEE: getWeightTrimRate
+     * getWeightTrimRate SEE: getWeightTrimRate
+     *
      * @param val automatically generated
      */
     public void setWeightTrimRate(double val) {
@@ -112,6 +120,7 @@ public class Boost extends DTrees {
     /**
      * Creates the empty model.
      * Use StatModel::train to train the model, Algorithm::load&lt;Boost&gt;(filename) to load the pre-trained model.
+     *
      * @return automatically generated
      */
     public static Boost create() {
@@ -125,7 +134,7 @@ public class Boost extends DTrees {
 
     /**
      * Loads and creates a serialized Boost from a file
-     *
+     * <p>
      * Use Boost::save to serialize and store an RTree to disk.
      * Load the Boost from this file again, by calling this function with the path to the file.
      * Optionally specify the node for the file containing the classifier
@@ -140,7 +149,7 @@ public class Boost extends DTrees {
 
     /**
      * Loads and creates a serialized Boost from a file
-     *
+     * <p>
      * Use Boost::save to serialize and store an RTree to disk.
      * Load the Boost from this file again, by calling this function with the path to the file.
      * Optionally specify the node for the file containing the classifier
@@ -157,7 +166,6 @@ public class Boost extends DTrees {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
 
 
     // C++:  int cv::ml::Boost::getBoostType()
@@ -183,6 +191,7 @@ public class Boost extends DTrees {
 
     // C++: static Ptr_Boost cv::ml::Boost::load(String filepath, String nodeName = String())
     private static native long load_0(String filepath, String nodeName);
+
     private static native long load_1(String filepath);
 
     // native support for java finalize()

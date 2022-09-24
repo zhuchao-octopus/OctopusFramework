@@ -13,9 +13,9 @@
 #include <memory>
 
 namespace cv {
-namespace gapi {
-namespace wip {
-namespace gst {
+    namespace gapi {
+        namespace wip {
+            namespace gst {
 
 /**
  * @brief OpenCV's GStreamer streaming source.
@@ -47,42 +47,57 @@ namespace gst {
  * @note You need to build OpenCV with GStreamer support to use this class.
  */
 
-class GStreamerPipelineFacade;
+                class GStreamerPipelineFacade;
 
-class GAPI_EXPORTS GStreamerSource : public IStreamSource
-{
-public:
-    class Priv;
+                class GAPI_EXPORTS GStreamerSource
 
-    // Indicates what type of data should be produced by GStreamerSource: cv::MediaFrame or cv::Mat
-    enum class OutputType {
-        FRAME,
-        MAT
-    };
+                : public IStreamSource {
+                public:
 
-    GStreamerSource(const std::string& pipeline,
-                    const GStreamerSource::OutputType outputType =
-                        GStreamerSource::OutputType::MAT);
-    GStreamerSource(std::shared_ptr<GStreamerPipelineFacade> pipeline,
-                    const std::string& appsinkName,
-                    const GStreamerSource::OutputType outputType =
-                        GStreamerSource::OutputType::MAT);
+                class Priv;
 
-    bool pull(cv::gapi::wip::Data& data) override;
-    GMetaArg descr_of() const override;
-    ~GStreamerSource() override;
+                // Indicates what type of data should be produced by GStreamerSource: cv::MediaFrame or cv::Mat
+                enum class OutputType {
+                    FRAME,
+                    MAT
+                };
 
-protected:
-    explicit GStreamerSource(std::unique_ptr<Priv> priv);
+                GStreamerSource(const std::string &pipeline,
+                                const GStreamerSource::OutputType outputType =
+                                GStreamerSource::OutputType::MAT);
 
-    std::unique_ptr<Priv> m_priv;
-};
+                GStreamerSource(std::shared_ptr<GStreamerPipelineFacade>
+                pipeline,
+                const std::string &appsinkName,
+                const GStreamerSource::OutputType outputType =
+                        GStreamerSource::OutputType::MAT
+                );
 
-} // namespace gst
+                bool pull(cv::gapi::wip::Data &data)
 
-using GStreamerSource = gst::GStreamerSource;
+                override;
 
-} // namespace wip
+                GMetaArg descr_of() const
+
+                override;
+                ~
+
+                GStreamerSource()
+
+                override;
+
+                protected:
+                explicit GStreamerSource(std::unique_ptr<Priv>
+                priv);
+
+                std::unique_ptr <Priv> m_priv;
+            };
+
+        } // namespace gst
+
+        using GStreamerSource = gst::GStreamerSource;
+
+    } // namespace wip
 } // namespace gapi
 } // namespace cv
 

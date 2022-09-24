@@ -15,33 +15,33 @@
 #include <memory>
 
 namespace cv {
-namespace gapi {
-namespace wip {
-namespace gst {
+    namespace gapi {
+        namespace wip {
+            namespace gst {
 
-class GAPI_EXPORTS GStreamerPipeline
-{
-public:
-    class Priv;
+                class GAPI_EXPORTS GStreamerPipeline
+                        {
+                                public:
+                                class Priv;
 
-    explicit GStreamerPipeline(const std::string& pipeline);
-    IStreamSource::Ptr getStreamingSource(const std::string& appsinkName,
-                                          const GStreamerSource::OutputType outputType =
-                                              GStreamerSource::OutputType::MAT);
-    virtual ~GStreamerPipeline();
+                                explicit GStreamerPipeline(const std::string& pipeline);
+                                IStreamSource::Ptr getStreamingSource(const std::string& appsinkName,
+                                const GStreamerSource::OutputType outputType =
+                                GStreamerSource::OutputType::MAT);
+                                virtual ~GStreamerPipeline();
 
-protected:
-    explicit GStreamerPipeline(std::unique_ptr<Priv> priv);
+                                protected:
+                                explicit GStreamerPipeline(std::unique_ptr<Priv> priv);
 
-    std::unique_ptr<Priv> m_priv;
-};
+                                std::unique_ptr<Priv> m_priv;
+                        };
 
-} // namespace gst
+            } // namespace gst
 
-using GStreamerPipeline = gst::GStreamerPipeline;
+            using GStreamerPipeline = gst::GStreamerPipeline;
 
-} // namespace wip
-} // namespace gapi
+        } // namespace wip
+    } // namespace gapi
 } // namespace cv
 
 #endif // OPENCV_GAPI_STREAMING_GSTREAMER_GSTREAMERPIPELINE_HPP

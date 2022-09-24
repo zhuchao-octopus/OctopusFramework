@@ -1,7 +1,6 @@
 package com.zhuchao.android.session;
 
 import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
-
 import static java.lang.Thread.MAX_PRIORITY;
 
 import android.content.Context;
@@ -132,9 +131,7 @@ public class TTaskManager {
                 if (Result.startsWith("End")) {
                     tTask.getProperties().putString("fingerStatus", "fingerEnd");
                     LockSupport.unpark(tTask);
-                }
-                else
-                {
+                } else {
                     concurrentLinkedQueue.add(Result);
                 }
             }
@@ -182,8 +179,7 @@ public class TTaskManager {
                     String tf = tp + "/" + sbs;
                     tf = tf.replace("//", "/");
 
-                    if (!FileUtils.existFile(tf) && FileUtils.existFile(ff))
-                    {
+                    if (!FileUtils.existFile(tf) && FileUtils.existFile(ff)) {
                         //校验目录 中间存在目录 创建多级目录
                         String parentDir = FileUtils.getFilePathFromPathName(tf);
                         FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
@@ -195,9 +191,8 @@ public class TTaskManager {
                         if (copyMethod == 1) {
                             long tickCount = System.currentTimeMillis();
                             bRet = FileUtils.pathCopy(ff, tf);
-                            MMLog.log(TAG,"pathCopy take up time: "+(System.currentTimeMillis() - tickCount)+" / "+FileUtils.getFileSize(tf));
-                        }
-                        else if (copyMethod == 2)
+                            MMLog.log(TAG, "pathCopy take up time: " + (System.currentTimeMillis() - tickCount) + " / " + FileUtils.getFileSize(tf));
+                        } else if (copyMethod == 2)
                             bRet = FileUtils.bufferCopyFile(ff, tf);
                         else if (copyMethod == 3)
                             bRet = FileUtils.streamCopy(ff, tf);
@@ -205,7 +200,7 @@ public class TTaskManager {
                             long tickCount = System.currentTimeMillis();
                             //MMLog.log(TAG,"channelTransferTo take up time: "+ tickCount);
                             bRet = FileUtils.channelTransferTo(ff, tf);
-                            MMLog.log(TAG,"channelTransferTo take up time: "+(System.currentTimeMillis() - tickCount));
+                            MMLog.log(TAG, "channelTransferTo take up time: " + (System.currentTimeMillis() - tickCount));
                             //MMLog.log(TAG,"channelTransferTo take up time2: "+(System.currentTimeMillis() - tTask.getProperties().getLong("startTime")));
                         }
 
@@ -245,6 +240,7 @@ public class TTaskManager {
         });
         return tTask;
     }
+
     public TTask copyDirectory(String fromPath, String toPath, int tCount) {
         final int maxTaskCount = tTaskThreadPool.getCount() + tCount;
         TTask tTask = tTaskThreadPool.createTask(fromPath);
@@ -267,13 +263,10 @@ public class TTaskManager {
                 msg.obj = tTask;
                 taskMainLooperHandler.sendMessage(msg);
 
-                if (Result.startsWith("End"))
-                {
+                if (Result.startsWith("End")) {
                     tTask.getProperties().putString("fingerStatus", "fingerEnd");
                     LockSupport.unpark(tTask);
-                }
-                else
-                {
+                } else {
                     concurrentLinkedQueue.add(Result);
                 }
             }
@@ -431,6 +424,7 @@ public class TTaskManager {
         });
         return tTask;
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //timer

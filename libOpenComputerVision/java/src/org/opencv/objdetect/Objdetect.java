@@ -3,12 +3,9 @@
 //
 package org.opencv.objdetect;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfRect;
-import org.opencv.utils.Converters;
 
 // C++: class Objdetect
 
@@ -47,10 +44,9 @@ public class Objdetect {
     }
 
 
-
-
     // C++:  void cv::groupRectangles(vector_Rect& rectList, vector_int& weights, int groupThreshold, double eps = 0.2)
     private static native void groupRectangles_0(long rectList_mat_nativeObj, long weights_mat_nativeObj, int groupThreshold, double eps);
+
     private static native void groupRectangles_1(long rectList_mat_nativeObj, long weights_mat_nativeObj, int groupThreshold);
 
 }

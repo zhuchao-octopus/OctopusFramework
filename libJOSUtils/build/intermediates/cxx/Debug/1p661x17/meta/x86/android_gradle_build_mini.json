@@ -1,0 +1,27 @@
+{
+  "buildFiles": [
+    "F:\\StudioProjects\\OctopusFramework\\libJOSUtils\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "F:\\Android\\SDK\\cmake\\3.18.1\\bin\\ninja.exe",
+      "-C",
+      "F:\\StudioProjects\\OctopusFramework\\libJOSUtils\\.cxx\\Debug\\1p661x17\\x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "F:\\Android\\SDK\\cmake\\3.18.1\\bin\\ninja.exe",
+    "-C",
+    "F:\\StudioProjects\\OctopusFramework\\libJOSUtils\\.cxx\\Debug\\1p661x17\\x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "serial_port::@6890427a1f51a3e7e1df": {
+      "artifactName": "serial_port",
+      "abi": "x86",
+      "output": "F:\\StudioProjects\\OctopusFramework\\libJOSUtils\\build\\intermediates\\cxx\\Debug\\1p661x17\\obj\\x86\\libserial_port.so",
+      "runtimeFiles": []
+    }
+  }
+}

@@ -36,8 +36,8 @@ public class CipherUtil {
 
     /**
      * Encrypt the plain text with AES algorithm.
-     * @param plainText
-     *          The plain text.
+     *
+     * @param plainText The plain text.
      * @return The Encrypt content.
      */
     public static String aesEncrypt(String plainText) {
@@ -54,8 +54,8 @@ public class CipherUtil {
 
     /**
      * Decrypt the encrypted text with AES algorithm.
-     * @param encryptedText
-     *          The encrypted text.
+     *
+     * @param encryptedText The encrypted text.
      * @return The plain content.
      */
     public static String aesDecrypt(String encryptedText) {
@@ -72,8 +72,8 @@ public class CipherUtil {
 
     /**
      * Encrypt the plain text with MD5 algorithm.
-     * @param plainText
-     *          The plain text.
+     *
+     * @param plainText The plain text.
      * @return The Encrypt content.
      */
     public static String md5Encrypt(String plainText) {

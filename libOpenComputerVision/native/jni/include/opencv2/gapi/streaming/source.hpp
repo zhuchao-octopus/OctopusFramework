@@ -14,9 +14,9 @@
 
 
 namespace cv {
-namespace gapi {
-namespace wip {
-    struct Data; // "forward-declaration" of GRunArg
+    namespace gapi {
+        namespace wip {
+            struct Data; // "forward-declaration" of GRunArg
 
 /**
  * @brief Abstract streaming pipeline source.
@@ -36,27 +36,29 @@ namespace wip {
  *  please use ptr() when passing a IStreamSource implementation to
  *  cv::gin().
  */
-class IStreamSource: public std::enable_shared_from_this<IStreamSource>
-{
-public:
-    using Ptr = std::shared_ptr<IStreamSource>;
-    Ptr ptr() { return shared_from_this(); }
-    virtual bool pull(Data &data) = 0;
-    virtual GMetaArg descr_of() const = 0;
-    virtual ~IStreamSource() = default;
-};
+            class IStreamSource : public std::enable_shared_from_this<IStreamSource> {
+            public:
+                using Ptr = std::shared_ptr<IStreamSource>;
 
-template<class T, class... Args>
-IStreamSource::Ptr inline make_src(Args&&... args)
-{
-    static_assert(std::is_base_of<IStreamSource, T>::value,
-                  "T must implement the cv::gapi::IStreamSource interface!");
-    auto src_ptr = std::make_shared<T>(std::forward<Args>(args)...);
-    return src_ptr->ptr();
-}
+                Ptr ptr() { return shared_from_this(); }
 
-} // namespace wip
-} // namespace gapi
+                virtual bool pull(Data &data) = 0;
+
+                virtual GMetaArg descr_of() const = 0;
+
+                virtual ~IStreamSource() = default;
+            };
+
+            template<class T, class... Args>
+            IStreamSource::Ptr inline make_src(Args &&... args) {
+                static_assert(std::is_base_of<IStreamSource, T>::value,
+                              "T must implement the cv::gapi::IStreamSource interface!");
+                auto src_ptr = std::make_shared<T>(std::forward<Args>(args)...);
+                return src_ptr->ptr();
+            }
+
+        } // namespace wip
+    } // namespace gapi
 } // namespace cv
 
 #endif // OPENCV_GAPI_STREAMING_SOURCE_HPP

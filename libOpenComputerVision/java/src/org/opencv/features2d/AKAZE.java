@@ -3,13 +3,11 @@
 //
 package org.opencv.features2d;
 
-import org.opencv.features2d.AKAZE;
-import org.opencv.features2d.Feature2D;
-
 // C++: class AKAZE
+
 /**
  * Class implementing the AKAZE keypoint detector and descriptor extractor, described in CITE: ANB13.
- *
+ * <p>
  * AKAZE descriptors can only be used with KAZE or AKAZE keypoints. This class is thread-safe.
  *
  * <b>Note:</b> When you need descriptors use Feature2D::detectAndCompute, which
@@ -25,10 +23,14 @@ import org.opencv.features2d.Feature2D;
  */
 public class AKAZE extends Feature2D {
 
-    protected AKAZE(long addr) { super(addr); }
+    protected AKAZE(long addr) {
+        super(addr);
+    }
 
     // internal usage only
-    public static AKAZE __fromPtr__(long addr) { return new AKAZE(addr); }
+    public static AKAZE __fromPtr__(long addr) {
+        return new AKAZE(addr);
+    }
 
     // C++: enum DescriptorType (cv.AKAZE.DescriptorType)
     public static final int
@@ -45,15 +47,15 @@ public class AKAZE extends Feature2D {
     /**
      * The AKAZE constructor
      *
-     *     @param descriptor_type Type of the extracted descriptor: DESCRIPTOR_KAZE,
-     *     DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
-     *     @param descriptor_size Size of the descriptor in bits. 0 -&gt; Full size
-     *     @param descriptor_channels Number of channels in the descriptor (1, 2, 3)
-     *     @param threshold Detector response threshold to accept point
-     *     @param nOctaves Maximum octave evolution of the image
-     *     @param nOctaveLayers Default number of sublevels per scale level
-     *     @param diffusivity Diffusivity type. DIFF_PM_G1, DIFF_PM_G2, DIFF_WEICKERT or
-     *     DIFF_CHARBONNIER
+     * @param descriptor_type     Type of the extracted descriptor: DESCRIPTOR_KAZE,
+     *                            DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
+     * @param descriptor_size     Size of the descriptor in bits. 0 -&gt; Full size
+     * @param descriptor_channels Number of channels in the descriptor (1, 2, 3)
+     * @param threshold           Detector response threshold to accept point
+     * @param nOctaves            Maximum octave evolution of the image
+     * @param nOctaveLayers       Default number of sublevels per scale level
+     * @param diffusivity         Diffusivity type. DIFF_PM_G1, DIFF_PM_G2, DIFF_WEICKERT or
+     *                            DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static AKAZE create(int descriptor_type, int descriptor_size, int descriptor_channels, float threshold, int nOctaves, int nOctaveLayers, int diffusivity) {
@@ -63,14 +65,14 @@ public class AKAZE extends Feature2D {
     /**
      * The AKAZE constructor
      *
-     *     @param descriptor_type Type of the extracted descriptor: DESCRIPTOR_KAZE,
-     *     DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
-     *     @param descriptor_size Size of the descriptor in bits. 0 -&gt; Full size
-     *     @param descriptor_channels Number of channels in the descriptor (1, 2, 3)
-     *     @param threshold Detector response threshold to accept point
-     *     @param nOctaves Maximum octave evolution of the image
-     *     @param nOctaveLayers Default number of sublevels per scale level
-     *     DIFF_CHARBONNIER
+     * @param descriptor_type     Type of the extracted descriptor: DESCRIPTOR_KAZE,
+     *                            DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
+     * @param descriptor_size     Size of the descriptor in bits. 0 -&gt; Full size
+     * @param descriptor_channels Number of channels in the descriptor (1, 2, 3)
+     * @param threshold           Detector response threshold to accept point
+     * @param nOctaves            Maximum octave evolution of the image
+     * @param nOctaveLayers       Default number of sublevels per scale level
+     *                            DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static AKAZE create(int descriptor_type, int descriptor_size, int descriptor_channels, float threshold, int nOctaves, int nOctaveLayers) {
@@ -80,13 +82,13 @@ public class AKAZE extends Feature2D {
     /**
      * The AKAZE constructor
      *
-     *     @param descriptor_type Type of the extracted descriptor: DESCRIPTOR_KAZE,
-     *     DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
-     *     @param descriptor_size Size of the descriptor in bits. 0 -&gt; Full size
-     *     @param descriptor_channels Number of channels in the descriptor (1, 2, 3)
-     *     @param threshold Detector response threshold to accept point
-     *     @param nOctaves Maximum octave evolution of the image
-     *     DIFF_CHARBONNIER
+     * @param descriptor_type     Type of the extracted descriptor: DESCRIPTOR_KAZE,
+     *                            DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
+     * @param descriptor_size     Size of the descriptor in bits. 0 -&gt; Full size
+     * @param descriptor_channels Number of channels in the descriptor (1, 2, 3)
+     * @param threshold           Detector response threshold to accept point
+     * @param nOctaves            Maximum octave evolution of the image
+     *                            DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static AKAZE create(int descriptor_type, int descriptor_size, int descriptor_channels, float threshold, int nOctaves) {
@@ -96,12 +98,12 @@ public class AKAZE extends Feature2D {
     /**
      * The AKAZE constructor
      *
-     *     @param descriptor_type Type of the extracted descriptor: DESCRIPTOR_KAZE,
-     *     DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
-     *     @param descriptor_size Size of the descriptor in bits. 0 -&gt; Full size
-     *     @param descriptor_channels Number of channels in the descriptor (1, 2, 3)
-     *     @param threshold Detector response threshold to accept point
-     *     DIFF_CHARBONNIER
+     * @param descriptor_type     Type of the extracted descriptor: DESCRIPTOR_KAZE,
+     *                            DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
+     * @param descriptor_size     Size of the descriptor in bits. 0 -&gt; Full size
+     * @param descriptor_channels Number of channels in the descriptor (1, 2, 3)
+     * @param threshold           Detector response threshold to accept point
+     *                            DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static AKAZE create(int descriptor_type, int descriptor_size, int descriptor_channels, float threshold) {
@@ -111,11 +113,11 @@ public class AKAZE extends Feature2D {
     /**
      * The AKAZE constructor
      *
-     *     @param descriptor_type Type of the extracted descriptor: DESCRIPTOR_KAZE,
-     *     DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
-     *     @param descriptor_size Size of the descriptor in bits. 0 -&gt; Full size
-     *     @param descriptor_channels Number of channels in the descriptor (1, 2, 3)
-     *     DIFF_CHARBONNIER
+     * @param descriptor_type     Type of the extracted descriptor: DESCRIPTOR_KAZE,
+     *                            DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
+     * @param descriptor_size     Size of the descriptor in bits. 0 -&gt; Full size
+     * @param descriptor_channels Number of channels in the descriptor (1, 2, 3)
+     *                            DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static AKAZE create(int descriptor_type, int descriptor_size, int descriptor_channels) {
@@ -125,10 +127,10 @@ public class AKAZE extends Feature2D {
     /**
      * The AKAZE constructor
      *
-     *     @param descriptor_type Type of the extracted descriptor: DESCRIPTOR_KAZE,
-     *     DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
-     *     @param descriptor_size Size of the descriptor in bits. 0 -&gt; Full size
-     *     DIFF_CHARBONNIER
+     * @param descriptor_type Type of the extracted descriptor: DESCRIPTOR_KAZE,
+     *                        DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
+     * @param descriptor_size Size of the descriptor in bits. 0 -&gt; Full size
+     *                        DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static AKAZE create(int descriptor_type, int descriptor_size) {
@@ -138,9 +140,9 @@ public class AKAZE extends Feature2D {
     /**
      * The AKAZE constructor
      *
-     *     @param descriptor_type Type of the extracted descriptor: DESCRIPTOR_KAZE,
-     *     DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
-     *     DIFF_CHARBONNIER
+     * @param descriptor_type Type of the extracted descriptor: DESCRIPTOR_KAZE,
+     *                        DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
+     *                        DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static AKAZE create(int descriptor_type) {
@@ -149,9 +151,10 @@ public class AKAZE extends Feature2D {
 
     /**
      * The AKAZE constructor
+     * <p>
+     * DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
+     * DIFF_CHARBONNIER
      *
-     *     DESCRIPTOR_KAZE_UPRIGHT, DESCRIPTOR_MLDB or DESCRIPTOR_MLDB_UPRIGHT.
-     *     DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static AKAZE create() {
@@ -300,15 +303,21 @@ public class AKAZE extends Feature2D {
     }
 
 
-
     // C++: static Ptr_AKAZE cv::AKAZE::create(AKAZE_DescriptorType descriptor_type = AKAZE::DESCRIPTOR_MLDB, int descriptor_size = 0, int descriptor_channels = 3, float threshold = 0.001f, int nOctaves = 4, int nOctaveLayers = 4, KAZE_DiffusivityType diffusivity = KAZE::DIFF_PM_G2)
     private static native long create_0(int descriptor_type, int descriptor_size, int descriptor_channels, float threshold, int nOctaves, int nOctaveLayers, int diffusivity);
+
     private static native long create_1(int descriptor_type, int descriptor_size, int descriptor_channels, float threshold, int nOctaves, int nOctaveLayers);
+
     private static native long create_2(int descriptor_type, int descriptor_size, int descriptor_channels, float threshold, int nOctaves);
+
     private static native long create_3(int descriptor_type, int descriptor_size, int descriptor_channels, float threshold);
+
     private static native long create_4(int descriptor_type, int descriptor_size, int descriptor_channels);
+
     private static native long create_5(int descriptor_type, int descriptor_size);
+
     private static native long create_6(int descriptor_type);
+
     private static native long create_7();
 
     // C++:  void cv::AKAZE::setDescriptorType(AKAZE_DescriptorType dtype)

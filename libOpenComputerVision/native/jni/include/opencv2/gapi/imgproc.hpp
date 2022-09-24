@@ -27,473 +27,670 @@
  */
 
 namespace {
-void validateFindingContoursMeta(const int depth, const int chan, const int mode)
-{
-    GAPI_Assert(chan == 1);
-    switch (mode)
-    {
-    case cv::RETR_CCOMP:
-        GAPI_Assert(depth == CV_8U || depth == CV_32S);
-        break;
-    case cv::RETR_FLOODFILL:
-        GAPI_Assert(depth == CV_32S);
-        break;
-    default:
-        GAPI_Assert(depth == CV_8U);
-        break;
+    void validateFindingContoursMeta(const int depth, const int chan, const int mode) {
+        GAPI_Assert(chan == 1);
+        switch (mode) {
+            case cv::RETR_CCOMP:
+                GAPI_Assert(depth == CV_8U || depth == CV_32S);
+                break;
+            case cv::RETR_FLOODFILL:
+                GAPI_Assert(depth == CV_32S);
+                break;
+            default:
+                GAPI_Assert(depth == CV_8U);
+                break;
+        }
     }
-}
 } // anonymous namespace
 
-namespace cv { namespace gapi {
+namespace cv {
+    namespace gapi {
 
 /**
  * @brief This namespace contains G-API Operation Types for OpenCV
  * ImgProc module functionality.
  */
-namespace imgproc {
-    using GMat2 = std::tuple<GMat,GMat>;
-    using GMat3 = std::tuple<GMat,GMat,GMat>; // FIXME: how to avoid this?
-    using GFindContoursOutput = std::tuple<GArray<GArray<Point>>,GArray<Vec4i>>;
+        namespace imgproc {
+            using GMat2 = std::tuple<GMat, GMat>;
+            using GMat3 = std::tuple<GMat, GMat, GMat>; // FIXME: how to avoid this?
+            using GFindContoursOutput = std::tuple <GArray<GArray < Point>>,GArray <Vec4i>>;
 
-    G_TYPED_KERNEL(GFilter2D, <GMat(GMat,int,Mat,Point,Scalar,int,Scalar)>,"org.opencv.imgproc.filters.filter2D") {
-        static GMatDesc outMeta(GMatDesc in, int ddepth, Mat, Point, Scalar, int, Scalar) {
-            return in.withDepth(ddepth);
-        }
-    };
+            G_TYPED_KERNEL(GFilter2D,
+            <
+            GMat(GMat,
+            int,Mat,Point,Scalar,int,Scalar)>,"org.opencv.imgproc.filters.filter2D") {
+            static GMatDesc outMeta(GMatDesc in, int ddepth, Mat, Point, Scalar, int, Scalar) {
+                return in.withDepth(ddepth);
+            }
+        };
 
-    G_TYPED_KERNEL(GSepFilter, <GMat(GMat,int,Mat,Mat,Point,Scalar,int,Scalar)>, "org.opencv.imgproc.filters.sepfilter") {
+        G_TYPED_KERNEL(GSepFilter,
+        <
+        GMat(GMat,
+        int,Mat,Mat,Point,Scalar,int,Scalar)>, "org.opencv.imgproc.filters.sepfilter") {
         static GMatDesc outMeta(GMatDesc in, int ddepth, Mat, Mat, Point, Scalar, int, Scalar) {
             return in.withDepth(ddepth);
         }
     };
 
-    G_TYPED_KERNEL(GBoxFilter, <GMat(GMat,int,Size,Point,bool,int,Scalar)>, "org.opencv.imgproc.filters.boxfilter") {
-        static GMatDesc outMeta(GMatDesc in, int ddepth, Size, Point, bool, int, Scalar) {
-            return in.withDepth(ddepth);
-        }
-    };
+    G_TYPED_KERNEL(GBoxFilter,
+    <
+    GMat(GMat,
+    int,Size,Point,bool,int,Scalar)>, "org.opencv.imgproc.filters.boxfilter") {
+    static GMatDesc outMeta(GMatDesc in, int ddepth, Size, Point, bool, int, Scalar) {
+        return in.withDepth(ddepth);
+    }
+};
 
-    G_TYPED_KERNEL(GBlur, <GMat(GMat,Size,Point,int,Scalar)>,         "org.opencv.imgproc.filters.blur"){
-        static GMatDesc outMeta(GMatDesc in, Size, Point, int, Scalar) {
-            return in;
-        }
-    };
+G_TYPED_KERNEL(GBlur,
+<
+GMat(GMat, Size, Point,
+int,Scalar)>,         "org.opencv.imgproc.filters.blur"){
+static GMatDesc outMeta(GMatDesc in, Size, Point, int, Scalar) {
+    return in;
+}
 
-    G_TYPED_KERNEL(GGaussBlur, <GMat(GMat,Size,double,double,int,Scalar)>, "org.opencv.imgproc.filters.gaussianBlur") {
-        static GMatDesc outMeta(GMatDesc in, Size, double, double, int, Scalar) {
-            return in;
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GMedianBlur, <GMat(GMat,int)>, "org.opencv.imgproc.filters.medianBlur") {
-        static GMatDesc outMeta(GMatDesc in, int) {
-            return in;
-        }
-    };
+G_TYPED_KERNEL(GGaussBlur,
+<
+GMat(GMat, Size,
+double,double,int,Scalar)>, "org.opencv.imgproc.filters.gaussianBlur") {
+static GMatDesc outMeta(GMatDesc in, Size, double, double, int, Scalar) {
+    return in;
+}
 
-    G_TYPED_KERNEL(GErode, <GMat(GMat,Mat,Point,int,int,Scalar)>, "org.opencv.imgproc.filters.erode") {
-        static GMatDesc outMeta(GMatDesc in, Mat, Point, int, int, Scalar) {
-            return in;
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GDilate, <GMat(GMat,Mat,Point,int,int,Scalar)>, "org.opencv.imgproc.filters.dilate") {
-        static GMatDesc outMeta(GMatDesc in, Mat, Point, int, int, Scalar) {
-            return in;
-        }
-    };
+G_TYPED_KERNEL(GMedianBlur,
+<
+GMat(GMat,
+int)>, "org.opencv.imgproc.filters.medianBlur") {
+static GMatDesc outMeta(GMatDesc in, int) {
+    return in;
+}
 
-    G_TYPED_KERNEL(GMorphologyEx, <GMat(GMat,MorphTypes,Mat,Point,int,BorderTypes,Scalar)>,
-                   "org.opencv.imgproc.filters.morphologyEx") {
-        static GMatDesc outMeta(const GMatDesc &in, MorphTypes, Mat, Point, int,
-                                BorderTypes, Scalar) {
-            return in;
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GSobel, <GMat(GMat,int,int,int,int,double,double,int,Scalar)>, "org.opencv.imgproc.filters.sobel") {
-        static GMatDesc outMeta(GMatDesc in, int ddepth, int, int, int, double, double, int, Scalar) {
-            return in.withDepth(ddepth);
-        }
-    };
+G_TYPED_KERNEL(GErode,
+<
+GMat(GMat, Mat, Point,
+int,int,Scalar)>, "org.opencv.imgproc.filters.erode") {
+static GMatDesc outMeta(GMatDesc in, Mat, Point, int, int, Scalar) {
+    return in;
+}
 
-    G_TYPED_KERNEL_M(GSobelXY, <GMat2(GMat,int,int,int,double,double,int,Scalar)>, "org.opencv.imgproc.filters.sobelxy") {
-        static std::tuple<GMatDesc, GMatDesc> outMeta(GMatDesc in, int ddepth, int, int, double, double, int, Scalar) {
-            return std::make_tuple(in.withDepth(ddepth), in.withDepth(ddepth));
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GLaplacian, <GMat(GMat,int, int, double, double, int)>,
-                   "org.opencv.imgproc.filters.laplacian") {
-        static GMatDesc outMeta(GMatDesc in, int ddepth, int, double, double, int) {
-            return in.withDepth(ddepth);
-        }
-    };
+G_TYPED_KERNEL(GDilate,
+<
+GMat(GMat, Mat, Point,
+int,int,Scalar)>, "org.opencv.imgproc.filters.dilate") {
+static GMatDesc outMeta(GMatDesc in, Mat, Point, int, int, Scalar) {
+    return in;
+}
 
-    G_TYPED_KERNEL(GBilateralFilter, <GMat(GMat,int, double, double, int)>,
-                   "org.opencv.imgproc.filters.bilateralfilter") {
-        static GMatDesc outMeta(GMatDesc in, int, double, double, int) {
-            return in;
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GEqHist, <GMat(GMat)>, "org.opencv.imgproc.equalizeHist"){
-        static GMatDesc outMeta(GMatDesc in) {
-            return in.withType(CV_8U, 1);
-        }
-    };
+G_TYPED_KERNEL(GMorphologyEx,
+<
+GMat(GMat, MorphTypes, Mat, Point,
+int,BorderTypes,Scalar)>,
+"org.opencv.imgproc.filters.morphologyEx") {
+static GMatDesc outMeta(const GMatDesc &in, MorphTypes, Mat, Point, int,
+                        BorderTypes, Scalar) {
+    return in;
+}
 
-    G_TYPED_KERNEL(GCanny, <GMat(GMat,double,double,int,bool)>, "org.opencv.imgproc.feature.canny"){
-        static GMatDesc outMeta(GMatDesc in, double, double, int, bool) {
-            return in.withType(CV_8U, 1);
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GGoodFeatures,
-                   <cv::GArray<cv::Point2f>(GMat,int,double,double,Mat,int,bool,double)>,
-                   "org.opencv.imgproc.feature.goodFeaturesToTrack") {
-        static GArrayDesc outMeta(GMatDesc, int, double, double, const Mat&, int, bool, double) {
-            return empty_array_desc();
-        }
-    };
+G_TYPED_KERNEL(GSobel,
+<
+GMat(GMat,
+int,int,int,int,double,double,int,Scalar)>, "org.opencv.imgproc.filters.sobel") {
+static GMatDesc outMeta(GMatDesc in, int ddepth, int, int, int, double, double, int, Scalar) {
+    return in.withDepth(ddepth);
+}
 
-    using RetrMode = RetrievalModes;
-    using ContMethod = ContourApproximationModes;
-    G_TYPED_KERNEL(GFindContours, <GArray<GArray<Point>>(GMat,RetrMode,ContMethod,GOpaque<Point>)>,
-                   "org.opencv.imgproc.shape.findContours")
-    {
-        static GArrayDesc outMeta(GMatDesc in, RetrMode mode, ContMethod, GOpaqueDesc)
-        {
-            validateFindingContoursMeta(in.depth, in.chan, mode);
-            return empty_array_desc();
-        }
-    };
+};
 
-    // FIXME oc: make default value offset = Point()
-    G_TYPED_KERNEL(GFindContoursNoOffset, <GArray<GArray<Point>>(GMat,RetrMode,ContMethod)>,
-                   "org.opencv.imgproc.shape.findContoursNoOffset")
-    {
-        static GArrayDesc outMeta(GMatDesc in, RetrMode mode, ContMethod)
-        {
-            validateFindingContoursMeta(in.depth, in.chan, mode);
-            return empty_array_desc();
-        }
-    };
+G_TYPED_KERNEL_M(GSobelXY,
+<
+GMat2(GMat,
+int,int,int,double,double,int,Scalar)>, "org.opencv.imgproc.filters.sobelxy") {
+static std::tuple <GMatDesc, GMatDesc>
+outMeta(GMatDesc in, int ddepth, int, int, double, double, int, Scalar) {
+    return std::make_tuple(in.withDepth(ddepth), in.withDepth(ddepth));
+}
 
-    G_TYPED_KERNEL(GFindContoursH,<GFindContoursOutput(GMat,RetrMode,ContMethod,GOpaque<Point>)>,
-                   "org.opencv.imgproc.shape.findContoursH")
-    {
-        static std::tuple<GArrayDesc,GArrayDesc>
-        outMeta(GMatDesc in, RetrMode mode, ContMethod, GOpaqueDesc)
-        {
-            validateFindingContoursMeta(in.depth, in.chan, mode);
-            return std::make_tuple(empty_array_desc(), empty_array_desc());
-        }
-    };
+};
 
-    // FIXME oc: make default value offset = Point()
-    G_TYPED_KERNEL(GFindContoursHNoOffset,<GFindContoursOutput(GMat,RetrMode,ContMethod)>,
-                   "org.opencv.imgproc.shape.findContoursHNoOffset")
-    {
-        static std::tuple<GArrayDesc,GArrayDesc>
-        outMeta(GMatDesc in, RetrMode mode, ContMethod)
-        {
-            validateFindingContoursMeta(in.depth, in.chan, mode);
-            return std::make_tuple(empty_array_desc(), empty_array_desc());
-        }
-    };
+G_TYPED_KERNEL(GLaplacian,
+<
+GMat(GMat,
+int, int, double, double, int)>,
+"org.opencv.imgproc.filters.laplacian") {
+static GMatDesc outMeta(GMatDesc in, int ddepth, int, double, double, int) {
+    return in.withDepth(ddepth);
+}
 
-    G_TYPED_KERNEL(GBoundingRectMat, <GOpaque<Rect>(GMat)>,
-                   "org.opencv.imgproc.shape.boundingRectMat") {
-        static GOpaqueDesc outMeta(GMatDesc in) {
-            if (in.depth == CV_8U)
-            {
-                GAPI_Assert(in.chan == 1);
-            }
-            else
-            {
-                GAPI_Assert (in.depth == CV_32S || in.depth == CV_32F);
-                int amount = detail::checkVector(in, 2u);
-                GAPI_Assert(amount != -1 &&
-                            "Input Mat can't be described as vector of 2-dimentional points");
-            }
-            return empty_gopaque_desc();
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GBoundingRectVector32S, <GOpaque<Rect>(GArray<Point2i>)>,
-                   "org.opencv.imgproc.shape.boundingRectVector32S") {
-        static GOpaqueDesc outMeta(GArrayDesc) {
-            return empty_gopaque_desc();
-        }
-    };
+G_TYPED_KERNEL(GBilateralFilter,
+<
+GMat(GMat,
+int, double, double, int)>,
+"org.opencv.imgproc.filters.bilateralfilter") {
+static GMatDesc outMeta(GMatDesc in, int, double, double, int) {
+    return in;
+}
 
-    G_TYPED_KERNEL(GBoundingRectVector32F, <GOpaque<Rect>(GArray<Point2f>)>,
-                   "org.opencv.imgproc.shape.boundingRectVector32F") {
-        static GOpaqueDesc outMeta(GArrayDesc) {
-            return empty_gopaque_desc();
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GFitLine2DMat, <GOpaque<Vec4f>(GMat,DistanceTypes,double,double,double)>,
-                   "org.opencv.imgproc.shape.fitLine2DMat") {
-        static GOpaqueDesc outMeta(GMatDesc in,DistanceTypes,double,double,double) {
-            int amount = detail::checkVector(in, 2u);
-            GAPI_Assert(amount != -1 &&
-                        "Input Mat can't be described as vector of 2-dimentional points");
-            return empty_gopaque_desc();
-        }
-    };
+G_TYPED_KERNEL(GEqHist,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.equalizeHist"){
+static GMatDesc outMeta(GMatDesc in) {
+    return in.withType(CV_8U, 1);
+}
 
-    G_TYPED_KERNEL(GFitLine2DVector32S,
-                   <GOpaque<Vec4f>(GArray<Point2i>,DistanceTypes,double,double,double)>,
-                   "org.opencv.imgproc.shape.fitLine2DVector32S") {
-        static GOpaqueDesc outMeta(GArrayDesc,DistanceTypes,double,double,double) {
-            return empty_gopaque_desc();
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GFitLine2DVector32F,
-                   <GOpaque<Vec4f>(GArray<Point2f>,DistanceTypes,double,double,double)>,
-                   "org.opencv.imgproc.shape.fitLine2DVector32F") {
-        static GOpaqueDesc outMeta(GArrayDesc,DistanceTypes,double,double,double) {
-            return empty_gopaque_desc();
-        }
-    };
+G_TYPED_KERNEL(GCanny,
+<
+GMat(GMat,
+double,double,int,bool)>, "org.opencv.imgproc.feature.canny"){
+static GMatDesc outMeta(GMatDesc in, double, double, int, bool) {
+    return in.withType(CV_8U, 1);
+}
 
-    G_TYPED_KERNEL(GFitLine2DVector64F,
-                   <GOpaque<Vec4f>(GArray<Point2d>,DistanceTypes,double,double,double)>,
-                   "org.opencv.imgproc.shape.fitLine2DVector64F") {
-        static GOpaqueDesc outMeta(GArrayDesc,DistanceTypes,double,double,double) {
-            return empty_gopaque_desc();
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GFitLine3DMat, <GOpaque<Vec6f>(GMat,DistanceTypes,double,double,double)>,
-                   "org.opencv.imgproc.shape.fitLine3DMat") {
-        static GOpaqueDesc outMeta(GMatDesc in,int,double,double,double) {
-            int amount = detail::checkVector(in, 3u);
-            GAPI_Assert(amount != -1 &&
-                        "Input Mat can't be described as vector of 3-dimentional points");
-            return empty_gopaque_desc();
-        }
-    };
+G_TYPED_KERNEL(GGoodFeatures,
+<
+cv::GArray<cv::Point2f>(GMat,
+int,double,double,Mat,int,bool,double)>,
+"org.opencv.imgproc.feature.goodFeaturesToTrack") {
+static GArrayDesc outMeta(GMatDesc, int, double, double, const Mat &, int, bool, double) {
+    return empty_array_desc();
+}
 
-    G_TYPED_KERNEL(GFitLine3DVector32S,
-                   <GOpaque<Vec6f>(GArray<Point3i>,DistanceTypes,double,double,double)>,
-                   "org.opencv.imgproc.shape.fitLine3DVector32S") {
-        static GOpaqueDesc outMeta(GArrayDesc,DistanceTypes,double,double,double) {
-            return empty_gopaque_desc();
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GFitLine3DVector32F,
-                   <GOpaque<Vec6f>(GArray<Point3f>,DistanceTypes,double,double,double)>,
-                   "org.opencv.imgproc.shape.fitLine3DVector32F") {
-        static GOpaqueDesc outMeta(GArrayDesc,DistanceTypes,double,double,double) {
-            return empty_gopaque_desc();
-        }
-    };
+using RetrMode = RetrievalModes;
+using ContMethod = ContourApproximationModes;
+G_TYPED_KERNEL(GFindContours,
+<GArray<GArray < Point>>(GMat, RetrMode, ContMethod, GOpaque<Point>
+)>,
+"org.opencv.imgproc.shape.findContours")
+{
+static GArrayDesc outMeta(GMatDesc in, RetrMode mode, ContMethod, GOpaqueDesc) {
+    validateFindingContoursMeta(in.depth, in.chan, mode);
+    return empty_array_desc();
+}
 
-    G_TYPED_KERNEL(GFitLine3DVector64F,
-                   <GOpaque<Vec6f>(GArray<Point3d>,DistanceTypes,double,double,double)>,
-                   "org.opencv.imgproc.shape.fitLine3DVector64F") {
-        static GOpaqueDesc outMeta(GArrayDesc,DistanceTypes,double,double,double) {
-            return empty_gopaque_desc();
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GBGR2RGB, <GMat(GMat)>, "org.opencv.imgproc.colorconvert.bgr2rgb") {
-        static GMatDesc outMeta(GMatDesc in) {
-            return in; // type still remains CV_8UC3;
-        }
-    };
+// FIXME oc: make default value offset = Point()
+G_TYPED_KERNEL(GFindContoursNoOffset,
+<GArray<GArray < Point>>(GMat, RetrMode, ContMethod
+)>,
+"org.opencv.imgproc.shape.findContoursNoOffset")
+{
+static GArrayDesc outMeta(GMatDesc in, RetrMode mode, ContMethod) {
+    validateFindingContoursMeta(in.depth, in.chan, mode);
+    return empty_array_desc();
+}
 
-    G_TYPED_KERNEL(GRGB2YUV, <GMat(GMat)>, "org.opencv.imgproc.colorconvert.rgb2yuv") {
-        static GMatDesc outMeta(GMatDesc in) {
-            return in; // type still remains CV_8UC3;
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GYUV2RGB, <GMat(GMat)>, "org.opencv.imgproc.colorconvert.yuv2rgb") {
-        static GMatDesc outMeta(GMatDesc in) {
-            return in; // type still remains CV_8UC3;
-        }
-    };
+G_TYPED_KERNEL(GFindContoursH,
+<
+GFindContoursOutput(GMat, RetrMode, ContMethod, GOpaque<Point>
+)>,
+"org.opencv.imgproc.shape.findContoursH")
+{
+static std::tuple <GArrayDesc, GArrayDesc>
+outMeta(GMatDesc in, RetrMode mode, ContMethod, GOpaqueDesc) {
+    validateFindingContoursMeta(in.depth, in.chan, mode);
+    return std::make_tuple(empty_array_desc(), empty_array_desc());
+}
 
-    G_TYPED_KERNEL(GBGR2I420, <GMat(GMat)>, "org.opencv.imgproc.colorconvert.bgr2i420") {
-        static GMatDesc outMeta(GMatDesc in) {
-            GAPI_Assert(in.depth == CV_8U);
-            GAPI_Assert(in.chan == 3);
-            GAPI_Assert(in.size.height % 2 == 0);
-            return in.withType(in.depth, 1).withSize(Size(in.size.width, in.size.height * 3 / 2));
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GRGB2I420, <GMat(GMat)>, "org.opencv.imgproc.colorconvert.rgb2i420") {
-        static GMatDesc outMeta(GMatDesc in) {
-            GAPI_Assert(in.depth == CV_8U);
-            GAPI_Assert(in.chan == 3);
-            GAPI_Assert(in.size.height % 2 == 0);
-            return in.withType(in.depth, 1).withSize(Size(in.size.width, in.size.height * 3 / 2));
-        }
-    };
+// FIXME oc: make default value offset = Point()
+G_TYPED_KERNEL(GFindContoursHNoOffset,
+<
+GFindContoursOutput(GMat, RetrMode, ContMethod
+)>,
+"org.opencv.imgproc.shape.findContoursHNoOffset")
+{
+static std::tuple <GArrayDesc, GArrayDesc>
+outMeta(GMatDesc in, RetrMode mode, ContMethod) {
+    validateFindingContoursMeta(in.depth, in.chan, mode);
+    return std::make_tuple(empty_array_desc(), empty_array_desc());
+}
 
-    G_TYPED_KERNEL(GI4202BGR, <GMat(GMat)>, "org.opencv.imgproc.colorconvert.i4202bgr") {
-        static GMatDesc outMeta(GMatDesc in) {
-            GAPI_Assert(in.depth == CV_8U);
-            GAPI_Assert(in.chan == 1);
-            GAPI_Assert(in.size.height % 3 == 0);
-            return in.withType(in.depth, 3).withSize(Size(in.size.width, in.size.height * 2 / 3));
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GI4202RGB, <GMat(GMat)>, "org.opencv.imgproc.colorconvert.i4202rgb") {
-        static GMatDesc outMeta(GMatDesc in) {
-            GAPI_Assert(in.depth == CV_8U);
-            GAPI_Assert(in.chan == 1);
-            GAPI_Assert(in.size.height % 3 == 0);
-            return in.withType(in.depth, 3).withSize(Size(in.size.width, in.size.height * 2 / 3));
-        }
-    };
+G_TYPED_KERNEL(GBoundingRectMat,
+<
+GOpaque <Rect>(GMat)
+>,
+"org.opencv.imgproc.shape.boundingRectMat") {
+static GOpaqueDesc outMeta(GMatDesc in) {
+    if (in.depth == CV_8U) {
+        GAPI_Assert(in.chan == 1);
+    } else {
+        GAPI_Assert(in.depth == CV_32S || in.depth == CV_32F);
+        int amount = detail::checkVector(in, 2u);
+        GAPI_Assert(amount != -1 &&
+                    "Input Mat can't be described as vector of 2-dimentional points");
+    }
+    return empty_gopaque_desc();
+}
 
-    G_TYPED_KERNEL(GNV12toRGB, <GMat(GMat, GMat)>, "org.opencv.imgproc.colorconvert.nv12torgb") {
-        static GMatDesc outMeta(GMatDesc in_y, GMatDesc in_uv) {
-            GAPI_Assert(in_y.chan == 1);
-            GAPI_Assert(in_uv.chan == 2);
-            GAPI_Assert(in_y.depth == CV_8U);
-            GAPI_Assert(in_uv.depth == CV_8U);
-            // UV size should be aligned with Y
-            GAPI_Assert(in_y.size.width == 2 * in_uv.size.width);
-            GAPI_Assert(in_y.size.height == 2 * in_uv.size.height);
-            return in_y.withType(CV_8U, 3); // type will be CV_8UC3;
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GNV12toBGR, <GMat(GMat, GMat)>, "org.opencv.imgproc.colorconvert.nv12tobgr") {
-        static GMatDesc outMeta(GMatDesc in_y, GMatDesc in_uv) {
-            GAPI_Assert(in_y.chan == 1);
-            GAPI_Assert(in_uv.chan == 2);
-            GAPI_Assert(in_y.depth == CV_8U);
-            GAPI_Assert(in_uv.depth == CV_8U);
-            // UV size should be aligned with Y
-            GAPI_Assert(in_y.size.width == 2 * in_uv.size.width);
-            GAPI_Assert(in_y.size.height == 2 * in_uv.size.height);
-            return in_y.withType(CV_8U, 3); // type will be CV_8UC3;
-        }
-    };
+G_TYPED_KERNEL(GBoundingRectVector32S,
+<
+GOpaque <Rect>(GArray<Point2i>)
+>,
+"org.opencv.imgproc.shape.boundingRectVector32S") {
+static GOpaqueDesc outMeta(GArrayDesc) {
+    return empty_gopaque_desc();
+}
 
-    G_TYPED_KERNEL(GRGB2Lab, <GMat(GMat)>, "org.opencv.imgproc.colorconvert.rgb2lab") {
-        static GMatDesc outMeta(GMatDesc in) {
-            return in; // type still remains CV_8UC3;
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GBGR2LUV, <GMat(GMat)>, "org.opencv.imgproc.colorconvert.bgr2luv") {
-        static GMatDesc outMeta(GMatDesc in) {
-            return in; // type still remains CV_8UC3;
-        }
-    };
+G_TYPED_KERNEL(GBoundingRectVector32F,
+<
+GOpaque <Rect>(GArray<Point2f>)
+>,
+"org.opencv.imgproc.shape.boundingRectVector32F") {
+static GOpaqueDesc outMeta(GArrayDesc) {
+    return empty_gopaque_desc();
+}
 
-    G_TYPED_KERNEL(GLUV2BGR, <GMat(GMat)>, "org.opencv.imgproc.colorconvert.luv2bgr") {
-        static GMatDesc outMeta(GMatDesc in) {
-            return in; // type still remains CV_8UC3;
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GYUV2BGR, <GMat(GMat)>, "org.opencv.imgproc.colorconvert.yuv2bgr") {
-        static GMatDesc outMeta(GMatDesc in) {
-            return in; // type still remains CV_8UC3;
-        }
-    };
+G_TYPED_KERNEL(GFitLine2DMat,
+<
+GOpaque <Vec4f>(GMat, DistanceTypes,
+double,double,double)>,
+"org.opencv.imgproc.shape.fitLine2DMat") {
+static GOpaqueDesc outMeta(GMatDesc in, DistanceTypes, double, double, double) {
+    int amount = detail::checkVector(in, 2u);
+    GAPI_Assert(amount != -1 &&
+                "Input Mat can't be described as vector of 2-dimentional points");
+    return empty_gopaque_desc();
+}
 
-    G_TYPED_KERNEL(GBGR2YUV, <GMat(GMat)>, "org.opencv.imgproc.colorconvert.bgr2yuv") {
-        static GMatDesc outMeta(GMatDesc in) {
-            return in; // type still remains CV_8UC3;
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GRGB2Gray, <GMat(GMat)>, "org.opencv.imgproc.colorconvert.rgb2gray") {
-        static GMatDesc outMeta(GMatDesc in) {
-            return in.withType(CV_8U, 1);
-        }
-    };
+G_TYPED_KERNEL(GFitLine2DVector32S,
+<
+GOpaque <Vec4f>(GArray<Point2i>, DistanceTypes,
+double,double,double)>,
+"org.opencv.imgproc.shape.fitLine2DVector32S") {
+static GOpaqueDesc outMeta(GArrayDesc, DistanceTypes, double, double, double) {
+    return empty_gopaque_desc();
+}
 
-    G_TYPED_KERNEL(GRGB2GrayCustom, <GMat(GMat,float,float,float)>, "org.opencv.imgproc.colorconvert.rgb2graycustom") {
-        static GMatDesc outMeta(GMatDesc in, float, float, float) {
-            return in.withType(CV_8U, 1);
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GBGR2Gray, <GMat(GMat)>, "org.opencv.imgproc.colorconvert.bgr2gray") {
-        static GMatDesc outMeta(GMatDesc in) {
-            return in.withType(CV_8U, 1);
-        }
-    };
+G_TYPED_KERNEL(GFitLine2DVector32F,
+<
+GOpaque <Vec4f>(GArray<Point2f>, DistanceTypes,
+double,double,double)>,
+"org.opencv.imgproc.shape.fitLine2DVector32F") {
+static GOpaqueDesc outMeta(GArrayDesc, DistanceTypes, double, double, double) {
+    return empty_gopaque_desc();
+}
 
-    G_TYPED_KERNEL(GBayerGR2RGB, <cv::GMat(cv::GMat)>, "org.opencv.imgproc.colorconvert.bayergr2rgb") {
-        static cv::GMatDesc outMeta(cv::GMatDesc in) {
-            return in.withType(CV_8U, 3);
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GRGB2HSV, <cv::GMat(cv::GMat)>, "org.opencv.imgproc.colorconvert.rgb2hsv") {
-        static cv::GMatDesc outMeta(cv::GMatDesc in) {
-            return in;
-        }
-    };
+G_TYPED_KERNEL(GFitLine2DVector64F,
+<
+GOpaque <Vec4f>(GArray<Point2d>, DistanceTypes,
+double,double,double)>,
+"org.opencv.imgproc.shape.fitLine2DVector64F") {
+static GOpaqueDesc outMeta(GArrayDesc, DistanceTypes, double, double, double) {
+    return empty_gopaque_desc();
+}
 
-    G_TYPED_KERNEL(GRGB2YUV422, <cv::GMat(cv::GMat)>, "org.opencv.imgproc.colorconvert.rgb2yuv422") {
-        static cv::GMatDesc outMeta(cv::GMatDesc in) {
-            GAPI_Assert(in.depth == CV_8U);
-            GAPI_Assert(in.chan == 3);
-            return in.withType(in.depth, 2);
-        }
-    };
+};
 
-    G_TYPED_KERNEL(GNV12toRGBp, <GMatP(GMat,GMat)>, "org.opencv.imgproc.colorconvert.nv12torgbp") {
-        static GMatDesc outMeta(GMatDesc inY, GMatDesc inUV) {
-            GAPI_Assert(inY.depth == CV_8U);
-            GAPI_Assert(inUV.depth == CV_8U);
-            GAPI_Assert(inY.chan == 1);
-            GAPI_Assert(inY.planar == false);
-            GAPI_Assert(inUV.chan == 2);
-            GAPI_Assert(inUV.planar == false);
-            GAPI_Assert(inY.size.width  == 2 * inUV.size.width);
-            GAPI_Assert(inY.size.height == 2 * inUV.size.height);
-            return inY.withType(CV_8U, 3).asPlanar();
-        }
-    };
+G_TYPED_KERNEL(GFitLine3DMat,
+<
+GOpaque <Vec6f>(GMat, DistanceTypes,
+double,double,double)>,
+"org.opencv.imgproc.shape.fitLine3DMat") {
+static GOpaqueDesc outMeta(GMatDesc in, int, double, double, double) {
+    int amount = detail::checkVector(in, 3u);
+    GAPI_Assert(amount != -1 &&
+                "Input Mat can't be described as vector of 3-dimentional points");
+    return empty_gopaque_desc();
+}
 
-    G_TYPED_KERNEL(GNV12toGray, <GMat(GMat,GMat)>, "org.opencv.imgproc.colorconvert.nv12togray") {
-        static GMatDesc outMeta(GMatDesc inY, GMatDesc inUV) {
-            GAPI_Assert(inY.depth   == CV_8U);
-            GAPI_Assert(inUV.depth  == CV_8U);
-            GAPI_Assert(inY.chan    == 1);
-            GAPI_Assert(inY.planar  == false);
-            GAPI_Assert(inUV.chan   == 2);
-            GAPI_Assert(inUV.planar == false);
+};
 
-            GAPI_Assert(inY.size.width  == 2 * inUV.size.width);
-            GAPI_Assert(inY.size.height == 2 * inUV.size.height);
-            return inY.withType(CV_8U, 1);
-        }
-    };
+G_TYPED_KERNEL(GFitLine3DVector32S,
+<
+GOpaque <Vec6f>(GArray<Point3i>, DistanceTypes,
+double,double,double)>,
+"org.opencv.imgproc.shape.fitLine3DVector32S") {
+static GOpaqueDesc outMeta(GArrayDesc, DistanceTypes, double, double, double) {
+    return empty_gopaque_desc();
+}
 
-    G_TYPED_KERNEL(GNV12toBGRp, <GMatP(GMat,GMat)>, "org.opencv.imgproc.colorconvert.nv12tobgrp") {
-        static GMatDesc outMeta(GMatDesc inY, GMatDesc inUV) {
-            GAPI_Assert(inY.depth == CV_8U);
-            GAPI_Assert(inUV.depth == CV_8U);
-            GAPI_Assert(inY.chan == 1);
-            GAPI_Assert(inY.planar == false);
-            GAPI_Assert(inUV.chan == 2);
-            GAPI_Assert(inUV.planar == false);
-            GAPI_Assert(inY.size.width  == 2 * inUV.size.width);
-            GAPI_Assert(inY.size.height == 2 * inUV.size.height);
-            return inY.withType(CV_8U, 3).asPlanar();
-        }
-    };
+};
+
+G_TYPED_KERNEL(GFitLine3DVector32F,
+<
+GOpaque <Vec6f>(GArray<Point3f>, DistanceTypes,
+double,double,double)>,
+"org.opencv.imgproc.shape.fitLine3DVector32F") {
+static GOpaqueDesc outMeta(GArrayDesc, DistanceTypes, double, double, double) {
+    return empty_gopaque_desc();
+}
+
+};
+
+G_TYPED_KERNEL(GFitLine3DVector64F,
+<
+GOpaque <Vec6f>(GArray<Point3d>, DistanceTypes,
+double,double,double)>,
+"org.opencv.imgproc.shape.fitLine3DVector64F") {
+static GOpaqueDesc outMeta(GArrayDesc, DistanceTypes, double, double, double) {
+    return empty_gopaque_desc();
+}
+
+};
+
+G_TYPED_KERNEL(GBGR2RGB,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.colorconvert.bgr2rgb") {
+static GMatDesc outMeta(GMatDesc in) {
+    return in; // type still remains CV_8UC3;
+}
+
+};
+
+G_TYPED_KERNEL(GRGB2YUV,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.colorconvert.rgb2yuv") {
+static GMatDesc outMeta(GMatDesc in) {
+    return in; // type still remains CV_8UC3;
+}
+
+};
+
+G_TYPED_KERNEL(GYUV2RGB,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.colorconvert.yuv2rgb") {
+static GMatDesc outMeta(GMatDesc in) {
+    return in; // type still remains CV_8UC3;
+}
+
+};
+
+G_TYPED_KERNEL(GBGR2I420,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.colorconvert.bgr2i420") {
+static GMatDesc outMeta(GMatDesc in) {
+    GAPI_Assert(in.depth == CV_8U);
+    GAPI_Assert(in.chan == 3);
+    GAPI_Assert(in.size.height % 2 == 0);
+    return in.withType(in.depth, 1).withSize(Size(in.size.width, in.size.height * 3 / 2));
+}
+
+};
+
+G_TYPED_KERNEL(GRGB2I420,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.colorconvert.rgb2i420") {
+static GMatDesc outMeta(GMatDesc in) {
+    GAPI_Assert(in.depth == CV_8U);
+    GAPI_Assert(in.chan == 3);
+    GAPI_Assert(in.size.height % 2 == 0);
+    return in.withType(in.depth, 1).withSize(Size(in.size.width, in.size.height * 3 / 2));
+}
+
+};
+
+G_TYPED_KERNEL(GI4202BGR,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.colorconvert.i4202bgr") {
+static GMatDesc outMeta(GMatDesc in) {
+    GAPI_Assert(in.depth == CV_8U);
+    GAPI_Assert(in.chan == 1);
+    GAPI_Assert(in.size.height % 3 == 0);
+    return in.withType(in.depth, 3).withSize(Size(in.size.width, in.size.height * 2 / 3));
+}
+
+};
+
+G_TYPED_KERNEL(GI4202RGB,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.colorconvert.i4202rgb") {
+static GMatDesc outMeta(GMatDesc in) {
+    GAPI_Assert(in.depth == CV_8U);
+    GAPI_Assert(in.chan == 1);
+    GAPI_Assert(in.size.height % 3 == 0);
+    return in.withType(in.depth, 3).withSize(Size(in.size.width, in.size.height * 2 / 3));
+}
+
+};
+
+G_TYPED_KERNEL(GNV12toRGB,
+<
+GMat(GMat, GMat
+)>, "org.opencv.imgproc.colorconvert.nv12torgb") {
+static GMatDesc outMeta(GMatDesc in_y, GMatDesc in_uv) {
+    GAPI_Assert(in_y.chan == 1);
+    GAPI_Assert(in_uv.chan == 2);
+    GAPI_Assert(in_y.depth == CV_8U);
+    GAPI_Assert(in_uv.depth == CV_8U);
+    // UV size should be aligned with Y
+    GAPI_Assert(in_y.size.width == 2 * in_uv.size.width);
+    GAPI_Assert(in_y.size.height == 2 * in_uv.size.height);
+    return in_y.withType(CV_8U, 3); // type will be CV_8UC3;
+}
+
+};
+
+G_TYPED_KERNEL(GNV12toBGR,
+<
+GMat(GMat, GMat
+)>, "org.opencv.imgproc.colorconvert.nv12tobgr") {
+static GMatDesc outMeta(GMatDesc in_y, GMatDesc in_uv) {
+    GAPI_Assert(in_y.chan == 1);
+    GAPI_Assert(in_uv.chan == 2);
+    GAPI_Assert(in_y.depth == CV_8U);
+    GAPI_Assert(in_uv.depth == CV_8U);
+    // UV size should be aligned with Y
+    GAPI_Assert(in_y.size.width == 2 * in_uv.size.width);
+    GAPI_Assert(in_y.size.height == 2 * in_uv.size.height);
+    return in_y.withType(CV_8U, 3); // type will be CV_8UC3;
+}
+
+};
+
+G_TYPED_KERNEL(GRGB2Lab,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.colorconvert.rgb2lab") {
+static GMatDesc outMeta(GMatDesc in) {
+    return in; // type still remains CV_8UC3;
+}
+
+};
+
+G_TYPED_KERNEL(GBGR2LUV,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.colorconvert.bgr2luv") {
+static GMatDesc outMeta(GMatDesc in) {
+    return in; // type still remains CV_8UC3;
+}
+
+};
+
+G_TYPED_KERNEL(GLUV2BGR,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.colorconvert.luv2bgr") {
+static GMatDesc outMeta(GMatDesc in) {
+    return in; // type still remains CV_8UC3;
+}
+
+};
+
+G_TYPED_KERNEL(GYUV2BGR,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.colorconvert.yuv2bgr") {
+static GMatDesc outMeta(GMatDesc in) {
+    return in; // type still remains CV_8UC3;
+}
+
+};
+
+G_TYPED_KERNEL(GBGR2YUV,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.colorconvert.bgr2yuv") {
+static GMatDesc outMeta(GMatDesc in) {
+    return in; // type still remains CV_8UC3;
+}
+
+};
+
+G_TYPED_KERNEL(GRGB2Gray,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.colorconvert.rgb2gray") {
+static GMatDesc outMeta(GMatDesc in) {
+    return in.withType(CV_8U, 1);
+}
+
+};
+
+G_TYPED_KERNEL(GRGB2GrayCustom,
+<
+GMat(GMat,
+float,float,float)>, "org.opencv.imgproc.colorconvert.rgb2graycustom") {
+static GMatDesc outMeta(GMatDesc in, float, float, float) {
+    return in.withType(CV_8U, 1);
+}
+
+};
+
+G_TYPED_KERNEL(GBGR2Gray,
+<
+GMat(GMat)
+>, "org.opencv.imgproc.colorconvert.bgr2gray") {
+static GMatDesc outMeta(GMatDesc in) {
+    return in.withType(CV_8U, 1);
+}
+
+};
+
+G_TYPED_KERNEL(GBayerGR2RGB,
+<
+cv::GMat(cv::GMat)
+>, "org.opencv.imgproc.colorconvert.bayergr2rgb") {
+static cv::GMatDesc outMeta(cv::GMatDesc in) {
+    return in.withType(CV_8U, 3);
+}
+
+};
+
+G_TYPED_KERNEL(GRGB2HSV,
+<
+cv::GMat(cv::GMat)
+>, "org.opencv.imgproc.colorconvert.rgb2hsv") {
+static cv::GMatDesc outMeta(cv::GMatDesc in) {
+    return in;
+}
+
+};
+
+G_TYPED_KERNEL(GRGB2YUV422,
+<
+cv::GMat(cv::GMat)
+>, "org.opencv.imgproc.colorconvert.rgb2yuv422") {
+static cv::GMatDesc outMeta(cv::GMatDesc in) {
+    GAPI_Assert(in.depth == CV_8U);
+    GAPI_Assert(in.chan == 3);
+    return in.withType(in.depth, 2);
+}
+
+};
+
+G_TYPED_KERNEL(GNV12toRGBp,
+<
+GMatP(GMat, GMat
+)>, "org.opencv.imgproc.colorconvert.nv12torgbp") {
+static GMatDesc outMeta(GMatDesc inY, GMatDesc inUV) {
+    GAPI_Assert(inY.depth == CV_8U);
+    GAPI_Assert(inUV.depth == CV_8U);
+    GAPI_Assert(inY.chan == 1);
+    GAPI_Assert(inY.planar == false);
+    GAPI_Assert(inUV.chan == 2);
+    GAPI_Assert(inUV.planar == false);
+    GAPI_Assert(inY.size.width == 2 * inUV.size.width);
+    GAPI_Assert(inY.size.height == 2 * inUV.size.height);
+    return inY.withType(CV_8U, 3).asPlanar();
+}
+
+};
+
+G_TYPED_KERNEL(GNV12toGray,
+<
+GMat(GMat, GMat
+)>, "org.opencv.imgproc.colorconvert.nv12togray") {
+static GMatDesc outMeta(GMatDesc inY, GMatDesc inUV) {
+    GAPI_Assert(inY.depth == CV_8U);
+    GAPI_Assert(inUV.depth == CV_8U);
+    GAPI_Assert(inY.chan == 1);
+    GAPI_Assert(inY.planar == false);
+    GAPI_Assert(inUV.chan == 2);
+    GAPI_Assert(inUV.planar == false);
+
+    GAPI_Assert(inY.size.width == 2 * inUV.size.width);
+    GAPI_Assert(inY.size.height == 2 * inUV.size.height);
+    return inY.withType(CV_8U, 1);
+}
+
+};
+
+G_TYPED_KERNEL(GNV12toBGRp,
+<
+GMatP(GMat, GMat
+)>, "org.opencv.imgproc.colorconvert.nv12tobgrp") {
+static GMatDesc outMeta(GMatDesc inY, GMatDesc inUV) {
+    GAPI_Assert(inY.depth == CV_8U);
+    GAPI_Assert(inUV.depth == CV_8U);
+    GAPI_Assert(inY.chan == 1);
+    GAPI_Assert(inY.planar == false);
+    GAPI_Assert(inUV.chan == 2);
+    GAPI_Assert(inUV.planar == false);
+    GAPI_Assert(inY.size.width == 2 * inUV.size.width);
+    GAPI_Assert(inY.size.height == 2 * inUV.size.height);
+    return inY.withType(CV_8U, 3).asPlanar();
+}
+
+};
 
 } //namespace imgproc
 
@@ -529,9 +726,12 @@ is at the kernel center.
 @param borderValue border value in case of constant border type
 @sa  boxFilter, gaussianBlur, medianBlur
  */
-GAPI_EXPORTS GMat sepFilter(const GMat& src, int ddepth, const Mat& kernelX, const Mat& kernelY, const Point& anchor /*FIXME: = Point(-1,-1)*/,
-                            const Scalar& delta /*FIXME = GScalar(0)*/, int borderType = BORDER_DEFAULT,
-                            const Scalar& borderValue = Scalar(0));
+GAPI_EXPORTS GMat
+
+sepFilter(const GMat &src, int ddepth, const Mat &kernelX, const Mat &kernelY,
+          const Point &anchor /*FIXME: = Point(-1,-1)*/,
+          const Scalar &delta /*FIXME = GScalar(0)*/, int borderType = BORDER_DEFAULT,
+          const Scalar &borderValue = Scalar(0));
 
 /** @brief Convolves an image with the kernel.
 
@@ -566,8 +766,11 @@ is at the kernel center.
 @param borderValue border value in case of constant border type
 @sa  sepFilter
  */
-GAPI_EXPORTS GMat filter2D(const GMat& src, int ddepth, const Mat& kernel, const Point& anchor = Point(-1,-1), const Scalar& delta = Scalar(0),
-                           int borderType = BORDER_DEFAULT, const Scalar& borderValue = Scalar(0));
+GAPI_EXPORTS GMat
+
+filter2D(const GMat &src, int ddepth, const Mat &kernel, const Point &anchor = Point(-1, -1),
+         const Scalar &delta = Scalar(0),
+         int borderType = BORDER_DEFAULT, const Scalar &borderValue = Scalar(0));
 
 
 /** @brief Blurs an image using the box filter.
@@ -600,9 +803,11 @@ is at the kernel center.
 @param borderValue border value in case of constant border type
 @sa  sepFilter, gaussianBlur, medianBlur, integral
  */
-GAPI_EXPORTS GMat boxFilter(const GMat& src, int dtype, const Size& ksize, const Point& anchor = Point(-1,-1),
-                            bool normalize = true, int borderType = BORDER_DEFAULT,
-                            const Scalar& borderValue = Scalar(0));
+GAPI_EXPORTS GMat
+
+boxFilter(const GMat &src, int dtype, const Size &ksize, const Point &anchor = Point(-1, -1),
+          bool normalize = true, int borderType = BORDER_DEFAULT,
+          const Scalar &borderValue = Scalar(0));
 
 /** @brief Blurs an image using the normalized box filter.
 
@@ -627,13 +832,15 @@ center.
 @param borderValue border value in case of constant border type
 @sa  boxFilter, bilateralFilter, GaussianBlur, medianBlur
  */
-GAPI_EXPORTS GMat blur(const GMat& src, const Size& ksize, const Point& anchor = Point(-1,-1),
-                       int borderType = BORDER_DEFAULT, const Scalar& borderValue = Scalar(0));
+GAPI_EXPORTS GMat
+
+blur(const GMat &src, const Size &ksize, const Point &anchor = Point(-1, -1),
+     int borderType = BORDER_DEFAULT, const Scalar &borderValue = Scalar(0));
 
 
 //GAPI_EXPORTS_W void blur( InputArray src, OutputArray dst,
- //                       Size ksize, Point anchor = Point(-1,-1),
- //                       int borderType = BORDER_DEFAULT );
+//                       Size ksize, Point anchor = Point(-1,-1),
+//                       int borderType = BORDER_DEFAULT );
 
 
 /** @brief Blurs an image using a Gaussian filter.
@@ -660,8 +867,10 @@ sigmaX, and sigmaY.
 @param borderValue border value in case of constant border type
 @sa  sepFilter, boxFilter, medianBlur
  */
-GAPI_EXPORTS GMat gaussianBlur(const GMat& src, const Size& ksize, double sigmaX, double sigmaY = 0,
-                               int borderType = BORDER_DEFAULT, const Scalar& borderValue = Scalar(0));
+GAPI_EXPORTS GMat
+
+gaussianBlur(const GMat &src, const Size &ksize, double sigmaX, double sigmaY = 0,
+             int borderType = BORDER_DEFAULT, const Scalar &borderValue = Scalar(0));
 
 /** @brief Blurs an image using the median filter.
 
@@ -677,7 +886,9 @@ The median filter uses cv::BORDER_REPLICATE internally to cope with border pixel
 @param ksize aperture linear size; it must be odd and greater than 1, for example: 3, 5, 7 ...
 @sa  boxFilter, gaussianBlur
  */
-GAPI_EXPORTS_W GMat medianBlur(const GMat& src, int ksize);
+GAPI_EXPORTS_W GMat
+
+medianBlur(const GMat &src, int ksize);
 
 /** @brief Erodes an image by using a specific structuring element.
 
@@ -703,9 +914,11 @@ anchor is at the element center.
 @param borderValue border value in case of a constant border
 @sa  dilate, morphologyEx
  */
-GAPI_EXPORTS GMat erode(const GMat& src, const Mat& kernel, const Point& anchor = Point(-1,-1), int iterations = 1,
-                        int borderType = BORDER_CONSTANT,
-                        const  Scalar& borderValue = morphologyDefaultBorderValue());
+GAPI_EXPORTS GMat
+
+erode(const GMat &src, const Mat &kernel, const Point &anchor = Point(-1, -1), int iterations = 1,
+      int borderType = BORDER_CONSTANT,
+      const Scalar &borderValue = morphologyDefaultBorderValue());
 
 /** @brief Erodes an image by using 3 by 3 rectangular structuring element.
 
@@ -723,9 +936,11 @@ Output image must have the same type, size, and number of channels as the input 
 @param borderValue border value in case of a constant border
 @sa  erode, dilate3x3
  */
-GAPI_EXPORTS GMat erode3x3(const GMat& src, int iterations = 1,
-                           int borderType = BORDER_CONSTANT,
-                           const  Scalar& borderValue = morphologyDefaultBorderValue());
+GAPI_EXPORTS GMat
+
+erode3x3(const GMat &src, int iterations = 1,
+         int borderType = BORDER_CONSTANT,
+         const Scalar &borderValue = morphologyDefaultBorderValue());
 
 /** @brief Dilates an image by using a specific structuring element.
 
@@ -750,9 +965,11 @@ anchor is at the element center.
 @param borderValue border value in case of a constant border
 @sa  erode, morphologyEx, getStructuringElement
  */
-GAPI_EXPORTS GMat dilate(const GMat& src, const Mat& kernel, const Point& anchor = Point(-1,-1), int iterations = 1,
-                         int borderType = BORDER_CONSTANT,
-                         const  Scalar& borderValue = morphologyDefaultBorderValue());
+GAPI_EXPORTS GMat
+
+dilate(const GMat &src, const Mat &kernel, const Point &anchor = Point(-1, -1), int iterations = 1,
+       int borderType = BORDER_CONSTANT,
+       const Scalar &borderValue = morphologyDefaultBorderValue());
 
 /** @brief Dilates an image by using 3 by 3 rectangular structuring element.
 
@@ -774,9 +991,11 @@ Output image must have the same type, size, and number of channels as the input 
 @sa  dilate, erode3x3
  */
 
-GAPI_EXPORTS GMat dilate3x3(const GMat& src, int iterations = 1,
-                            int borderType = BORDER_CONSTANT,
-                            const  Scalar& borderValue = morphologyDefaultBorderValue());
+GAPI_EXPORTS GMat
+
+dilate3x3(const GMat &src, int iterations = 1,
+          int borderType = BORDER_CONSTANT,
+          const Scalar &borderValue = morphologyDefaultBorderValue());
 
 /** @brief Performs advanced morphological transformations.
 
@@ -804,11 +1023,13 @@ the kernel center.
 meaning.
 @sa  dilate, erode, getStructuringElement
  */
-GAPI_EXPORTS GMat morphologyEx(const GMat &src, const MorphTypes op, const Mat &kernel,
-                               const Point       &anchor      = Point(-1,-1),
-                               const int          iterations  = 1,
-                               const BorderTypes  borderType  = BORDER_CONSTANT,
-                               const Scalar      &borderValue = morphologyDefaultBorderValue());
+GAPI_EXPORTS GMat
+
+morphologyEx(const GMat &src, const MorphTypes op, const Mat &kernel,
+             const Point &anchor = Point(-1, -1),
+             const int iterations = 1,
+             const BorderTypes borderType = BORDER_CONSTANT,
+             const Scalar &borderValue = morphologyDefaultBorderValue());
 
 /** @brief Calculates the first, second, third, or mixed image derivatives using an extended Sobel operator.
 
@@ -856,10 +1077,12 @@ applied (see cv::getDerivKernels for details).
 @param borderValue border value in case of constant border type
 @sa filter2D, gaussianBlur, cartToPolar
  */
-GAPI_EXPORTS GMat Sobel(const GMat& src, int ddepth, int dx, int dy, int ksize = 3,
-                        double scale = 1, double delta = 0,
-                        int borderType = BORDER_DEFAULT,
-                        const Scalar& borderValue = Scalar(0));
+GAPI_EXPORTS GMat
+
+Sobel(const GMat &src, int ddepth, int dx, int dy, int ksize = 3,
+      double scale = 1, double delta = 0,
+      int borderType = BORDER_DEFAULT,
+      const Scalar &borderValue = Scalar(0));
 
 /** @brief Calculates the first, second, third, or mixed image derivatives using an extended Sobel operator.
 
@@ -907,10 +1130,12 @@ applied (see cv::getDerivKernels for details).
 @param borderValue border value in case of constant border type
 @sa filter2D, gaussianBlur, cartToPolar
  */
-GAPI_EXPORTS std::tuple<GMat, GMat> SobelXY(const GMat& src, int ddepth, int order, int ksize = 3,
-                        double scale = 1, double delta = 0,
-                        int borderType = BORDER_DEFAULT,
-                        const Scalar& borderValue = Scalar(0));
+GAPI_EXPORTS std::tuple<GMat, GMat>
+
+SobelXY(const GMat &src, int ddepth, int order, int ksize = 3,
+        double scale = 1, double delta = 0,
+        int borderType = BORDER_DEFAULT,
+        const Scalar &borderValue = Scalar(0));
 
 /** @brief Calculates the Laplacian of an image.
 
@@ -937,8 +1162,10 @@ applied. See #getDerivKernels for details.
 @return Destination image of the same size and the same number of channels as src.
 @sa  Sobel, Scharr
  */
-GAPI_EXPORTS GMat Laplacian(const GMat& src, int ddepth, int ksize = 1,
-                            double scale = 1, double delta = 0, int borderType = BORDER_DEFAULT);
+GAPI_EXPORTS GMat
+
+Laplacian(const GMat &src, int ddepth, int ksize = 1,
+          double scale = 1, double delta = 0, int borderType = BORDER_DEFAULT);
 
 /** @brief Applies the bilateral filter to an image.
 
@@ -971,8 +1198,10 @@ proportional to sigmaSpace.
 @param borderType border mode used to extrapolate pixels outside of the image, see #BorderTypes
 @return Destination image of the same size and type as src.
  */
-GAPI_EXPORTS GMat bilateralFilter(const GMat& src, int d, double sigmaColor, double sigmaSpace,
-                                  int borderType = BORDER_DEFAULT);
+GAPI_EXPORTS GMat
+
+bilateralFilter(const GMat &src, int d, double sigmaColor, double sigmaSpace,
+                int borderType = BORDER_DEFAULT);
 
 //! @} gapi_filters
 
@@ -996,8 +1225,10 @@ largest value is used to find initial segments of strong edges. See
 L2gradient=true ), or whether the default \f$L_1\f$ norm \f$=|dI/dx|+|dI/dy|\f$ is enough (
 L2gradient=false ).
  */
-GAPI_EXPORTS GMat Canny(const GMat& image, double threshold1, double threshold2,
-                        int apertureSize = 3, bool L2gradient = false);
+GAPI_EXPORTS GMat
+
+Canny(const GMat &image, double threshold1, double threshold2,
+      int apertureSize = 3, bool L2gradient = false);
 
 /** @brief Determines strong corners on an image.
 
@@ -1043,14 +1274,16 @@ or #cornerMinEigenVal.
 
 @return vector of detected corners.
  */
-GAPI_EXPORTS_W GArray<Point2f> goodFeaturesToTrack(const GMat  &image,
-                                                       int    maxCorners,
-                                                       double qualityLevel,
-                                                       double minDistance,
-                                                 const Mat   &mask = Mat(),
-                                                       int    blockSize = 3,
-                                                       bool   useHarrisDetector = false,
-                                                       double k = 0.04);
+GAPI_EXPORTS_W GArray<Point2f>
+
+goodFeaturesToTrack(const GMat &image,
+                    int maxCorners,
+                    double qualityLevel,
+                    double minDistance,
+                    const Mat &mask = Mat(),
+                    int blockSize = 3,
+                    bool useHarrisDetector = false,
+                    double k = 0.04);
 
 /** @brief Equalizes the histogram of a grayscale image.
 
@@ -1071,7 +1304,9 @@ The algorithm normalizes the brightness and increases the contrast of the image.
 
 @param src Source 8-bit single channel image.
  */
-GAPI_EXPORTS GMat equalizeHist(const GMat& src);
+GAPI_EXPORTS GMat
+
+equalizeHist(const GMat &src);
 
 //! @addtogroup gapi_shape
 //! @{
@@ -1096,15 +1331,17 @@ context.
 
 @return GArray of detected contours. Each contour is stored as a GArray of points.
  */
-GAPI_EXPORTS GArray<GArray<Point>>
+GAPI_EXPORTS GArray<GArray < Point>>
+
 findContours(const GMat &src, const RetrievalModes mode, const ContourApproximationModes method,
-             const GOpaque<Point> &offset);
+             const GOpaque <Point> &offset);
 
 // FIXME oc: make default value offset = Point()
 /** @overload
 @note Function textual ID is "org.opencv.imgproc.shape.findContoursNoOffset"
  */
-GAPI_EXPORTS GArray<GArray<Point>>
+GAPI_EXPORTS GArray<GArray < Point>>
+
 findContours(const GMat &src, const RetrievalModes mode, const ContourApproximationModes method);
 
 /** @brief Finds contours and their hierarchy in a binary image.
@@ -1136,15 +1373,19 @@ indices in contours of the next and previous contours at the same hierarchical l
 child contour and the parent contour, respectively. If for the contour i there are no next,
 previous, parent, or nested contours, the corresponding elements of hierarchy[i] will be negative.
  */
-GAPI_EXPORTS std::tuple<GArray<GArray<Point>>,GArray<Vec4i>>
+GAPI_EXPORTS std::tuple<GArray < GArray < Point>>
+,GArray <Vec4i>>
+
 findContoursH(const GMat &src, const RetrievalModes mode, const ContourApproximationModes method,
-              const GOpaque<Point> &offset);
+              const GOpaque <Point> &offset);
 
 // FIXME oc: make default value offset = Point()
 /** @overload
 @note Function textual ID is "org.opencv.imgproc.shape.findContoursHNoOffset"
  */
-GAPI_EXPORTS std::tuple<GArray<GArray<Point>>,GArray<Vec4i>>
+GAPI_EXPORTS std::tuple<GArray < GArray < Point>>
+,GArray <Vec4i>>
+
 findContoursH(const GMat &src, const RetrievalModes mode, const ContourApproximationModes method);
 
 /** @brief Calculates the up-right bounding rectangle of a point set or non-zero pixels
@@ -1162,7 +1403,9 @@ if there are 2 channels, or have 2 columns if there is a single channel. Mat sho
 @param src Input gray-scale image @ref CV_8UC1; or input set of @ref CV_32S or @ref CV_32F
 2D points stored in Mat.
  */
-GAPI_EXPORTS_W GOpaque<Rect> boundingRect(const GMat& src);
+GAPI_EXPORTS_W GOpaque<Rect>
+
+boundingRect(const GMat &src);
 
 /** @overload
 
@@ -1172,7 +1415,9 @@ Calculates the up-right bounding rectangle of a point set.
 
 @param src Input 2D point set, stored in std::vector<cv::Point2i>.
  */
-GAPI_EXPORTS_W GOpaque<Rect> boundingRect(const GArray<Point2i>& src);
+GAPI_EXPORTS_W GOpaque<Rect>
+
+boundingRect(const GArray <Point2i> &src);
 
 /** @overload
 
@@ -1182,7 +1427,9 @@ Calculates the up-right bounding rectangle of a point set.
 
 @param src Input 2D point set, stored in std::vector<cv::Point2f>.
  */
-GAPI_EXPORTS GOpaque<Rect> boundingRect(const GArray<Point2f>& src);
+GAPI_EXPORTS GOpaque<Rect>
+
+boundingRect(const GArray <Point2f> &src);
 
 /** @brief Fits a line to a 2D point set.
 
@@ -1225,36 +1472,44 @@ If it is 0, a default value is chosen.
 @return Output line parameters: a vector of 4 elements (like Vec4f) - (vx, vy, x0, y0),
 where (vx, vy) is a normalized vector collinear to the line and (x0, y0) is a point on the line.
  */
-GAPI_EXPORTS GOpaque<Vec4f> fitLine2D(const GMat& src, const DistanceTypes distType,
-                                      const double param = 0., const double reps = 0.,
-                                      const double aeps = 0.);
+GAPI_EXPORTS GOpaque<Vec4f>
+
+fitLine2D(const GMat &src, const DistanceTypes distType,
+          const double param = 0., const double reps = 0.,
+          const double aeps = 0.);
 
 /** @overload
 
 @note Function textual ID is "org.opencv.imgproc.shape.fitLine2DVector32S"
 
  */
-GAPI_EXPORTS GOpaque<Vec4f> fitLine2D(const GArray<Point2i>& src, const DistanceTypes distType,
-                                      const double param = 0., const double reps = 0.,
-                                      const double aeps = 0.);
+GAPI_EXPORTS GOpaque<Vec4f>
+
+fitLine2D(const GArray <Point2i> &src, const DistanceTypes distType,
+          const double param = 0., const double reps = 0.,
+          const double aeps = 0.);
 
 /** @overload
 
 @note Function textual ID is "org.opencv.imgproc.shape.fitLine2DVector32F"
 
  */
-GAPI_EXPORTS GOpaque<Vec4f> fitLine2D(const GArray<Point2f>& src, const DistanceTypes distType,
-                                      const double param = 0., const double reps = 0.,
-                                      const double aeps = 0.);
+GAPI_EXPORTS GOpaque<Vec4f>
+
+fitLine2D(const GArray <Point2f> &src, const DistanceTypes distType,
+          const double param = 0., const double reps = 0.,
+          const double aeps = 0.);
 
 /** @overload
 
 @note Function textual ID is "org.opencv.imgproc.shape.fitLine2DVector64F"
 
  */
-GAPI_EXPORTS GOpaque<Vec4f> fitLine2D(const GArray<Point2d>& src, const DistanceTypes distType,
-                                      const double param = 0., const double reps = 0.,
-                                      const double aeps = 0.);
+GAPI_EXPORTS GOpaque<Vec4f>
+
+fitLine2D(const GArray <Point2d> &src, const DistanceTypes distType,
+          const double param = 0., const double reps = 0.,
+          const double aeps = 0.);
 
 /** @brief Fits a line to a 3D point set.
 
@@ -1298,36 +1553,44 @@ If it is 0, a default value is chosen.
 where (vx, vy, vz) is a normalized vector collinear to the line and (x0, y0, z0) is a point on
 the line.
  */
-GAPI_EXPORTS GOpaque<Vec6f> fitLine3D(const GMat& src, const DistanceTypes distType,
-                                      const double param = 0., const double reps = 0.,
-                                      const double aeps = 0.);
+GAPI_EXPORTS GOpaque<Vec6f>
+
+fitLine3D(const GMat &src, const DistanceTypes distType,
+          const double param = 0., const double reps = 0.,
+          const double aeps = 0.);
 
 /** @overload
 
 @note Function textual ID is "org.opencv.imgproc.shape.fitLine3DVector32S"
 
  */
-GAPI_EXPORTS GOpaque<Vec6f> fitLine3D(const GArray<Point3i>& src, const DistanceTypes distType,
-                                      const double param = 0., const double reps = 0.,
-                                      const double aeps = 0.);
+GAPI_EXPORTS GOpaque<Vec6f>
+
+fitLine3D(const GArray <Point3i> &src, const DistanceTypes distType,
+          const double param = 0., const double reps = 0.,
+          const double aeps = 0.);
 
 /** @overload
 
 @note Function textual ID is "org.opencv.imgproc.shape.fitLine3DVector32F"
 
  */
-GAPI_EXPORTS GOpaque<Vec6f> fitLine3D(const GArray<Point3f>& src, const DistanceTypes distType,
-                                      const double param = 0., const double reps = 0.,
-                                      const double aeps = 0.);
+GAPI_EXPORTS GOpaque<Vec6f>
+
+fitLine3D(const GArray <Point3f> &src, const DistanceTypes distType,
+          const double param = 0., const double reps = 0.,
+          const double aeps = 0.);
 
 /** @overload
 
 @note Function textual ID is "org.opencv.imgproc.shape.fitLine3DVector64F"
 
  */
-GAPI_EXPORTS GOpaque<Vec6f> fitLine3D(const GArray<Point3d>& src, const DistanceTypes distType,
-                                      const double param = 0., const double reps = 0.,
-                                      const double aeps = 0.);
+GAPI_EXPORTS GOpaque<Vec6f>
+
+fitLine3D(const GArray <Point3d> &src, const DistanceTypes distType,
+          const double param = 0., const double reps = 0.,
+          const double aeps = 0.);
 
 //! @} gapi_shape
 
@@ -1345,7 +1608,9 @@ Output image is 8-bit unsigned 3-channel image @ref CV_8UC3.
 @param src input image: 8-bit unsigned 3-channel image @ref CV_8UC3.
 @sa RGB2BGR
 */
-GAPI_EXPORTS_W GMat BGR2RGB(const GMat& src);
+GAPI_EXPORTS_W GMat
+
+BGR2RGB(const GMat &src);
 
 /** @brief Converts an image from RGB color space to gray-scaled.
 
@@ -1358,7 +1623,9 @@ Resulting gray color value computed as
 @param src input image: 8-bit unsigned 3-channel image @ref CV_8UC1.
 @sa RGB2YUV
  */
-GAPI_EXPORTS_W GMat RGB2Gray(const GMat& src);
+GAPI_EXPORTS_W GMat
+
+RGB2Gray(const GMat &src);
 
 /** @overload
 Resulting gray color value computed as
@@ -1372,7 +1639,9 @@ Resulting gray color value computed as
 @param bY float multiplier for B channel.
 @sa RGB2YUV
  */
-GAPI_EXPORTS GMat RGB2Gray(const GMat& src, float rY, float gY, float bY);
+GAPI_EXPORTS GMat
+
+RGB2Gray(const GMat &src, float rY, float gY, float bY);
 
 /** @brief Converts an image from BGR color space to gray-scaled.
 
@@ -1385,7 +1654,9 @@ Resulting gray color value computed as
 @param src input image: 8-bit unsigned 3-channel image @ref CV_8UC1.
 @sa BGR2LUV
  */
-GAPI_EXPORTS GMat BGR2Gray(const GMat& src);
+GAPI_EXPORTS GMat
+
+BGR2Gray(const GMat &src);
 
 /** @brief Converts an image from RGB color space to YUV color space.
 
@@ -1402,7 +1673,9 @@ Output image must be 8-bit unsigned 3-channel image @ref CV_8UC3.
 @param src input image: 8-bit unsigned 3-channel image @ref CV_8UC3.
 @sa YUV2RGB, RGB2Lab
 */
-GAPI_EXPORTS GMat RGB2YUV(const GMat& src);
+GAPI_EXPORTS GMat
+
+RGB2YUV(const GMat &src);
 
 /** @brief Converts an image from BGR color space to I420 color space.
 
@@ -1418,7 +1691,9 @@ Height of I420 output image must be equal 3/2 from height of input image.
 @param src input image: 8-bit unsigned 3-channel image @ref CV_8UC3.
 @sa I4202BGR
 */
-GAPI_EXPORTS GMat BGR2I420(const GMat& src);
+GAPI_EXPORTS GMat
+
+BGR2I420(const GMat &src);
 
 /** @brief Converts an image from RGB color space to I420 color space.
 
@@ -1434,7 +1709,9 @@ Height of I420 output image must be equal 3/2 from height of input image.
 @param src input image: 8-bit unsigned 3-channel image @ref CV_8UC3.
 @sa I4202RGB
 */
-GAPI_EXPORTS GMat RGB2I420(const GMat& src);
+GAPI_EXPORTS GMat
+
+RGB2I420(const GMat &src);
 
 /** @brief Converts an image from I420 color space to BGR color space.
 
@@ -1450,7 +1727,9 @@ Height of BGR output image must be equal 2/3 from height of input image.
 @param src input image: 8-bit unsigned 1-channel image @ref CV_8UC1.
 @sa BGR2I420
 */
-GAPI_EXPORTS GMat I4202BGR(const GMat& src);
+GAPI_EXPORTS GMat
+
+I4202BGR(const GMat &src);
 
 /** @brief Converts an image from I420 color space to BGR color space.
 
@@ -1466,7 +1745,9 @@ Height of RGB output image must be equal 2/3 from height of input image.
 @param src input image: 8-bit unsigned 1-channel image @ref CV_8UC1.
 @sa RGB2I420
 */
-GAPI_EXPORTS GMat I4202RGB(const GMat& src);
+GAPI_EXPORTS GMat
+
+I4202RGB(const GMat &src);
 
 /** @brief Converts an image from BGR color space to LUV color space.
 
@@ -1480,7 +1761,9 @@ Output image must be 8-bit unsigned 3-channel image @ref CV_8UC3.
 @param src input image: 8-bit unsigned 3-channel image @ref CV_8UC3.
 @sa RGB2Lab, RGB2LUV
 */
-GAPI_EXPORTS GMat BGR2LUV(const GMat& src);
+GAPI_EXPORTS GMat
+
+BGR2LUV(const GMat &src);
 
 /** @brief Converts an image from LUV color space to BGR color space.
 
@@ -1494,7 +1777,9 @@ Output image must be 8-bit unsigned 3-channel image @ref CV_8UC3.
 @param src input image: 8-bit unsigned 3-channel image @ref CV_8UC3.
 @sa BGR2LUV
 */
-GAPI_EXPORTS GMat LUV2BGR(const GMat& src);
+GAPI_EXPORTS GMat
+
+LUV2BGR(const GMat &src);
 
 /** @brief Converts an image from YUV color space to BGR color space.
 
@@ -1508,7 +1793,9 @@ Output image must be 8-bit unsigned 3-channel image @ref CV_8UC3.
 @param src input image: 8-bit unsigned 3-channel image @ref CV_8UC3.
 @sa BGR2YUV
 */
-GAPI_EXPORTS GMat YUV2BGR(const GMat& src);
+GAPI_EXPORTS GMat
+
+YUV2BGR(const GMat &src);
 
 /** @brief Converts an image from BGR color space to YUV color space.
 
@@ -1522,7 +1809,9 @@ Output image must be 8-bit unsigned 3-channel image @ref CV_8UC3.
 @param src input image: 8-bit unsigned 3-channel image @ref CV_8UC3.
 @sa YUV2BGR
 */
-GAPI_EXPORTS GMat BGR2YUV(const GMat& src);
+GAPI_EXPORTS GMat
+
+BGR2YUV(const GMat &src);
 
 /** @brief Converts an image from RGB color space to Lab color space.
 
@@ -1536,7 +1825,9 @@ Output image must be 8-bit unsigned 3-channel image @ref CV_8UC1.
 @param src input image: 8-bit unsigned 3-channel image @ref CV_8UC1.
 @sa RGB2YUV, RGB2LUV
 */
-GAPI_EXPORTS GMat RGB2Lab(const GMat& src);
+GAPI_EXPORTS GMat
+
+RGB2Lab(const GMat &src);
 
 /** @brief Converts an image from YUV color space to RGB.
 The function converts an input image from YUV color space to RGB.
@@ -1550,7 +1841,9 @@ Output image must be 8-bit unsigned 3-channel image @ref CV_8UC3.
 
 @sa RGB2Lab, RGB2YUV
 */
-GAPI_EXPORTS GMat YUV2RGB(const GMat& src);
+GAPI_EXPORTS GMat
+
+YUV2RGB(const GMat &src);
 
 /** @brief Converts an image from NV12 (YUV420p) color space to RGB.
 The function converts an input image from NV12 color space to RGB.
@@ -1565,7 +1858,9 @@ Output image must be 8-bit unsigned 3-channel image @ref CV_8UC3.
 
 @sa YUV2RGB, NV12toBGR
 */
-GAPI_EXPORTS GMat NV12toRGB(const GMat& src_y, const GMat& src_uv);
+GAPI_EXPORTS GMat
+
+NV12toRGB(const GMat &src_y, const GMat &src_uv);
 
 /** @brief Converts an image from NV12 (YUV420p) color space to gray-scaled.
 The function converts an input image from NV12 color space to gray-scaled.
@@ -1580,7 +1875,9 @@ Output image must be 8-bit unsigned 1-channel image @ref CV_8UC1.
 
 @sa YUV2RGB, NV12toBGR
 */
-GAPI_EXPORTS GMat NV12toGray(const GMat& src_y, const GMat& src_uv);
+GAPI_EXPORTS GMat
+
+NV12toGray(const GMat &src_y, const GMat &src_uv);
 
 /** @brief Converts an image from NV12 (YUV420p) color space to BGR.
 The function converts an input image from NV12 color space to RGB.
@@ -1595,7 +1892,9 @@ Output image must be 8-bit unsigned 3-channel image @ref CV_8UC3.
 
 @sa YUV2BGR, NV12toRGB
 */
-GAPI_EXPORTS GMat NV12toBGR(const GMat& src_y, const GMat& src_uv);
+GAPI_EXPORTS GMat
+
+NV12toBGR(const GMat &src_y, const GMat &src_uv);
 
 /** @brief Converts an image from BayerGR color space to RGB.
 The function converts an input image from BayerGR color space to RGB.
@@ -1609,7 +1908,9 @@ Output image must be 8-bit unsigned 3-channel image @ref CV_8UC3.
 
 @sa YUV2BGR, NV12toRGB
 */
-GAPI_EXPORTS GMat BayerGR2RGB(const GMat& src_gr);
+GAPI_EXPORTS GMat
+
+BayerGR2RGB(const GMat &src_gr);
 
 /** @brief Converts an image from RGB color space to HSV.
 The function converts an input image from RGB color space to HSV.
@@ -1623,7 +1924,9 @@ Output image must be 8-bit unsigned 3-channel image @ref CV_8UC3.
 
 @sa YUV2BGR, NV12toRGB
 */
-GAPI_EXPORTS GMat RGB2HSV(const GMat& src);
+GAPI_EXPORTS GMat
+
+RGB2HSV(const GMat &src);
 
 /** @brief Converts an image from RGB color space to YUV422.
 The function converts an input image from RGB color space to YUV422.
@@ -1637,7 +1940,9 @@ Output image must be 8-bit unsigned 2-channel image @ref CV_8UC2.
 
 @sa YUV2BGR, NV12toRGB
 */
-GAPI_EXPORTS GMat RGB2YUV422(const GMat& src);
+GAPI_EXPORTS GMat
+
+RGB2YUV422(const GMat &src);
 
 /** @brief Converts an image from NV12 (YUV420p) color space to RGB.
 The function converts an input image from NV12 color space to RGB.
@@ -1655,7 +1960,9 @@ image type is @ref CV_8UC1.
 
 @sa YUV2RGB, NV12toBGRp, NV12toRGB
 */
-GAPI_EXPORTS GMatP NV12toRGBp(const GMat &src_y, const GMat &src_uv);
+GAPI_EXPORTS GMatP
+
+NV12toRGBp(const GMat &src_y, const GMat &src_uv);
 
 /** @brief Converts an image from NV12 (YUV420p) color space to BGR.
 The function converts an input image from NV12 color space to BGR.
@@ -1673,7 +1980,9 @@ image type is @ref CV_8UC1.
 
 @sa YUV2RGB, NV12toRGBp, NV12toBGR
 */
-GAPI_EXPORTS GMatP NV12toBGRp(const GMat &src_y, const GMat &src_uv);
+GAPI_EXPORTS GMatP
+
+NV12toBGRp(const GMat &src_y, const GMat &src_uv);
 
 //! @} gapi_colorconvert
 } //namespace gapi

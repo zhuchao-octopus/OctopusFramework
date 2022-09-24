@@ -1,5 +1,5 @@
 package com.zhuchao.android.fileutils;
 
-public interface CourierEventListener {
+public interface TCourierEventListener {
     boolean onCourierEvent(EventCourier eventCourier);
 }

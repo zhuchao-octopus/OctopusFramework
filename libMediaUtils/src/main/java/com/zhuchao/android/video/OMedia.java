@@ -19,17 +19,16 @@ import com.zhuchao.android.callbackevent.PlayerStatusInfo;
 import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.MediaFile;
+import com.zhuchao.android.persist.SPreference;
 import com.zhuchao.android.player.PlayControl;
 import com.zhuchao.android.player.PlayerManager;
 import com.zhuchao.android.player.dlna.DLNAUtil;
-import com.zhuchao.android.persist.SPreference;
 
 import org.cybergarage.upnp.Device;
 
 import java.io.FileDescriptor;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Map;
 
 
@@ -228,8 +227,7 @@ public class OMedia implements Serializable, PlayerCallback {
         getOPlayer().play();
     }
 
-    public void pushTo(String fromHost, Device toDevice, boolean duplicated)
-    {
+    public void pushTo(String fromHost, Device toDevice, boolean duplicated) {
         boolean isExternalLinks = FileUtils.isExternalLinks(getPathName());
 
         if (!isExternalLinks) {
@@ -241,20 +239,16 @@ public class OMedia implements Serializable, PlayerCallback {
             play();
         }
 
-        if (isExternalLinks)
-        {
+        if (isExternalLinks) {
             DLNAUtil.shareTo(getPathName(), toDevice);
             MMLog.log(TAG, "from device " + fromHost + " share to " + toDevice.getFriendlyName() + ",duplicated = " + duplicated);
-        }
-        else
-        {
+        } else {
             DLNAUtil.shareTo("rtsp://" + fromHost + ":8554/0", toDevice);
             MMLog.log(TAG, "from device " + fromHost + " push to " + toDevice.getFriendlyName() + ",duplicated = " + duplicated);
         }
     }
 
-    public void pushToDevices(String fromHost, ArrayList<Device> toDevices, boolean duplicated)
-    {
+    public void pushToDevices(String fromHost, ArrayList<Device> toDevices, boolean duplicated) {
         boolean isExternalLinks = FileUtils.isExternalLinks(getPathName());
 
         if (!isExternalLinks) {
@@ -266,8 +260,7 @@ public class OMedia implements Serializable, PlayerCallback {
             play();
         }
 
-        for(Device toDevice:toDevices)
-        {
+        for (Device toDevice : toDevices) {
             //Device toDevice = (Device)device
             if (isExternalLinks) {
                 DLNAUtil.shareTo(getPathName(), toDevice);
@@ -589,14 +582,13 @@ public class OMedia implements Serializable, PlayerCallback {
         else if (NotEmptyString(cachePath) && FileUtils.existFile(cachePath + "/" + movie.getName()))
             bf = MediaFile.isMediaFile(cachePath + "/" + movie.getName());
         //else if (FileUtils.getExtNameFromPathName(movie.getsUrl().toLowerCase(Locale.ROOT).equals("flv")))
-         //   bf = true;
+        //   bf = true;
         return bf;
     }
 
     protected PlayControl getOPlayer() {
         if (this.context == null) return null;
-        if (FPlayer == null)
-        {
+        if (FPlayer == null) {
             switch (magicNumber) {
                 case 0:
                 default:
@@ -641,8 +633,7 @@ public class OMedia implements Serializable, PlayerCallback {
         }
     }
 
-    public void freeFree()
-    {
+    public void freeFree() {
         free();
         PlayerManager.free();
     }

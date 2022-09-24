@@ -19,7 +19,7 @@ import android.text.TextUtils;
 
 import androidx.core.content.FileProvider;
 
-import com.zhuchao.android.callbackevent.ApplicationChangedCallback;
+import com.zhuchao.android.callbackevent.AppChangedListener;
 import com.zhuchao.android.libfileutils.BuildConfig;
 
 import java.io.File;
@@ -34,7 +34,7 @@ public class TAppUtils {
     public static final String SCANING_COMPLETE_ACTION = "SCANINGCOMPLETE";
 
     private Context mContext;
-    private ApplicationChangedCallback mApplicationChangedCallback = null;
+    private AppChangedListener mAppChangedCallback = null;
     //private ExecutorService mExecutorService;
     private PackageManager mPackageManager;
     private List<AppInfo> AllAppInfo = null;
@@ -44,7 +44,7 @@ public class TAppUtils {
 
     public TAppUtils(Context context) {
         mContext = context;
-        mApplicationChangedCallback = null;
+        mAppChangedCallback = null;
         mPackageManager = mContext.getPackageManager();
         AllAppInfo = new ArrayList<AppInfo>();
         //mExecutorService = Executors.newSingleThreadExecutor();
@@ -158,18 +158,18 @@ public class TAppUtils {
     }
 
     private void callUserCallback(String packageName) {
-        if ((mApplicationChangedCallback != null)) {
+        if ((mAppChangedCallback != null)) {
             ThreadUtils.runOnMainUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mApplicationChangedCallback.onApplicationChanged(SCANING_COMPLETE_ACTION, packageName);
+                    mAppChangedCallback.onApplicationChanged(SCANING_COMPLETE_ACTION, packageName);
                 }
             });
         }
     }
 
-    public void setApplicationChangedListener(ApplicationChangedCallback applicationChangedCallback) {
-        mApplicationChangedCallback = applicationChangedCallback;
+    public void setApplicationChangedListener(AppChangedListener appChangedCallback) {
+        mAppChangedCallback = appChangedCallback;
     }
 
     public void free() {
@@ -342,8 +342,7 @@ public class TAppUtils {
             List<UsageStats> UsageStatsList = getUsageStatsList(context, startTime, endTime);
             if (UsageStatsList == null || UsageStatsList.isEmpty()) return null;
 
-            for (UsageStats usageStats : UsageStatsList)
-            {
+            for (UsageStats usageStats : UsageStatsList) {
                 if (TextUtils.equals(usageStats.getPackageName(), context.getPackageName())) {
                     return usageStats;
                 }
@@ -359,7 +358,7 @@ public class TAppUtils {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             topClassName = activityManager.getRunningTasks(1).get(0).topActivity.getPackageName();
         } else {
-            UsageStats initStat = getForegroundUsageStats(context, END_TIME - 60000*60, END_TIME);
+            UsageStats initStat = getForegroundUsageStats(context, END_TIME - 60000 * 60, END_TIME);
             if (initStat != null) {
                 topClassName = initStat.getPackageName();
                 MMLog.log(TAG, "getForegroundActivityName topClassName=" + topClassName);
@@ -400,13 +399,11 @@ public class TAppUtils {
      * 通过UsageStatsManager获取List<UsageStats>集合
      */
     public static List<UsageStats> getUsageStatsList(Context context, long startTime, long endTime) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             UsageStatsManager manager = (UsageStatsManager) context.getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
             //UsageStatsManager.INTERVAL_WEEKLY，UsageStatsManager的参数定义了5个，具体查阅源码
             List<UsageStats> UsageStatsList = manager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, startTime, endTime);
-            if (UsageStatsList == null || UsageStatsList.size() == 0)
-            {// 没有权限，获取不到数据
+            if (UsageStatsList == null || UsageStatsList.size() == 0) {// 没有权限，获取不到数据
                 //Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 //context.getApplicationContext().startActivity(intent);

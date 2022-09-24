@@ -1,6 +1,6 @@
 package com.zhuchao.android.callbackevent;
 
-public  class PlaybackEvent  {
+public class PlaybackEvent {
     public static final int MediaChanged = 256;
     public static final int Opening = 258;
     public static final int Buffering = 259;

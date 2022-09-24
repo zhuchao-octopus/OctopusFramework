@@ -11,23 +11,23 @@
 #include <opencv2/gapi/own/exports.hpp>
 
 namespace cv {
-namespace gapi {
+    namespace gapi {
 
 /**
  * @brief This namespace contains G-API serialization and
  * deserialization functions and data structures.
  */
-namespace s11n {
-struct IOStream;
-struct IIStream;
+        namespace s11n {
+            struct IOStream;
+            struct IIStream;
 
-namespace detail {
+            namespace detail {
 
 //! @addtogroup gapi_serialization
 //! @{
 
-struct NotImplemented {
-};
+                struct NotImplemented {
+                };
 
 /** @brief This structure allows to implement serialization routines for custom types.
  *
@@ -43,38 +43,40 @@ struct NotImplemented {
  * @snippet samples/cpp/tutorial_code/gapi/doc_snippets/api_ref_snippets.cpp S11N usage
  *
  */
-template<typename T>
-struct S11N: public NotImplemented {
-    /**
-     * @brief This function allows user to serialize their custom type.
-     *
-     * @note The default overload throws an exception if called. User need to
-     * properly overload the function to use it.
-     */
-    static void serialize(IOStream &, const T &) {
-        GAPI_Assert(false && "No serialization routine is provided!");
-    }
-    /**
-     * @brief This function allows user to deserialize their custom type.
-     *
-     * @note The default overload throws an exception if called. User need to
-     * properly overload the function to use it.
-     */
-    static T deserialize(IIStream &) {
-        GAPI_Assert(false && "No deserialization routine is provided!");
-    }
-};
+                template<typename T>
+                struct S11N : public NotImplemented {
+                    /**
+                     * @brief This function allows user to serialize their custom type.
+                     *
+                     * @note The default overload throws an exception if called. User need to
+                     * properly overload the function to use it.
+                     */
+                    static void serialize(IOStream &, const T &) {
+                        GAPI_Assert(false && "No serialization routine is provided!");
+                    }
+
+                    /**
+                     * @brief This function allows user to deserialize their custom type.
+                     *
+                     * @note The default overload throws an exception if called. User need to
+                     * properly overload the function to use it.
+                     */
+                    static T deserialize(IIStream &) {
+                        GAPI_Assert(false && "No deserialization routine is provided!");
+                    }
+                };
 
 /// @private -- Exclude this struct from OpenCV documentation
-template<typename T> struct has_S11N_spec {
-    static constexpr bool value = !std::is_base_of<NotImplemented,
-                                        S11N<typename std::decay<T>::type>>::value;
-};
+                template<typename T>
+                struct has_S11N_spec {
+                    static constexpr bool value = !std::is_base_of<NotImplemented,
+                            S11N<typename std::decay<T>::type>>::value;
+                };
 //! @} gapi_serialization
 
-} // namespace detail
-} // namespace s11n
-} // namespace gapi
+            } // namespace detail
+        } // namespace s11n
+    } // namespace gapi
 } // namespace cv
 
 #endif // OPENCV_GAPI_S11N_BASE_HPP

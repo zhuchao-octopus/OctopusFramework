@@ -4,7 +4,6 @@
 package org.opencv.videoio;
 
 
-
 // C++: class Videoio
 
 public class Videoio {
@@ -408,6 +407,7 @@ public class Videoio {
 
     /**
      * Returns backend API name or "UnknownVideoAPI(xxx)"
+     *
      * @param api backend ID (#VideoCaptureAPIs)
      * @return automatically generated
      */
@@ -450,6 +450,7 @@ public class Videoio {
 
     /**
      * Returns true if backend is available
+     *
      * @param api automatically generated
      * @return automatically generated
      */
@@ -464,6 +465,7 @@ public class Videoio {
 
     /**
      * Returns true if backend is built in (false if backend is used as plugin)
+     *
      * @param api automatically generated
      * @return automatically generated
      */
@@ -478,7 +480,8 @@ public class Videoio {
 
     /**
      * Returns description and ABI/API version of videoio plugin's camera interface
-     * @param api automatically generated
+     *
+     * @param api         automatically generated
      * @param version_ABI automatically generated
      * @param version_API automatically generated
      * @return automatically generated
@@ -487,8 +490,8 @@ public class Videoio {
         double[] version_ABI_out = new double[1];
         double[] version_API_out = new double[1];
         String retVal = getCameraBackendPluginVersion_0(api, version_ABI_out, version_API_out);
-        if(version_ABI!=null) version_ABI[0] = (int)version_ABI_out[0];
-        if(version_API!=null) version_API[0] = (int)version_API_out[0];
+        if (version_ABI != null) version_ABI[0] = (int) version_ABI_out[0];
+        if (version_API != null) version_API[0] = (int) version_API_out[0];
         return retVal;
     }
 
@@ -499,7 +502,8 @@ public class Videoio {
 
     /**
      * Returns description and ABI/API version of videoio plugin's stream capture interface
-     * @param api automatically generated
+     *
+     * @param api         automatically generated
      * @param version_ABI automatically generated
      * @param version_API automatically generated
      * @return automatically generated
@@ -508,8 +512,8 @@ public class Videoio {
         double[] version_ABI_out = new double[1];
         double[] version_API_out = new double[1];
         String retVal = getStreamBackendPluginVersion_0(api, version_ABI_out, version_API_out);
-        if(version_ABI!=null) version_ABI[0] = (int)version_ABI_out[0];
-        if(version_API!=null) version_API[0] = (int)version_API_out[0];
+        if (version_ABI != null) version_ABI[0] = (int) version_ABI_out[0];
+        if (version_API != null) version_API[0] = (int) version_API_out[0];
         return retVal;
     }
 
@@ -520,7 +524,8 @@ public class Videoio {
 
     /**
      * Returns description and ABI/API version of videoio plugin's writer interface
-     * @param api automatically generated
+     *
+     * @param api         automatically generated
      * @param version_ABI automatically generated
      * @param version_API automatically generated
      * @return automatically generated
@@ -529,12 +534,10 @@ public class Videoio {
         double[] version_ABI_out = new double[1];
         double[] version_API_out = new double[1];
         String retVal = getWriterBackendPluginVersion_0(api, version_ABI_out, version_API_out);
-        if(version_ABI!=null) version_ABI[0] = (int)version_ABI_out[0];
-        if(version_API!=null) version_API[0] = (int)version_API_out[0];
+        if (version_ABI != null) version_ABI[0] = (int) version_ABI_out[0];
+        if (version_API != null) version_API[0] = (int) version_API_out[0];
         return retVal;
     }
-
-
 
 
     // C++:  String cv::videoio_registry::getBackendName(VideoCaptureAPIs api)

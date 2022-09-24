@@ -28,10 +28,10 @@ afterEvaluate {
 }
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     defaultConfig {
         minSdkVersion 24
-        targetSdkVersion 32
+        targetSdkVersion 33
     }
 
     buildTypes {
@@ -40,17 +40,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    namespace 'com.zhuchao.android.netutil'
 
+    namespace 'com.zhuchao.android.netutil'
 }
 
 dependencies {
     implementation project(path: ':libCallbackEvent')
     implementation project(path: ':libFileUitls')
 
-    api('com.google.code.gson:gson:2.9.0')
-    api('com.squareup.okhttp3:okhttp:5.0.0-alpha.7')
-    api('com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.7')
+    api('com.google.code.gson:gson:2.9.1')
+    api('com.squareup.okhttp3:okhttp:5.0.0-alpha.8')
+    api('com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.8')
 }
 
 

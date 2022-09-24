@@ -129,11 +129,12 @@ public class FilesFinger extends ObjectList {
             //MMLog.log(TAG,"do not exists dir "+dirPath);
             return;
         }
-        if (!dirList.contains(dirPath))
-        {
+        if (!dirList.contains(dirPath)) {
             ScanThread scanThread = new ScanThread();
             dirList.add(dirPath);
-            synchronized (threadPool){threadPool.add(scanThread);}
+            synchronized (threadPool) {
+                threadPool.add(scanThread);
+            }
             scanThread.tag = dirPath;
             stopScan = false;
             scanThread.start();
@@ -197,10 +198,12 @@ public class FilesFinger extends ObjectList {
                 getFiles(tag);
             }
             ////////////////////////////////////////////////////////////////////////////////////////
-            synchronized (threadPool){if (threadPool.contains(this)) {
-                threadPool.remove(this);
-                //MMLog.log(TAG,"return "+getCount()+ ":" + tag);
-            }}
+            synchronized (threadPool) {
+                if (threadPool.contains(this)) {
+                    threadPool.remove(this);
+                    //MMLog.log(TAG,"return "+getCount()+ ":" + tag);
+                }
+            }
             if (RequestCallBack != null && threadPool.isEmpty()) {
                 RequestCallBack.onEventRequest("EndTimeElapsed:" + (System.currentTimeMillis() - lStart) + "ms-->" + tag, getCount());
             }

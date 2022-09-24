@@ -72,9 +72,8 @@ public final class AESCrypt {
     /**
      * Encrypt and encode message using 256-bit AES with key generated from password.
      *
-     *
      * @param password used to generated key
-     * @param message the thing you want to encrypt assumed String UTF-8
+     * @param message  the thing you want to encrypt assumed String UTF-8
      * @return Base64 encoded CipherText
      * @throws GeneralSecurityException if problems occur during encryption
      */
@@ -102,8 +101,9 @@ public final class AESCrypt {
 
     /**
      * More flexible AES encrypt that doesn't encode
-     * @param key AES key typically 128, 192 or 256 bit
-     * @param iv Initiation Vector
+     *
+     * @param key     AES key typically 128, 192 or 256 bit
+     * @param iv      Initiation Vector
      * @param message in bytes (assumed it's already been decoded)
      * @return Encrypted cipher text (not encoded)
      * @throws GeneralSecurityException if something goes wrong during encryption
@@ -124,7 +124,7 @@ public final class AESCrypt {
     /**
      * Decrypt and decode ciphertext using 256-bit AES with key generated from password
      *
-     * @param password used to generated key
+     * @param password                used to generated key
      * @param base64EncodedCipherText the encrpyted message encoded with base64
      * @return message in Plain text (String UTF-8)
      * @throws GeneralSecurityException if there's an issue decrypting
@@ -159,25 +159,23 @@ public final class AESCrypt {
     /**
      * More flexible AES decrypt that doesn't encode
      *
-     * @param key AES key typically 128, 192 or 256 bit
-     * @param iv Initiation Vector
+     * @param key               AES key typically 128, 192 or 256 bit
+     * @param iv                Initiation Vector
      * @param decodedCipherText in bytes (assumed it's already been decoded)
      * @return Decrypted message cipher text (not encoded)
      * @throws GeneralSecurityException if something goes wrong during encryption
      */
     public static byte[] decrypt(final SecretKeySpec key, final byte[] iv, final byte[] decodedCipherText)
             throws GeneralSecurityException {
-            final Cipher cipher = Cipher.getInstance(AES_MODE);
-            IvParameterSpec ivSpec = new IvParameterSpec(iv);
-            cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
-            byte[] decryptedBytes = cipher.doFinal(decodedCipherText);
+        final Cipher cipher = Cipher.getInstance(AES_MODE);
+        IvParameterSpec ivSpec = new IvParameterSpec(iv);
+        cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
+        byte[] decryptedBytes = cipher.doFinal(decodedCipherText);
 
-            log("decryptedBytes", decryptedBytes);
+        log("decryptedBytes", decryptedBytes);
 
-            return decryptedBytes;
+        return decryptedBytes;
     }
-
-
 
 
     private static void log(String what, byte[] bytes) {
@@ -193,6 +191,7 @@ public final class AESCrypt {
 
     /**
      * Converts byte array to hexidecimal useful for logging and fault finding
+     *
      * @param bytes
      * @return
      */

@@ -17,7 +17,7 @@ package com.zhuchao.android.session.PaserBean;
 /*
  * Movie class represents video entity with videoName, description, image thumbs and video url.
  */
-public class MovieBean  {
+public class MovieBean {
     private int movieId;
     private String movieName;
     private String movieType;

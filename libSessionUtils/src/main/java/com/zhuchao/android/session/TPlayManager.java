@@ -113,7 +113,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     }
 
     public synchronized void startPlay(FileDescriptor FD) {
-        oMedia =getOMediaFromPlayLists(FD.toString());// defaultPlayingList.findByPath(FD.toString());
+        oMedia = getOMediaFromPlayLists(FD.toString());// defaultPlayingList.findByPath(FD.toString());
         if (oMedia == null) {
             oMedia = new OMedia(FD);
         }
@@ -185,7 +185,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                     autoPlay();
                 break;
             case PlaybackEvent.Status_Stopped:
-                    resumePlay();
+                resumePlay();
                 break;
             case PlaybackEvent.Status_Ended:
             case PlaybackEvent.Status_Error:
@@ -238,11 +238,9 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         this.surfaceView = sfView;
     }
 
-    public synchronized void attachSurfaceView(@NonNull SurfaceView sfView)
-    {
+    public synchronized void attachSurfaceView(@NonNull SurfaceView sfView) {
         this.surfaceView = sfView;
-        if(oMedia != null)
-        {
+        if (oMedia != null) {
             oMedia.reAttachSurfaceView(surfaceView);
         }
     }
@@ -286,18 +284,15 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     //public VideoList getFavoriteList() {
     //    return favoriteList;
     //}
-    public void addPlayList(String name,VideoList videoList)
-    {
-        allPlayLists.addItem(name,videoList);
+    public void addPlayList(String name, VideoList videoList) {
+        allPlayLists.addItem(name, videoList);
     }
 
-    public VideoList getPlayList(String name)
-    {
+    public VideoList getPlayList(String name) {
         return (VideoList) allPlayLists.getObject(name);
     }
 
-    public void DeletePlayList(String name)
-    {
+    public void DeletePlayList(String name) {
         allPlayLists.delete(name);
     }
 
@@ -412,20 +407,17 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     private OMedia getNextAvailable() {
         Collection<Object> objects = allPlayLists.getAllObject();
-        if(oMedia == null)
-        {
-            for (Object o : objects)
-            {
-                OMedia oOMedia = ((VideoList)o).getNextAvailable(null);
-                if(oOMedia != null) return  oOMedia;
+        if (oMedia == null) {
+            for (Object o : objects) {
+                OMedia oOMedia = ((VideoList) o).getNextAvailable(null);
+                if (oOMedia != null) return oOMedia;
             }
             return null;
         }
 
-        for (Object o : objects)
-        {
-            OMedia oOMedia = ((VideoList)o).getNextAvailable(oMedia);
-            if(oOMedia != null) return  oOMedia;
+        for (Object o : objects) {
+            OMedia oOMedia = ((VideoList) o).getNextAvailable(oMedia);
+            if (oOMedia != null) return oOMedia;
         }
         return null;
     }
@@ -433,53 +425,44 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     private OMedia getPreAvailable() {
         //OMedia ooMedia = null;
         Collection<Object> objects = allPlayLists.getAllObject();
-        if(oMedia == null)
-        {
-            for (Object o : objects)
-            {
-                OMedia oOMedia = ((VideoList)o).getPreAvailable(null);
-                if(oOMedia != null) return  oOMedia;
+        if (oMedia == null) {
+            for (Object o : objects) {
+                OMedia oOMedia = ((VideoList) o).getPreAvailable(null);
+                if (oOMedia != null) return oOMedia;
             }
             return null;
         }
 
-        for (Object o : objects)
-        {
-            OMedia oOMedia = ((VideoList)o).getPreAvailable(oMedia);
-            if(oOMedia != null) return  oOMedia;
+        for (Object o : objects) {
+            OMedia oOMedia = ((VideoList) o).getPreAvailable(oMedia);
+            if (oOMedia != null) return oOMedia;
         }
         return null;
     }
 
-    public OMedia getOMediaFromPlayLists(String urlPath)
-    {
+    public OMedia getOMediaFromPlayLists(String urlPath) {
         Collection<Object> objects = allPlayLists.getAllObject();
-        for (Object o : objects)
-        {
-            OMedia oMedia = ((VideoList)o).findByPath(urlPath);
-            if(oMedia != null) return  oMedia;
+        for (Object o : objects) {
+            OMedia oMedia = ((VideoList) o).findByPath(urlPath);
+            if (oMedia != null) return oMedia;
         }
         return null;
     }
 
-    public OMedia getFirstOMediaFromPlayLists()
-    {
+    public OMedia getFirstOMediaFromPlayLists() {
         Collection<Object> objects = allPlayLists.getAllObject();
-        for (Object o : objects)
-        {
-            OMedia oMedia = ((VideoList)o).getFirstItem();
-            if(oMedia != null) return  oMedia;
+        for (Object o : objects) {
+            OMedia oMedia = ((VideoList) o).getFirstItem();
+            if (oMedia != null) return oMedia;
         }
         return null;
     }
 
-    public OMedia getRandomOMediaFromPlayLists()
-    {
+    public OMedia getRandomOMediaFromPlayLists() {
         Collection<Object> objects = allPlayLists.getAllObject();
-        for (Object o : objects)
-        {
-            OMedia oMedia = ((VideoList)o).findAny();
-            if(oMedia != null) return  oMedia;
+        for (Object o : objects) {
+            OMedia oMedia = ((VideoList) o).findAny();
+            if (oMedia != null) return oMedia;
         }
         return null;
     }
@@ -505,7 +488,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                 //if (favoriteList.getCount() > 0)
                 //    ooMedia = favoriteList.getFirstItem();//优先切换到第二收藏列表，优先播放收藏列表
                 //
-                    ooMedia = getFirstOMediaFromPlayLists();//defaultPlayingList.getFirstItem();
+                ooMedia = getFirstOMediaFromPlayLists();//defaultPlayingList.getFirstItem();
                 break;
             default:
                 break;
@@ -616,18 +599,18 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                 case PlaybackEvent.Status_Opening:
                 case PlaybackEvent.Status_Buffering:
                 case PlaybackEvent.Status_Playing:
-                //case PlaybackEvent.Status_Paused:
-                //case PlaybackEvent.Status_Stopped:
+                    //case PlaybackEvent.Status_Paused:
+                    //case PlaybackEvent.Status_Stopped:
                     //if (playerStatusInfo.isSurfacePrepared() == false)
                     //{ 这里无法确定surface的状态，异步状态下surface状态不无法确定
-                        //oMedia.reAttachSurfaceView(surfaceView);
-                        //playerStatusInfo.setLastError(0);
-                        //MMLog.log(TAG,"playerStatusInfo.isSurfacePrepared() = false");
+                    //oMedia.reAttachSurfaceView(surfaceView);
+                    //playerStatusInfo.setLastError(0);
+                    //MMLog.log(TAG,"playerStatusInfo.isSurfacePrepared() = false");
                     //}
                     break;
                 case PlaybackEvent.Status_Ended:
                 case PlaybackEvent.Status_Error:
-                break;
+                    break;
             }
             callback.onEventPlayerStatus(playerStatusInfo);
         }

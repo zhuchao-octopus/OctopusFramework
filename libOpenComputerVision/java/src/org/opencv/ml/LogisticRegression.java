@@ -5,21 +5,24 @@ package org.opencv.ml;
 
 import org.opencv.core.Mat;
 import org.opencv.core.TermCriteria;
-import org.opencv.ml.LogisticRegression;
-import org.opencv.ml.StatModel;
 
 // C++: class LogisticRegression
+
 /**
  * Implements Logistic Regression classifier.
- *
+ * <p>
  * SEE: REF: ml_intro_lr
  */
 public class LogisticRegression extends StatModel {
 
-    protected LogisticRegression(long addr) { super(addr); }
+    protected LogisticRegression(long addr) {
+        super(addr);
+    }
 
     // internal usage only
-    public static LogisticRegression __fromPtr__(long addr) { return new LogisticRegression(addr); }
+    public static LogisticRegression __fromPtr__(long addr) {
+        return new LogisticRegression(addr);
+    }
 
     // C++: enum Methods (cv.ml.LogisticRegression.Methods)
     public static final int
@@ -40,6 +43,7 @@ public class LogisticRegression extends StatModel {
 
     /**
      * SEE: setLearningRate
+     *
      * @return automatically generated
      */
     public double getLearningRate() {
@@ -52,7 +56,8 @@ public class LogisticRegression extends StatModel {
     //
 
     /**
-     *  getLearningRate SEE: getLearningRate
+     * getLearningRate SEE: getLearningRate
+     *
      * @param val automatically generated
      */
     public void setLearningRate(double val) {
@@ -66,6 +71,7 @@ public class LogisticRegression extends StatModel {
 
     /**
      * SEE: setIterations
+     *
      * @return automatically generated
      */
     public int getIterations() {
@@ -78,7 +84,8 @@ public class LogisticRegression extends StatModel {
     //
 
     /**
-     *  getIterations SEE: getIterations
+     * getIterations SEE: getIterations
+     *
      * @param val automatically generated
      */
     public void setIterations(int val) {
@@ -92,6 +99,7 @@ public class LogisticRegression extends StatModel {
 
     /**
      * SEE: setRegularization
+     *
      * @return automatically generated
      */
     public int getRegularization() {
@@ -104,7 +112,8 @@ public class LogisticRegression extends StatModel {
     //
 
     /**
-     *  getRegularization SEE: getRegularization
+     * getRegularization SEE: getRegularization
+     *
      * @param val automatically generated
      */
     public void setRegularization(int val) {
@@ -118,6 +127,7 @@ public class LogisticRegression extends StatModel {
 
     /**
      * SEE: setTrainMethod
+     *
      * @return automatically generated
      */
     public int getTrainMethod() {
@@ -130,7 +140,8 @@ public class LogisticRegression extends StatModel {
     //
 
     /**
-     *  getTrainMethod SEE: getTrainMethod
+     * getTrainMethod SEE: getTrainMethod
+     *
      * @param val automatically generated
      */
     public void setTrainMethod(int val) {
@@ -144,6 +155,7 @@ public class LogisticRegression extends StatModel {
 
     /**
      * SEE: setMiniBatchSize
+     *
      * @return automatically generated
      */
     public int getMiniBatchSize() {
@@ -156,7 +168,8 @@ public class LogisticRegression extends StatModel {
     //
 
     /**
-     *  getMiniBatchSize SEE: getMiniBatchSize
+     * getMiniBatchSize SEE: getMiniBatchSize
+     *
      * @param val automatically generated
      */
     public void setMiniBatchSize(int val) {
@@ -170,6 +183,7 @@ public class LogisticRegression extends StatModel {
 
     /**
      * SEE: setTermCriteria
+     *
      * @return automatically generated
      */
     public TermCriteria getTermCriteria() {
@@ -182,7 +196,8 @@ public class LogisticRegression extends StatModel {
     //
 
     /**
-     *  getTermCriteria SEE: getTermCriteria
+     * getTermCriteria SEE: getTermCriteria
+     *
      * @param val automatically generated
      */
     public void setTermCriteria(TermCriteria val) {
@@ -197,10 +212,10 @@ public class LogisticRegression extends StatModel {
     /**
      * Predicts responses for input samples and returns a float type.
      *
-     *     @param samples The input data for the prediction algorithm. Matrix [m x n], where each row
-     *         contains variables (features) of one object being classified. Should have data type CV_32F.
-     *     @param results Predicted labels as a column matrix of type CV_32S.
-     *     @param flags Not used.
+     * @param samples The input data for the prediction algorithm. Matrix [m x n], where each row
+     *                contains variables (features) of one object being classified. Should have data type CV_32F.
+     * @param results Predicted labels as a column matrix of type CV_32S.
+     * @param flags   Not used.
      * @return automatically generated
      */
     public float predict(Mat samples, Mat results, int flags) {
@@ -210,9 +225,9 @@ public class LogisticRegression extends StatModel {
     /**
      * Predicts responses for input samples and returns a float type.
      *
-     *     @param samples The input data for the prediction algorithm. Matrix [m x n], where each row
-     *         contains variables (features) of one object being classified. Should have data type CV_32F.
-     *     @param results Predicted labels as a column matrix of type CV_32S.
+     * @param samples The input data for the prediction algorithm. Matrix [m x n], where each row
+     *                contains variables (features) of one object being classified. Should have data type CV_32F.
+     * @param results Predicted labels as a column matrix of type CV_32S.
      * @return automatically generated
      */
     public float predict(Mat samples, Mat results) {
@@ -222,8 +237,8 @@ public class LogisticRegression extends StatModel {
     /**
      * Predicts responses for input samples and returns a float type.
      *
-     *     @param samples The input data for the prediction algorithm. Matrix [m x n], where each row
-     *         contains variables (features) of one object being classified. Should have data type CV_32F.
+     * @param samples The input data for the prediction algorithm. Matrix [m x n], where each row
+     *                contains variables (features) of one object being classified. Should have data type CV_32F.
      * @return automatically generated
      */
     public float predict(Mat samples) {
@@ -237,9 +252,10 @@ public class LogisticRegression extends StatModel {
 
     /**
      * This function returns the trained parameters arranged across rows.
+     * <p>
+     * For a two class classification problem, it returns a row matrix. It returns learnt parameters of
+     * the Logistic Regression as a matrix of type CV_32F.
      *
-     *     For a two class classification problem, it returns a row matrix. It returns learnt parameters of
-     *     the Logistic Regression as a matrix of type CV_32F.
      * @return automatically generated
      */
     public Mat get_learnt_thetas() {
@@ -253,8 +269,9 @@ public class LogisticRegression extends StatModel {
 
     /**
      * Creates empty model.
+     * <p>
+     * Creates Logistic Regression model with parameters given.
      *
-     *     Creates Logistic Regression model with parameters given.
      * @return automatically generated
      */
     public static LogisticRegression create() {
@@ -268,7 +285,7 @@ public class LogisticRegression extends StatModel {
 
     /**
      * Loads and creates a serialized LogisticRegression from a file
-     *
+     * <p>
      * Use LogisticRegression::save to serialize and store an LogisticRegression to disk.
      * Load the LogisticRegression from this file again, by calling this function with the path to the file.
      * Optionally specify the node for the file containing the classifier
@@ -283,7 +300,7 @@ public class LogisticRegression extends StatModel {
 
     /**
      * Loads and creates a serialized LogisticRegression from a file
-     *
+     * <p>
      * Use LogisticRegression::save to serialize and store an LogisticRegression to disk.
      * Load the LogisticRegression from this file again, by calling this function with the path to the file.
      * Optionally specify the node for the file containing the classifier
@@ -300,7 +317,6 @@ public class LogisticRegression extends StatModel {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
 
 
     // C++:  double cv::ml::LogisticRegression::getLearningRate()
@@ -341,7 +357,9 @@ public class LogisticRegression extends StatModel {
 
     // C++:  float cv::ml::LogisticRegression::predict(Mat samples, Mat& results = Mat(), int flags = 0)
     private static native float predict_0(long nativeObj, long samples_nativeObj, long results_nativeObj, int flags);
+
     private static native float predict_1(long nativeObj, long samples_nativeObj, long results_nativeObj);
+
     private static native float predict_2(long nativeObj, long samples_nativeObj);
 
     // C++:  Mat cv::ml::LogisticRegression::get_learnt_thetas()
@@ -352,6 +370,7 @@ public class LogisticRegression extends StatModel {
 
     // C++: static Ptr_LogisticRegression cv::ml::LogisticRegression::load(String filepath, String nodeName = String())
     private static native long load_0(String filepath, String nodeName);
+
     private static native long load_1(String filepath);
 
     // native support for java finalize()

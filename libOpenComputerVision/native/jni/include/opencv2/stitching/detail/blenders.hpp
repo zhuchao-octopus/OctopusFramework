@@ -51,7 +51,7 @@
 #include "opencv2/core/cuda.hpp"
 
 namespace cv {
-namespace detail {
+    namespace detail {
 
 //! @addtogroup stitching_blend
 //! @{
@@ -60,86 +60,110 @@ namespace detail {
 
 Simple blender which puts one image over another
 */
-class CV_EXPORTS_W Blender
-{
-public:
-    virtual ~Blender() {}
+        class CV_EXPORTS_W Blender
+                {
+                        public:
+                        virtual ~Blender() {}
 
-    enum { NO, FEATHER, MULTI_BAND };
-    CV_WRAP static Ptr<Blender> createDefault(int type, bool try_gpu = false);
+                        enum { NO, FEATHER, MULTI_BAND };
+                        CV_WRAP static Ptr<Blender> createDefault(int type, bool try_gpu = false);
 
-    /** @brief Prepares the blender for blending.
+                        /** @brief Prepares the blender for blending.
 
-    @param corners Source images top-left corners
-    @param sizes Source image sizes
-     */
-    CV_WRAP virtual void prepare(const std::vector<Point> &corners, const std::vector<Size> &sizes);
-    /** @overload */
-    CV_WRAP virtual void prepare(Rect dst_roi);
-    /** @brief Processes the image.
+                        @param corners Source images top-left corners
+                        @param sizes Source image sizes
+                         */
+                        CV_WRAP virtual void prepare(const std::vector<Point> &corners, const std::vector<Size> &sizes);
+                        /** @overload */
+                        CV_WRAP virtual void prepare(Rect dst_roi);
+                        /** @brief Processes the image.
 
-    @param img Source image
-    @param mask Source image mask
-    @param tl Source image top-left corners
-     */
-    CV_WRAP virtual void feed(InputArray img, InputArray mask, Point tl);
-    /** @brief Blends and returns the final pano.
+                        @param img Source image
+                        @param mask Source image mask
+                        @param tl Source image top-left corners
+                         */
+                        CV_WRAP virtual void feed(InputArray img, InputArray mask, Point tl);
+                        /** @brief Blends and returns the final pano.
 
-    @param dst Final pano
-    @param dst_mask Final pano mask
-     */
-    CV_WRAP virtual void blend(CV_IN_OUT InputOutputArray dst,CV_IN_OUT  InputOutputArray dst_mask);
+                        @param dst Final pano
+                        @param dst_mask Final pano mask
+                         */
+                        CV_WRAP virtual void blend(CV_IN_OUT InputOutputArray dst, CV_IN_OUT  InputOutputArray dst_mask);
 
-protected:
-    UMat dst_, dst_mask_;
-    Rect dst_roi_;
-};
+                        protected:
+                        UMat dst_, dst_mask_;
+                        Rect dst_roi_;
+                };
 
 /** @brief Simple blender which mixes images at its borders.
  */
-class CV_EXPORTS_W FeatherBlender : public Blender
-{
-public:
-    CV_WRAP FeatherBlender(float sharpness = 0.02f);
+        class CV_EXPORTS_W FeatherBlender
 
-    CV_WRAP float sharpness() const { return sharpness_; }
-    CV_WRAP void setSharpness(float val) { sharpness_ = val; }
+        : public Blender {
+        public:
 
-    CV_WRAP void prepare(Rect dst_roi) CV_OVERRIDE;
-    CV_WRAP void feed(InputArray img, InputArray mask, Point tl) CV_OVERRIDE;
-    CV_WRAP void blend(InputOutputArray dst, InputOutputArray dst_mask) CV_OVERRIDE;
+        CV_WRAP FeatherBlender(float sharpness = 0.02f);
 
-    //! Creates weight maps for fixed set of source images by their masks and top-left corners.
-    //! Final image can be obtained by simple weighting of the source images.
-    CV_WRAP Rect createWeightMaps(const std::vector<UMat> &masks, const std::vector<Point> &corners,
-        CV_IN_OUT std::vector<UMat> &weight_maps);
+        CV_WRAP float sharpness() const { return sharpness_; }
 
-private:
-    float sharpness_;
-    UMat weight_map_;
-    UMat dst_weight_map_;
-};
+        CV_WRAP void setSharpness(float val) { sharpness_ = val; }
 
-inline FeatherBlender::FeatherBlender(float _sharpness) { setSharpness(_sharpness); }
+        CV_WRAP void prepare(Rect dst_roi)
+
+        CV_OVERRIDE;
+
+        CV_WRAP void feed(InputArray img, InputArray mask, Point tl)
+
+        CV_OVERRIDE;
+
+        CV_WRAP void blend(InputOutputArray dst, InputOutputArray dst_mask)
+
+        CV_OVERRIDE;
+
+        //! Creates weight maps for fixed set of source images by their masks and top-left corners.
+        //! Final image can be obtained by simple weighting of the source images.
+        CV_WRAP Rect
+
+        createWeightMaps(const std::vector <UMat> &masks, const std::vector <Point> &corners,
+                         CV_IN_OUT std::vector <UMat> &weight_maps);
+
+        private:
+        float sharpness_;
+        UMat weight_map_;
+        UMat dst_weight_map_;
+    };
+
+    inline FeatherBlender::FeatherBlender(float _sharpness) { setSharpness(_sharpness); }
 
 /** @brief Blender which uses multi-band blending algorithm (see @cite BA83).
  */
-class CV_EXPORTS_W MultiBandBlender : public Blender
-{
-public:
+    class CV_EXPORTS_W MultiBandBlender
+
+    : public Blender {
+    public:
+
     CV_WRAP MultiBandBlender(int try_gpu = false, int num_bands = 5, int weight_type = CV_32F);
 
     CV_WRAP int numBands() const { return actual_num_bands_; }
+
     CV_WRAP void setNumBands(int val) { actual_num_bands_ = val; }
 
-    CV_WRAP void prepare(Rect dst_roi) CV_OVERRIDE;
-    CV_WRAP void feed(InputArray img, InputArray mask, Point tl) CV_OVERRIDE;
-    CV_WRAP void blend(CV_IN_OUT InputOutputArray dst, CV_IN_OUT InputOutputArray dst_mask) CV_OVERRIDE;
+    CV_WRAP void prepare(Rect dst_roi)
 
-private:
+    CV_OVERRIDE;
+
+    CV_WRAP void feed(InputArray img, InputArray mask, Point tl)
+
+    CV_OVERRIDE;
+
+    CV_WRAP void blend(CV_IN_OUT InputOutputArray dst, CV_IN_OUT InputOutputArray dst_mask)
+
+    CV_OVERRIDE;
+
+    private:
     int actual_num_bands_, num_bands_;
-    std::vector<UMat> dst_pyr_laplace_;
-    std::vector<UMat> dst_band_weights_;
+    std::vector <UMat> dst_pyr_laplace_;
+    std::vector <UMat> dst_band_weights_;
     Rect dst_roi_final_;
     bool can_use_gpu_;
     int weight_type_; //CV_32F or CV_16S
@@ -165,16 +189,41 @@ private:
 //////////////////////////////////////////////////////////////////////////////
 // Auxiliary functions
 
-void CV_EXPORTS_W normalizeUsingWeightMap(InputArray weight, CV_IN_OUT InputOutputArray src);
+void CV_EXPORTS_W
+normalizeUsingWeightMap(InputArray
+weight,
+CV_IN_OUT InputOutputArray
+src);
 
-void CV_EXPORTS_W createWeightMap(InputArray mask, float sharpness, CV_IN_OUT InputOutputArray weight);
+void CV_EXPORTS_W
+createWeightMap(InputArray
+mask,
+float sharpness, CV_IN_OUT
+InputOutputArray weight
+);
 
-void CV_EXPORTS_W createLaplacePyr(InputArray img, int num_levels, CV_IN_OUT std::vector<UMat>& pyr);
-void CV_EXPORTS_W createLaplacePyrGpu(InputArray img, int num_levels, CV_IN_OUT std::vector<UMat>& pyr);
+void CV_EXPORTS_W
+createLaplacePyr(InputArray
+img,
+int num_levels, CV_IN_OUT
+std::vector <UMat> &pyr
+);
+void CV_EXPORTS_W
+createLaplacePyrGpu(InputArray
+img,
+int num_levels, CV_IN_OUT
+std::vector <UMat> &pyr
+);
 
 // Restores source image
-void CV_EXPORTS_W restoreImageFromLaplacePyr(CV_IN_OUT std::vector<UMat>& pyr);
-void CV_EXPORTS_W restoreImageFromLaplacePyrGpu(CV_IN_OUT std::vector<UMat>& pyr);
+void CV_EXPORTS_W
+restoreImageFromLaplacePyr(CV_IN_OUT
+std::vector <UMat> &pyr
+);
+void CV_EXPORTS_W
+restoreImageFromLaplacePyrGpu(CV_IN_OUT
+std::vector <UMat> &pyr
+);
 
 //! @}
 

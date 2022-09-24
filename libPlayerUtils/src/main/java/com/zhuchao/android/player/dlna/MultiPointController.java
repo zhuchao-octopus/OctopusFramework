@@ -24,8 +24,8 @@ public class MultiPointController implements IController {
             return false;
         }
 
-        final Action transportAction  = service.getAction(SetAVTransportURI);
-        if (transportAction  == null) {
+        final Action transportAction = service.getAction(SetAVTransportURI);
+        if (transportAction == null) {
             MMLog.log(TAG, "failed action = null");
             return false;
         }

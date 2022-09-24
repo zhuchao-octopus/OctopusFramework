@@ -346,9 +346,7 @@ public class FileUtils {
         } catch (IOException e) {
             MMLog.e("CopyPasteUtil", "CopyPasteUtil copyFile error:" + e.getMessage());
             return false;
-        }
-        finally
-        {
+        } finally {
             try {
                 outbuff.flush();
                 inbuff.close();

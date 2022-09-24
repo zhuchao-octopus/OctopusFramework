@@ -23,7 +23,7 @@ public class PlayScheduleManager implements SessionCallback {
     //private ImplementProxy Ilpr = null;//new ImplementProxy();执行代理
     private List<ScheduleMedia> videoList;
     //private CountDownTimer mCountDownTimer;
-    private boolean mEnableScheduled=true;
+    private boolean mEnableScheduled = true;
     //private ScheduleMedia mCurrentScheduleVideo =null;
     private Context mContext = null;
 
@@ -33,46 +33,44 @@ public class PlayScheduleManager implements SessionCallback {
         this.mContext = context;
 
         new Thread() {
-            public void run()
-            {
+            public void run() {
                 try {
-                    copySchedulePlay("/storage/0000-006F/",mContext.getCacheDir().getAbsolutePath());
-                    copySchedulePlay("/storage/card/",mContext.getCacheDir().getAbsolutePath());
-                    copySchedulePlay("/storage/udisk/",mContext.getCacheDir().getAbsolutePath());
+                    copySchedulePlay("/storage/0000-006F/", mContext.getCacheDir().getAbsolutePath());
+                    copySchedulePlay("/storage/card/", mContext.getCacheDir().getAbsolutePath());
+                    copySchedulePlay("/storage/udisk/", mContext.getCacheDir().getAbsolutePath());
                     initFromExternalStorageDirectoryFile();//DownloadCache
-                    initFromDirectoryFile(mContext.getCacheDir().getAbsolutePath()+"/");
+                    initFromDirectoryFile(mContext.getCacheDir().getAbsolutePath() + "/");
 
                     //if (userSessionCallback != null)
                     //    userSessionCallback.OnSessionComplete(DataID.SESSION_TYPE_SCHEDULEPLAYBACK, "SchedulePlaybackSession");
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }}.start();
+            }
+        }.start();
 
 
         //Ilpr = new ImplementProxy(this);
         //Ilpr.performanceUrl(Data.SESSION_TYPE_SCHEDULEPLAYBACK, "http://test.jhzdesign.cn:8005/getPushList");
 
     }
-    public void updateSchedulePlaybackSession()
-    {
+
+    public void updateSchedulePlaybackSession() {
         try {
-            copySchedulePlay("/storage/0000-006F/",mContext.getCacheDir().getAbsolutePath());
-            copySchedulePlay("/storage/card/",mContext.getCacheDir().getAbsolutePath());
-            copySchedulePlay("/storage/udisk/",mContext.getCacheDir().getAbsolutePath());
+            copySchedulePlay("/storage/0000-006F/", mContext.getCacheDir().getAbsolutePath());
+            copySchedulePlay("/storage/card/", mContext.getCacheDir().getAbsolutePath());
+            copySchedulePlay("/storage/udisk/", mContext.getCacheDir().getAbsolutePath());
             initFromExternalStorageDirectoryFile();
-            initFromDirectoryFile(mContext.getCacheDir().getAbsolutePath()+"/");
+            initFromDirectoryFile(mContext.getCacheDir().getAbsolutePath() + "/");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     @Override
     public void OnSessionComplete(int sID, String result) {
-        int Count=0;
-        if (sID == DataID.TASK_STATUS_SUCCESS)
-        {
+        int Count = 0;
+        if (sID == DataID.TASK_STATUS_SUCCESS) {
             ScheduleVideoRootBean scheduleVideoRootBean = null;
             try {
                 scheduleVideoRootBean = new Gson().fromJson(result, ScheduleVideoRootBean.class);
@@ -89,7 +87,7 @@ public class PlayScheduleManager implements SessionCallback {
                                 scheduleVideoBean.getStop_time(),
                                 scheduleVideoBean.getLast(),
                                 scheduleVideoBean.getStatus()
-                                );
+                        );
 
                         if (!videoList.contains(scheduleVideo)) {
                             //scheduleVideo.getmOPlayer().setPlayMode(1);
@@ -98,7 +96,7 @@ public class PlayScheduleManager implements SessionCallback {
 
                         //MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
                         //        scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
-                        Count ++;
+                        Count++;
                     }
 
                 }
@@ -113,72 +111,67 @@ public class PlayScheduleManager implements SessionCallback {
         }
     }
 
-    public void initFromExternalStorageDirectoryFile()
-    {
-      String path = getExternalStorageDirectoryDownloadCacheDir(mContext);
-      List<String> opf = FileUtils.ReadTxtFile(path+"/SchedulePlay.text");
-      int Count =0;
-      for (String str:opf) {
-          String[] all=str.split(",");
-          if(all.length >= 6) {
-              ScheduleMedia scheduleVideo = new ScheduleMedia(
-                      Count,
-                      path + all[0],//scheduleVideoBean.getUrl(),
-                      all[1],//scheduleVideoBean.getStart_date(),
-                      all[2],//scheduleVideoBean.getEnd_date(),
-                      all[3],//scheduleVideoBean.getPlay_time(),
-                      all[4],//scheduleVideoBean.getStop_time(),
-                      all[5],
-                      1//scheduleVideoBean.getStatus(),
-                       );
-              if (!videoList.contains(scheduleVideo)) {
-                  videoList.add(scheduleVideo);
-              }
-              //MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
-              //        scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
-              Count ++;
-          }
-          else if(all.length == 5)
-          {
-              ScheduleMedia scheduleVideo = new ScheduleMedia(
-                      Count,
-                      path + all[0],//scheduleVideoBean.getUrl(),
-                      all[1],//scheduleVideoBean.getStart_date(),
-                      all[2],//scheduleVideoBean.getEnd_date(),
-                      all[3],//scheduleVideoBean.getPlay_time(),
-                      all[4],//scheduleVideoBean.getStop_time(),
-                      "0",
-                      1//scheduleVideoBean.getStatus(),
-                      );
-              if (!videoList.contains(scheduleVideo)) {
-                  videoList.add(scheduleVideo);
-              }
-              //MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
-              //        scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
-              Count ++;
-          }
+    public void initFromExternalStorageDirectoryFile() {
+        String path = getExternalStorageDirectoryDownloadCacheDir(mContext);
+        List<String> opf = FileUtils.ReadTxtFile(path + "/SchedulePlay.text");
+        int Count = 0;
+        for (String str : opf) {
+            String[] all = str.split(",");
+            if (all.length >= 6) {
+                ScheduleMedia scheduleVideo = new ScheduleMedia(
+                        Count,
+                        path + all[0],//scheduleVideoBean.getUrl(),
+                        all[1],//scheduleVideoBean.getStart_date(),
+                        all[2],//scheduleVideoBean.getEnd_date(),
+                        all[3],//scheduleVideoBean.getPlay_time(),
+                        all[4],//scheduleVideoBean.getStop_time(),
+                        all[5],
+                        1//scheduleVideoBean.getStatus(),
+                );
+                if (!videoList.contains(scheduleVideo)) {
+                    videoList.add(scheduleVideo);
+                }
+                //MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
+                //        scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
+                Count++;
+            } else if (all.length == 5) {
+                ScheduleMedia scheduleVideo = new ScheduleMedia(
+                        Count,
+                        path + all[0],//scheduleVideoBean.getUrl(),
+                        all[1],//scheduleVideoBean.getStart_date(),
+                        all[2],//scheduleVideoBean.getEnd_date(),
+                        all[3],//scheduleVideoBean.getPlay_time(),
+                        all[4],//scheduleVideoBean.getStop_time(),
+                        "0",
+                        1//scheduleVideoBean.getStatus(),
+                );
+                if (!videoList.contains(scheduleVideo)) {
+                    videoList.add(scheduleVideo);
+                }
+                //MMLog.log(TAG,scheduleVideo.getmStartDate() +","+ scheduleVideo.getmEndDate()+","+ scheduleVideo.getPlayTime() +","+
+                //        scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
+                Count++;
+            }
 
-      }
+        }
 
     }
 
-    public void initFromDirectoryFile(String path)
-    {
-        List<String> opf = FileUtils.ReadTxtFile(path+"/SchedulePlay.text");
-        int Count=0;
-        for (String str:opf)
-        {
-            String[] all=str.split(",");
+    public void initFromDirectoryFile(String path) {
+        List<String> opf = FileUtils.ReadTxtFile(path + "/SchedulePlay.text");
+        int Count = 0;
+        for (String str : opf) {
+            String[] all = str.split(",");
             ScheduleMedia scheduleVideo = new ScheduleMedia(
                     Count,
-                    path+all[0],//scheduleVideoBean.getUrl(),
+                    path + all[0],//scheduleVideoBean.getUrl(),
                     all[1],//scheduleVideoBean.getStart_date(),
                     all[2],//scheduleVideoBean.getEnd_date(),
                     all[3],//scheduleVideoBean.getPlay_time(),
                     all[4],//scheduleVideoBean.getStop_time(),
                     all[5],
                     1//scheduleVideoBean.getStatus(),
-                    );
+            );
 
             if (!videoList.contains(scheduleVideo)) {
                 videoList.add(scheduleVideo);
@@ -190,20 +183,19 @@ public class PlayScheduleManager implements SessionCallback {
         }
 
     }
-    public void copySchedulePlay(String SourDir,String DesDir)
-    {
-        if(!FileUtils.existFile(SourDir+"/SchedulePlay.text")) return;
+
+    public void copySchedulePlay(String SourDir, String DesDir) {
+        if (!FileUtils.existFile(SourDir + "/SchedulePlay.text")) return;
         File file = new File(DesDir);
         if (!file.exists())
             file.mkdir();
 
-        List<String> npf = FileUtils.ReadTxtFile(SourDir+"/SchedulePlay.text");
-        FileUtils.streamCopy(SourDir+"/SchedulePlay.text",DesDir+"/SchedulePlay.text");
+        List<String> npf = FileUtils.ReadTxtFile(SourDir + "/SchedulePlay.text");
+        FileUtils.streamCopy(SourDir + "/SchedulePlay.text", DesDir + "/SchedulePlay.text");
 
-        for (String str:npf)
-        {
-            String[] all=str.split(",");
-            FileUtils.streamCopy(SourDir+"/"+all[0],DesDir+"/"+all[0]);
+        for (String str : npf) {
+            String[] all = str.split(",");
+            FileUtils.streamCopy(SourDir + "/" + all[0], DesDir + "/" + all[0]);
         }
 
     }
@@ -215,41 +207,33 @@ public class PlayScheduleManager implements SessionCallback {
         if (!file.exists()) {
             file.mkdirs();
         }
-        return file.getAbsolutePath()+"/";
+        return file.getAbsolutePath() + "/";
     }
 
-    public boolean hasScheduleSession()
-    {
-        if(videoList == null) return false;
+    public boolean hasScheduleSession() {
+        if (videoList == null) return false;
         return videoList.size() > 0;
     }
 
-    public ScheduleMedia pollingScheudulePlay()
-    {
-        for (ScheduleMedia scheduleVideo : videoList)
-        {
-            if (scheduleVideo.isInScheduleDate())
-            {
-                if(scheduleVideo.isPlayScheduled() && scheduleVideo.getStatus()!=0)
-                {
-                   saveDataToSharedPreferences("StartDate",scheduleVideo.getmStartDate());
-                   saveDataToSharedPreferences("EndDate",scheduleVideo.getmEndDate());
-                   saveDataToSharedPreferences("PlayTime",scheduleVideo.getmPlayTime());
-                   saveDataToSharedPreferences("StopTime",scheduleVideo.getmStopTime());
-                   saveDataToSharedPreferences("SourceUrl",scheduleVideo.getMovie().getsUrl());
-                   //DownloadManager.getInstance().with(mContext).downloadFrom(scheduleVideo.getmMovie().getSourceUrl());
-                   return scheduleVideo;
+    public ScheduleMedia pollingScheudulePlay() {
+        for (ScheduleMedia scheduleVideo : videoList) {
+            if (scheduleVideo.isInScheduleDate()) {
+                if (scheduleVideo.isPlayScheduled() && scheduleVideo.getStatus() != 0) {
+                    saveDataToSharedPreferences("StartDate", scheduleVideo.getmStartDate());
+                    saveDataToSharedPreferences("EndDate", scheduleVideo.getmEndDate());
+                    saveDataToSharedPreferences("PlayTime", scheduleVideo.getmPlayTime());
+                    saveDataToSharedPreferences("StopTime", scheduleVideo.getmStopTime());
+                    saveDataToSharedPreferences("SourceUrl", scheduleVideo.getMovie().getsUrl());
+                    //DownloadManager.getInstance().with(mContext).downloadFrom(scheduleVideo.getmMovie().getSourceUrl());
+                    return scheduleVideo;
                 }
             }
         }
 
 
-        for (ScheduleMedia scheduleVideo : videoList)
-        {
-            if (scheduleVideo.isInScheduleDate())
-            {
-                if(scheduleVideo.isStopScheduled())
-                {
+        for (ScheduleMedia scheduleVideo : videoList) {
+            if (scheduleVideo.isInScheduleDate()) {
+                if (scheduleVideo.isStopScheduled()) {
                     return scheduleVideo;
                 }
             }
@@ -258,24 +242,23 @@ public class PlayScheduleManager implements SessionCallback {
     }
 
 
-    public void saveDataToSharedPreferences(String key ,String value)
-    {
-        SharedPreferences sharedPreferences= mContext.getSharedPreferences("oplayertv",Context.MODE_PRIVATE);
+    public void saveDataToSharedPreferences(String key, String value) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("oplayertv", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key,value);
+        editor.putString(key, value);
         editor.commit();
     }
-    public void ClearDataFromSharedPreferences()
-    {
-        SharedPreferences sharedPreferences= mContext.getSharedPreferences("oplayertv",Context.MODE_PRIVATE);
+
+    public void ClearDataFromSharedPreferences() {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("oplayertv", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.commit();
     }
-    public String getDataFromSharedPreferences(String key)
-    {
-        SharedPreferences sharedPreferences= mContext.getSharedPreferences("oplayertv", Context .MODE_PRIVATE);
-        return sharedPreferences.getString(key,null);
+
+    public String getDataFromSharedPreferences(String key) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("oplayertv", Context.MODE_PRIVATE);
+        return sharedPreferences.getString(key, null);
     }
 
     public List<ScheduleMedia> getVideoList() {

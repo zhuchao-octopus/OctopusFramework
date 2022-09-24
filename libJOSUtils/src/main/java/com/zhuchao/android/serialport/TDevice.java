@@ -1,8 +1,9 @@
 package com.zhuchao.android.serialport;
 
 public class TDevice {
-    protected String deviceType = "TDevice" ;
+    protected String deviceType = "TDevice";
     protected String devicePath;
+
     public TDevice() {
     }
 

@@ -45,21 +45,18 @@ public class DLNAUtil {
         return DLNAContainer.getInstance().getDevices();
     }
 
-    public static void setDLNASelectedDevice(Device device)
-    {
+    public static void setDLNASelectedDevice(Device device) {
         DLNAContainer.getInstance().setSelectedDevice(device);
     }
 
-    public static Device getDLNASelectedDevice()
-    {
+    public static Device getDLNASelectedDevice() {
         return DLNAContainer.getInstance().getSelectedDevice();
     }
 
-    public static void shareTo(String fromUrl,Device toDevice)
-    {
+    public static void shareTo(String fromUrl, Device toDevice) {
         new Thread() {
             public void run() {
-                DLNAController.play(toDevice,fromUrl);
+                DLNAController.play(toDevice, fromUrl);
             }
         }.start();
     }

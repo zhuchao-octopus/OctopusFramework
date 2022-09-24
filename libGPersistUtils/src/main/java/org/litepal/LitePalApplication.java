@@ -38,38 +38,38 @@ import org.litepal.exceptions.GlobalException;
  * Besides if you don't want use the above way, you can also call the LitePal.initialize(Context)
  * method to do the same job. Just remember call this method as early as possible, in Application's onCreate()
  * method will be fine.
- * 
+ *
  * @author Tony Green
  * @since 1.0
  */
 public class LitePalApplication extends Application {
 
-	/**
-	 * Global application context.
-	 */
-	@SuppressLint("StaticFieldLeak")
-	public static Context sContext;
+    /**
+     * Global application context.
+     */
+    @SuppressLint("StaticFieldLeak")
+    public static Context sContext;
 
-	public static Handler sHandler = new Handler(Looper.getMainLooper());
+    public static Handler sHandler = new Handler(Looper.getMainLooper());
 
-	/**
-	 * Construct of LitePalApplication. Initialize application context.
-	 */
-	public LitePalApplication() {
-		sContext = this;
-	}
+    /**
+     * Construct of LitePalApplication. Initialize application context.
+     */
+    public LitePalApplication() {
+        sContext = this;
+    }
 
-	/**
-	 * Get the global application context.
-	 * 
-	 * @return Application context.
-	 * @throws org.litepal.exceptions.GlobalException
-	 */
-	public static Context getContext() {
-		if (sContext == null) {
-			throw new GlobalException(GlobalException.APPLICATION_CONTEXT_IS_NULL);
-		}
-		return sContext;
-	}
+    /**
+     * Get the global application context.
+     *
+     * @return Application context.
+     * @throws org.litepal.exceptions.GlobalException
+     */
+    public static Context getContext() {
+        if (sContext == null) {
+            throw new GlobalException(GlobalException.APPLICATION_CONTEXT_IS_NULL);
+        }
+        return sContext;
+    }
 
 }

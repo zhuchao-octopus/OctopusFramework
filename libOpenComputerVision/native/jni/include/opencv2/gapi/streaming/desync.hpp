@@ -17,41 +17,43 @@
 #include <opencv2/gapi/gkernel.hpp>
 
 namespace cv {
-namespace gapi {
-namespace streaming {
+    namespace gapi {
+        namespace streaming {
 
-namespace detail {
-struct GDesync {
-    static const char *id() {
-        return "org.opencv.streaming.desync";
-    }
+            namespace detail {
+                struct GDesync {
+                    static const char *id() {
+                        return "org.opencv.streaming.desync";
+                    }
 
-    // An universal yield for desync.
-    // Yields output objects according to the input Types...
-    // Reuses gkernel machinery.
-    // FIXME: This function can be generic and declared in gkernel.hpp
-    //        (it is there already, but a part of GKernelType[M]
-    template<typename... R, int... IIs>
-    static std::tuple<R...> yield(cv::GCall &call, cv::detail::Seq<IIs...>) {
-        return std::make_tuple(cv::detail::Yield<R>::yield(call, IIs)...);
-    }
-};
+                    // An universal yield for desync.
+                    // Yields output objects according to the input Types...
+                    // Reuses gkernel machinery.
+                    // FIXME: This function can be generic and declared in gkernel.hpp
+                    //        (it is there already, but a part of GKernelType[M]
+                    template<typename... R, int... IIs>
+                    static std::tuple<R...> yield(cv::GCall &call, cv::detail::Seq<IIs...>) {
+                        return std::make_tuple(cv::detail::Yield<R>::yield(call, IIs)...);
+                    }
+                };
 
-template<typename G>
-G desync(const G &g) {
-    cv::GKernel k{
-          GDesync::id()                                     // kernel id
-        , ""                                                // kernel tag
-        , [](const GMetaArgs &a, const GArgs &) {return a;} // outMeta callback
-        , {cv::detail::GTypeTraits<G>::shape}               // output Shape
-        , {cv::detail::GTypeTraits<G>::op_kind}             // input data kinds
-        , {cv::detail::GObtainCtor<G>::get()}               // output template ctors
-    };
-    cv::GCall call(std::move(k));
-    call.pass(g);
-    return std::get<0>(GDesync::yield<G>(call, cv::detail::MkSeq<1>::type()));
-}
-} // namespace detail
+                template<typename G>
+                G desync(const G &g) {
+                    cv::GKernel k{
+                            GDesync::id()                                     // kernel id
+                            , ""                                                // kernel tag
+                            ,
+                            [](const GMetaArgs &a, const GArgs &) { return a; } // outMeta callback
+                            , {cv::detail::GTypeTraits<G>::shape}               // output Shape
+                            , {cv::detail::GTypeTraits<G>::op_kind}             // input data kinds
+                            ,
+                            {cv::detail::GObtainCtor<G>::get()}               // output template ctors
+                    };
+                    cv::GCall call(std::move(k));
+                    call.pass(g);
+                    return std::get<0>(GDesync::yield<G>(call, cv::detail::MkSeq<1>::type()));
+                }
+            } // namespace detail
 
 /**
  * @brief Starts a desynchronized branch in the graph.
@@ -75,11 +77,16 @@ G desync(const G &g) {
  * @note This feature is highly experimental now and is currently
  * limited to a single GMat/GFrame argument only.
  */
-GAPI_EXPORTS GMat desync(const GMat &g);
-GAPI_EXPORTS GFrame desync(const GFrame &f);
+            GAPI_EXPORTS GMat
 
-} // namespace streaming
-} // namespace gapi
+            desync(const GMat &g);
+
+            GAPI_EXPORTS GFrame
+
+            desync(const GFrame &f);
+
+        } // namespace streaming
+    } // namespace gapi
 } // namespace cv
 
 #endif // OPENCV_GAPI_GSTREAMING_DESYNC_HPP

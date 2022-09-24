@@ -29,11 +29,10 @@ afterEvaluate {
 }
 
 android {
-    compileSdk 32
-
+    compileSdk 33
     defaultConfig {
         minSdk 25
-        targetSdk 32
+        targetSdk 33
 
         renderscriptTargetApi 21
         //renderscriptSupportModeEnabled true // don't use support library as it bloats the APK, and we don't need pre-4.4 support
@@ -60,6 +59,7 @@ android {
             jniLibs.srcDirs = ['src/main/jniLibs']
         }
     }
+    namespace 'com.zhuchao.android.opencamera'
 }
 
 dependencies {

@@ -172,7 +172,7 @@ public class VideoList {
 
         ooMedia = oMedia;//找下一个
         for (int i = 0; i < getCount(); i++) {
-            if(ooMedia == null) break;
+            if (ooMedia == null) break;
             ooMedia = ooMedia.getNext();
             if ((ooMedia != null) && (ooMedia.isAvailable(null)))
                 return ooMedia;
@@ -188,7 +188,7 @@ public class VideoList {
 
         ooMedia = oMedia;//找下一个
         for (int i = 0; i < getCount(); i++) {
-            if(ooMedia == null) break;
+            if (ooMedia == null) break;
             ooMedia = ooMedia.getPre();
             if ((ooMedia != null) && (ooMedia.isAvailable(null)))
                 return ooMedia;

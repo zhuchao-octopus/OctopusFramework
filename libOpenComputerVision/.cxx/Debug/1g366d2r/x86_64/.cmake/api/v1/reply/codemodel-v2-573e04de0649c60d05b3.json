@@ -1,59 +1,49 @@
 {
-	"configurations" : 
-	[
-		{
-			"directories" : 
-			[
-				{
-					"build" : ".",
-					"minimumCMakeVersion" : 
-					{
-						"string" : "3.6"
-					},
-					"projectIndex" : 0,
-					"source" : ".",
-					"targetIndexes" : 
-					[
-						0
-					]
-				}
-			],
-			"name" : "Debug",
-			"projects" : 
-			[
-				{
-					"directoryIndexes" : 
-					[
-						0
-					],
-					"name" : "Project",
-					"targetIndexes" : 
-					[
-						0
-					]
-				}
-			],
-			"targets" : 
-			[
-				{
-					"directoryIndex" : 0,
-					"id" : "opencv_jni_shared::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-opencv_jni_shared-Debug-996e4552d7965597f8ba.json",
-					"name" : "opencv_jni_shared",
-					"projectIndex" : 0
-				}
-			]
-		}
-	],
-	"kind" : "codemodel",
-	"paths" : 
-	{
-		"build" : "F:/StudioProjects/OctopusFramework/libOpenComputerVision/.cxx/Debug/1g366d2r/x86_64",
-		"source" : "F:/StudioProjects/OctopusFramework/libOpenComputerVision/libcxx_helper"
-	},
-	"version" : 
-	{
-		"major" : 2,
-		"minor" : 1
-	}
+  "configurations": [
+    {
+      "directories": [
+        {
+          "build": ".",
+          "minimumCMakeVersion": {
+            "string": "3.6"
+          },
+          "projectIndex": 0,
+          "source": ".",
+          "targetIndexes": [
+            0
+          ]
+        }
+      ],
+      "name": "Debug",
+      "projects": [
+        {
+          "directoryIndexes": [
+            0
+          ],
+          "name": "Project",
+          "targetIndexes": [
+            0
+          ]
+        }
+      ],
+      "targets": [
+        {
+          "directoryIndex": 0,
+          "id": "opencv_jni_shared::@6890427a1f51a3e7e1df",
+          "jsonFile": "target-opencv_jni_shared-Debug-996e4552d7965597f8ba.json",
+          "name": "opencv_jni_shared",
+          "projectIndex": 0
+        }
+      ]
+    }
+  ],
+  "kind": "codemodel",
+  "paths": {
+    "build": "F:/StudioProjects/OctopusFramework/libOpenComputerVision/.cxx/Debug/1g366d2r/x86_64",
+    "source": "F:/StudioProjects/OctopusFramework/libOpenComputerVision/libcxx_helper"
+  },
+  "version": {
+    "major": 2,
+    "minor": 1
+  }
 }

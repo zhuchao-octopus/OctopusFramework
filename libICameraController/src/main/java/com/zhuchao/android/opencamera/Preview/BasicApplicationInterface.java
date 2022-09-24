@@ -1,17 +1,8 @@
 package com.zhuchao.android.opencamera.Preview;
 
-import android.app.Activity;
-import android.graphics.Canvas;
 import android.location.Location;
-import android.net.Uri;
-import android.util.Pair;
-import android.view.MotionEvent;
 
-import com.zhuchao.android.opencamera.RawImage;
 import com.zhuchao.android.opencamera.control.CameraController;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * A partial implementation of ApplicationInterface that provides "default" implementations. So

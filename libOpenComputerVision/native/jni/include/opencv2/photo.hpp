@@ -82,8 +82,7 @@ https://www.learnopencv.com/non-photorealistic-rendering-using-opencv-python-c/
 @}
   */
 
-namespace cv
-{
+namespace cv {
 
 //! @addtogroup photo
 //! @{
@@ -91,11 +90,10 @@ namespace cv
 //! @addtogroup photo_inpaint
 //! @{
 //! the inpainting algorithm
-enum
-{
-    INPAINT_NS    = 0, //!< Use Navier-Stokes based method
-    INPAINT_TELEA = 1 //!< Use the algorithm proposed by Alexandru Telea @cite Telea04
-};
+    enum {
+        INPAINT_NS = 0, //!< Use Navier-Stokes based method
+        INPAINT_TELEA = 1 //!< Use the algorithm proposed by Alexandru Telea @cite Telea04
+    };
 
 /** @brief Restores the selected region in an image using the region neighborhood.
 
@@ -117,8 +115,8 @@ objects from still images or video. See <http://en.wikipedia.org/wiki/Inpainting
    -   (Python) An example using the inpainting technique can be found at
         opencv_source_code/samples/python/inpaint.py
  */
-CV_EXPORTS_W void inpaint( InputArray src, InputArray inpaintMask,
-        OutputArray dst, double inpaintRadius, int flags );
+    CV_EXPORTS_W void inpaint(InputArray src, InputArray inpaintMask,
+                              OutputArray dst, double inpaintRadius, int flags);
 
 //! @} photo_inpaint
 
@@ -145,8 +143,8 @@ image in different colorspaces. Such approach is used in fastNlMeansDenoisingCol
 image to CIELAB colorspace and then separately denoise L and AB components with different h
 parameter.
  */
-CV_EXPORTS_W void fastNlMeansDenoising( InputArray src, OutputArray dst, float h = 3,
-        int templateWindowSize = 7, int searchWindowSize = 21);
+    CV_EXPORTS_W void fastNlMeansDenoising(InputArray src, OutputArray dst, float h = 3,
+                                           int templateWindowSize = 7, int searchWindowSize = 21);
 
 /** @brief Perform image denoising using Non-local Means Denoising algorithm
 <http://www.ipol.im/pub/algo/bcm_non_local_means_denoising/> with several computational
@@ -172,10 +170,10 @@ image in different colorspaces. Such approach is used in fastNlMeansDenoisingCol
 image to CIELAB colorspace and then separately denoise L and AB components with different h
 parameter.
  */
-CV_EXPORTS_W void fastNlMeansDenoising( InputArray src, OutputArray dst,
-                                        const std::vector<float>& h,
-                                        int templateWindowSize = 7, int searchWindowSize = 21,
-                                        int normType = NORM_L2);
+    CV_EXPORTS_W void fastNlMeansDenoising(InputArray src, OutputArray dst,
+                                           const std::vector<float> &h,
+                                           int templateWindowSize = 7, int searchWindowSize = 21,
+                                           int normType = NORM_L2);
 
 /** @brief Modification of fastNlMeansDenoising function for colored images
 
@@ -195,9 +193,10 @@ will be enough to remove colored noise and do not distort colors
 The function converts image to CIELAB colorspace and then separately denoise L and AB components
 with given h parameters using fastNlMeansDenoising function.
  */
-CV_EXPORTS_W void fastNlMeansDenoisingColored( InputArray src, OutputArray dst,
-        float h = 3, float hColor = 3,
-        int templateWindowSize = 7, int searchWindowSize = 21);
+    CV_EXPORTS_W void fastNlMeansDenoisingColored(InputArray src, OutputArray dst,
+                                                  float h = 3, float hColor = 3,
+                                                  int templateWindowSize = 7,
+                                                  int searchWindowSize = 21);
 
 /** @brief Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
 captured in small period of time. For example video. This version of the function is for grayscale
@@ -222,9 +221,10 @@ denoising time. Recommended value 21 pixels
 perfectly removes noise but also removes image details, smaller h
 value preserves details but also preserves some noise
  */
-CV_EXPORTS_W void fastNlMeansDenoisingMulti( InputArrayOfArrays srcImgs, OutputArray dst,
-        int imgToDenoiseIndex, int temporalWindowSize,
-        float h = 3, int templateWindowSize = 7, int searchWindowSize = 21);
+    CV_EXPORTS_W void fastNlMeansDenoisingMulti(InputArrayOfArrays srcImgs, OutputArray dst,
+                                                int imgToDenoiseIndex, int temporalWindowSize,
+                                                float h = 3, int templateWindowSize = 7,
+                                                int searchWindowSize = 21);
 
 /** @brief Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
 captured in small period of time. For example video. This version of the function is for grayscale
@@ -251,11 +251,12 @@ perfectly removes noise but also removes image details, smaller h
 value preserves details but also preserves some noise
 @param normType Type of norm used for weight calculation. Can be either NORM_L2 or NORM_L1
  */
-CV_EXPORTS_W void fastNlMeansDenoisingMulti( InputArrayOfArrays srcImgs, OutputArray dst,
-                                             int imgToDenoiseIndex, int temporalWindowSize,
-                                             const std::vector<float>& h,
-                                             int templateWindowSize = 7, int searchWindowSize = 21,
-                                             int normType = NORM_L2);
+    CV_EXPORTS_W void fastNlMeansDenoisingMulti(InputArrayOfArrays srcImgs, OutputArray dst,
+                                                int imgToDenoiseIndex, int temporalWindowSize,
+                                                const std::vector<float> &h,
+                                                int templateWindowSize = 7,
+                                                int searchWindowSize = 21,
+                                                int normType = NORM_L2);
 
 /** @brief Modification of fastNlMeansDenoisingMulti function for colored images sequences
 
@@ -280,10 +281,12 @@ some noise.
 The function converts images to CIELAB colorspace and then separately denoise L and AB components
 with given h parameters using fastNlMeansDenoisingMulti function.
  */
-CV_EXPORTS_W void fastNlMeansDenoisingColoredMulti( InputArrayOfArrays srcImgs, OutputArray dst,
-        int imgToDenoiseIndex, int temporalWindowSize,
-        float h = 3, float hColor = 3,
-        int templateWindowSize = 7, int searchWindowSize = 21);
+    CV_EXPORTS_W void fastNlMeansDenoisingColoredMulti(InputArrayOfArrays srcImgs, OutputArray dst,
+                                                       int imgToDenoiseIndex,
+                                                       int temporalWindowSize,
+                                                       float h = 3, float hColor = 3,
+                                                       int templateWindowSize = 7,
+                                                       int searchWindowSize = 21);
 
 /** @brief Primal-dual algorithm is an algorithm for solving special types of variational problems (that is,
 finding a function to minimize some functional). As the image denoising, in particular, may be seen
@@ -322,20 +325,26 @@ removed.
 better, but it is hard to quantitatively refine this statement, so just use the default and
 increase it if the results are poor.
  */
-CV_EXPORTS_W void denoise_TVL1(const std::vector<Mat>& observations,Mat& result, double lambda=1.0, int niters=30);
+    CV_EXPORTS_W void
+    denoise_TVL1(const std::vector <Mat> &observations, Mat &result, double lambda = 1.0,
+                 int niters = 30);
 
 //! @} photo_denoise
 
 //! @addtogroup photo_hdr
 //! @{
 
-enum { LDR_SIZE = 256 };
+    enum {
+        LDR_SIZE = 256
+    };
 
 /** @brief Base class for tonemapping algorithms - tools that are used to map HDR image to 8-bit range.
  */
-class CV_EXPORTS_W Tonemap : public Algorithm
-{
-public:
+    class CV_EXPORTS_W Tonemap
+
+    : public Algorithm {
+    public:
+
     /** @brief Tonemaps image
 
     @param src source image - CV_32FC3 Mat (float 32 bits 3 channels)
@@ -344,6 +353,7 @@ public:
     CV_WRAP virtual void process(InputArray src, OutputArray dst) = 0;
 
     CV_WRAP virtual float getGamma() const = 0;
+
     CV_WRAP virtual void setGamma(float gamma) = 0;
 };
 
@@ -353,7 +363,9 @@ public:
 equal to 2.2f is suitable for most displays.
 Generally gamma \> 1 brightens the image and gamma \< 1 darkens it.
  */
-CV_EXPORTS_W Ptr<Tonemap> createTonemap(float gamma = 1.0f);
+CV_EXPORTS_W Ptr<Tonemap>
+
+createTonemap(float gamma = 1.0f);
 
 /** @brief Adaptive logarithmic mapping is a fast global tonemapping algorithm that scales the image in
 logarithmic domain.
@@ -365,15 +377,20 @@ Optional saturation enhancement is possible as described in @cite FL02 .
 
 For more information see @cite DM03 .
  */
-class CV_EXPORTS_W TonemapDrago : public Tonemap
+class CV_EXPORTS_W TonemapDrago
+
+: public Tonemap
 {
 public:
 
-    CV_WRAP virtual float getSaturation() const = 0;
-    CV_WRAP virtual void setSaturation(float saturation) = 0;
+CV_WRAP virtual float getSaturation() const = 0;
 
-    CV_WRAP virtual float getBias() const = 0;
-    CV_WRAP virtual void setBias(float bias) = 0;
+CV_WRAP virtual void setSaturation(float saturation) = 0;
+
+CV_WRAP virtual float getBias() const = 0;
+
+CV_WRAP virtual void setBias(float bias) = 0;
+
 };
 
 /** @brief Creates TonemapDrago object
@@ -384,7 +401,9 @@ than 1 increase saturation and values less than 1 decrease it.
 @param bias value for bias function in [0, 1] range. Values from 0.7 to 0.9 usually give best
 results, default value is 0.85.
  */
-CV_EXPORTS_W Ptr<TonemapDrago> createTonemapDrago(float gamma = 1.0f, float saturation = 1.0f, float bias = 0.85f);
+CV_EXPORTS_W Ptr<TonemapDrago>
+
+createTonemapDrago(float gamma = 1.0f, float saturation = 1.0f, float bias = 0.85f);
 
 
 /** @brief This is a global tonemapping operator that models human visual system.
@@ -394,17 +413,24 @@ color adaptation.
 
 For more information see @cite RD05 .
  */
-class CV_EXPORTS_W TonemapReinhard : public Tonemap
+class CV_EXPORTS_W TonemapReinhard
+
+: public Tonemap
 {
 public:
-    CV_WRAP virtual float getIntensity() const = 0;
-    CV_WRAP virtual void setIntensity(float intensity) = 0;
 
-    CV_WRAP virtual float getLightAdaptation() const = 0;
-    CV_WRAP virtual void setLightAdaptation(float light_adapt) = 0;
+CV_WRAP virtual float getIntensity() const = 0;
 
-    CV_WRAP virtual float getColorAdaptation() const = 0;
-    CV_WRAP virtual void setColorAdaptation(float color_adapt) = 0;
+CV_WRAP virtual void setIntensity(float intensity) = 0;
+
+CV_WRAP virtual float getLightAdaptation() const = 0;
+
+CV_WRAP virtual void setLightAdaptation(float light_adapt) = 0;
+
+CV_WRAP virtual float getColorAdaptation() const = 0;
+
+CV_WRAP virtual void setColorAdaptation(float color_adapt) = 0;
+
 };
 
 /** @brief Creates TonemapReinhard object
@@ -417,7 +443,9 @@ value, if 0 it's global, otherwise it's a weighted mean of this two cases.
 if 0 adaptation level is the same for each channel.
  */
 CV_EXPORTS_W Ptr<TonemapReinhard>
-createTonemapReinhard(float gamma = 1.0f, float intensity = 0.0f, float light_adapt = 1.0f, float color_adapt = 0.0f);
+
+createTonemapReinhard(float gamma = 1.0f, float intensity = 0.0f, float light_adapt = 1.0f,
+                      float color_adapt = 0.0f);
 
 /** @brief This algorithm transforms image to contrast using gradients on all levels of gaussian pyramid,
 transforms contrast values to HVS response and scales the response. After this the image is
@@ -425,14 +453,20 @@ reconstructed from new contrast values.
 
 For more information see @cite MM06 .
  */
-class CV_EXPORTS_W TonemapMantiuk : public Tonemap
+class CV_EXPORTS_W TonemapMantiuk
+
+: public Tonemap
 {
 public:
-    CV_WRAP virtual float getScale() const = 0;
-    CV_WRAP virtual void setScale(float scale) = 0;
 
-    CV_WRAP virtual float getSaturation() const = 0;
-    CV_WRAP virtual void setSaturation(float saturation) = 0;
+CV_WRAP virtual float getScale() const = 0;
+
+CV_WRAP virtual void setScale(float scale) = 0;
+
+CV_WRAP virtual float getSaturation() const = 0;
+
+CV_WRAP virtual void setSaturation(float saturation) = 0;
+
 };
 
 /** @brief Creates TonemapMantiuk object
@@ -443,23 +477,28 @@ dynamic range. Values from 0.6 to 0.9 produce best results.
 @param saturation saturation enhancement value. See createTonemapDrago
  */
 CV_EXPORTS_W Ptr<TonemapMantiuk>
+
 createTonemapMantiuk(float gamma = 1.0f, float scale = 0.7f, float saturation = 1.0f);
 
 /** @brief The base class for algorithms that align images of the same scene with different exposures
  */
-class CV_EXPORTS_W AlignExposures : public Algorithm
+class CV_EXPORTS_W AlignExposures
+
+: public Algorithm
 {
 public:
-    /** @brief Aligns images
 
-    @param src vector of input images
-    @param dst vector of aligned images
-    @param times vector of exposure time values for each image
-    @param response 256x1 matrix with inverse camera response function for each pixel value, it should
-    have the same number of channels as images.
-     */
-    CV_WRAP virtual void process(InputArrayOfArrays src, std::vector<Mat>& dst,
-                                 InputArray times, InputArray response) = 0;
+/** @brief Aligns images
+
+@param src vector of input images
+@param dst vector of aligned images
+@param times vector of exposure time values for each image
+@param response 256x1 matrix with inverse camera response function for each pixel value, it should
+have the same number of channels as images.
+ */
+CV_WRAP virtual void process(InputArrayOfArrays src, std::vector <Mat> &dst,
+                             InputArray times, InputArray response) = 0;
+
 };
 
 /** @brief This algorithm converts images to median threshold bitmaps (1 for pixels brighter than median
@@ -471,49 +510,69 @@ In this implementation new image regions are filled with zeros.
 
 For more information see @cite GW03 .
  */
-class CV_EXPORTS_W AlignMTB : public AlignExposures
+class CV_EXPORTS_W AlignMTB
+
+: public AlignExposures
 {
 public:
-    CV_WRAP virtual void process(InputArrayOfArrays src, std::vector<Mat>& dst,
-                                 InputArray times, InputArray response) CV_OVERRIDE = 0;
 
-    /** @brief Short version of process, that doesn't take extra arguments.
+CV_WRAP virtual void process(InputArrayOfArrays src, std::vector <Mat> &dst,
+                             InputArray times, InputArray response)
 
-    @param src vector of input images
-    @param dst vector of aligned images
-     */
-    CV_WRAP virtual void process(InputArrayOfArrays src, std::vector<Mat>& dst) = 0;
+CV_OVERRIDE = 0;
 
-    /** @brief Calculates shift between two images, i. e. how to shift the second image to correspond it with the
-    first.
+/** @brief Short version of process, that doesn't take extra arguments.
 
-    @param img0 first image
-    @param img1 second image
-     */
-    CV_WRAP virtual Point calculateShift(InputArray img0, InputArray img1) = 0;
-    /** @brief Helper function, that shift Mat filling new regions with zeros.
+@param src vector of input images
+@param dst vector of aligned images
+ */
+CV_WRAP virtual void process(InputArrayOfArrays src, std::vector <Mat> &dst) = 0;
 
-    @param src input image
-    @param dst result image
-    @param shift shift value
-     */
-    CV_WRAP virtual void shiftMat(InputArray src, OutputArray dst, const Point shift) = 0;
-    /** @brief Computes median threshold and exclude bitmaps of given image.
+/** @brief Calculates shift between two images, i. e. how to shift the second image to correspond it with the
+first.
 
-    @param img input image
-    @param tb median threshold bitmap
-    @param eb exclude bitmap
-     */
-    CV_WRAP virtual void computeBitmaps(InputArray img, OutputArray tb, OutputArray eb) = 0;
+@param img0 first image
+@param img1 second image
+ */
+CV_WRAP virtual Point
+calculateShift(InputArray
+img0,
+InputArray img1
+) = 0;
+/** @brief Helper function, that shift Mat filling new regions with zeros.
 
-    CV_WRAP virtual int getMaxBits() const = 0;
-    CV_WRAP virtual void setMaxBits(int max_bits) = 0;
+@param src input image
+@param dst result image
+@param shift shift value
+ */
+CV_WRAP virtual void shiftMat(InputArray
+src,
+OutputArray dst,
+const Point shift
+) = 0;
+/** @brief Computes median threshold and exclude bitmaps of given image.
 
-    CV_WRAP virtual int getExcludeRange() const = 0;
-    CV_WRAP virtual void setExcludeRange(int exclude_range) = 0;
+@param img input image
+@param tb median threshold bitmap
+@param eb exclude bitmap
+ */
+CV_WRAP virtual void computeBitmaps(InputArray
+img,
+OutputArray tb, OutputArray
+eb) = 0;
 
-    CV_WRAP virtual bool getCut() const = 0;
-    CV_WRAP virtual void setCut(bool value) = 0;
+CV_WRAP virtual int getMaxBits() const = 0;
+
+CV_WRAP virtual void setMaxBits(int max_bits) = 0;
+
+CV_WRAP virtual int getExcludeRange() const = 0;
+
+CV_WRAP virtual void setExcludeRange(int exclude_range) = 0;
+
+CV_WRAP virtual bool getCut() const = 0;
+
+CV_WRAP virtual void setCut(bool value) = 0;
+
 };
 
 /** @brief Creates AlignMTB object
@@ -524,20 +583,26 @@ usually good enough (31 and 63 pixels shift respectively).
 median value.
 @param cut if true cuts images, otherwise fills the new regions with zeros.
  */
-CV_EXPORTS_W Ptr<AlignMTB> createAlignMTB(int max_bits = 6, int exclude_range = 4, bool cut = true);
+CV_EXPORTS_W Ptr<AlignMTB>
+
+createAlignMTB(int max_bits = 6, int exclude_range = 4, bool cut = true);
 
 /** @brief The base class for camera response calibration algorithms.
  */
-class CV_EXPORTS_W CalibrateCRF : public Algorithm
+class CV_EXPORTS_W CalibrateCRF
+
+: public Algorithm
 {
 public:
-    /** @brief Recovers inverse camera response.
 
-    @param src vector of input images
-    @param dst 256x1 matrix with inverse camera response function
-    @param times vector of exposure time values for each image
-     */
-    CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst, InputArray times) = 0;
+/** @brief Recovers inverse camera response.
+
+@param src vector of input images
+@param dst 256x1 matrix with inverse camera response function
+@param times vector of exposure time values for each image
+ */
+CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst, InputArray times) = 0;
+
 };
 
 /** @brief Inverse camera response function is extracted for each brightness value by minimizing an objective
@@ -546,17 +611,24 @@ in all images, extra term is added to make the result smoother.
 
 For more information see @cite DM97 .
  */
-class CV_EXPORTS_W CalibrateDebevec : public CalibrateCRF
+class CV_EXPORTS_W CalibrateDebevec
+
+: public CalibrateCRF
 {
 public:
-    CV_WRAP virtual float getLambda() const = 0;
-    CV_WRAP virtual void setLambda(float lambda) = 0;
 
-    CV_WRAP virtual int getSamples() const = 0;
-    CV_WRAP virtual void setSamples(int samples) = 0;
+CV_WRAP virtual float getLambda() const = 0;
 
-    CV_WRAP virtual bool getRandom() const = 0;
-    CV_WRAP virtual void setRandom(bool random) = 0;
+CV_WRAP virtual void setLambda(float lambda) = 0;
+
+CV_WRAP virtual int getSamples() const = 0;
+
+CV_WRAP virtual void setSamples(int samples) = 0;
+
+CV_WRAP virtual bool getRandom() const = 0;
+
+CV_WRAP virtual void setRandom(bool random) = 0;
+
 };
 
 /** @brief Creates CalibrateDebevec object
@@ -567,23 +639,33 @@ response.
 @param random if true sample pixel locations are chosen at random, otherwise they form a
 rectangular grid.
  */
-CV_EXPORTS_W Ptr<CalibrateDebevec> createCalibrateDebevec(int samples = 70, float lambda = 10.0f, bool random = false);
+CV_EXPORTS_W Ptr<CalibrateDebevec>
+
+createCalibrateDebevec(int samples = 70, float lambda = 10.0f, bool random = false);
 
 /** @brief Inverse camera response function is extracted for each brightness value by minimizing an objective
 function as linear system. This algorithm uses all image pixels.
 
 For more information see @cite RB99 .
  */
-class CV_EXPORTS_W CalibrateRobertson : public CalibrateCRF
+class CV_EXPORTS_W CalibrateRobertson
+
+: public CalibrateCRF
 {
 public:
-    CV_WRAP virtual int getMaxIter() const = 0;
-    CV_WRAP virtual void setMaxIter(int max_iter) = 0;
 
-    CV_WRAP virtual float getThreshold() const = 0;
-    CV_WRAP virtual void setThreshold(float threshold) = 0;
+CV_WRAP virtual int getMaxIter() const = 0;
 
-    CV_WRAP virtual Mat getRadiance() const = 0;
+CV_WRAP virtual void setMaxIter(int max_iter) = 0;
+
+CV_WRAP virtual float getThreshold() const = 0;
+
+CV_WRAP virtual void setThreshold(float threshold) = 0;
+
+CV_WRAP virtual Mat
+
+getRadiance() const = 0;
+
 };
 
 /** @brief Creates CalibrateRobertson object
@@ -591,23 +673,29 @@ public:
 @param max_iter maximal number of Gauss-Seidel solver iterations.
 @param threshold target difference between results of two successive steps of the minimization.
  */
-CV_EXPORTS_W Ptr<CalibrateRobertson> createCalibrateRobertson(int max_iter = 30, float threshold = 0.01f);
+CV_EXPORTS_W Ptr<CalibrateRobertson>
+
+createCalibrateRobertson(int max_iter = 30, float threshold = 0.01f);
 
 /** @brief The base class algorithms that can merge exposure sequence to a single image.
  */
-class CV_EXPORTS_W MergeExposures : public Algorithm
+class CV_EXPORTS_W MergeExposures
+
+: public Algorithm
 {
 public:
-    /** @brief Merges images.
 
-    @param src vector of input images
-    @param dst result image
-    @param times vector of exposure time values for each image
-    @param response 256x1 matrix with inverse camera response function for each pixel value, it should
-    have the same number of channels as images.
-     */
-    CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst,
-                                 InputArray times, InputArray response) = 0;
+/** @brief Merges images.
+
+@param src vector of input images
+@param dst result image
+@param times vector of exposure time values for each image
+@param response 256x1 matrix with inverse camera response function for each pixel value, it should
+have the same number of channels as images.
+ */
+CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst,
+                             InputArray times, InputArray response) = 0;
+
 };
 
 /** @brief The resulting HDR image is calculated as weighted average of the exposures considering exposure
@@ -615,17 +703,26 @@ values and camera response.
 
 For more information see @cite DM97 .
  */
-class CV_EXPORTS_W MergeDebevec : public MergeExposures
+class CV_EXPORTS_W MergeDebevec
+
+: public MergeExposures
 {
 public:
-    CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst,
-                                 InputArray times, InputArray response) CV_OVERRIDE = 0;
-    CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst, InputArray times) = 0;
+
+CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst,
+                             InputArray times, InputArray response)
+
+CV_OVERRIDE = 0;
+
+CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst, InputArray times) = 0;
+
 };
 
 /** @brief Creates MergeDebevec object
  */
-CV_EXPORTS_W Ptr<MergeDebevec> createMergeDebevec();
+CV_EXPORTS_W Ptr<MergeDebevec>
+
+createMergeDebevec();
 
 /** @brief Pixels are weighted using contrast, saturation and well-exposedness measures, than images are
 combined using laplacian pyramids.
@@ -638,26 +735,36 @@ by 255, but it's recommended to apply gamma correction and/or linear tonemapping
 
 For more information see @cite MK07 .
  */
-class CV_EXPORTS_W MergeMertens : public MergeExposures
+class CV_EXPORTS_W MergeMertens
+
+: public MergeExposures
 {
 public:
-    CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst,
-                                 InputArray times, InputArray response) CV_OVERRIDE = 0;
-    /** @brief Short version of process, that doesn't take extra arguments.
 
-    @param src vector of input images
-    @param dst result image
-     */
-    CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst) = 0;
+CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst,
+                             InputArray times, InputArray response)
 
-    CV_WRAP virtual float getContrastWeight() const = 0;
-    CV_WRAP virtual void setContrastWeight(float contrast_weiht) = 0;
+CV_OVERRIDE = 0;
 
-    CV_WRAP virtual float getSaturationWeight() const = 0;
-    CV_WRAP virtual void setSaturationWeight(float saturation_weight) = 0;
+/** @brief Short version of process, that doesn't take extra arguments.
 
-    CV_WRAP virtual float getExposureWeight() const = 0;
-    CV_WRAP virtual void setExposureWeight(float exposure_weight) = 0;
+@param src vector of input images
+@param dst result image
+ */
+CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst) = 0;
+
+CV_WRAP virtual float getContrastWeight() const = 0;
+
+CV_WRAP virtual void setContrastWeight(float contrast_weiht) = 0;
+
+CV_WRAP virtual float getSaturationWeight() const = 0;
+
+CV_WRAP virtual void setSaturationWeight(float saturation_weight) = 0;
+
+CV_WRAP virtual float getExposureWeight() const = 0;
+
+CV_WRAP virtual void setExposureWeight(float exposure_weight) = 0;
+
 };
 
 /** @brief Creates MergeMertens object
@@ -667,24 +774,35 @@ public:
 @param exposure_weight well-exposedness measure weight
  */
 CV_EXPORTS_W Ptr<MergeMertens>
-createMergeMertens(float contrast_weight = 1.0f, float saturation_weight = 1.0f, float exposure_weight = 0.0f);
+
+createMergeMertens(float contrast_weight = 1.0f, float saturation_weight = 1.0f,
+                   float exposure_weight = 0.0f);
 
 /** @brief The resulting HDR image is calculated as weighted average of the exposures considering exposure
 values and camera response.
 
 For more information see @cite RB99 .
  */
-class CV_EXPORTS_W MergeRobertson : public MergeExposures
+class CV_EXPORTS_W MergeRobertson
+
+: public MergeExposures
 {
 public:
-    CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst,
-                                 InputArray times, InputArray response) CV_OVERRIDE = 0;
-    CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst, InputArray times) = 0;
+
+CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst,
+                             InputArray times, InputArray response)
+
+CV_OVERRIDE = 0;
+
+CV_WRAP virtual void process(InputArrayOfArrays src, OutputArray dst, InputArray times) = 0;
+
 };
 
 /** @brief Creates MergeRobertson object
  */
-CV_EXPORTS_W Ptr<MergeRobertson> createMergeRobertson();
+CV_EXPORTS_W Ptr<MergeRobertson>
+
+createMergeRobertson();
 
 //! @} photo_hdr
 
@@ -701,7 +819,10 @@ black-and-white photograph rendering, and in many single channel image processin
 
 This function is to be applied on color images.
  */
-CV_EXPORTS_W void decolor( InputArray src, OutputArray grayscale, OutputArray color_boost);
+CV_EXPORTS_W void decolor(InputArray
+src,
+OutputArray grayscale, OutputArray
+color_boost);
 
 //! @} photo_decolor
 
@@ -710,15 +831,15 @@ CV_EXPORTS_W void decolor( InputArray src, OutputArray grayscale, OutputArray co
 
 
 //! seamlessClone algorithm flags
-enum
-{
+enum {
     /** The power of the method is fully expressed when inserting objects with complex outlines into a new background*/
     NORMAL_CLONE = 1,
     /** The classic method, color-based selection and alpha masking might be time consuming and often leaves an undesirable
     halo. Seamless cloning, even averaged with the original image, is not effective. Mixed seamless cloning based on a loose selection proves effective.*/
-    MIXED_CLONE  = 2,
+    MIXED_CLONE = 2,
     /** Monochrome transfer allows the user to easily replace certain features of one object by alternative features.*/
-    MONOCHROME_TRANSFER = 3};
+    MONOCHROME_TRANSFER = 3
+};
 
 
 /** @example samples/cpp/tutorial_code/photo/seamless_cloning/cloning_demo.cpp
@@ -737,8 +858,15 @@ content @cite PM03 .
 @param blend Output image with the same size and type as dst.
 @param flags Cloning method that could be cv::NORMAL_CLONE, cv::MIXED_CLONE or cv::MONOCHROME_TRANSFER
  */
-CV_EXPORTS_W void seamlessClone( InputArray src, InputArray dst, InputArray mask, Point p,
-        OutputArray blend, int flags);
+CV_EXPORTS_W void seamlessClone(InputArray
+src,
+InputArray dst, InputArray
+mask,
+Point p,
+        OutputArray
+blend,
+int flags
+);
 
 /** @brief Given an original color image, two differently colored versions of this image can be mixed
 seamlessly.
@@ -752,8 +880,14 @@ seamlessly.
 
 Multiplication factor is between .5 to 2.5.
  */
-CV_EXPORTS_W void colorChange(InputArray src, InputArray mask, OutputArray dst, float red_mul = 1.0f,
-        float green_mul = 1.0f, float blue_mul = 1.0f);
+CV_EXPORTS_W void colorChange(InputArray
+src,
+InputArray mask, OutputArray
+dst,
+float red_mul = 1.0f,
+float green_mul = 1.0f,
+float blue_mul = 1.0f
+);
 
 /** @brief Applying an appropriate non-linear transformation to the gradient field inside the selection and
 then integrating back with a Poisson solver, modifies locally the apparent illumination of an image.
@@ -766,8 +900,13 @@ then integrating back with a Poisson solver, modifies locally the apparent illum
 
 This is useful to highlight under-exposed foreground objects or to reduce specular reflections.
  */
-CV_EXPORTS_W void illuminationChange(InputArray src, InputArray mask, OutputArray dst,
-        float alpha = 0.2f, float beta = 0.4f);
+CV_EXPORTS_W void illuminationChange(InputArray
+src,
+InputArray mask, OutputArray
+dst,
+float alpha = 0.2f,
+float beta = 0.4f
+);
 
 /** @brief By retaining only the gradients at edge locations, before integrating with the Poisson solver, one
 washes out the texture of the selected region, giving its contents a flat aspect. Here Canny Edge %Detector is used.
@@ -784,9 +923,14 @@ The algorithm assumes that the color of the source image is close to that of the
 assumption means that when the colors don't match, the source image color gets tinted toward the
 color of the destination image.
  */
-CV_EXPORTS_W void textureFlattening(InputArray src, InputArray mask, OutputArray dst,
-        float low_threshold = 30, float high_threshold = 45,
-        int kernel_size = 3);
+CV_EXPORTS_W void textureFlattening(InputArray
+src,
+InputArray mask, OutputArray
+dst,
+float low_threshold = 30,
+float high_threshold = 45,
+int kernel_size = 3
+);
 
 //! @} photo_clone
 
@@ -794,8 +938,7 @@ CV_EXPORTS_W void textureFlattening(InputArray src, InputArray mask, OutputArray
 //! @{
 
 //! Edge preserving filters
-enum
-{
+enum {
     RECURS_FILTER = 1, //!< Recursive Filtering
     NORMCONV_FILTER = 2 //!< Normalized Convolution Filtering
 };
@@ -809,8 +952,13 @@ filters are used in many different applications @cite EM11 .
 @param sigma_s %Range between 0 to 200.
 @param sigma_r %Range between 0 to 1.
  */
-CV_EXPORTS_W void edgePreservingFilter(InputArray src, OutputArray dst, int flags = 1,
-        float sigma_s = 60, float sigma_r = 0.4f);
+CV_EXPORTS_W void edgePreservingFilter(InputArray
+src,
+OutputArray dst,
+int flags = 1,
+float sigma_s = 60,
+float sigma_r = 0.4f
+);
 
 /** @brief This filter enhances the details of a particular image.
 
@@ -819,8 +967,12 @@ CV_EXPORTS_W void edgePreservingFilter(InputArray src, OutputArray dst, int flag
 @param sigma_s %Range between 0 to 200.
 @param sigma_r %Range between 0 to 1.
  */
-CV_EXPORTS_W void detailEnhance(InputArray src, OutputArray dst, float sigma_s = 10,
-        float sigma_r = 0.15f);
+CV_EXPORTS_W void detailEnhance(InputArray
+src,
+OutputArray dst,
+float sigma_s = 10,
+float sigma_r = 0.15f
+);
 
 /** @example samples/cpp/tutorial_code/photo/non_photorealistic_rendering/npr_demo.cpp
 An example using non-photorealistic line drawing functions
@@ -834,8 +986,14 @@ An example using non-photorealistic line drawing functions
 @param sigma_r %Range between 0 to 1.
 @param shade_factor %Range between 0 to 0.1.
  */
-CV_EXPORTS_W void pencilSketch(InputArray src, OutputArray dst1, OutputArray dst2,
-        float sigma_s = 60, float sigma_r = 0.07f, float shade_factor = 0.02f);
+CV_EXPORTS_W void pencilSketch(InputArray
+src,
+OutputArray dst1, OutputArray
+dst2,
+float sigma_s = 60,
+float sigma_r = 0.07f,
+float shade_factor = 0.02f
+);
 
 /** @brief Stylization aims to produce digital imagery with a wide variety of effects not focused on
 photorealism. Edge-aware filters are ideal for stylization, as they can abstract regions of low
@@ -846,8 +1004,12 @@ contrast while preserving, or enhancing, high-contrast features.
 @param sigma_s %Range between 0 to 200.
 @param sigma_r %Range between 0 to 1.
  */
-CV_EXPORTS_W void stylization(InputArray src, OutputArray dst, float sigma_s = 60,
-        float sigma_r = 0.45f);
+CV_EXPORTS_W void stylization(InputArray
+src,
+OutputArray dst,
+float sigma_s = 60,
+float sigma_r = 0.45f
+);
 
 //! @} photo_render
 

@@ -1,0 +1,6 @@
+# ninja log v5
+1	3380	681905410	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	9059013d38ef6bcf
+3381	3997	681905410	../../../../build/intermediates/cxx/Debug/3k4l3x51/obj/arm64-v8a/libserial_port.so	ea7dac7be35b921d
+0	6	0	clean	5257a025ec128d60
+42	2423	681905920	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	9059013d38ef6bcf
+2423	3163	681905921	../../../../build/intermediates/cxx/Debug/3k4l3x51/obj/arm64-v8a/libserial_port.so	ea7dac7be35b921d

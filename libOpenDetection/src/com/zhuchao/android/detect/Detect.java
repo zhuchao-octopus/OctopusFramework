@@ -18,7 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class Detect implements CameraBridgeViewBase.CvCameraViewListener2{
+public class Detect implements CameraBridgeViewBase.CvCameraViewListener2 {
     private final String TAG = "Detect";
     private Context mContext;
     //private NormalCallback normalCallback;

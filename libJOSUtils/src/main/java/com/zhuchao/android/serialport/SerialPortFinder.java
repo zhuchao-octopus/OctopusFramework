@@ -32,6 +32,7 @@ public class SerialPortFinder {
             mDriverName = name;
             mDeviceRoot = root;
         }
+
         private String mDriverName;
         private String mDeviceRoot;
         Vector<File> mDevices = null;

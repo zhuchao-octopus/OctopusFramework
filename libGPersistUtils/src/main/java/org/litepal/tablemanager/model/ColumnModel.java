@@ -21,6 +21,7 @@ import android.text.TextUtils;
 /**
  * This is a model class for columns. It stores column name, column type, and column constraints
  * information.
+ *
  * @author Tony Green
  * @since 1.3
  */
@@ -112,6 +113,7 @@ public class ColumnModel {
 
     /**
      * Judge current ColumnModel is id column or not.
+     *
      * @return True if it's id column. False otherwise.
      */
     public boolean isIdColumn() {

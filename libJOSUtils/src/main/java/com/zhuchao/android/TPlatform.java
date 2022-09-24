@@ -3,6 +3,8 @@ package com.zhuchao.android;
 import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
 import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
 
+import android.app.Instrumentation;
+
 import com.zhuchao.android.fileutils.MMLog;
 
 import java.lang.reflect.InvocationTargetException;
@@ -247,5 +249,31 @@ public class TPlatform {
         } else {
             MMLog.setDebugOnOff(true);
         }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void sendKeyCode(final int keyCode){
+        new Thread() {
+            public void run() {
+                try {
+                    Instrumentation inst = new Instrumentation();
+                    inst.sendKeyDownUpSync(keyCode);
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                    MMLog.log(TAG,e.toString());
+                }
+            }
+        }.start();
+    }
+
+    public static boolean sendKeyEvent(int keyCode) {
+        try {
+            Runtime.getRuntime().exec("input keyevent " + keyCode);
+            return true;
+        } catch (Exception e) {
+            //e.printStackTrace();
+            MMLog.log(TAG,e.toString());
+        }
+        return false;
     }
 }

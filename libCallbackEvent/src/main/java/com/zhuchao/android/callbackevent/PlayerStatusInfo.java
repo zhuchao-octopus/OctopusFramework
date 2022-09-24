@@ -146,27 +146,26 @@ public class PlayerStatusInfo {
         this.lastError = lastError;
     }
 
-    public String toString()
-    {
-        String str = "EventType = "+ EventType;
-        str += " TimeChanged = "+ TimeChanged;
-        str += " PositionChanged = "+ PositionChanged;
-        str += " buffering = "+buffering;
-        str += " LengthChanged = "+ LengthChanged;
+    public String toString() {
+        String str = "EventType = " + EventType;
+        str += " TimeChanged = " + TimeChanged;
+        str += " PositionChanged = " + PositionChanged;
+        str += " buffering = " + buffering;
+        str += " LengthChanged = " + LengthChanged;
 
-        str += " OutCount = "+ OutCount;
-        str += " ChangedID = "+ ChangedID;
-        str += " ChangedType = "+ ChangedType;
+        str += " OutCount = " + OutCount;
+        str += " ChangedID = " + ChangedID;
+        str += " ChangedType = " + ChangedType;
 
-        str += " surfaceStatus = "+ surfacePrepared;
-        str += " sourceStatus = "+ sourcePrepared;
-        str += " surfaceW = "+ surfaceW;
-        str += " surfaceH = "+ surfaceH;
+        str += " surfaceStatus = " + surfacePrepared;
+        str += " sourceStatus = " + sourcePrepared;
+        str += " surfaceW = " + surfaceW;
+        str += " surfaceH = " + surfaceH;
 
-        str += " videoW = "+ videoW;
-        str += " videoH = "+ videoH;
+        str += " videoW = " + videoW;
+        str += " videoH = " + videoH;
 
-        str += " volume = "+ volume;
+        str += " volume = " + volume;
         return str;
     }
 }

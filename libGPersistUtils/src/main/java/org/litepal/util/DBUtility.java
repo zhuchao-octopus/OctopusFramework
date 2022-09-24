@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * A utility class to help LitePal with some database actions. These actions can
  * help classes just do the jobs they care, and help them out of the trivial
  * work.
- * 
+ *
  * @author Tony
  * @since 1.0
  */
@@ -57,98 +57,91 @@ public class DBUtility {
     private static final String REG_COLLECTION = "\\s+(not\\s+)?(in)\\s*\\(";
 
     /**
-	 * Disable to create an instance of DBUtility.
-	 */
-	private DBUtility() {
-	}
+     * Disable to create an instance of DBUtility.
+     */
+    private DBUtility() {
+    }
 
-	/**
-	 * Get the corresponding table name by the full class name with package. It
-	 * will only get the short class name without package name as table name.
-	 * 
-	 * @param className
-	 *            Full class name with package.
-	 * @return Return the table name by getting the short class name. Return
-	 *         null if the class name is null or invalid.
-	 * 
-	 */
-	public static String getTableNameByClassName(String className) {
-		if (!TextUtils.isEmpty(className)) {
-			if ('.' == className.charAt(className.length() - 1)) {
-				return null;
-			} else {
+    /**
+     * Get the corresponding table name by the full class name with package. It
+     * will only get the short class name without package name as table name.
+     *
+     * @param className Full class name with package.
+     * @return Return the table name by getting the short class name. Return
+     * null if the class name is null or invalid.
+     */
+    public static String getTableNameByClassName(String className) {
+        if (!TextUtils.isEmpty(className)) {
+            if ('.' == className.charAt(className.length() - 1)) {
+                return null;
+            } else {
                 return className.substring(className.lastIndexOf(".") + 1);
-			}
-		}
-		return null;
-	}
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * Get the index name by column name.
-	 * In LitePal index name always named like columnName_index.
-	 * @param tableName
-	 * 			Table name.
-	 * @param columnName
-	 * 			Column name.
-	 * @return Index name or null if column name is null or empty.
-	 */
-	public static String getIndexName(String tableName, String columnName) {
-		if (!TextUtils.isEmpty(tableName) && !TextUtils.isEmpty(columnName)) {
-			return tableName + "_" + columnName + "_index";
-		}
-		return null;
-	}
+    /**
+     * Get the index name by column name.
+     * In LitePal index name always named like columnName_index.
+     *
+     * @param tableName  Table name.
+     * @param columnName Column name.
+     * @return Index name or null if column name is null or empty.
+     */
+    public static String getIndexName(String tableName, String columnName) {
+        if (!TextUtils.isEmpty(tableName) && !TextUtils.isEmpty(columnName)) {
+            return tableName + "_" + columnName + "_index";
+        }
+        return null;
+    }
 
-	/**
-	 * Get the corresponding table name list by the full class name list with
-	 * package. Each table name will only get the short class name without
-	 * package.
-	 * 
-	 * @param classNames
-	 *            The list of full class name with package.
-	 * @return Return the table name list.
-	 */
-	public static List<String> getTableNameListByClassNameList(List<String> classNames) {
-		List<String> tableNames = new ArrayList<String>();
-		if (classNames != null && !classNames.isEmpty()) {
-			for (String className : classNames) {
-				tableNames.add(getTableNameByClassName(className));
-			}
-		}
-		return tableNames;
-	}
+    /**
+     * Get the corresponding table name list by the full class name list with
+     * package. Each table name will only get the short class name without
+     * package.
+     *
+     * @param classNames The list of full class name with package.
+     * @return Return the table name list.
+     */
+    public static List<String> getTableNameListByClassNameList(List<String> classNames) {
+        List<String> tableNames = new ArrayList<String>();
+        if (classNames != null && !classNames.isEmpty()) {
+            for (String className : classNames) {
+                tableNames.add(getTableNameByClassName(className));
+            }
+        }
+        return tableNames;
+    }
 
-	/**
-	 * Get table name by the given foreign column name.
-	 * 
-	 * @param foreignColumnName
-	 *            The foreign column name. Standard pattern is tablename_id.
-	 * @return The table name. Return null if the given foreign column is null,
-	 *         empty or invalid.
-	 */
-	public static String getTableNameByForeignColumn(String foreignColumnName) {
-		if (!TextUtils.isEmpty(foreignColumnName)) {
-			if (foreignColumnName.toLowerCase(Locale.US).endsWith("_id")) {
-				return foreignColumnName.substring(0, foreignColumnName.length() - "_id".length());
-			}
-			return null;
-		}
-		return null;
-	}
+    /**
+     * Get table name by the given foreign column name.
+     *
+     * @param foreignColumnName The foreign column name. Standard pattern is tablename_id.
+     * @return The table name. Return null if the given foreign column is null,
+     * empty or invalid.
+     */
+    public static String getTableNameByForeignColumn(String foreignColumnName) {
+        if (!TextUtils.isEmpty(foreignColumnName)) {
+            if (foreignColumnName.toLowerCase(Locale.US).endsWith("_id")) {
+                return foreignColumnName.substring(0, foreignColumnName.length() - "_id".length());
+            }
+            return null;
+        }
+        return null;
+    }
 
-	/**
-	 * Create intermediate join table name by the concatenation of the two
-	 * target table names in alphabetical order with underline in the middle.
-	 * 
-	 * @param tableName
-	 *            First table name.
-	 * @param associatedTableName
-	 *            The associated table name.
-	 * @return The table name by the concatenation of the two target table names
-	 *         in alphabetical order with underline in the middle. If the table
-	 *         name or associated table name is null of empty, return null.
-	 */
-	public static String getIntermediateTableName(String tableName, String associatedTableName) {
+    /**
+     * Create intermediate join table name by the concatenation of the two
+     * target table names in alphabetical order with underline in the middle.
+     *
+     * @param tableName           First table name.
+     * @param associatedTableName The associated table name.
+     * @return The table name by the concatenation of the two target table names
+     * in alphabetical order with underline in the middle. If the table
+     * name or associated table name is null of empty, return null.
+     */
+    public static String getIntermediateTableName(String tableName, String associatedTableName) {
         if (!(TextUtils.isEmpty(tableName) || TextUtils.isEmpty(associatedTableName))) {
             String intermediateTableName;
             if (tableName.toLowerCase(Locale.US).compareTo(associatedTableName.toLowerCase(Locale.US)) <= 0) {
@@ -159,17 +152,16 @@ public class DBUtility {
             return intermediateTableName;
         }
         return null;
-	}
+    }
 
     /**
      * Create generic table name by the concatenation of the class model's table name and simple
      * generic type name with underline in the middle.
-     * @param className
-     *          Name of the class model.
-     * @param fieldName
-     *          Name of the generic type field.
+     *
+     * @param className Name of the class model.
+     * @param fieldName Name of the generic type field.
      * @return Table name by the concatenation of the class model's table name and simple
-     *         generic type name with underline in the middle.
+     * generic type name with underline in the middle.
      */
     public static String getGenericTableName(String className, String fieldName) {
         String tableName = getTableNameByClassName(className);
@@ -178,8 +170,8 @@ public class DBUtility {
 
     /**
      * The column name for referenced id in generic table.
-     * @param className
-     *          Name of the class model.
+     *
+     * @param className Name of the class model.
      * @return The column name for referenced id in generic table.
      */
     public static String getGenericValueIdColumnName(String className) {
@@ -190,54 +182,52 @@ public class DBUtility {
         return BaseUtility.changeCase(field.getName() + "_id");
     }
 
-	/**
-	 * Judge the table name is an intermediate table or not.
-	 * 
-	 * @param tableName
-	 *            Table name in database.
-	 * @return Return true if the table name is an intermediate table. Otherwise
-	 *         return false.
-	 */
-	public static boolean isIntermediateTable(String tableName, SQLiteDatabase db) {
-		if (!TextUtils.isEmpty(tableName)) {
-			if (tableName.matches("[0-9a-zA-Z]+_[0-9a-zA-Z]+")) {
-				Cursor cursor = null;
-				try {
-					cursor = db.query(Const.TableSchema.TABLE_NAME, null, null, null, null, null,
-							null);
-					if (cursor.moveToFirst()) {
-						do {
-							String tableNameDB = cursor.getString(cursor
-									.getColumnIndexOrThrow(Const.TableSchema.COLUMN_NAME));
-							if (tableName.equalsIgnoreCase(tableNameDB)) {
-								int tableType = cursor.getInt(cursor
-										.getColumnIndexOrThrow(Const.TableSchema.COLUMN_TYPE));
-								if (tableType == Const.TableSchema.INTERMEDIATE_JOIN_TABLE) {
-									return true;
-								}
-								break;
-							}
-						} while (cursor.moveToNext());
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-					if (cursor != null) {
-						cursor.close();
-					}
-				}
-			}
-		}
-		return false;
-	}
+    /**
+     * Judge the table name is an intermediate table or not.
+     *
+     * @param tableName Table name in database.
+     * @return Return true if the table name is an intermediate table. Otherwise
+     * return false.
+     */
+    public static boolean isIntermediateTable(String tableName, SQLiteDatabase db) {
+        if (!TextUtils.isEmpty(tableName)) {
+            if (tableName.matches("[0-9a-zA-Z]+_[0-9a-zA-Z]+")) {
+                Cursor cursor = null;
+                try {
+                    cursor = db.query(Const.TableSchema.TABLE_NAME, null, null, null, null, null,
+                            null);
+                    if (cursor.moveToFirst()) {
+                        do {
+                            String tableNameDB = cursor.getString(cursor
+                                    .getColumnIndexOrThrow(Const.TableSchema.COLUMN_NAME));
+                            if (tableName.equalsIgnoreCase(tableNameDB)) {
+                                int tableType = cursor.getInt(cursor
+                                        .getColumnIndexOrThrow(Const.TableSchema.COLUMN_TYPE));
+                                if (tableType == Const.TableSchema.INTERMEDIATE_JOIN_TABLE) {
+                                    return true;
+                                }
+                                break;
+                            }
+                        } while (cursor.moveToNext());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * Judge the table name is an generic table or not.
      *
-     * @param tableName
-     *            Table name in database.
+     * @param tableName Table name in database.
      * @return Return true if the table name is an generic table. Otherwise
-     *         return false.
+     * return false.
      */
     public static boolean isGenericTable(String tableName, SQLiteDatabase db) {
         if (!TextUtils.isEmpty(tableName)) {
@@ -272,46 +262,42 @@ public class DBUtility {
         return false;
     }
 
-	/**
-	 * Test if the table name passed in exists in the database. Cases are
-	 * ignored.
-	 * 
-	 * @param tableName
-	 *            The table name.
-	 * @return Return true if there's already a same name table exist, otherwise
-	 *         return false.
-	 */
-	public static boolean isTableExists(String tableName, SQLiteDatabase db) {
-		boolean exist;
-		try {
-			exist = BaseUtility.containsIgnoreCases(findAllTableNames(db), tableName);
-		} catch (Exception e) {
-			e.printStackTrace();
-			exist = false;
-		}
-		return exist;
-	}
+    /**
+     * Test if the table name passed in exists in the database. Cases are
+     * ignored.
+     *
+     * @param tableName The table name.
+     * @return Return true if there's already a same name table exist, otherwise
+     * return false.
+     */
+    public static boolean isTableExists(String tableName, SQLiteDatabase db) {
+        boolean exist;
+        try {
+            exist = BaseUtility.containsIgnoreCases(findAllTableNames(db), tableName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            exist = false;
+        }
+        return exist;
+    }
 
-	/**
-	 * Test if a column exists in a table. Cases are ignored.
-	 * 
-	 * @param columnName
-	 *            The column name.
-	 * @param tableName
-	 *            The table name.
-	 * @param db
-	 *            Instance of SQLiteDatabase.
-	 * @return If there's a column named as the column name passed in, return
-	 *         true. Or return false. If any of the passed in parameters is null
-	 *         or empty, return false.
-	 */
-	public static boolean isColumnExists(String columnName, String tableName, SQLiteDatabase db) {
-		if (TextUtils.isEmpty(columnName) || TextUtils.isEmpty(tableName)) {
-			return false;
-		}
-		boolean exist = false;
+    /**
+     * Test if a column exists in a table. Cases are ignored.
+     *
+     * @param columnName The column name.
+     * @param tableName  The table name.
+     * @param db         Instance of SQLiteDatabase.
+     * @return If there's a column named as the column name passed in, return
+     * true. Or return false. If any of the passed in parameters is null
+     * or empty, return false.
+     */
+    public static boolean isColumnExists(String columnName, String tableName, SQLiteDatabase db) {
+        if (TextUtils.isEmpty(columnName) || TextUtils.isEmpty(tableName)) {
+            return false;
+        }
+        boolean exist = false;
         Cursor cursor = null;
-		try {
+        try {
             String checkingColumnSQL = "pragma table_info(" + tableName + ")";
             cursor = db.rawQuery(checkingColumnSQL, null);
             if (cursor.moveToFirst()) {
@@ -323,7 +309,7 @@ public class DBUtility {
                     }
                 } while (cursor.moveToNext());
             }
-		} catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             exist = false;
         } finally {
@@ -331,68 +317,65 @@ public class DBUtility {
                 cursor.close();
             }
         }
-		return exist;
-	}
+        return exist;
+    }
 
-	/**
-	 * Find all table names in the database. If there's some wrong happens when
-	 * finding tables, it will throw exceptions.
-	 * 
-	 * @param db
-	 *            Instance of SQLiteDatabase.
-	 * @return A list with all table names.
-	 * @throws org.litepal.exceptions.DatabaseGenerateException
-	 */
-	public static List<String> findAllTableNames(SQLiteDatabase db) {
-		List<String> tableNames = new ArrayList<String>();
-		Cursor cursor = null;
-		try {
-			cursor = db.rawQuery("select * from sqlite_master where type = ?", new String[] { "table" });
-			if (cursor.moveToFirst()) {
-				do {
-					String tableName = cursor.getString(cursor.getColumnIndexOrThrow("tbl_name"));
-					if (!tableNames.contains(tableName)) {
-						tableNames.add(tableName);
-					}
-				} while (cursor.moveToNext());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new DatabaseGenerateException(e.getMessage());
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
-		return tableNames;
-	}
+    /**
+     * Find all table names in the database. If there's some wrong happens when
+     * finding tables, it will throw exceptions.
+     *
+     * @param db Instance of SQLiteDatabase.
+     * @return A list with all table names.
+     * @throws org.litepal.exceptions.DatabaseGenerateException
+     */
+    public static List<String> findAllTableNames(SQLiteDatabase db) {
+        List<String> tableNames = new ArrayList<String>();
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("select * from sqlite_master where type = ?", new String[]{"table"});
+            if (cursor.moveToFirst()) {
+                do {
+                    String tableName = cursor.getString(cursor.getColumnIndexOrThrow("tbl_name"));
+                    if (!tableNames.contains(tableName)) {
+                        tableNames.add(tableName);
+                    }
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DatabaseGenerateException(e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return tableNames;
+    }
 
-	/**
-	 * Look from the database to find a table named same as the table name in
-	 * table model. Then iterate the columns and types of this table to create a
-	 * new instance of table model. If there's no such a table in the database,
-	 * then throw DatabaseGenerateException.
-	 * 
-	 * @param tableName
-	 *            Table name.
-	 * @param db
-	 *            Instance of SQLiteDatabase.
-	 * @return A table model object with values from database table.
-	 * @throws org.litepal.exceptions.DatabaseGenerateException
-	 */
-	public static TableModel findPragmaTableInfo(String tableName, SQLiteDatabase db) {
-		if (isTableExists(tableName, db)) {
-			Pair<Set<String>, Set<String>> indexPair = findIndexedColumns(tableName, db);
-			Set<String> indexColumns = indexPair.first;
-			Set<String> uniqueColumns = indexPair.second;
-			TableModel tableModelDB = new TableModel();
-			tableModelDB.setTableName(tableName);
-			String checkingColumnSQL = "pragma table_info(" + tableName + ")";
-			Cursor cursor = null;
-			try {
-				cursor = db.rawQuery(checkingColumnSQL, null);
-				if (cursor.moveToFirst()) {
-					do {
+    /**
+     * Look from the database to find a table named same as the table name in
+     * table model. Then iterate the columns and types of this table to create a
+     * new instance of table model. If there's no such a table in the database,
+     * then throw DatabaseGenerateException.
+     *
+     * @param tableName Table name.
+     * @param db        Instance of SQLiteDatabase.
+     * @return A table model object with values from database table.
+     * @throws org.litepal.exceptions.DatabaseGenerateException
+     */
+    public static TableModel findPragmaTableInfo(String tableName, SQLiteDatabase db) {
+        if (isTableExists(tableName, db)) {
+            Pair<Set<String>, Set<String>> indexPair = findIndexedColumns(tableName, db);
+            Set<String> indexColumns = indexPair.first;
+            Set<String> uniqueColumns = indexPair.second;
+            TableModel tableModelDB = new TableModel();
+            tableModelDB.setTableName(tableName);
+            String checkingColumnSQL = "pragma table_info(" + tableName + ")";
+            Cursor cursor = null;
+            try {
+                cursor = db.rawQuery(checkingColumnSQL, null);
+                if (cursor.moveToFirst()) {
+                    do {
                         ColumnModel columnModel = new ColumnModel();
                         String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
                         String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
@@ -411,52 +394,51 @@ public class DBUtility {
                             defaultValue = "";
                         }
                         columnModel.setDefaultValue(defaultValue);
-						tableModelDB.addColumnModel(columnModel);
-					} while (cursor.moveToNext());
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new DatabaseGenerateException(e.getMessage());
-			} finally {
-				if (cursor != null) {
-					cursor.close();
-				}
-			}
-			return tableModelDB;
-		} else {
-			throw new DatabaseGenerateException(
-					DatabaseGenerateException.TABLE_DOES_NOT_EXIST_WHEN_EXECUTING + tableName);
-		}
-	}
+                        tableModelDB.addColumnModel(columnModel);
+                    } while (cursor.moveToNext());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new DatabaseGenerateException(e.getMessage());
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+            return tableModelDB;
+        } else {
+            throw new DatabaseGenerateException(
+                    DatabaseGenerateException.TABLE_DOES_NOT_EXIST_WHEN_EXECUTING + tableName);
+        }
+    }
 
     /**
      * Find all columns with index, including normal index and unique index of specified table.
-     * @param tableName
-     *          The table to find unique columns.
-     * @param db
-     *          Instance of SQLiteDatabase.
+     *
+     * @param tableName The table to find unique columns.
+     * @param db        Instance of SQLiteDatabase.
      * @return A pair contains two types of index columns. First is normal index columns. Second is unique index columns.
      */
     public static Pair<Set<String>, Set<String>> findIndexedColumns(String tableName, SQLiteDatabase db) {
-		Set<String> indexColumns = new HashSet<>();
-		Set<String> uniqueColumns = new HashSet<>();
+        Set<String> indexColumns = new HashSet<>();
+        Set<String> uniqueColumns = new HashSet<>();
         Cursor cursor = null;
         Cursor innerCursor = null;
         try {
-            cursor = db.rawQuery("pragma index_list(" + tableName +")", null);
+            cursor = db.rawQuery("pragma index_list(" + tableName + ")", null);
             if (cursor.moveToFirst()) {
                 do {
                     boolean unique = cursor.getInt(cursor.getColumnIndexOrThrow("unique")) == 1;
-					String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
-					innerCursor = db.rawQuery("pragma index_info(" + name + ")", null);
-					if (innerCursor.moveToFirst()) {
-						String columnName = innerCursor.getString(innerCursor.getColumnIndexOrThrow("name"));
-						if (unique) {
-							uniqueColumns.add(columnName);
-						} else {
-							indexColumns.add(columnName);
-						}
-					}
+                    String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                    innerCursor = db.rawQuery("pragma index_info(" + name + ")", null);
+                    if (innerCursor.moveToFirst()) {
+                        String columnName = innerCursor.getString(innerCursor.getColumnIndexOrThrow("name"));
+                        if (unique) {
+                            uniqueColumns.add(columnName);
+                        } else {
+                            indexColumns.add(columnName);
+                        }
+                    }
                 } while (cursor.moveToNext());
             }
         } catch (Exception e) {
@@ -476,14 +458,14 @@ public class DBUtility {
     /**
      * If the field name is conflicted with SQLite keywords. Return true if conflicted, return false
      * otherwise.
-     * @param fieldName
-     *          Name of the field.
+     *
+     * @param fieldName Name of the field.
      * @return True if conflicted, false otherwise.
      */
     public static boolean isFieldNameConflictWithSQLiteKeywords(String fieldName) {
         if (!TextUtils.isEmpty(fieldName)) {
             String fieldNameWithComma = "," + fieldName.toLowerCase(Locale.US) + ",";
-			return SQLITE_KEYWORDS.contains(fieldNameWithComma);
+            return SQLITE_KEYWORDS.contains(fieldNameWithComma);
         }
         return false;
     }
@@ -491,8 +473,8 @@ public class DBUtility {
     /**
      * Convert the passed in name to valid column name if the name is conflicted with SQLite keywords.
      * The convert rule is to append {@link #KEYWORDS_COLUMN_SUFFIX} to the name as new column name.
-     * @param columnName
-     *          Original column name.
+     *
+     * @param columnName Original column name.
      * @return Converted name as new column name if conflicted with SQLite keywords.
      */
     public static String convertToValidColumnName(String columnName) {
@@ -504,8 +486,8 @@ public class DBUtility {
 
     /**
      * Convert the where clause if it contains invalid column names which conflict with SQLite keywords.
-     * @param whereClause
-     *          where clause for query, update or delete.
+     *
+     * @param whereClause where clause for query, update or delete.
      * @return Converted where clause with valid column names.
      */
     public static String convertWhereClauseToColumnName(String whereClause) {
@@ -532,9 +514,9 @@ public class DBUtility {
 
     /**
      * Convert the select clause if it contains invalid column names which conflict with SQLite keywords.
-     * @param columns
-     *          A String array of which columns to return. Passing null will
-     *          return all columns.
+     *
+     * @param columns A String array of which columns to return. Passing null will
+     *                return all columns.
      * @return Converted select clause with valid column names.
      */
     public static String[] convertSelectClauseToValidNames(String[] columns) {
@@ -550,9 +532,9 @@ public class DBUtility {
 
     /**
      * Convert the order by clause if it contains invalid column names which conflict with SQLite keywords.
-     * @param orderBy
-     *          How to order the rows, formatted as an SQL ORDER BY clause. Passing null will use
-     *          the default sort order, which may be unordered.
+     *
+     * @param orderBy How to order the rows, formatted as an SQL ORDER BY clause. Passing null will use
+     *                the default sort order, which may be unordered.
      * @return Converted order by clause with valid column names.
      */
     public static String convertOrderByClauseToValidName(String orderBy) {
@@ -580,8 +562,8 @@ public class DBUtility {
 
     /**
      * Convert the order by item if it is invalid column name which conflict with SQLite keywords.
-     * @param orderByItem
-     *          The single order by condition.
+     *
+     * @param orderByItem The single order by condition.
      * @return Converted order by item with valid column name.
      */
     private static String convertOrderByItem(String orderByItem) {

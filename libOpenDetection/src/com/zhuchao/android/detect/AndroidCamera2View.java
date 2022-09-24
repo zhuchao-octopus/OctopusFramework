@@ -64,7 +64,7 @@ public class AndroidCamera2View extends JavaCamera2View {
 
     }
 
-    private BaseLoaderCallback mLoaderCallback  = new BaseLoaderCallback(getContext()) {
+    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(getContext()) {
         @Override
         public void onManagerConnected(int status) {
             switch (status) {

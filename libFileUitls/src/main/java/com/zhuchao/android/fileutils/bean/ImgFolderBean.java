@@ -6,13 +6,21 @@ package com.zhuchao.android.fileutils.bean;
  * @描述 图片文件夹的bean类
  */
 public class ImgFolderBean {
-    /**当前文件夹的路径*/
+    /**
+     * 当前文件夹的路径
+     */
     private String dir;
-    /**第一张图片的路径*/
+    /**
+     * 第一张图片的路径
+     */
     private String fistImgPath;
-    /**文件夹名*/
+    /**
+     * 文件夹名
+     */
     private String name;
-    /**文件夹中图片的数量*/
+    /**
+     * 文件夹中图片的数量
+     */
     private int count;
 
     public String getDir() {

@@ -19,8 +19,8 @@ afterEvaluate {
                 version PUBLISH_VERSION
             }
         }
-        repositories{
-            maven{
+        repositories {
+            maven {
                 allowInsecureProtocol true
                 url GITHUB_REPO_PATH
             }
@@ -29,10 +29,10 @@ afterEvaluate {
 }
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     defaultConfig {
         minSdkVersion 24
-        targetSdkVersion 32
+        targetSdkVersion 33
         //versionCode 20
         //versionName "2.0"
     }

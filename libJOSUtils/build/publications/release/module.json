@@ -1,0 +1,74 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.zhuchao.android",
+    "module": "libJOSUtils",
+    "version": "1.2",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.4"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "libJOSUtils-1.2.aar",
+          "url": "libJOSUtils-1.2.aar",
+          "size": 52820,
+          "sha512": "4130d3a764393c02ec45849fdd3c0a487e532ffae83caffe5a161f62646ea94acb88a7c8e5f3d5d5aa27961f6aac300f63356cc442f781a01b4acc318398a527",
+          "sha256": "1c4e964218617a96647812855001b65a2904a0e837c7dced15f15bab439edd93",
+          "sha1": "418908724d6033a66e85826db5d85c4e64e27870",
+          "md5": "efe679a4025867e1dd8f2d7708e6272b"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.zhuchao.android",
+          "module": "libCallbackEvent",
+          "version": {
+            "requires": "1.4"
+          }
+        },
+        {
+          "group": "com.zhuchao.android",
+          "module": "libFileUtils",
+          "version": {
+            "requires": "1.7"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "libJOSUtils-1.2.aar",
+          "url": "libJOSUtils-1.2.aar",
+          "size": 52820,
+          "sha512": "4130d3a764393c02ec45849fdd3c0a487e532ffae83caffe5a161f62646ea94acb88a7c8e5f3d5d5aa27961f6aac300f63356cc442f781a01b4acc318398a527",
+          "sha256": "1c4e964218617a96647812855001b65a2904a0e837c7dced15f15bab439edd93",
+          "sha1": "418908724d6033a66e85826db5d85c4e64e27870",
+          "md5": "efe679a4025867e1dd8f2d7708e6272b"
+        }
+      ]
+    }
+  ]
+}

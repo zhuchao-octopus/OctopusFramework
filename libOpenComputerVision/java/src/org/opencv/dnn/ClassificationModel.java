@@ -4,23 +4,26 @@
 package org.opencv.dnn;
 
 import org.opencv.core.Mat;
-import org.opencv.dnn.Model;
-import org.opencv.dnn.Net;
 
 // C++: class ClassificationModel
+
 /**
  * This class represents high-level API for classification models.
- *
+ * <p>
  * ClassificationModel allows to set params for preprocessing input image.
  * ClassificationModel creates net from file with trained weights and config,
  * sets preprocessing input, runs forward pass and return top-1 prediction.
  */
 public class ClassificationModel extends Model {
 
-    protected ClassificationModel(long addr) { super(addr); }
+    protected ClassificationModel(long addr) {
+        super(addr);
+    }
 
     // internal usage only
-    public static ClassificationModel __fromPtr__(long addr) { return new ClassificationModel(addr); }
+    public static ClassificationModel __fromPtr__(long addr) {
+        return new ClassificationModel(addr);
+    }
 
     //
     // C++:   cv::dnn::ClassificationModel::ClassificationModel(String model, String config = "")
@@ -29,7 +32,8 @@ public class ClassificationModel extends Model {
     /**
      * Create classification model from network represented in one of the supported formats.
      * An order of {@code model} and {@code config} arguments does not matter.
-     * @param model Binary file contains trained weights.
+     *
+     * @param model  Binary file contains trained weights.
      * @param config Text file contains network configuration.
      */
     public ClassificationModel(String model, String config) {
@@ -39,6 +43,7 @@ public class ClassificationModel extends Model {
     /**
      * Create classification model from network represented in one of the supported formats.
      * An order of {@code model} and {@code config} arguments does not matter.
+     *
      * @param model Binary file contains trained weights.
      */
     public ClassificationModel(String model) {
@@ -52,6 +57,7 @@ public class ClassificationModel extends Model {
 
     /**
      * Create model from deep learning network.
+     *
      * @param network Net object.
      */
     public ClassificationModel(Net network) {
@@ -67,8 +73,8 @@ public class ClassificationModel extends Model {
         double[] classId_out = new double[1];
         double[] conf_out = new double[1];
         classify_0(nativeObj, frame.nativeObj, classId_out, conf_out);
-        if(classId!=null) classId[0] = (int)classId_out[0];
-        if(conf!=null) conf[0] = (float)conf_out[0];
+        if (classId != null) classId[0] = (int) classId_out[0];
+        if (conf != null) conf[0] = (float) conf_out[0];
     }
 
 
@@ -78,9 +84,9 @@ public class ClassificationModel extends Model {
     }
 
 
-
     // C++:   cv::dnn::ClassificationModel::ClassificationModel(String model, String config = "")
     private static native long ClassificationModel_0(String model, String config);
+
     private static native long ClassificationModel_1(String model);
 
     // C++:   cv::dnn::ClassificationModel::ClassificationModel(Net network)

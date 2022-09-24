@@ -1,0 +1,102 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.zhuchao.android",
+    "module": "libOpenDetection",
+    "version": "1.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.4"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "libOpenDetection-1.0.aar",
+          "url": "libOpenDetection-1.0.aar",
+          "size": 50880067,
+          "sha512": "48ce0ffaf5e38dd32889e1263e554dd2d23d289f0847fa17906da1a818f27bc32284e1984613b20ef5fa82d6ce614f4cba12cecac2d648182767839688a8f15d",
+          "sha256": "ce0f360828502bf17f712038a2ea76cc8184ecf983f75fe44ef3c6a635476872",
+          "sha1": "e8d9b929dbfa9a976587621d53de8fc2ce8b5902",
+          "md5": "33d375e0fa92c27ba5ef3431f8e5e84a"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.zhuchao.android",
+          "module": "libOpenComputerVision",
+          "version": {
+            "requires": "1.0"
+          }
+        },
+        {
+          "group": "com.zhuchao.android",
+          "module": "libCallbackEvent",
+          "version": {
+            "requires": "1.4"
+          }
+        },
+        {
+          "group": "com.zhuchao.android",
+          "module": "libFileUtils",
+          "version": {
+            "requires": "1.7"
+          }
+        },
+        {
+          "group": "androidx.annotation",
+          "module": "annotation",
+          "version": {
+            "requires": "1.4.0-alpha02"
+          }
+        },
+        {
+          "group": "androidx.exifinterface",
+          "module": "exifinterface",
+          "version": {
+            "requires": "1.3.3"
+          }
+        },
+        {
+          "group": "org.bytedeco",
+          "module": "javacv-platform",
+          "version": {
+            "requires": "1.5.7"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "libOpenDetection-1.0.aar",
+          "url": "libOpenDetection-1.0.aar",
+          "size": 50880067,
+          "sha512": "48ce0ffaf5e38dd32889e1263e554dd2d23d289f0847fa17906da1a818f27bc32284e1984613b20ef5fa82d6ce614f4cba12cecac2d648182767839688a8f15d",
+          "sha256": "ce0f360828502bf17f712038a2ea76cc8184ecf983f75fe44ef3c6a635476872",
+          "sha1": "e8d9b929dbfa9a976587621d53de8fc2ce8b5902",
+          "md5": "33d375e0fa92c27ba5ef3431f8e5e84a"
+        }
+      ]
+    }
+  ]
+}

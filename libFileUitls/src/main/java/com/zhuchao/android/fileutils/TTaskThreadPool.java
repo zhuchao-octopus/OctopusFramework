@@ -60,7 +60,7 @@ public class TTaskThreadPool extends ObjectList {
 
     public void deleteTask(TTask tTask) {
         delete(tTask.getTTag());
-        MMLog.log(TAG, "delete task tag = " + tTask.getTTag()+",name = "+tTask.getTName());
+        MMLog.log(TAG, "delete task tag = " + tTask.getTTag() + ",name = " + tTask.getTName());
     }
 
     private String disguiseName(String Name) {
@@ -84,6 +84,7 @@ public class TTaskThreadPool extends ObjectList {
 
     class PTask extends TTask {
         private final String TAG = "PTask";
+
         //private TTaskThreadPool TTaskThreadPool = null;
         public PTask(String tag) {
             super(tag, null);

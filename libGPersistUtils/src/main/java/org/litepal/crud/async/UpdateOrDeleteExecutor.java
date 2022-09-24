@@ -29,8 +29,8 @@ public class UpdateOrDeleteExecutor extends AsyncExecutor {
 
     /**
      * Register a callback listener and async task will start executing right away.
-     * @param callback
-     *          Callback for update or delete records in background.
+     *
+     * @param callback Callback for update or delete records in background.
      */
     public void listen(UpdateOrDeleteCallback callback) {
         cb = callback;
@@ -38,7 +38,7 @@ public class UpdateOrDeleteExecutor extends AsyncExecutor {
     }
 
     public UpdateOrDeleteCallback getListener() {
-        return  cb;
+        return cb;
     }
 
 }

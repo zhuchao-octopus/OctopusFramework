@@ -30,8 +30,8 @@ public abstract class AsyncExecutor {
 
     /**
      * Submit a task for pending executing.
-     * @param task
-     *          The task with specific database operation.
+     *
+     * @param task The task with specific database operation.
      */
     public void submit(Runnable task) {
         pendingTask = task;

@@ -5,10 +5,9 @@ package org.opencv.ml;
 
 import org.opencv.core.Mat;
 import org.opencv.core.TermCriteria;
-import org.opencv.ml.SVMSGD;
-import org.opencv.ml.StatModel;
 
 // C++: class SVMSGD
+
 /**
  * *************************************************************************************\
  * Stochastic Gradient Descent SVM Classifier                      *
@@ -16,10 +15,14 @@ import org.opencv.ml.StatModel;
  */
 public class SVMSGD extends StatModel {
 
-    protected SVMSGD(long addr) { super(addr); }
+    protected SVMSGD(long addr) {
+        super(addr);
+    }
 
     // internal usage only
-    public static SVMSGD __fromPtr__(long addr) { return new SVMSGD(addr); }
+    public static SVMSGD __fromPtr__(long addr) {
+        return new SVMSGD(addr);
+    }
 
     // C++: enum MarginType (cv.ml.SVMSGD.MarginType)
     public static final int
@@ -65,6 +68,7 @@ public class SVMSGD extends StatModel {
      * Creates empty model.
      * Use StatModel::train to train the model. Since %SVMSGD has several parameters, you may want to
      * find the best parameters for your problem or use setOptimalParameters() to set some default parameters.
+     *
      * @return automatically generated
      */
     public static SVMSGD create() {
@@ -78,7 +82,7 @@ public class SVMSGD extends StatModel {
 
     /**
      * Loads and creates a serialized SVMSGD from a file
-     *
+     * <p>
      * Use SVMSGD::save to serialize and store an SVMSGD to disk.
      * Load the SVMSGD from this file again, by calling this function with the path to the file.
      * Optionally specify the node for the file containing the classifier
@@ -93,7 +97,7 @@ public class SVMSGD extends StatModel {
 
     /**
      * Loads and creates a serialized SVMSGD from a file
-     *
+     * <p>
      * Use SVMSGD::save to serialize and store an SVMSGD to disk.
      * Load the SVMSGD from this file again, by calling this function with the path to the file.
      * Optionally specify the node for the file containing the classifier
@@ -112,6 +116,7 @@ public class SVMSGD extends StatModel {
 
     /**
      * Function sets optimal parameters values for chosen SVM SGD model.
+     *
      * @param svmsgdType is the type of SVMSGD classifier.
      * @param marginType is the type of margin constraint.
      */
@@ -121,6 +126,7 @@ public class SVMSGD extends StatModel {
 
     /**
      * Function sets optimal parameters values for chosen SVM SGD model.
+     *
      * @param svmsgdType is the type of SVMSGD classifier.
      */
     public void setOptimalParameters(int svmsgdType) {
@@ -141,6 +147,7 @@ public class SVMSGD extends StatModel {
 
     /**
      * SEE: setSvmsgdType
+     *
      * @return automatically generated
      */
     public int getSvmsgdType() {
@@ -153,7 +160,8 @@ public class SVMSGD extends StatModel {
     //
 
     /**
-     *  getSvmsgdType SEE: getSvmsgdType
+     * getSvmsgdType SEE: getSvmsgdType
+     *
      * @param svmsgdType automatically generated
      */
     public void setSvmsgdType(int svmsgdType) {
@@ -167,6 +175,7 @@ public class SVMSGD extends StatModel {
 
     /**
      * SEE: setMarginType
+     *
      * @return automatically generated
      */
     public int getMarginType() {
@@ -179,7 +188,8 @@ public class SVMSGD extends StatModel {
     //
 
     /**
-     *  getMarginType SEE: getMarginType
+     * getMarginType SEE: getMarginType
+     *
      * @param marginType automatically generated
      */
     public void setMarginType(int marginType) {
@@ -193,6 +203,7 @@ public class SVMSGD extends StatModel {
 
     /**
      * SEE: setMarginRegularization
+     *
      * @return automatically generated
      */
     public float getMarginRegularization() {
@@ -205,7 +216,8 @@ public class SVMSGD extends StatModel {
     //
 
     /**
-     *  getMarginRegularization SEE: getMarginRegularization
+     * getMarginRegularization SEE: getMarginRegularization
+     *
      * @param marginRegularization automatically generated
      */
     public void setMarginRegularization(float marginRegularization) {
@@ -219,6 +231,7 @@ public class SVMSGD extends StatModel {
 
     /**
      * SEE: setInitialStepSize
+     *
      * @return automatically generated
      */
     public float getInitialStepSize() {
@@ -231,7 +244,8 @@ public class SVMSGD extends StatModel {
     //
 
     /**
-     *  getInitialStepSize SEE: getInitialStepSize
+     * getInitialStepSize SEE: getInitialStepSize
+     *
      * @param InitialStepSize automatically generated
      */
     public void setInitialStepSize(float InitialStepSize) {
@@ -245,6 +259,7 @@ public class SVMSGD extends StatModel {
 
     /**
      * SEE: setStepDecreasingPower
+     *
      * @return automatically generated
      */
     public float getStepDecreasingPower() {
@@ -257,7 +272,8 @@ public class SVMSGD extends StatModel {
     //
 
     /**
-     *  getStepDecreasingPower SEE: getStepDecreasingPower
+     * getStepDecreasingPower SEE: getStepDecreasingPower
+     *
      * @param stepDecreasingPower automatically generated
      */
     public void setStepDecreasingPower(float stepDecreasingPower) {
@@ -271,6 +287,7 @@ public class SVMSGD extends StatModel {
 
     /**
      * SEE: setTermCriteria
+     *
      * @return automatically generated
      */
     public TermCriteria getTermCriteria() {
@@ -283,7 +300,8 @@ public class SVMSGD extends StatModel {
     //
 
     /**
-     *  getTermCriteria SEE: getTermCriteria
+     * getTermCriteria SEE: getTermCriteria
+     *
      * @param val automatically generated
      */
     public void setTermCriteria(TermCriteria val) {
@@ -297,7 +315,6 @@ public class SVMSGD extends StatModel {
     }
 
 
-
     // C++:  Mat cv::ml::SVMSGD::getWeights()
     private static native long getWeights_0(long nativeObj);
 
@@ -309,11 +326,14 @@ public class SVMSGD extends StatModel {
 
     // C++: static Ptr_SVMSGD cv::ml::SVMSGD::load(String filepath, String nodeName = String())
     private static native long load_0(String filepath, String nodeName);
+
     private static native long load_1(String filepath);
 
     // C++:  void cv::ml::SVMSGD::setOptimalParameters(int svmsgdType = SVMSGD::ASGD, int marginType = SVMSGD::SOFT_MARGIN)
     private static native void setOptimalParameters_0(long nativeObj, int svmsgdType, int marginType);
+
     private static native void setOptimalParameters_1(long nativeObj, int svmsgdType);
+
     private static native void setOptimalParameters_2(long nativeObj);
 
     // C++:  int cv::ml::SVMSGD::getSvmsgdType()

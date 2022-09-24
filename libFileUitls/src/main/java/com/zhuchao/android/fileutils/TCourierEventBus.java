@@ -1,12 +1,6 @@
-package com.zhuchao.android;
+package com.zhuchao.android.fileutils;
 
-import com.zhuchao.android.fileutils.CourierEventListener;
-import com.zhuchao.android.fileutils.EventCourier;
 import com.zhuchao.android.callbackevent.InvokeInterface;
-import com.zhuchao.android.fileutils.MMLog;
-import com.zhuchao.android.fileutils.ObjectList;
-import com.zhuchao.android.fileutils.TTask;
-import com.zhuchao.android.fileutils.ThreadUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.locks.LockSupport;
@@ -35,7 +29,7 @@ public class TCourierEventBus implements InvokeInterface {
         tTask = new TTask(TAG, invokeInterface);
     }
 
-    public void registerEventObserver(String tag, CourierEventListener courierEventListener) {
+    public void registerEventObserver(String tag, TCourierEventListener courierEventListener) {
         InvokerList.addItem(tag, courierEventListener);
     }
 
@@ -136,7 +130,7 @@ public class TCourierEventBus implements InvokeInterface {
                 if (eventCourier == null) {
                     continue; //couriers.remove(i);//丢弃
                 }
-                CourierEventListener courierEventListener = getCourierEventListener(eventCourier);
+                TCourierEventListener courierEventListener = getCourierEventListener(eventCourier);
                 if (courierEventListener != null) {
                     courierEventListener.onCourierEvent(eventCourier);
                 }
@@ -155,7 +149,7 @@ public class TCourierEventBus implements InvokeInterface {
                 if (eventCourier == null) {
                     continue; //couriers.remove(i);//丢弃
                 }
-                CourierEventListener courierEventListener = getCourierEventListener(eventCourier);
+                TCourierEventListener courierEventListener = getCourierEventListener(eventCourier);
                 if (courierEventListener != null) {
                     ThreadUtils.runOnMainUiThread(new Runnable() {
                         @Override
@@ -172,8 +166,8 @@ public class TCourierEventBus implements InvokeInterface {
         }
     }
 
-    private CourierEventListener getCourierEventListener(EventCourier eventCourier) {
-        CourierEventListener courierEventListener = (CourierEventListener) InvokerList.getObject(eventCourier.getTag());
+    private TCourierEventListener getCourierEventListener(EventCourier eventCourier) {
+        TCourierEventListener courierEventListener = (TCourierEventListener) InvokerList.getObject(eventCourier.getTag());
         return courierEventListener;
     }
 

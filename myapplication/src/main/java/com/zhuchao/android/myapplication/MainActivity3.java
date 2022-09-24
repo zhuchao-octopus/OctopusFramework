@@ -11,6 +11,7 @@ public class MainActivity3 extends Activity {
     private CameraPreview preview1;
     private CameraPreview preview2;
     private TCameraInterface cameraInterface;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,8 +24,6 @@ public class MainActivity3 extends Activity {
         //preview1.setCamera(0);
         //preview1.retryOpenCamera();
     }
-
-
 
 
 }

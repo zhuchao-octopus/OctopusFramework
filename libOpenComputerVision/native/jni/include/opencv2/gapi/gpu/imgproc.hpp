@@ -15,13 +15,13 @@
 
 
 namespace cv {
-namespace gapi {
-namespace imgproc {
-namespace gpu {
-    using namespace ocl;
-} // namespace gpu
-} // namespace imgproc
-} // namespace gapi
+    namespace gapi {
+        namespace imgproc {
+            namespace gpu {
+                using namespace ocl;
+            } // namespace gpu
+        } // namespace imgproc
+    } // namespace gapi
 } // namespace cv
 
 

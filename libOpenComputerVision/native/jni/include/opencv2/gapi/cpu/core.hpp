@@ -12,15 +12,17 @@
 #include <opencv2/gapi/own/exports.hpp> // GAPI_EXPORTS
 
 namespace cv {
-namespace gapi {
-namespace core {
-namespace cpu {
+    namespace gapi {
+        namespace core {
+            namespace cpu {
 
-GAPI_EXPORTS_W cv::gapi::GKernelPackage kernels();
+                GAPI_EXPORTS_W cv::gapi::GKernelPackage
 
-} // namespace cpu
-} // namespace core
-} // namespace gapi
+                kernels();
+
+            } // namespace cpu
+        } // namespace core
+    } // namespace gapi
 } // namespace cv
 
 

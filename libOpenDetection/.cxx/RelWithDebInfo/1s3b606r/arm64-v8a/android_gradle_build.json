@@ -1,0 +1,40 @@
+{
+  "buildFiles": [
+    "F:\\StudioProjects\\OctopusFramework\\libOpenDetection\\jni\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "F:\\Android\\SDK\\cmake\\3.18.1\\bin\\ninja.exe",
+      "-C",
+      "F:\\StudioProjects\\OctopusFramework\\libOpenDetection\\.cxx\\RelWithDebInfo\\1s3b606r\\arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "F:\\Android\\SDK\\cmake\\3.18.1\\bin\\ninja.exe",
+    "-C",
+    "F:\\StudioProjects\\OctopusFramework\\libOpenDetection\\.cxx\\RelWithDebInfo\\1s3b606r\\arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "detection_based_tracker::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "detection_based_tracker",
+      "output": "F:\\StudioProjects\\OctopusFramework\\libOpenDetection\\build\\intermediates\\cxx\\RelWithDebInfo\\1s3b606r\\obj\\arm64-v8a\\libdetection_based_tracker.so",
+      "runtimeFiles": [
+        "F:\\StudioProjects\\OctopusFramework\\libOpenComputerVision\\native\\libs\\arm64-v8a\\libopencv_java4.so"
+      ]
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "F:\\Android\\SDK\\ndk\\21.1.6352462\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe",
+      "cppCompilerExecutable": "F:\\Android\\SDK\\ndk\\21.1.6352462\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

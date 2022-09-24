@@ -15,9 +15,11 @@ public class IPDataBean {
     private String org;
     private String as;
     private String query;
+
     public void setStatus(String status) {
         this.status = status;
     }
+
     public String getStatus() {
         return status;
     }
@@ -25,6 +27,7 @@ public class IPDataBean {
     public void setCountry(String country) {
         this.country = country;
     }
+
     public String getCountry() {
         return country;
     }
@@ -32,6 +35,7 @@ public class IPDataBean {
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
     }
+
     public String getCountryCode() {
         return countryCode;
     }
@@ -39,6 +43,7 @@ public class IPDataBean {
     public void setRegion(String region) {
         this.region = region;
     }
+
     public String getRegion() {
         return region;
     }
@@ -46,6 +51,7 @@ public class IPDataBean {
     public void setRegionName(String regionName) {
         this.regionName = regionName;
     }
+
     public String getRegionName() {
         return regionName;
     }
@@ -53,6 +59,7 @@ public class IPDataBean {
     public void setCity(String city) {
         this.city = city;
     }
+
     public String getCity() {
         return city;
     }
@@ -60,6 +67,7 @@ public class IPDataBean {
     public void setZip(String zip) {
         this.zip = zip;
     }
+
     public String getZip() {
         return zip;
     }
@@ -67,6 +75,7 @@ public class IPDataBean {
     public void setLat(double lat) {
         this.lat = lat;
     }
+
     public double getLat() {
         return lat;
     }
@@ -74,6 +83,7 @@ public class IPDataBean {
     public void setLon(double lon) {
         this.lon = lon;
     }
+
     public double getLon() {
         return lon;
     }
@@ -81,6 +91,7 @@ public class IPDataBean {
     public void setTimezone(String timezone) {
         this.timezone = timezone;
     }
+
     public String getTimezone() {
         return timezone;
     }
@@ -88,6 +99,7 @@ public class IPDataBean {
     public void setIsp(String isp) {
         this.isp = isp;
     }
+
     public String getIsp() {
         return isp;
     }
@@ -95,6 +107,7 @@ public class IPDataBean {
     public void setOrg(String org) {
         this.org = org;
     }
+
     public String getOrg() {
         return org;
     }
@@ -102,6 +115,7 @@ public class IPDataBean {
     public void setAs(String as) {
         this.as = as;
     }
+
     public String getAs() {
         return as;
     }
@@ -109,6 +123,7 @@ public class IPDataBean {
     public void setQuery(String query) {
         this.query = query;
     }
+
     public String getQuery() {
         return query;
     }

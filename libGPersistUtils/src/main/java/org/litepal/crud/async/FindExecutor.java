@@ -29,8 +29,8 @@ public class FindExecutor<T> extends AsyncExecutor {
 
     /**
      * Register a callback listener and async task will start executing right away.
-     * @param callback
-     *          Callback for find record in background.
+     *
+     * @param callback Callback for find record in background.
      */
     public void listen(FindCallback<T> callback) {
         cb = callback;
@@ -38,7 +38,7 @@ public class FindExecutor<T> extends AsyncExecutor {
     }
 
     public FindCallback<T> getListener() {
-        return  cb;
+        return cb;
     }
 
 }

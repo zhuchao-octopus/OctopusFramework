@@ -42,7 +42,7 @@ public abstract class PlayControl {
 
     public abstract void setSource(FileDescriptor fd);
 
-    public abstract void pushTo(String filePath,boolean duplicated);
+    public abstract void pushTo(String filePath, boolean duplicated);
 
     public abstract void setSurfaceView(SurfaceView surfaceView);
 

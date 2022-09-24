@@ -6,13 +6,7 @@ public class ByteUtils {
     public static int isOdd(int num) {
         return num & 1;
     }
-
-    //-------------------------------------------------------
-    //Hex字符串转int
-    public static int HexToInt(String hex) {
-        return Integer.parseInt(hex, 16);
-    }
-
+    //从高位开始算起，b1,b2,b3,b4 ...
     public static int DoubleBytesToInt(byte b1, byte b2) {
         int a = b1;
         a = a << 8 + b2;
@@ -20,24 +14,30 @@ public class ByteUtils {
     }
 
     public static int ThreeBytesToInt(byte b1, byte b2, byte b3) {
-        int a = DoubleBytesToInt(b1,b2);
+        int a = DoubleBytesToInt(b1, b2);
         a = a << 8 + b3;
         return a;
     }
 
     public static int FourBytesToInt(byte b1, byte b2, byte b3, byte b4) {
-        int a = ThreeBytesToInt(b1,b2,b3);
+        int a = ThreeBytesToInt(b1, b2, b3);
         a = a << 8 + b4;
         return a;
     }
 
-    public static byte[] intToBytes(int in) {
+    public static byte[] intToBytes(int value) {
         byte[] b = new byte[4];
-        b[3] = (byte) (in & 0xff);
-        b[2] = (byte) (in >> 8 & 0xff);
-        b[1] = (byte) (in >> 16 & 0xff);
-        b[0] = (byte) (in >> 24 & 0xff);
+        b[3] = (byte) (value & 0xff);
+        b[2] = (byte) (value >> 8 & 0xff);
+        b[1] = (byte) (value >> 16 & 0xff);
+        b[0] = (byte) (value >> 24 & 0xff);
         return b;
+    }
+
+    //-------------------------------------------------------
+    //Hex字符串转int
+    public static int HexToInt(String hex) {
+        return Integer.parseInt(hex, 16);
     }
 
     //Hex字符串转byte

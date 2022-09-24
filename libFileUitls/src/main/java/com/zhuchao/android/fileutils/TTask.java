@@ -86,11 +86,10 @@ public class TTask extends Thread {
             MMLog.log(TAG, "TTask already been started  isActive = " + isKeeping);
             return;
         }
-       if(properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED)
-       {
-           MMLog.log(TAG, "TTask already finished, no need to run again!");
-           return;
-       }
+        if (properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED) {
+            MMLog.log(TAG, "TTask already finished, no need to run again!");
+            return;
+        }
         try {
             isKeeping = true;
             super.start();
@@ -102,11 +101,9 @@ public class TTask extends Thread {
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         super.run();
-        if (invokeInterface == null)
-        {
+        if (invokeInterface == null) {
             MMLog.log(TAG, "call TTask function null,nothing to do break TTask,tTag = " + tTag);
             free();
             return;
@@ -116,14 +113,10 @@ public class TTask extends Thread {
         //召唤。。。
         MMLog.log(TAG, "invoke TTask demon tTag = " + tTag);
         invokeInterface.CALLTODO(this.tTag);//asynchronous
-        while (isKeeping)
-        {
-            try
-            {
+        while (isKeeping) {
+            try {
                 Thread.sleep(1000);
-            }
-            catch (InterruptedException e)
-            {
+            } catch (InterruptedException e) {
                 MMLog.e(TAG, "run() " + e.getMessage());
             }
         }

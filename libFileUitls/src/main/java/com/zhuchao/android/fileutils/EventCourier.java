@@ -1,6 +1,7 @@
-package com.zhuchao.android.callbackevent;
+package com.zhuchao.android.fileutils;
 
 public class EventCourier {
+    private final String TAG = "EventCourier";
     private String tag;
     private int id;
     private byte[] datas;
@@ -9,7 +10,22 @@ public class EventCourier {
     public EventCourier(String tag, int id) {
         this.tag = tag;
         this.id = id;
-        this.datas = null;
+        this.datas = new byte[1];
+        this.obj = null;
+    }
+
+    public EventCourier(String tag, int id, byte value) {
+        this.tag = tag;
+        this.id = id;
+        this.datas = new byte[1];
+        this.datas[0] = value;
+        this.obj = null;
+    }
+
+    public EventCourier(String tag, int id, int value) {
+        this.tag = tag;
+        this.id = id;
+        this.datas = ByteUtils.intToBytes(value);
         this.obj = null;
     }
 
@@ -23,6 +39,7 @@ public class EventCourier {
     public EventCourier(String tag, int id, Object obj) {
         this.tag = tag;
         this.id = id;
+        this.datas = new byte[1];
         this.obj = obj;
     }
 
@@ -65,15 +82,34 @@ public class EventCourier {
         this.obj = obj;
     }
 
-    public void setIntValue(int value)
+    public byte getByte() {
+        if (datas.length > 0)
+            return datas[0];
+        else
+            return 0;
+    }
+
+    public int getInt()
     {
-        datas = new
+        switch (datas.length) {
+            case 1: return datas[0];
+            case 2:
+                return ByteUtils.DoubleBytesToInt(datas[0], datas[1]);
+            case 3:
+                return ByteUtils.ThreeBytesToInt(datas[0], datas[1], datas[2]);
+            case 4:
+                return ByteUtils.FourBytesToInt(datas[0], datas[1], datas[2], datas[3]);
+            default:
+                MMLog.d(TAG, "do not support more than 4 bytes convert!!!");
+                return -1;
+        }
     }
     //字节数组转转hex字符串
     public String dataToHexStr() {
         StringBuilder strBuilder = new StringBuilder();
         for (byte valueOf : datas) {
-            strBuilder.append(toHexStr(Byte.valueOf(valueOf)));
+            //strBuilder.append(toHexStr(Byte.valueOf(valueOf)));
+            strBuilder.append(toHexStr(valueOf));
             strBuilder.append(" ");
         }
         return strBuilder.toString();

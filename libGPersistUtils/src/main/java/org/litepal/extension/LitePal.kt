@@ -46,7 +46,10 @@ inline fun <reified T> LitePal.count() = count(T::class.java)
  *
  * @return A CountExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
 inline fun <reified T> LitePal.countAsync() = countAsync(T::class.java)
 
 /**
@@ -71,7 +74,10 @@ inline fun <reified T> LitePal.average(column: String) = average(T::class.java, 
  * The based on column to calculate.
  * @return A AverageExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
 inline fun <reified T> LitePal.averageAsync(column: String) = averageAsync(T::class.java, column)
 
 /**
@@ -89,7 +95,8 @@ inline fun <reified T> LitePal.averageAsync(column: String) = averageAsync(T::cl
  *
  * @return The maximum value on a given column.
  */
-inline fun <reified T, reified R> LitePal.max(columnName: String) = max(T::class.java, columnName, R::class.java)
+inline fun <reified T, reified R> LitePal.max(columnName: String) =
+    max(T::class.java, columnName, R::class.java)
 
 /**
  * Basically same as [LitePal.max] but pending to a new thread for executing.
@@ -98,8 +105,12 @@ inline fun <reified T, reified R> LitePal.max(columnName: String) = max(T::class
  * The based on column to calculate.
  * @return A FindExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
-inline fun <reified T, reified R> LitePal.maxAsync(columnName: String) = maxAsync(T::class.java, columnName, R::class.java)
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
+inline fun <reified T, reified R> LitePal.maxAsync(columnName: String) =
+    maxAsync(T::class.java, columnName, R::class.java)
 
 /**
  * Calculates the maximum value on a given column. The value is returned
@@ -117,7 +128,8 @@ inline fun <reified T, reified R> LitePal.maxAsync(columnName: String) = maxAsyn
  * The based on column to calculate.
  * @return The maximum value on a given column.
  */
-inline fun <reified R> LitePal.max(tableName: String, columnName: String) = max(tableName, columnName, R::class.java)
+inline fun <reified R> LitePal.max(tableName: String, columnName: String) =
+    max(tableName, columnName, R::class.java)
 
 /**
  * Basically same as [LitePal.max] but pending to a new thread for executing.
@@ -128,8 +140,12 @@ inline fun <reified R> LitePal.max(tableName: String, columnName: String) = max(
  * The based on column to calculate.
  * @return A FindExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
-inline fun <reified R> LitePal.maxAsync(tableName: String, columnName: String) = maxAsync(tableName, columnName, R::class.java)
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
+inline fun <reified R> LitePal.maxAsync(tableName: String, columnName: String) =
+    maxAsync(tableName, columnName, R::class.java)
 
 /**
  * Calculates the minimum value on a given column. The value is returned
@@ -145,7 +161,8 @@ inline fun <reified R> LitePal.maxAsync(tableName: String, columnName: String) =
  * The based on column to calculate.
  * @return The minimum value on a given column.
  */
-inline fun <reified T, reified R> LitePal.min(columnName: String) = min(T::class.java, columnName, R::class.java)
+inline fun <reified T, reified R> LitePal.min(columnName: String) =
+    min(T::class.java, columnName, R::class.java)
 
 /**
  * Basically same as [LitePal.min] but pending to a new thread for executing.
@@ -154,8 +171,12 @@ inline fun <reified T, reified R> LitePal.min(columnName: String) = min(T::class
  * The based on column to calculate.
  * @return A FindExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
-inline fun <reified T, reified R> LitePal.minAsync(columnName: String) = minAsync(T::class.java, columnName, R::class.java)
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
+inline fun <reified T, reified R> LitePal.minAsync(columnName: String) =
+    minAsync(T::class.java, columnName, R::class.java)
 
 /**
  * Calculates the minimum value on a given column. The value is returned
@@ -173,7 +194,8 @@ inline fun <reified T, reified R> LitePal.minAsync(columnName: String) = minAsyn
  * The based on column to calculate.
  * @return The minimum value on a given column.
  */
-inline fun <reified R> LitePal.min(tableName: String, columnName: String) = min(tableName, columnName, R::class.java)
+inline fun <reified R> LitePal.min(tableName: String, columnName: String) =
+    min(tableName, columnName, R::class.java)
 
 /**
  * Basically same as [LitePal.min] but pending to a new thread for executing.
@@ -184,8 +206,12 @@ inline fun <reified R> LitePal.min(tableName: String, columnName: String) = min(
  * The based on column to calculate.
  * @return A FindExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
-inline fun <reified R> LitePal.minAsync(tableName: String, columnName: String) = minAsync(tableName, columnName, R::class.java)
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
+inline fun <reified R> LitePal.minAsync(tableName: String, columnName: String) =
+    minAsync(tableName, columnName, R::class.java)
 
 /**
  * Calculates the sum of values on a given column. The value is returned
@@ -201,7 +227,8 @@ inline fun <reified R> LitePal.minAsync(tableName: String, columnName: String) =
  * The based on column to calculate.
  * @return The sum value on a given column.
  */
-inline fun <reified T, reified R> LitePal.sum(columnName: String) = sum(T::class.java, columnName, R::class.java)
+inline fun <reified T, reified R> LitePal.sum(columnName: String) =
+    sum(T::class.java, columnName, R::class.java)
 
 /**
  * Basically same as [LitePal.sum] but pending to a new thread for executing.
@@ -210,8 +237,12 @@ inline fun <reified T, reified R> LitePal.sum(columnName: String) = sum(T::class
  * The based on column to calculate.
  * @return A FindExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
-inline fun <reified T, reified R> LitePal.sumAsync(columnName: String) = sumAsync(T::class.java, columnName, R::class.java)
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
+inline fun <reified T, reified R> LitePal.sumAsync(columnName: String) =
+    sumAsync(T::class.java, columnName, R::class.java)
 
 /**
  * Calculates the sum of values on a given column. The value is returned
@@ -229,7 +260,8 @@ inline fun <reified T, reified R> LitePal.sumAsync(columnName: String) = sumAsyn
  * The based on column to calculate.
  * @return The sum value on a given column.
  */
-inline fun <reified R> LitePal.sum(tableName: String, columnName: String) = sum(tableName, columnName, R::class.java)
+inline fun <reified R> LitePal.sum(tableName: String, columnName: String) =
+    sum(tableName, columnName, R::class.java)
 
 /**
  * Basically same as [LitePal.sum] but pending to a new thread for executing.
@@ -240,8 +272,12 @@ inline fun <reified R> LitePal.sum(tableName: String, columnName: String) = sum(
  * The based on column to calculate.
  * @return A FindExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
-inline fun <reified R> LitePal.sumAsync(tableName: String, columnName: String) = sumAsync(tableName, columnName, R::class.java)
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
+inline fun <reified R> LitePal.sumAsync(tableName: String, columnName: String) =
+    sumAsync(tableName, columnName, R::class.java)
 
 /**
  * Finds the record by a specific id.
@@ -264,7 +300,10 @@ inline fun <reified T> LitePal.find(id: Long): T? = find(T::class.java, id)
  * Which record to query.
  * @return A FindExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
 inline fun <reified T> LitePal.findAsync(id: Long) = findAsync(T::class.java, id)
 
 /**
@@ -291,8 +330,12 @@ inline fun <reified T> LitePal.find(id: Long, isEager: Boolean) = find(T::class.
  * True to load the associated models, false not.
  * @return A FindExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
-inline fun <reified T> LitePal.findAsync(id: Long, isEager: Boolean) = find(T::class.java, id, isEager)
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
+inline fun <reified T> LitePal.findAsync(id: Long, isEager: Boolean) =
+    find(T::class.java, id, isEager)
 
 /**
  * Finds the first record of a single table.
@@ -312,7 +355,10 @@ inline fun <reified T> LitePal.findFirst() = findFirst(T::class.java)
  *
  * @return A FindExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
 inline fun <reified T> LitePal.findFirstAsync() = findFirstAsync(T::class.java)
 
 /**
@@ -335,8 +381,12 @@ inline fun <reified T> LitePal.findFirst(isEager: Boolean) = findFirst(T::class.
  * True to load the associated models, false not.
  * @return A FindExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
-inline fun <reified T> LitePal.findFirstAsync(isEager: Boolean) = findFirstAsync(T::class.java, isEager)
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
+inline fun <reified T> LitePal.findFirstAsync(isEager: Boolean) =
+    findFirstAsync(T::class.java, isEager)
 
 /**
  * Finds the last record of a single table.
@@ -356,7 +406,10 @@ inline fun <reified T> LitePal.findLast() = findLast(T::class.java)
  *
  * @return A FindExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
 inline fun <reified T> LitePal.findLastAsync() = findLastAsync(T::class.java)
 
 /**
@@ -379,8 +432,12 @@ inline fun <reified T> LitePal.findLast(isEager: Boolean) = findLast(T::class.ja
  * True to load the associated models, false not.
  * @return A FindExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
-inline fun <reified T> LitePal.findLastAsync(isEager: Boolean) = findLastAsync(T::class.java, isEager)
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
+inline fun <reified T> LitePal.findLastAsync(isEager: Boolean) =
+    findLastAsync(T::class.java, isEager)
 
 /**
  * Finds multiple records by an id array.
@@ -411,7 +468,10 @@ inline fun <reified T> LitePal.findAll(vararg ids: Long) = findAll(T::class.java
  * Which records to query. Or do not pass it to find all records.
  * @return A FindMultiExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
 inline fun <reified T> LitePal.findAllAsync(vararg ids: Long) = findAllAsync(T::class.java, *ids)
 
 /**
@@ -427,7 +487,8 @@ inline fun <reified T> LitePal.findAllAsync(vararg ids: Long) = findAllAsync(T::
  * Which records to query. Or do not pass it to find all records.
  * @return An object list with found data from database, or an empty list.
  */
-inline fun <reified T> LitePal.findAll(isEager: Boolean, vararg ids: Long) = findAll(T::class.java, isEager, *ids)
+inline fun <reified T> LitePal.findAll(isEager: Boolean, vararg ids: Long) =
+    findAll(T::class.java, isEager, *ids)
 
 /**
  * Basically same as [LitePal.findAll] but pending to a new thread for executing.
@@ -438,8 +499,12 @@ inline fun <reified T> LitePal.findAll(isEager: Boolean, vararg ids: Long) = fin
  * Which records to query. Or do not pass it to find all records.
  * @return A FindMultiExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
-inline fun <reified T> LitePal.findAllAsync(isEager: Boolean, vararg ids: Long) = findAllAsync(T::class.java, isEager, *ids)
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
+inline fun <reified T> LitePal.findAllAsync(isEager: Boolean, vararg ids: Long) =
+    findAllAsync(T::class.java, isEager, *ids)
 
 /**
  * Deletes the record in the database by id.
@@ -464,7 +529,10 @@ inline fun <reified T> LitePal.delete(id: Long) = delete(T::class.java, id)
  * Which record to delete.
  * @return A UpdateOrDeleteExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
 inline fun <reified T> LitePal.deleteAsync(id: Long) = deleteAsync(T::class.java, id)
 
 /**
@@ -487,7 +555,8 @@ inline fun <reified T> LitePal.deleteAsync(id: Long) = deleteAsync(T::class.java
  * all rows.
  * @return The number of rows affected.
  */
-inline fun <reified T> LitePal.deleteAll(vararg conditions: String?) = deleteAll(T::class.java, *conditions)
+inline fun <reified T> LitePal.deleteAll(vararg conditions: String?) =
+    deleteAll(T::class.java, *conditions)
 
 /**
  * Basically same as [LitePal.deleteAll] but pending to a new thread for executing.
@@ -502,8 +571,12 @@ inline fun <reified T> LitePal.deleteAll(vararg conditions: String?) = deleteAll
  * all rows.
  * @return A UpdateOrDeleteExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
-inline fun <reified T> LitePal.deleteAllAsync(vararg conditions: String?) = deleteAllAsync(T::class.java, *conditions)
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
+inline fun <reified T> LitePal.deleteAllAsync(vararg conditions: String?) =
+    deleteAllAsync(T::class.java, *conditions)
 
 /**
  * Updates the corresponding record by id with ContentValues. Returns the
@@ -522,7 +595,8 @@ inline fun <reified T> LitePal.deleteAllAsync(vararg conditions: String?) = dele
  * Which record to update.
  * @return The number of rows affected.
  */
-inline fun <reified T> LitePal.update(values: ContentValues, id: Long) = update(T::class.java, values, id)
+inline fun <reified T> LitePal.update(values: ContentValues, id: Long) =
+    update(T::class.java, values, id)
 
 /**
  * Basically same as [LitePal.update] but pending to a new thread for executing.
@@ -534,8 +608,12 @@ inline fun <reified T> LitePal.update(values: ContentValues, id: Long) = update(
  * Which record to update.
  * @return A UpdateOrDeleteExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
-inline fun <reified T> LitePal.updateAsync(values: ContentValues, id: Long) = updateAsync(T::class.java, values, id)
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
+inline fun <reified T> LitePal.updateAsync(values: ContentValues, id: Long) =
+    updateAsync(T::class.java, values, id)
 
 /**
  * Updates all records with details given if they match a set of conditions
@@ -562,7 +640,8 @@ inline fun <reified T> LitePal.updateAsync(values: ContentValues, id: Long) = up
  * all rows.
  * @return The number of rows affected.
  */
-inline fun <reified T> LitePal.updateAll(values: ContentValues, vararg conditions: String?) = updateAll(T::class.java, values, *conditions)
+inline fun <reified T> LitePal.updateAll(values: ContentValues, vararg conditions: String?) =
+    updateAll(T::class.java, values, *conditions)
 
 /**
  * Basically same as [LitePal.updateAll] but pending to a new thread for executing.
@@ -580,8 +659,12 @@ inline fun <reified T> LitePal.updateAll(values: ContentValues, vararg condition
  * all rows.
  * @return A UpdateOrDeleteExecutor instance.
  */
-@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
-inline fun <reified T> LitePal.updateAllAsync(values: ContentValues, vararg conditions: String?) = updateAllAsync(T::class.java, values, *conditions)
+@Deprecated(
+    "This method is deprecated and will be removed in the future releases.",
+    ReplaceWith("Handle async db operation in your own logic instead.")
+)
+inline fun <reified T> LitePal.updateAllAsync(values: ContentValues, vararg conditions: String?) =
+    updateAllAsync(T::class.java, values, *conditions)
 
 /**
  * Check if the specified conditions data already exists in the table.
@@ -591,7 +674,8 @@ inline fun <reified T> LitePal.updateAllAsync(values: ContentValues, vararg cond
  * @return Return true if the specified conditions data already exists in the table.
  * False otherwise. Null conditions will result in false.
  */
-inline fun <reified T> LitePal.isExist(vararg conditions: String?) = isExist(T::class.java, *conditions)
+inline fun <reified T> LitePal.isExist(vararg conditions: String?) =
+    isExist(T::class.java, *conditions)
 
 /**
  * Saves the collection into database.
@@ -624,7 +708,8 @@ fun <T : LitePalSupport> Collection<T>.saveAll() = LitePal.saveAll(this)
  * If lambda return true, all db operations in lambda will be committed.
  * Otherwise all db operations will be rolled back.
  */
-@Synchronized fun LitePal.runInTransaction(block: () -> Boolean): Boolean {
+@Synchronized
+fun LitePal.runInTransaction(block: () -> Boolean): Boolean {
     beginTransaction()
     val succeeded = try {
         block()

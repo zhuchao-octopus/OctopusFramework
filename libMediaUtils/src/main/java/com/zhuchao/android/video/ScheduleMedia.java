@@ -3,12 +3,12 @@ package com.zhuchao.android.video;
 import com.zhuchao.android.fileutils.DateTimeUtils;
 
 public class ScheduleMedia extends OMedia {
-    private int mID=0;
+    private int mID = 0;
     private String mStartDate = null;
     private String mEndDate = null;
     private String mPlayTime = null;
     private String mStopTime = null;
-    private String mLast =null;
+    private String mLast = null;
     private int mStatus = 0;
 
     public ScheduleMedia(Movie mMovie) {
@@ -34,8 +34,8 @@ public class ScheduleMedia extends OMedia {
         int a, b = 0;
 
         if (mStartDate == null) return false;
-        a = DateTimeUtils.compare_date(DateTimeUtils.getCurrentDateStr("yyyy-MM-dd"), mStartDate,"yyyy-MM-dd");
-        b = DateTimeUtils.compare_date(DateTimeUtils.getCurrentDateStr("yyyy-MM-dd"), mEndDate,"yyyy-MM-dd");
+        a = DateTimeUtils.compare_date(DateTimeUtils.getCurrentDateStr("yyyy-MM-dd"), mStartDate, "yyyy-MM-dd");
+        b = DateTimeUtils.compare_date(DateTimeUtils.getCurrentDateStr("yyyy-MM-dd"), mEndDate, "yyyy-MM-dd");
 
         return (a >= 0) && (b <= 0);
     }
@@ -45,8 +45,8 @@ public class ScheduleMedia extends OMedia {
         int a, b = 0;
         if (mPlayTime == null) return false;
 
-        a = DateTimeUtils.compare_date(DateTimeUtils.getCurrentDateStr("HH:mm"), mPlayTime,"HH:mm");
-        b = DateTimeUtils.compare_date(DateTimeUtils.getCurrentDateStr("HH:mm"), mStopTime,"HH:mm");
+        a = DateTimeUtils.compare_date(DateTimeUtils.getCurrentDateStr("HH:mm"), mPlayTime, "HH:mm");
+        b = DateTimeUtils.compare_date(DateTimeUtils.getCurrentDateStr("HH:mm"), mStopTime, "HH:mm");
 
         return (a >= 0) && (b < 0);
     }
@@ -67,26 +67,26 @@ public class ScheduleMedia extends OMedia {
     public void setStatus(int mStatus) {
         this.mStatus = mStatus;
     }
-    public int getYear(String Data)
-    {
-      return DateTimeUtils.getDateData(Data,"yy");
+
+    public int getYear(String Data) {
+        return DateTimeUtils.getDateData(Data, "yy");
     }
-    public int getMonth(String Data)
-    {
-        return DateTimeUtils.getDateData(Data,"MM");
+
+    public int getMonth(String Data) {
+        return DateTimeUtils.getDateData(Data, "MM");
     }
-    public int getDay(String Data)
-    {
-        return DateTimeUtils.getDateData(Data,"dd");
+
+    public int getDay(String Data) {
+        return DateTimeUtils.getDateData(Data, "dd");
     }
-    public int getHH(String Data)
-    {
-        int hh = DateTimeUtils.getDateData(Data,"HH");
+
+    public int getHH(String Data) {
+        int hh = DateTimeUtils.getDateData(Data, "HH");
         return hh;
     }
-    public int getmm(String Data)
-    {
-        int mm = DateTimeUtils.getDateData(Data,"mm");
+
+    public int getmm(String Data) {
+        int mm = DateTimeUtils.getDateData(Data, "mm");
         return mm;
     }
 

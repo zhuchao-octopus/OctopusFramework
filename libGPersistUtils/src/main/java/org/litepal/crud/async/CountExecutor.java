@@ -29,8 +29,8 @@ public class CountExecutor extends AsyncExecutor {
 
     /**
      * Register a callback listener and async task will start executing right away.
-     * @param callback
-     *          Callback for count query in background.
+     *
+     * @param callback Callback for count query in background.
      */
     public void listen(CountCallback callback) {
         cb = callback;
@@ -38,7 +38,7 @@ public class CountExecutor extends AsyncExecutor {
     }
 
     public CountCallback getListener() {
-        return  cb;
+        return cb;
     }
 
 }

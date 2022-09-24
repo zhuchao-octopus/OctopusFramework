@@ -18,8 +18,7 @@ class Session implements Serializable {
         this.SId = SId;
     }
 
-    protected void doAction()
-    {
+    protected void doAction() {
 
     }
 }

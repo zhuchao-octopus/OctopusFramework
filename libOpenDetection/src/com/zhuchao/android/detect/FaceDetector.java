@@ -151,8 +151,8 @@ public class FaceDetector extends Detect {
 
         if ((mDetectorType == JAVA_DETECTOR) && (mJavaDetector != null)) {
 
-                mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
-                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
+            mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                    new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
 
             /*mJavaDetector.detectMultiScale(mGray, // 要检查的灰度图像
                     faces, // 检测到的人脸

@@ -1,0 +1,166 @@
+{
+  "abi": "ARM64_V8A",
+  "info": {
+    "abi": "ARM64_V8A",
+    "bitness": 64,
+    "deprecated": false,
+    "default": true
+  },
+  "cxxBuildFolder": "F:\\StudioProjects\\OctopusFramework\\libJOSUtils\\.cxx\\Debug\\1p661x17\\arm64-v8a",
+  "soFolder": "F:\\StudioProjects\\OctopusFramework\\libJOSUtils\\build\\intermediates\\cxx\\Debug\\1p661x17\\obj\\arm64-v8a",
+  "soRepublishFolder": "F:\\StudioProjects\\OctopusFramework\\libJOSUtils\\build\\intermediates\\cmake\\debug\\obj\\arm64-v8a",
+  "abiPlatformVersion": 24,
+  "cmake": {
+    "effectiveConfiguration": {
+      "inheritEnvironments": [],
+      "variables": []
+    }
+  },
+  "variant": {
+    "buildSystemArgumentList": [],
+    "cFlagsList": [],
+    "cppFlagsList": [
+      "-frtti -fexceptions"
+    ],
+    "variantName": "debug",
+    "isDebuggableEnabled": true,
+    "validAbiList": [
+      "ARMEABI_V7A",
+      "ARM64_V8A",
+      "X86",
+      "X86_64"
+    ],
+    "buildTargetSet": [],
+    "implicitBuildTargetSet": [],
+    "cmakeSettingsConfiguration": "android-gradle-plugin-predetermined-name",
+    "module": {
+      "cxxFolder": "F:\\StudioProjects\\OctopusFramework\\libJOSUtils\\.cxx",
+      "intermediatesBaseFolder": "F:\\StudioProjects\\OctopusFramework\\libJOSUtils\\build\\intermediates",
+      "intermediatesFolder": "F:\\StudioProjects\\OctopusFramework\\libJOSUtils\\build\\intermediates\\cxx",
+      "gradleModulePathName": ":libJOSUtils",
+      "moduleRootFolder": "F:\\StudioProjects\\OctopusFramework\\libJOSUtils",
+      "moduleBuildFile": "F:\\StudioProjects\\OctopusFramework\\libJOSUtils\\build.gradle",
+      "makeFile": "F:\\StudioProjects\\OctopusFramework\\libJOSUtils\\CMakeLists.txt",
+      "buildSystem": "CMAKE",
+      "ndkFolder": "F:\\Android\\SDK\\ndk\\21.1.6352462",
+      "ndkVersion": "21.1.6352462",
+      "ndkSupportedAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkDefaultAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkDefaultStl": "LIBCXX_STATIC",
+      "ndkMetaPlatforms": {
+        "min": 16,
+        "max": 29,
+        "aliases": {
+          "20": 19,
+          "25": 24,
+          "J": 16,
+          "J-MR1": 17,
+          "J-MR2": 18,
+          "K": 19,
+          "L": 21,
+          "L-MR1": 22,
+          "M": 23,
+          "N": 24,
+          "N-MR1": 24,
+          "O": 26,
+          "O-MR1": 27,
+          "P": 28,
+          "Q": 29
+        }
+      },
+      "ndkMetaAbiList": [
+        {
+          "abi": "ARMEABI_V7A",
+          "bitness": 32,
+          "deprecated": false,
+          "default": true
+        },
+        {
+          "abi": "ARM64_V8A",
+          "bitness": 64,
+          "deprecated": false,
+          "default": true
+        },
+        {
+          "abi": "X86",
+          "bitness": 32,
+          "deprecated": false,
+          "default": true
+        },
+        {
+          "abi": "X86_64",
+          "bitness": 64,
+          "deprecated": false,
+          "default": true
+        }
+      ],
+      "cmakeToolchainFile": "F:\\Android\\SDK\\ndk\\21.1.6352462\\build\\cmake\\android.toolchain.cmake",
+      "cmake": {
+        "isValidCmakeAvailable": true,
+        "cmakeExe": "F:\\Android\\SDK\\cmake\\3.18.1\\bin\\cmake.exe",
+        "minimumCmakeVersion": "3.18.1"
+      },
+      "stlSharedObjectMap": {
+        "LIBCXX_SHARED": {
+          "ARMEABI_V7A": "F:\\Android\\SDK\\ndk\\21.1.6352462\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\arm-linux-androideabi\\libc++_shared.so",
+          "ARM64_V8A": "F:\\Android\\SDK\\ndk\\21.1.6352462\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\aarch64-linux-android\\libc++_shared.so",
+          "X86": "F:\\Android\\SDK\\ndk\\21.1.6352462\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\i686-linux-android\\libc++_shared.so",
+          "X86_64": "F:\\Android\\SDK\\ndk\\21.1.6352462\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\x86_64-linux-android\\libc++_shared.so"
+        },
+        "LIBCXX_STATIC": {},
+        "NONE": {},
+        "SYSTEM": {}
+      },
+      "project": {
+        "rootBuildGradleFolder": "F:\\StudioProjects\\OctopusFramework",
+        "sdkFolder": "F:\\Android\\SDK",
+        "isBuildOnlyTargetAbiEnabled": true,
+        "isCmakeBuildCohabitationEnabled": false,
+        "isPrefabEnabled": false
+      },
+      "outputOptions": [],
+      "ninjaExe": "F:\\Android\\SDK\\cmake\\3.18.1\\bin\\ninja.exe"
+    },
+    "prefabClassPaths": [],
+    "prefabPackages": [],
+    "prefabPackageConfigurations": [],
+    "stlType": "c++_static",
+    "optimizationTag": "Debug"
+  },
+  "buildSettings": {
+    "environmentVariables": []
+  },
+  "prefabFolder": "F:\\StudioProjects\\OctopusFramework\\libJOSUtils\\.cxx\\Debug\\1p661x17\\prefab\\arm64-v8a",
+  "isActiveAbi": true,
+  "fullConfigurationHash": "1p661x1771n3e356k5eg5j6t4xm3g143p41w2y653x5x2y1r1k31m1po5h",
+  "configurationArguments": [
+    "-HF:\\StudioProjects\\OctopusFramework\\libJOSUtils",
+    "-DCMAKE_SYSTEM_NAME\u003dAndroid",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS\u003dON",
+    "-DCMAKE_SYSTEM_VERSION\u003d24",
+    "-DANDROID_PLATFORM\u003dandroid-24",
+    "-DANDROID_ABI\u003darm64-v8a",
+    "-DCMAKE_ANDROID_ARCH_ABI\u003darm64-v8a",
+    "-DANDROID_NDK\u003dF:\\Android\\SDK\\ndk\\21.1.6352462",
+    "-DCMAKE_ANDROID_NDK\u003dF:\\Android\\SDK\\ndk\\21.1.6352462",
+    "-DCMAKE_TOOLCHAIN_FILE\u003dF:\\Android\\SDK\\ndk\\21.1.6352462\\build\\cmake\\android.toolchain.cmake",
+    "-DCMAKE_MAKE_PROGRAM\u003dF:\\Android\\SDK\\cmake\\3.18.1\\bin\\ninja.exe",
+    "-DCMAKE_CXX_FLAGS\u003d-frtti -fexceptions",
+    "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003dF:\\StudioProjects\\OctopusFramework\\libJOSUtils\\build\\intermediates\\cxx\\Debug\\1p661x17\\obj\\arm64-v8a",
+    "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY\u003dF:\\StudioProjects\\OctopusFramework\\libJOSUtils\\build\\intermediates\\cxx\\Debug\\1p661x17\\obj\\arm64-v8a",
+    "-DCMAKE_BUILD_TYPE\u003dDebug",
+    "-BF:\\StudioProjects\\OctopusFramework\\libJOSUtils\\.cxx\\Debug\\1p661x17\\arm64-v8a",
+    "-GNinja"
+  ],
+  "intermediatesParentFolder": "F:\\StudioProjects\\OctopusFramework\\libJOSUtils\\build\\intermediates\\cxx\\Debug\\1p661x17"
+}

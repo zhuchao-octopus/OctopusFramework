@@ -12,54 +12,60 @@ extern "C" {
  * Method:    nativeCreateObject
  * Signature: (Ljava/lang/String;F)J
  */
-JNIEXPORT jlong JNICALL Java_com_zhuchao_android_detect_DetectionBasedTracker_nativeCreateObject(JNIEnv *jenv,
-                                                                                                     jclass clazz,
-                                                                                                     jstring cascade_name,
-                                                                                                     jint min_face_size);
+JNIEXPORT jlong JNICALL
+Java_com_zhuchao_android_detect_DetectionBasedTracker_nativeCreateObject(JNIEnv *jenv,
+                                                                         jclass clazz,
+                                                                         jstring cascade_name,
+                                                                         jint min_face_size);
 
 /*
  * Class:     org_opencv_samples_fd_DetectionBasedTracker
  * Method:    nativeDestroyObject
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_com_zhuchao_android_detect_DetectionBasedTracker_nativeDestroyObject(JNIEnv *jenv,
-                                                                                                     jclass clazz,
-                                                                                                     jlong thiz);
+JNIEXPORT void JNICALL
+Java_com_zhuchao_android_detect_DetectionBasedTracker_nativeDestroyObject(JNIEnv *jenv,
+                                                                          jclass clazz,
+                                                                          jlong thiz);
 
 /*
  * Class:     org_opencv_samples_fd_DetectionBasedTracker
  * Method:    nativeStart
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_com_zhuchao_android_detect_DetectionBasedTracker_nativeStart(JNIEnv *jenv, jclass clazz,
-                                                                                             jlong thiz);
+JNIEXPORT void JNICALL
+Java_com_zhuchao_android_detect_DetectionBasedTracker_nativeStart(JNIEnv *jenv, jclass clazz,
+                                                                  jlong thiz);
 
 /*
  * Class:     org_opencv_samples_fd_DetectionBasedTracker
  * Method:    nativeStop
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_com_zhuchao_android_detect_DetectionBasedTracker_nativeStop(JNIEnv *jenv, jclass clazz,
-                                                                                            jlong thiz) ;
+JNIEXPORT void JNICALL
+Java_com_zhuchao_android_detect_DetectionBasedTracker_nativeStop(JNIEnv *jenv, jclass clazz,
+                                                                 jlong thiz);
 
-  /*
-   * Class:     org_opencv_samples_fd_DetectionBasedTracker
-   * Method:    nativeSetFaceSize
-   * Signature: (JI)V
-   */
-  JNIEXPORT void JNICALL Java_com_zhuchao_android_detect_DetectionBasedTracker_nativeSetFaceSize(JNIEnv *jenv,
-                                                                                                     jclass clazz,
-                                                                                                     jlong thiz, jint faceSize);
+/*
+ * Class:     org_opencv_samples_fd_DetectionBasedTracker
+ * Method:    nativeSetFaceSize
+ * Signature: (JI)V
+ */
+JNIEXPORT void JNICALL
+Java_com_zhuchao_android_detect_DetectionBasedTracker_nativeSetFaceSize(JNIEnv *jenv,
+                                                                        jclass clazz,
+                                                                        jlong thiz, jint faceSize);
 
 /*
  * Class:     org_opencv_samples_fd_DetectionBasedTracker
  * Method:    nativeDetect
  * Signature: (JJJ)V
  */
-JNIEXPORT void JNICALL Java_com_zhuchao_android_detect_DetectionBasedTracker_nativeDetect(JNIEnv *jenv, jclass clazz,
-                                                                                              jlong thiz,
-                                                                                              jlong input_image,
-                                                                                              jlong faces);
+JNIEXPORT void JNICALL
+Java_com_zhuchao_android_detect_DetectionBasedTracker_nativeDetect(JNIEnv *jenv, jclass clazz,
+                                                                   jlong thiz,
+                                                                   jlong input_image,
+                                                                   jlong faces);
 
 #ifdef __cplusplus
 }

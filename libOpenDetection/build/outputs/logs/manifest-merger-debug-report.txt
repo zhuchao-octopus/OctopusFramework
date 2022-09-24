@@ -1,0 +1,59 @@
+-- Merging decision tree log ---
+manifest
+ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:2:1-24:12
+INJECTED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:2:1-24:12
+INJECTED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:2:1-24:12
+	package
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:3:5-41
+		INJECTED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml
+		INJECTED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml
+	xmlns:android
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:2:11-69
+supports-screens
+ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:5:5-10:37
+	android:largeScreens
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:9:9-36
+	android:smallScreens
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:7:9-36
+	android:normalScreens
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:8:9-37
+	android:resizeable
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:6:9-34
+	android:anyDensity
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:10:9-34
+uses-permission#android.permission.CAMERA
+ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:12:5-65
+	android:name
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:12:22-62
+uses-feature#android.hardware.camera
+ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:14:5-16:36
+	android:required
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:16:9-33
+	android:name
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:15:9-47
+uses-feature#android.hardware.camera.autofocus
+ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:17:5-19:36
+	android:required
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:19:9-33
+	android:name
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:18:9-57
+uses-feature#android.hardware.camera.front
+ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:20:5-22:36
+	android:required
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:22:9-33
+	android:name
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml:21:9-53
+uses-sdk
+INJECTED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml
+INJECTED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml
+INJECTED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml
+INJECTED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml
+		INJECTED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml
+		ADDED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml
+		INJECTED from F:\StudioProjects\OctopusFramework\libOpenDetection\AndroidManifest.xml
