@@ -33,7 +33,7 @@ public class TCourierEventBus implements InvokeInterface {
         InvokerList.addItem(tag, courierEventListener);
     }
 
-    public void postMainThread(EventCourier eventCourier) {
+    public void postMain(EventCourier eventCourier) {
         if (CourierEvents_MainA == null || CourierEvents_MainB == null)
             return;
         try {
@@ -162,7 +162,7 @@ public class TCourierEventBus implements InvokeInterface {
             couriers.clear();
         } catch (Exception e) {
             //couriers.clear();
-            MMLog.e(TAG, "poolingAB FAILED " + e.toString());
+            MMLog.e(TAG, "poolingABM FAILED " + e.toString());
         }
     }
 

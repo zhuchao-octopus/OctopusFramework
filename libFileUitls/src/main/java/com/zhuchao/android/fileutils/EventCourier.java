@@ -89,21 +89,33 @@ public class EventCourier {
             return 0;
     }
 
-    public int getInt()
-    {
+    public int getValue() {
+        int ret = 0;
         switch (datas.length) {
-            case 1: return datas[0];
+            case 1:
+                ret = datas[0];
+                //MMLog.log(TAG, "datas.length = 1,value = " + ret);
+                break;
             case 2:
-                return ByteUtils.DoubleBytesToInt(datas[0], datas[1]);
+                ret = ByteUtils.DoubleBytesToInt(datas[0], datas[1]);
+                //MMLog.log(TAG, "datas.length = 2,value = " + ret);
+                break;
             case 3:
-                return ByteUtils.ThreeBytesToInt(datas[0], datas[1], datas[2]);
+                ret = ByteUtils.ThreeBytesToInt(datas[0], datas[1], datas[2]);
+                //MMLog.log(TAG, "datas.length = 3,value = " + ret);
+                break;
             case 4:
-                return ByteUtils.FourBytesToInt(datas[0], datas[1], datas[2], datas[3]);
+                ret = ByteUtils.FourBytesToInt(datas[0], datas[1], datas[2], datas[3]);
+                //MMLog.log(TAG, "datas.length = 4,value = " + ret);
+                break;
             default:
                 MMLog.d(TAG, "do not support more than 4 bytes convert!!!");
-                return -1;
+                ret = -1;
+                break;
         }
+        return ret;
     }
+
     //字节数组转转hex字符串
     public String dataToHexStr() {
         StringBuilder strBuilder = new StringBuilder();

@@ -10,7 +10,9 @@ public class ThreadUtils {
     public static void runOnMainUiThread(final Runnable runnable) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             runnable.run();
-        } else {
+        }
+        else
+        {
             MainLooperHandler.post(runnable);//发送到主线程执行
         }
     }

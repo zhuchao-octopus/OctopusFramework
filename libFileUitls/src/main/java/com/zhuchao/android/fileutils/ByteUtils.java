@@ -1,36 +1,42 @@
 package com.zhuchao.android.fileutils;
 
 public class ByteUtils {
+    private static final String TAG = "ByteUtils";
+
     //-------------------------------------------------------
     // 判断奇数或偶数，位运算，最后一位是1则为奇数，为0是偶数
     public static int isOdd(int num) {
         return num & 1;
     }
+
     //从高位开始算起，b1,b2,b3,b4 ...
     public static int DoubleBytesToInt(byte b1, byte b2) {
         int a = b1;
-        a = a << 8 + b2;
+        a = (a << 8) | b2;
+        //MMLog.log(TAG, "DoubleBytesToInt " + b1 + "," + b2 + ",a = " + a);
         return a;
     }
 
     public static int ThreeBytesToInt(byte b1, byte b2, byte b3) {
         int a = DoubleBytesToInt(b1, b2);
-        a = a << 8 + b3;
+        a = (a << 8) | b3;
+        //MMLog.log(TAG, "ThreeBytesToInt " + b1 + "," + b2 + "," + b3 + ",a = " + a);
         return a;
     }
 
     public static int FourBytesToInt(byte b1, byte b2, byte b3, byte b4) {
         int a = ThreeBytesToInt(b1, b2, b3);
-        a = a << 8 + b4;
+        a = (a << 8) | b4;
+        //MMLog.log(TAG, "FourBytesToInt " + b1 + "," + b2 + "," + b3 + "," + b4 + ",a = " + a);
         return a;
     }
 
     public static byte[] intToBytes(int value) {
         byte[] b = new byte[4];
-        b[3] = (byte) (value & 0xff);
-        b[2] = (byte) (value >> 8 & 0xff);
-        b[1] = (byte) (value >> 16 & 0xff);
-        b[0] = (byte) (value >> 24 & 0xff);
+        b[3] = (byte) (value & 0x000000ff);
+        b[2] = (byte) (value >> 8 & 0x000000ff);
+        b[1] = (byte) (value >> 16 & 0x000000ff);
+        b[0] = (byte) (value >> 24 & 0x000000ff);
         return b;
     }
 
@@ -58,10 +64,9 @@ public class ByteUtils {
 
     public static byte BytesAdd(byte[] inBytArr, int count) {
         byte aa = 0;
-
         for (int i = 0; i < count; i++)
-            aa = (byte) (aa + Byte.valueOf(inBytArr[i]));
-
+            aa = (byte) (aa + inBytArr[i]);
+        // aa = (byte) (aa + Byte.valueOf(inBytArr[i]));
         return aa;
     }
 
@@ -70,7 +75,7 @@ public class ByteUtils {
     public static String BuffToHexStr(byte[] bytes, String separatorChars) {
         StringBuilder strBuilder = new StringBuilder();
         for (byte valueOf : bytes) {
-            strBuilder.append(Byte2Hex(Byte.valueOf(valueOf)));
+            strBuilder.append(Byte2Hex(valueOf));
             strBuilder.append(separatorChars);
         }
         return strBuilder.toString();
@@ -79,7 +84,7 @@ public class ByteUtils {
     public static String BuffToHexStr(byte[] bytes) {
         StringBuilder strBuilder = new StringBuilder();
         for (byte valueOf : bytes) {
-            strBuilder.append(Byte2Hex(Byte.valueOf(valueOf)));
+            strBuilder.append(Byte2Hex(valueOf));
             strBuilder.append(" ");
         }
         return strBuilder.toString();
@@ -91,7 +96,8 @@ public class ByteUtils {
         StringBuilder strBuilder = new StringBuilder();
         int j = byteCount;
         for (int i = offset; i < j; i++) {
-            strBuilder.append(Byte2Hex(Byte.valueOf(inBytArr[i])));
+            //strBuilder.append(Byte2Hex(Byte.valueOf(inBytArr[i])));
+            strBuilder.append(Byte2Hex(inBytArr[i]));
         }
         return strBuilder.toString();
     }
