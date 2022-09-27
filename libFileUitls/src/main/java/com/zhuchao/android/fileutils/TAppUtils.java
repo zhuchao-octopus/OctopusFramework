@@ -33,7 +33,7 @@ public class TAppUtils {
     public static final String SCANING_ACTION = "SCANING";
     public static final String SCANING_COMPLETE_ACTION = "SCANINGCOMPLETE";
 
-    private Context mContext;
+    private final Context mContext;
     private AppChangedListener mAppChangedCallback = null;
     //private ExecutorService mExecutorService;
     private PackageManager mPackageManager;
@@ -125,15 +125,14 @@ public class TAppUtils {
 
     public void unRegAppReceiver() {
         try {
-            if (AppChangedReceiver != null)
-                if (mContext != null)
-                    mContext.unregisterReceiver(AppChangedReceiver);
+            if (mContext != null)
+                mContext.unregisterReceiver(AppChangedReceiver);
         } catch (Exception e) {
             //e.printStackTrace();
         }
     }
 
-    private BroadcastReceiver AppChangedReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver AppChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
