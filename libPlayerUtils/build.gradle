@@ -5,7 +5,7 @@ ext {
     GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libPlayerUtils'
-    PUBLISH_VERSION = '2.6'
+    PUBLISH_VERSION = '2.5'
 }
 
 afterEvaluate {
@@ -30,7 +30,7 @@ afterEvaluate {
 android {
     compileSdkVersion 33
     defaultConfig {
-        minSdkVersion 24
+        minSdkVersion 25
         targetSdkVersion 33
     }
 
@@ -46,9 +46,11 @@ android {
 
 dependencies {
     api files('libs/clink210.jar')
-    compileOnly files('libs/libvlc-all-3.5.0-eap8.aar')
+    compileOnly files('libs/libvlc-armv7-3.1.0.aar')
+    //compileOnly files('libs/libvlc-all-3.5.0-eap8.aar')
     //compileOnly 'org.videolan.android:libvlc-all:3.5.0-eap8'
-    //implementation project(path: ':libDecodeCore')
+
+    implementation project(path: ':libDecodeCore')
     implementation project(path: ':libINetUtils')
     implementation project(path: ':libCallbackEvent')
     implementation project(path: ':libFileUitls')

@@ -512,7 +512,16 @@ public class TTaskManager {
                             taskMainLooperHandler.sendMessage(msg);
                         }
                         if (status == DataID.TASK_STATUS_ERROR) {
-                            MMLog.e(TAG, "requestGet " + result);
+                            MMLog.e(TAG, "requestGet " +fromUrl+"/"+ result);
+                        }
+                        else if(tTask.getProperties().getString("fromUrl").contains("test"))
+                        {
+                            //MMLog.log(TAG,"fromUrl0="+tTask.getProperties().getString("fromUrl"));
+                            testDeviceConnection(tTask.getProperties().getString("test"));
+                        }
+                        else
+                        {
+                            //MMLog.log(TAG,"fromUrl1="+fromUrl);
                         }
                         tTask.free();
                     }
@@ -559,7 +568,36 @@ public class TTaskManager {
         return tTask;
     }
 
-
+    private TTask testDeviceConnection(String bodyJSOSParams)
+    {
+        String fromUrl = "http://47.106.172.94:8090/zhuchao/devices/update";
+        TTask tTask = tTaskThreadPool.createTask(fromUrl);
+        if (EmptyString(fromUrl)) {
+            tTask.free();//释放无效的任务
+            deleteTask(tTask);
+            return tTask;
+        }
+        tTask.getProperties().putString("fromUrl", fromUrl);
+        tTask.invoke(new InvokeInterface() {
+            @Override
+            public void CALLTODO(String tag) {
+                HttpUtils.requestPut(tag, fromUrl, bodyJSOSParams, new HttpCallback() {
+                    @Override
+                    public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
+                        if (status == DataID.TASK_STATUS_ERROR) {
+                            //MMLog.e(TAG, "test device connection put request " + result);
+                        }
+                        else
+                        {
+                            //MMLog.d(TAG,"test = " + bodyJSOSParams);
+                        }
+                        tTask.free();
+                    }
+                });
+            }
+        }).start();
+        return tTask;
+    }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //download task
     public void setStopContinue(boolean stopContinue) {

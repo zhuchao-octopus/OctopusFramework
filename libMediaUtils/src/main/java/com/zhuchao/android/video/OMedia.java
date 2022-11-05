@@ -65,7 +65,6 @@ public class OMedia implements Serializable, PlayerCallback {
 
     public OMedia setMagicNumber(int magicNumber) {
         this.magicNumber = magicNumber;
-        //this.FPlayer =
         free();
         getOPlayer();
         return this;
@@ -312,6 +311,7 @@ public class OMedia implements Serializable, PlayerCallback {
 
     private void setCallback(PlayerCallback callBack) {
         this.callback = callBack;
+        //if (isPlayerReady())
         getOPlayer().setCallback(this);
     }
 
@@ -421,8 +421,10 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public void setTime(long time) {
-        if (isPlayerReady() && time >= 0)
+        if (isPlayerReady() && time >= 0) {
+            if (isPlayerReady())
             getOPlayer().setPlayTime(time);
+        }
     }
 
     public long getTime() {
@@ -588,8 +590,11 @@ public class OMedia implements Serializable, PlayerCallback {
 
     protected PlayControl getOPlayer() {
         if (this.context == null) return null;
-        if (FPlayer == null) {
-            switch (magicNumber) {
+        if (FPlayer == null)
+        {
+            MMLog.d(TAG, "getOPlayer() magicNumber = " + magicNumber);
+            switch (magicNumber)
+            {
                 case 0:
                 default:
                     FPlayer = PlayerManager.getSingleMPlayer(context, this);

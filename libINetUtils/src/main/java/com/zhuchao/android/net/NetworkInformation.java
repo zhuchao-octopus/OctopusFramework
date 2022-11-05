@@ -139,4 +139,17 @@ public class NetworkInformation {
         str += ",(" + lon + " " + lat + ")";
         return str;
     }
+    public String regionToString() {
+        String str = "";
+        str += "," + country;
+        str += "," + countryCode;
+        str += "," + region;
+        str += "," + regionName;
+        str += "," + timezone;
+        str += "," + city;
+        str += "," + organization;
+        str += "," + isp;
+        str += ",(" + lon + " " + lat + ")";
+        return str;
+    }
 }

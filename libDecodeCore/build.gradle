@@ -1,19 +1,23 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 configurations.maybeCreate("default")
-artifacts.add("default", file('libvlc-all-3.5.0-eap8.aar'))
+
+//def LIBVLC_AAR = 'libvlc-all-3.5.0-eap8.aar'
+def LIBVLC_AAR = 'libvlc-armv7-3.1.0.aar'
+
+artifacts.add("default", file(LIBVLC_AAR))
 ext {
     GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libDecodeCore'
-    PUBLISH_VERSION = '3.5.0'
+    PUBLISH_VERSION = '1.1'
 }
 
 afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                artifact 'libvlc-all-3.5.0-eap8.aar'
+                artifact LIBVLC_AAR
                 groupId PUBLISH_GROUP_ID
                 artifactId PUBLISH_ARTIFACT_ID
                 version PUBLISH_VERSION
@@ -32,7 +36,7 @@ afterEvaluate {
 android {
     compileSdkVersion 33
     defaultConfig {
-        minSdkVersion 24
+        minSdkVersion 25
         targetSdkVersion 33
     }
 

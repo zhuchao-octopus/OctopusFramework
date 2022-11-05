@@ -434,13 +434,13 @@ public class TNetUtils {
 
     public static String getDeviceUUID() {
         //String deviceID = getLanMac();
-        String deviceID = getEthernetMacFromFile();
-        if (EmptyString(deviceID)) {
-            //deviceID = getLanMac();
-            MMLog.e(TAG, "getDeviceUUID() failed error");
-            return deviceID;
+        //String deviceID = getEthernetMacFromFile();
+        String deviceID = getCPUSerial();
+        if (EmptyString(deviceID) || deviceID.equals("0000000000000000")) {
+            deviceID = getEthernetMacFromFile();
+            return FileUtils.md5(deviceID);
         }
-        return FileUtils.md5(deviceID);
+        return (deviceID);
     }
 
     private static boolean MatcherMAC(String mac) {
@@ -461,6 +461,36 @@ public class TNetUtils {
             return true;
         else
             return false;
+    }
+
+    public static String getCPUSerial() {
+        String cpuSerial = "0000000000000000";
+        String cmd = "cat /proc/cpuinfo";
+        try {
+            Process p = Runtime.getRuntime().exec(cmd);
+            String data = null;
+            BufferedReader ie = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String error = null;
+            while ((error = ie.readLine()) != null && !error.equals("null")) {
+                data += error + "\n";
+            }
+            String line = null;
+            while ((line = in.readLine()) != null && !line.equals("null")) {
+                data += line + "\n";
+                if (line.contains("Serial\t\t:")) {
+                    String[] SerialStr = line.split(":");
+                    if (SerialStr.length == 2) {
+                        String mSerial = SerialStr[1];
+                        cpuSerial = mSerial.trim();
+                        return cpuSerial;
+                    }
+                }
+            }
+        } catch (IOException ioe) {
+            MMLog.log(TAG,ioe.toString());
+        }
+        return cpuSerial;
     }
 
     //把拼音的省份改成中文
