@@ -1,9 +1,0 @@
-org.opencv
-attr camera_id
-attr camera_index
-attr show_fps
-id any
-id back
-id front
-id index
-styleable CameraBridgeViewBase camera_id camera_index show_fps
