@@ -1,1 +1,0 @@
-F:\StudioProjects\OctopusFramework\libOpenDetection\build\intermediates\cxx\RelWithDebInfo\1s3b606r\obj\arm64-v8a

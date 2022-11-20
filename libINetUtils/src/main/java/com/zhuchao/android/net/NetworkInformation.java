@@ -26,17 +26,17 @@ public class NetworkInformation {
         this.isAvailable = false;
         this.isConnected = false;
         this.netType = -1;
-        this.internetIP = "0";
+        this.internetIP = "";
         this.localIP = "";
-        this.MAC = "0";
-        this.wifiMAC = "0";
+        this.MAC = "";
+        this.wifiMAC = "";
         this.wifiLevel = 4;
-        this.country = "0";
-        this.countryCode = "0";
-        this.region = "0";
-        this.regionName = "0";
-        this.city = "0";
-        this.timezone = "0";
+        this.country = "";
+        this.countryCode = "";
+        this.region = "";
+        this.regionName = "";
+        this.city = "";
+        this.timezone = "";
         lat = 0.00;
         lon = 0.00;
         organization = "";
@@ -140,7 +140,7 @@ public class NetworkInformation {
         return str;
     }
     public String regionToString() {
-        String str = "";
+        String str = internetIP;
         str += "," + country;
         str += "," + countryCode;
         str += "," + region;

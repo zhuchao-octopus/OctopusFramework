@@ -9,7 +9,7 @@ public class DataID {
     //public static final String DB_DIRECTORY = CommonValues.application.getFilesDir().getPath();
     public static final int SESSION_TYPE_GET_MOVIELIST_DEFAULT_PAGESIZE = 100;
     public static String OPLAYER_SESSION_ROOT_URL = "http://test.jhzdesign.cn:8005/";
-
+    public static String SESSION_SOURCE_TEST_URL = "http://47.106.172.94:8090/zhuchao/devices/test";
     //////////////////////////////////////////////////////////////////////
     public static final int SESSION_SOURCE_NONE = -1; //
     public static final int SESSION_SOURCE_ALL = 10; //

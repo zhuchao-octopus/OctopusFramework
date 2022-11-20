@@ -14,11 +14,12 @@ import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.fileutils.MMLog;
 
+import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
-import org.videolan.libvlc.IVLCVout;
-import org.videolan.libvlc.LibVLC;
-//import org.videolan.libvlc.interfaces.IVLCVout;
+
+import org.videolan.libvlc.interfaces.IVLCVout;
+//import org.videolan.libvlc.IVLCVout;
 
 import java.io.FileDescriptor;
 import java.util.ArrayList;

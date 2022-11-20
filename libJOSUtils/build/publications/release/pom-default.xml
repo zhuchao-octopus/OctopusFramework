@@ -14,8 +14,8 @@
   <dependencies>
     <dependency>
       <groupId>com.zhuchao.android</groupId>
-      <artifactId>libCallbackEvent</artifactId>
-      <version>1.4</version>
+      <artifactId>libEventInterface</artifactId>
+      <version>1.5</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>

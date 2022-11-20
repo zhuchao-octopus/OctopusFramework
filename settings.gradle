@@ -1,5 +1,4 @@
-include ':libFileUitls', ':libJOSUtils', ':libDecodeCore', ':libPlayerUtils', ':libSessionUtils', ':libINetUtils', ':libGPersistUtils', ':libMediaUtils', ':libCallbackEvent'
+include ':libFileUitls', ':libJOSUtils', ':libDecodeCore', ':libPlayerUtils', ':libSessionUtils', ':libINetUtils', ':libGPersistUtils', ':libMediaUtils', ':libEventInterface'
 include ':libOpenDetection'
 include ':libOpenComputerVision'
-include ':myapplication'
 include ':libICameraController'

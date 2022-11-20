@@ -44,7 +44,7 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':libCallbackEvent')
+    implementation project(path: ':libEventInterface')
     implementation project(path: ':libFileUitls')
     implementation project(path: ':libJOSUtils')
     implementation project(path: ':libINetUtils')

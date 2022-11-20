@@ -3,7 +3,7 @@
     package="com.zhuchao.android.decodecore" >
 
     <uses-sdk
-        android:minSdkVersion="24"
+        android:minSdkVersion="25"
         android:targetSdkVersion="33" />
 
 </manifest>

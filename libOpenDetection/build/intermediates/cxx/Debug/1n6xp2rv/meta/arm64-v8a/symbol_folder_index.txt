@@ -1,1 +1,0 @@
-F:\StudioProjects\OctopusFramework\libOpenDetection\build\intermediates\cxx\Debug\1n6xp2rv\obj\arm64-v8a

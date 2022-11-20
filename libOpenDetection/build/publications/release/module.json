@@ -26,11 +26,11 @@
         {
           "name": "libOpenDetection-1.0.aar",
           "url": "libOpenDetection-1.0.aar",
-          "size": 50880067,
-          "sha512": "48ce0ffaf5e38dd32889e1263e554dd2d23d289f0847fa17906da1a818f27bc32284e1984613b20ef5fa82d6ce614f4cba12cecac2d648182767839688a8f15d",
-          "sha256": "ce0f360828502bf17f712038a2ea76cc8184ecf983f75fe44ef3c6a635476872",
-          "sha1": "e8d9b929dbfa9a976587621d53de8fc2ce8b5902",
-          "md5": "33d375e0fa92c27ba5ef3431f8e5e84a"
+          "size": 50880066,
+          "sha512": "de60799759f401a7c065d22e82d892a3f70ac22eb292745a1f2e0075e315b37036836833d16602f27981c81c1f38cdb0a3022dcbe72494887ecbfa8f16b342d2",
+          "sha256": "ecc5704e8a25bc2e8bd7061dac83890f73c3a4055e5fa138ab0d5baa18aa8429",
+          "sha1": "33490f9957f962a34c7a0f68011940d93e7a72de",
+          "md5": "78cd1861782d5e21ed6cd1dd8a6fb2f4"
         }
       ]
     },
@@ -52,9 +52,9 @@
         },
         {
           "group": "com.zhuchao.android",
-          "module": "libCallbackEvent",
+          "module": "libEventInterface",
           "version": {
-            "requires": "1.4"
+            "requires": "1.5"
           }
         },
         {
@@ -82,7 +82,7 @@
           "group": "org.bytedeco",
           "module": "javacv-platform",
           "version": {
-            "requires": "1.5.7"
+            "requires": "1.5.8"
           }
         }
       ],
@@ -90,11 +90,11 @@
         {
           "name": "libOpenDetection-1.0.aar",
           "url": "libOpenDetection-1.0.aar",
-          "size": 50880067,
-          "sha512": "48ce0ffaf5e38dd32889e1263e554dd2d23d289f0847fa17906da1a818f27bc32284e1984613b20ef5fa82d6ce614f4cba12cecac2d648182767839688a8f15d",
-          "sha256": "ce0f360828502bf17f712038a2ea76cc8184ecf983f75fe44ef3c6a635476872",
-          "sha1": "e8d9b929dbfa9a976587621d53de8fc2ce8b5902",
-          "md5": "33d375e0fa92c27ba5ef3431f8e5e84a"
+          "size": 50880066,
+          "sha512": "de60799759f401a7c065d22e82d892a3f70ac22eb292745a1f2e0075e315b37036836833d16602f27981c81c1f38cdb0a3022dcbe72494887ecbfa8f16b342d2",
+          "sha256": "ecc5704e8a25bc2e8bd7061dac83890f73c3a4055e5fa138ab0d5baa18aa8429",
+          "sha1": "33490f9957f962a34c7a0f68011940d93e7a72de",
+          "md5": "78cd1861782d5e21ed6cd1dd8a6fb2f4"
         }
       ]
     }

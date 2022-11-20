@@ -435,7 +435,7 @@ public class TNetUtils {
     public static String getDeviceUUID() {
         //String deviceID = getLanMac();
         //String deviceID = getEthernetMacFromFile();
-        String deviceID = getCPUSerial();
+        String deviceID = getCPUSerialCode();
         if (EmptyString(deviceID) || deviceID.equals("0000000000000000")) {
             deviceID = getEthernetMacFromFile();
             return FileUtils.md5(deviceID);
@@ -463,7 +463,7 @@ public class TNetUtils {
             return false;
     }
 
-    public static String getCPUSerial() {
+    public static String getCPUSerialCode() {
         String cpuSerial = "0000000000000000";
         String cmd = "cat /proc/cpuinfo";
         try {

@@ -1,2 +1,0 @@
-ninja: Entering directory `F:\StudioProjects\OctopusFramework\libJOSUtils\.cxx\Debug\1p661x17\arm64-v8a'
-ninja: no work to do.

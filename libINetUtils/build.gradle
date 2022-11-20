@@ -45,10 +45,10 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':libCallbackEvent')
+    implementation project(path: ':libEventInterface')
     implementation project(path: ':libFileUitls')
 
-    api('com.google.code.gson:gson:2.9.1')
+    api('com.google.code.gson:gson:2.10')
     api('com.squareup.okhttp3:okhttp:5.0.0-alpha.8')
     api('com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.8')
 }

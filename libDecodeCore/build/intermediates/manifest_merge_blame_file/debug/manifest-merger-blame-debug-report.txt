@@ -3,7 +3,7 @@
 3    package="com.zhuchao.android.decodecore" >
 4
 5    <uses-sdk
-6        android:minSdkVersion="24"
+6        android:minSdkVersion="25"
 6-->F:\StudioProjects\OctopusFramework\libDecodeCore\src\main\AndroidManifest.xml
 7        android:targetSdkVersion="33" />
 7-->F:\StudioProjects\OctopusFramework\libDecodeCore\src\main\AndroidManifest.xml

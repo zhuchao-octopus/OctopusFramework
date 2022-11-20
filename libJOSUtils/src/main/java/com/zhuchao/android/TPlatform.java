@@ -7,6 +7,9 @@ import android.app.Instrumentation;
 
 import com.zhuchao.android.fileutils.MMLog;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
@@ -267,8 +270,14 @@ public class TPlatform {
     }
 
     public static boolean sendKeyEvent(int keyCode) {
+        String cmd = "input keyevent " + keyCode;
+        return sendConsoleCommand(cmd);
+    }
+
+    public static boolean sendConsoleCommand(String cmd) {
         try {
-            Runtime.getRuntime().exec("input keyevent " + keyCode);
+            MMLog.log(TAG,"exec command: "+cmd);
+            Runtime.getRuntime().exec(cmd);
             return true;
         } catch (Exception e) {
             //e.printStackTrace();
@@ -277,4 +286,34 @@ public class TPlatform {
         return false;
     }
 
+
+    public static String getCPUSerialCode() {
+        String cpuSerial = "0000000000000000";
+        String cmd = "cat /proc/cpuinfo";
+        try {
+            Process p = Runtime.getRuntime().exec(cmd);
+            String data = null;
+            BufferedReader ie = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String error = null;
+            while ((error = ie.readLine()) != null && !error.equals("null")) {
+                data += error + "\n";
+            }
+            String line = null;
+            while ((line = in.readLine()) != null && !line.equals("null")) {
+                data += line + "\n";
+                if (line.contains("Serial\t\t:")) {
+                    String[] SerialStr = line.split(":");
+                    if (SerialStr.length == 2) {
+                        String mSerial = SerialStr[1];
+                        cpuSerial = mSerial.trim();
+                        return cpuSerial;
+                    }
+                }
+            }
+        } catch (IOException ioe) {
+            MMLog.log(TAG,ioe.toString());
+        }
+        return cpuSerial;
+    }
 }

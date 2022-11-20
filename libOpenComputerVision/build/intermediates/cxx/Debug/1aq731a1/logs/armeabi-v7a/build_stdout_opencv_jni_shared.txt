@@ -1,2 +1,0 @@
-ninja: Entering directory `F:\StudioProjects\OctopusFramework\libOpenComputerVision\.cxx\Debug\1aq731a1\armeabi-v7a'
-ninja: no work to do.

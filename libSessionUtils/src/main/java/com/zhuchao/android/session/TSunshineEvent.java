@@ -1,4 +1,4 @@
-package com.zhuchao.android;
+package com.zhuchao.android.session;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.view.KeyEvent;
 
+import com.zhuchao.android.TPlatform;
 import com.zhuchao.android.fileutils.MMLog;
 
 public class TSunshineEvent {
@@ -40,11 +41,23 @@ public class TSunshineEvent {
         }
     }
 
+    public void unRegisterSunshineEventReceiver() {
+        try {
+            mContext.unregisterReceiver(SunshineEventReceiver);
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+    }
+
+    public void free() {
+        unRegisterSunshineEventReceiver();
+    }
+
     private final BroadcastReceiver SunshineEventReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            MMLog.log(TAG, "SunshineEvent Action = " + action);
+            MMLog.log(TAG, "SunshineEvent intent action = " + action);
             switch (action) {
                 case SystemShutdown:
                     systemShutdown();
@@ -65,37 +78,40 @@ public class TSunshineEvent {
                     systemEthertConfig();
                     break;
                 case SystemDeviceUUID:
-                    systemDeviceUUID();
+                    systemGetDeviceUUID();
                     break;
                 //default:break;
             }
         }
     };
 
-    private void systemShutdown() {
-        TPlatform.sendKeyCode(KeyEvent.KEYCODE_F9);
+    public void systemShutdown() {
+        //TPlatform.sendKeyCode(KeyEvent.KEYCODE_F9);
+        //TPlatform.sendKeyEvent(KeyEvent.KEYCODE_F9);
+        TPlatform.sendConsoleCommand("reboot -p");
     }
 
-    private void systemReboot() {
+    public void systemReboot() {
         TPlatform.sendConsoleCommand("reboot");
     }
 
-    private void systemAdjustTouchTscal() {
+    public void systemAdjustTouchTscal() {
 
     }
 
-    private void systemAdjustTouchCalibration() {
+    public void systemAdjustTouchCalibration() {
 
     }
 
-    private void systemResolution() {
+    public void systemResolution() {
 
     }
 
-    private void systemEthertConfig() {
+    public void systemEthertConfig() {
 
     }
 
-    private void systemDeviceUUID() {
+    public String systemGetDeviceUUID() {
+        return TPlatform.getCPUSerialCode();
     }
 }

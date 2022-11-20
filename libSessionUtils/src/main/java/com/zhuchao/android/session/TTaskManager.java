@@ -1,6 +1,7 @@
 package com.zhuchao.android.session;
 
 import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
 import static java.lang.Thread.MAX_PRIORITY;
 
 import android.content.Context;
@@ -491,7 +492,7 @@ public class TTaskManager {
             deleteTask(tTask);
             return tTask;
         }
-
+        //String test = tTask.getProperties().getString("fromUrl");
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.invoke(new InvokeInterface() {
             @Override
@@ -499,6 +500,14 @@ public class TTaskManager {
                 HttpUtils.requestGet(tag, fromUrl, new HttpCallback() {
                     @Override
                     public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
+                        if (status == DataID.TASK_STATUS_ERROR) {
+                            MMLog.e(TAG, "requestGet " +fromUrl+"/"+ result);
+                        }
+                        if( NotEmptyString(fromUrl) && fromUrl.contains("TestJSON"))
+                        {
+                            testDevice(tTask.getProperties().getString("TestJSON"));
+                        }
+
                         if (tTask.getCallBackHandler() != null) {
                             Message msg = taskMainLooperHandler.obtainMessage();
                             msg.obj = tTask;
@@ -511,19 +520,9 @@ public class TTaskManager {
                             tTask.getProperties().putInt("status", status);
                             taskMainLooperHandler.sendMessage(msg);
                         }
-                        if (status == DataID.TASK_STATUS_ERROR) {
-                            MMLog.e(TAG, "requestGet " +fromUrl+"/"+ result);
-                        }
-                        else if(tTask.getProperties().getString("fromUrl").contains("test"))
-                        {
-                            //MMLog.log(TAG,"fromUrl0="+tTask.getProperties().getString("fromUrl"));
-                            testDeviceConnection(tTask.getProperties().getString("test"));
-                        }
-                        else
-                        {
-                            //MMLog.log(TAG,"fromUrl1="+fromUrl);
-                        }
-                        tTask.free();
+                        //taskMainLooperHandler.sendMessage(msg)后
+                        //tTask.getProperties().getString("fromUrl")有可能被清空
+                        tTask.free();//释放线程tTask.run
                     }
                 });
             }
@@ -568,9 +567,9 @@ public class TTaskManager {
         return tTask;
     }
 
-    private TTask testDeviceConnection(String bodyJSOSParams)
+    private TTask testDevice(String bodyJSOSParams)
     {
-        String fromUrl = "http://47.106.172.94:8090/zhuchao/devices/update";
+        String fromUrl = DataID.SESSION_SOURCE_TEST_URL;
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if (EmptyString(fromUrl)) {
             tTask.free();//释放无效的任务
@@ -586,10 +585,6 @@ public class TTaskManager {
                     public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
                         if (status == DataID.TASK_STATUS_ERROR) {
                             //MMLog.e(TAG, "test device connection put request " + result);
-                        }
-                        else
-                        {
-                            //MMLog.d(TAG,"test = " + bodyJSOSParams);
                         }
                         tTask.free();
                     }
