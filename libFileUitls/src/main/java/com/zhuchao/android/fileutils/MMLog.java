@@ -4,8 +4,8 @@ import android.util.Log;
 
 public class MMLog {
     private static final String MTAG = "MMLog";
-    private static boolean debugLogOnOff = false;
-
+    private static boolean debugLogOnOff = true;
+    //private static boolean logProperty = false;
     public static final String LOG_SYSTEM_PROPERTY = "com.zhuchao.android.log.OnOff";
 
     public static void setDebugOnOff(boolean debugOnOff) {

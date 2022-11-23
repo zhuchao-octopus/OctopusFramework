@@ -25,7 +25,7 @@ public class TTaskThreadPool extends ObjectList {
     public PTask createTask(String Name) {
         if (EmptyString(Name)) {
             Name = "default";
-            MMLog.log(TAG, "only one default PTask name/tag ,name = " + Name);
+            MMLog.log(TAG, "only one default PTask name/tag ,name=" + Name);
         }
         String tag = disguiseName(Name);
         if (existObject(tag)) //存在 对象
@@ -37,7 +37,10 @@ public class TTaskThreadPool extends ObjectList {
         PTask pTask = new PTask(tag);
         pTask.setTName(Name);
         addItem(tag, pTask);
-        MMLog.log(TAG, "create PTask name = " + Name + ",tag = " + tag);
+        if(Name.contains(DataID.SESSION_SOURCE_TEST_URL))
+            ;//MMLog.log(TAG, "create PTask name = " + Name + ",tag = " + tag);
+        else
+            MMLog.log(TAG, "create PTask name = " + Name + ",tag = " + tag);
         //MMLog.log(TAG, "create PTask successfully in pool,tag = " + tag + ",total count:" + getCount()+"|"+taskCounter);
         return pTask;
     }
@@ -84,7 +87,6 @@ public class TTaskThreadPool extends ObjectList {
 
     class PTask extends TTask {
         private final String TAG = "PTask";
-
         //private TTaskThreadPool TTaskThreadPool = null;
         public PTask(String tag) {
             super(tag, null);
@@ -95,15 +97,17 @@ public class TTaskThreadPool extends ObjectList {
             if (existObject(tTag)) {
                 MMLog.log(TAG, "invoke TTask demon tTag = " + tTag);
                 super.run(); //执行父类 TTask
-                //最终结束任务，从任务池中清除掉
-                //TTaskThreadPool.delete(this.tTag);
+                /*//最终结束任务，从任务池中清除掉
+                //TTaskThreadPool.delete(this.tTag);结束不清除，等待
                 //MMLog.log(TAG, "PTask complete successfully,remove from task pool tag = " + tTag);
-                MMLog.log(TAG, "PTask complete successfully,tag = " + tTag + ",total count:" + getCount() + "|" + taskCounter);
-                properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED);//内部使用
+                */
+                //isKeeping == false 后到这里
                 setTaskCounter(getTaskCounter() + 1);
+                MMLog.log(TAG, "PTask complete successfully,tag = " + tTag + ",total:" + getCount() + ",complete:" + taskCounter);
+                properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);//内部使用，当前任务已经完成和线程停止
                 if (getTaskCounter() == getCount()) {
                     if (taskCallback != null) {
-                        taskCallback.onEventTask(this, DataID.TASK_STATUS_ALL_FINISHED);
+                        taskCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_ALL);//池中所有任务完成
                     }
                 }
             } else {

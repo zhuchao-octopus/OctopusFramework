@@ -8,14 +8,16 @@ import android.app.Instrumentation;
 import com.zhuchao.android.fileutils.MMLog;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
 
 public class TPlatform {
-    private static final String TAG = "GOS";
+    private static final String TAG = "TPlatform";
     private static Method methodGetProperty = null;
     private static Method methodSetProperty = null;
     public static final String OUTPUT_HDMI = "hdmi";
@@ -255,7 +257,7 @@ public class TPlatform {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void sendKeyCode(final int keyCode){
+    public static void sendKeyCode(final int keyCode) {
         new Thread() {
             public void run() {
                 try {
@@ -263,7 +265,7 @@ public class TPlatform {
                     inst.sendKeyDownUpSync(keyCode);
                 } catch (Exception e) {
                     //e.printStackTrace();
-                    MMLog.log(TAG,e.toString());
+                    MMLog.log(TAG, e.toString());
                 }
             }
         }.start();
@@ -271,23 +273,54 @@ public class TPlatform {
 
     public static boolean sendKeyEvent(int keyCode) {
         String cmd = "input keyevent " + keyCode;
-        return sendConsoleCommand(cmd);
+        return ExecConsoleCommand(cmd);
     }
 
-    public static boolean sendConsoleCommand(String cmd) {
+    public static boolean ExecConsoleCommand(String cmd) {
         try {
-            MMLog.log(TAG,"exec command: "+cmd);
+            MMLog.log(TAG, "exec command: " + cmd);
             Runtime.getRuntime().exec(cmd);
             return true;
         } catch (Exception e) {
             //e.printStackTrace();
-            MMLog.log(TAG,e.toString());
+            MMLog.log(TAG, e.toString());
         }
         return false;
     }
 
+    /*
+     * m命令可以通过adb在shell中执行，同样，我们可以通过代码来执行
+     */
+    public static String ExecShellCommand(String... command) {
+        Process process = null;
+        InputStream errIs = null;
+        InputStream inIs = null;
+        String result = "";
+        try {
+            process = new ProcessBuilder().command(command).start();
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            int read = -1;
+            errIs = process.getErrorStream();
+            while ((read = errIs.read()) != -1) {
+                byteArrayOutputStream.write(read);
+            }
+            inIs = process.getInputStream();
+            while ((read = inIs.read()) != -1) {
+                byteArrayOutputStream.write(read);
+            }
+            result = new String(byteArrayOutputStream.toByteArray());
+            if (inIs != null)
+                inIs.close();
+            if (errIs != null)
+                errIs.close();
+            process.destroy();
+        } catch (IOException e) {
+            result = e.getMessage();
+        }
+        return result;
+    }
 
-    public static String getCPUSerialCode() {
+    public static String GetCPUSerialCode() {
         String cpuSerial = "0000000000000000";
         String cmd = "cat /proc/cpuinfo";
         try {
@@ -312,7 +345,7 @@ public class TPlatform {
                 }
             }
         } catch (IOException ioe) {
-            MMLog.log(TAG,ioe.toString());
+            MMLog.log(TAG, ioe.toString());
         }
         return cpuSerial;
     }

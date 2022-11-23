@@ -69,6 +69,11 @@ public class TTask extends Thread {
         return isKeeping;
     }
 
+    public boolean isBusy()
+    {
+        return this.isAlive() || this.isKeeping;
+    }
+
     public void free() {
         isKeeping = false;
     }
@@ -80,13 +85,25 @@ public class TTask extends Thread {
         taskCallback = null;
     }
 
+    public void reset()
+    {
+        properties.putInt(DataID.TASK_STATUS_INTERNAL_,DataID.TASK_STATUS_CAN_RESTART);
+        isKeeping = false;
+    }
+
+    public synchronized void startAgain()
+    {
+        properties.putInt(DataID.TASK_STATUS_INTERNAL_,DataID.TASK_STATUS_CAN_RESTART);
+        start();
+    }
+
     @Override
     public synchronized void start() {
         if (this.isAlive() || this.isKeeping) {
-            MMLog.log(TAG, "TTask already been started  isActive = " + isKeeping);
+            MMLog.log(TAG, "TTask already been started isAlive Keeping = " + isKeeping);
             return;
         }
-        if (properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED) {
+        if (properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED_STOP) {
             MMLog.log(TAG, "TTask already finished, no need to run again!");
             return;
         }
@@ -110,10 +127,13 @@ public class TTask extends Thread {
         }
         //android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         setPriority(MAX_PRIORITY);
-        //召唤。。。
+        //召唤主题。。。
         MMLog.log(TAG, "invoke TTask demon tTag = " + tTag);
-        invokeInterface.CALLTODO(this.tTag);//asynchronous
-        while (isKeeping) {
+        invokeInterface.CALLTODO(this.tTag);//asynchronous 异步任务体
+        //任务主题可以是个异步任务
+        if(taskCallback!=null)
+            taskCallback.onEventTask(this,DataID.TASK_STATUS_FINISHED_WAITING);//异步等待标记
+        while (isKeeping) {//hold住线程，等待异步任务完成，调用者来结束。
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

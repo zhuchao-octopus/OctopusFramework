@@ -2,7 +2,6 @@ package com.zhuchao.android.net;
 
 import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -48,8 +47,8 @@ public class TNetUtils {
     private Context mContext;
     private Handler MainLooperHandler = null;
     private NetworkStatusListener networkStatusListener;
-    private WifiManager wifiManager;
-    private ConnectivityManager connectivityManager;
+    //private WifiManager wifiManager;
+    //private ConnectivityManager connectivityManager;
     private NetworkInformation networkInformation;
 
     public interface NetworkStatusListener {
@@ -57,13 +56,13 @@ public class TNetUtils {
     }
 
     public TNetUtils(Context context) {
-        mContext = context;
+        mContext = context;//.getApplicationContext()
         MainLooperHandler = new Handler(Looper.getMainLooper());
-        wifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        connectivityManager = (ConnectivityManager) mContext.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        //wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+        //connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         networkInformation = new NetworkInformation();
         networkStatusListener = null;
-        updateStatus();
+        updateNetStatus();
         registerNetStatusListener();
     }
 
@@ -78,12 +77,12 @@ public class TNetUtils {
 
     public void NetStatusChangedCallBack(NetworkStatusListener networkStatusListener) {
         this.networkStatusListener = networkStatusListener;
-        updateStatus();
+        updateNetStatus();
     }
 
     public void registerNetStatusCallback(NetworkStatusListener networkStatusListener) {
         this.networkStatusListener = networkStatusListener;
-        updateStatus();
+        updateNetStatus();
     }
 
     private void registerNetStatusListener() {
@@ -114,7 +113,7 @@ public class TNetUtils {
         });
     }
 
-    private synchronized void updateStatus() {
+    private synchronized void updateNetStatus() {
         runThreadNotOnMainUIThread(new Runnable() {
             @Override
             public void run() {
@@ -143,23 +142,33 @@ public class TNetUtils {
     };
 
     private synchronized void GetNetStatusInformation() {
-        networkInformation.isAvailable = isAvailable();
-        networkInformation.isConnected = isLocalNetConnected();
-        networkInformation.netType = getConnectType();
-        networkInformation.localIP = getLocalIpAddress();
-        networkInformation.MAC = getDeviceMAC();
-        networkInformation.wifiMAC = getWiFiMacAddress();//this.getWifiMac();
-        if (isAvailable())
-            GetInternetIp();
-        CallBackStatus();
+        try {
+            networkInformation.isAvailable = isAvailable();
+            networkInformation.isConnected = isLocalNetConnected();
+            networkInformation.netType = getConnectType();
+            networkInformation.localIP = getLocalIpAddress();
+            networkInformation.MAC = getDeviceMAC();
+            networkInformation.wifiMAC = getWiFiMacAddress();//this.getWifiMac();
+            if (isAvailable())
+                GetInternetIp();
+            CallBackStatus();
+        } catch (Exception e) {
+            MMLog.e(TAG, e.toString());//e.printStackTrace();
+        }
     }
 
     private synchronized void UpdateWiFiStrength() {
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        if (wifiInfo != null && wifiInfo.getBSSID() != null) {
-            networkInformation.wifiLevel = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), 4);
+        try {
+            WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+            if (wifiManager == null) return;
+            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+            if (wifiInfo != null && wifiInfo.getBSSID() != null) {
+                networkInformation.wifiLevel = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), 4);
+            }
+            CallBackStatus();
+        } catch (Exception e) {
+            MMLog.e(TAG, e.toString());//e.printStackTrace();
         }
-        CallBackStatus();
     }
 
     public boolean isNetCanConnect() {
@@ -170,6 +179,8 @@ public class TNetUtils {
     }
 
     public boolean isLocalNetConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) return false;
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null) {
             return networkInfo.isConnected();
@@ -178,6 +189,8 @@ public class TNetUtils {
     }
 
     public boolean isWifiConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) return false;
         NetworkInfo mWiFiNetworkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (mWiFiNetworkInfo != null) {
             return mWiFiNetworkInfo.isConnected();
@@ -186,6 +199,8 @@ public class TNetUtils {
     }
 
     public boolean isMobileConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) return false;
         NetworkInfo mMobileNetworkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         if (mMobileNetworkInfo != null) {
             return mMobileNetworkInfo.isConnected();
@@ -194,6 +209,8 @@ public class TNetUtils {
     }
 
     public int getConnectType() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) return -1;
         NetworkInfo mNetworkInfo = connectivityManager.getActiveNetworkInfo();
         if (mNetworkInfo != null && mNetworkInfo.isAvailable()) {
             return mNetworkInfo.getType();
@@ -202,11 +219,11 @@ public class TNetUtils {
     }
 
     public boolean isAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) return false;
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo == null)
-            return false;
-        else
-            return networkInfo.isAvailable();
+        if (networkInfo == null) return false;
+        return networkInfo.isAvailable();
     }
 
     //判断是否有外网连接
@@ -314,14 +331,18 @@ public class TNetUtils {
     }
 
     // 从系统文件中获取WIFI MAC地址
-    @SuppressLint("MissingPermission")
+    //@SuppressLint("MissingPermission")
     public String getWiFiMacAddress() {
+        WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager == null) return "";
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         return wifiInfo.getMacAddress();
     }
 
     public static String getWifiMac(Context context) {
         WifiManager LWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (LWifiManager == null) return "";
+
         boolean wifiInitState = LWifiManager.isWifiEnabled();
         String mac = null;
         try {
@@ -488,7 +509,7 @@ public class TNetUtils {
                 }
             }
         } catch (IOException ioe) {
-            MMLog.log(TAG,ioe.toString());
+            MMLog.log(TAG, ioe.toString());
         }
         return cpuSerial;
     }

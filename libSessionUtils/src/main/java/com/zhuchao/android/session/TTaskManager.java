@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi;
 import com.zhuchao.android.callbackevent.HttpCallback;
 import com.zhuchao.android.callbackevent.InvokeInterface;
 import com.zhuchao.android.callbackevent.NormalCallback;
+import com.zhuchao.android.callbackevent.TaskCallback;
 import com.zhuchao.android.fileutils.DataID;
 import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.FilesFinger;
@@ -55,6 +56,7 @@ public class TTaskManager {
     private synchronized void TransactionProcessing(Object obj) {
         TTask tTask = (TTask) (obj);
         if ((tTask != null) && tTask.getCallBackHandler() != null) {
+            //在UI主线程中回调单个线程任务完成后处理方法
             tTask.getCallBackHandler().onEventTask(//在主线程中调用前端回调函数更新UI
                     tTask,
                     tTask.getProperties().getInt("status")
@@ -232,7 +234,7 @@ public class TTaskManager {
 
                 Message msg = taskMainLooperHandler.obtainMessage();
                 msg.obj = tTask;
-                tTask.getProperties().putInt("status", DataID.TASK_STATUS_FINISHED);
+                tTask.getProperties().putInt("status", DataID.TASK_STATUS_FINISHED_STOP);
                 taskMainLooperHandler.sendMessage(msg);
                 tTask.free();
                 filesFinger.free();
@@ -416,7 +418,7 @@ public class TTaskManager {
 
                 Message msg = taskMainLooperHandler.obtainMessage();
                 msg.obj = tTask;
-                tTask.getProperties().putInt("status", DataID.TASK_STATUS_FINISHED);
+                tTask.getProperties().putInt("status", DataID.TASK_STATUS_FINISHED_STOP);
                 taskMainLooperHandler.sendMessage(msg);
                 tTask.free();
                 filesFinger.free();
@@ -484,7 +486,8 @@ public class TTaskManager {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    //request task
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //net request task
     public TTask request(final String fromUrl) {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if (EmptyString(fromUrl)) {
@@ -492,7 +495,7 @@ public class TTaskManager {
             deleteTask(tTask);
             return tTask;
         }
-        //String test = tTask.getProperties().getString("fromUrl");
+        if(tTask.isBusy())  return tTask;
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.invoke(new InvokeInterface() {
             @Override
@@ -501,14 +504,14 @@ public class TTaskManager {
                     @Override
                     public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
                         if (status == DataID.TASK_STATUS_ERROR) {
-                            MMLog.e(TAG, "requestGet " +fromUrl+"/"+ result);
-                        }
-                        if( NotEmptyString(fromUrl) && fromUrl.contains("TestJSON"))
-                        {
-                            testDevice(tTask.getProperties().getString("TestJSON"));
+                            MMLog.e(TAG, "requestGet " + fromUrl + "/" + result);
                         }
 
-                        if (tTask.getCallBackHandler() != null) {
+                        if (NotEmptyString(fromUrl) && fromUrl.contains("TestJSON")) {
+                            testRequest(tTask.getProperties().getString("TestJSON"));
+                        }
+
+                        if (tTask.getCallBackHandler() != null) {//回调传递给task
                             Message msg = taskMainLooperHandler.obtainMessage();
                             msg.obj = tTask;
                             tTask.getProperties().putString("tag", tag);
@@ -519,10 +522,12 @@ public class TTaskManager {
                             tTask.getProperties().putString("result", result);
                             tTask.getProperties().putInt("status", status);
                             taskMainLooperHandler.sendMessage(msg);
+                            //taskMainLooperHandler.sendMessage(msg)后
+                            //tTask.getProperties().getString("fromUrl")有可能被清空
+                            tTask.free();//释放线程tTask.run
+                        } else {
+                            deleteTask(tTask);//没有回调任务，直接清除tTask
                         }
-                        //taskMainLooperHandler.sendMessage(msg)后
-                        //tTask.getProperties().getString("fromUrl")有可能被清空
-                        tTask.free();//释放线程tTask.run
                     }
                 });
             }
@@ -537,6 +542,7 @@ public class TTaskManager {
             deleteTask(tTask);
             return tTask;
         }
+        if(tTask.isBusy())  return tTask;
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.invoke(new InvokeInterface() {
             @Override
@@ -544,6 +550,9 @@ public class TTaskManager {
                 HttpUtils.requestPost(tag, fromUrl, bodyParams, new HttpCallback() {
                     @Override
                     public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
+                        if (status == DataID.TASK_STATUS_ERROR) {
+                            MMLog.e(TAG, "requestPost " + result);
+                        }
                         if (tTask.getCallBackHandler() != null) {
                             Message msg = taskMainLooperHandler.obtainMessage();
                             msg.obj = tTask;
@@ -555,11 +564,10 @@ public class TTaskManager {
                             tTask.getProperties().putString("result", result);
                             tTask.getProperties().putInt("status", status);
                             taskMainLooperHandler.sendMessage(msg);
+                            tTask.free();
+                        } else {
+                            deleteTask(tTask);//没有回调任务，直接清除tTask
                         }
-                        if (status == DataID.TASK_STATUS_ERROR) {
-                            MMLog.e(TAG, "requestPost " + result);
-                        }
-                        tTask.free();
                     }
                 });
             }
@@ -567,15 +575,15 @@ public class TTaskManager {
         return tTask;
     }
 
-    private TTask testDevice(String bodyJSOSParams)
-    {
-        String fromUrl = DataID.SESSION_SOURCE_TEST_URL;
+    public TTask requestPut(String fromUrl,String bodyJSOSParams) {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if (EmptyString(fromUrl)) {
             tTask.free();//释放无效的任务
             deleteTask(tTask);
             return tTask;
         }
+        if(tTask.isBusy())  return tTask;
+
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.invoke(new InvokeInterface() {
             @Override
@@ -583,15 +591,45 @@ public class TTaskManager {
                 HttpUtils.requestPut(tag, fromUrl, bodyJSOSParams, new HttpCallback() {
                     @Override
                     public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
-                        if (status == DataID.TASK_STATUS_ERROR) {
+                        //if (status == DataID.TASK_STATUS_ERROR) {
                             //MMLog.e(TAG, "test device connection put request " + result);
+                        //}
+                        if (tTask.getCallBackHandler() != null) {//记得回调传递给task
+                            Message msg = taskMainLooperHandler.obtainMessage();
+                            msg.obj = tTask;
+                            tTask.getProperties().putString("tag", tag);
+                            tTask.getProperties().putString("fromUrl", fromUrl);
+                            tTask.getProperties().putString("toUrl", toUrl);
+                            tTask.getProperties().putLong("progress", progress);
+                            tTask.getProperties().putLong("total", total);
+                            tTask.getProperties().putString("result", result);
+                            tTask.getProperties().putInt("status", status);
+                            taskMainLooperHandler.sendMessage(msg);
+                            //taskMainLooperHandler.sendMessage(msg)后
+                            //tTask.getProperties().getString("fromUrl")有可能被清空
+                            tTask.free();//释放线程tTask.run
+                        } else {
+                            deleteTask(tTask);//没有回调任务，直接清除tTask
                         }
-                        tTask.free();
                     }
                 });
             }
-        }).start();
+        });
         return tTask;
+    }
+
+    public void testRequest(String jsonStr)
+    {
+        //String fromUrl = DataID.SESSION_SOURCE_TEST_URL;
+        requestPut(DataID.SESSION_SOURCE_TEST_URL,jsonStr).callbackHandler(new TaskCallback() {
+            @Override
+            public void onEventTask(Object obj, int status) {
+                if (status == DataID.TASK_STATUS_ERROR) {
+                    //deleteTask((TTask)obj);
+                    ((TTask)obj).reset();
+                }
+            }
+        }).start();
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //download task

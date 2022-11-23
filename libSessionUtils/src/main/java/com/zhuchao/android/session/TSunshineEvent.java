@@ -1,43 +1,65 @@
 package com.zhuchao.android.session;
 
+import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.view.KeyEvent;
 
 import com.zhuchao.android.TPlatform;
+import com.zhuchao.android.callbackevent.TaskCallback;
 import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fileutils.TAppUtils;
+import com.zhuchao.android.net.NetworkInformation;
+import com.zhuchao.android.net.TNetUtils;
 
-public class TSunshineEvent {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class TSunshineEvent implements TNetUtils.NetworkStatusListener {
     private final static String TAG = "TSunshineEvent";
-    private Context mContext;
-    private final static String SystemShutdown = "action.uniwin.shutdown";
-    private final static String SystemReboot = "action.uniwin.reboot.receiver";
-    private final static String SystemAdjustTouchTscal = "org.zeroxlab.util.tscal";
-    private final static String SystemAdjustTouchCalibration = "org.zeroxlab.util.tscal.TSCalibration";
-    private final static String SystemResolution = "action.ktv.settings.receiver";
-    private final static String SystemEthertConfig = "action.ktv.net.receiver";
-    private final static String SystemDeviceUUID = "action.device.uuid.receiver";
+    private final static String Action_SystemShutdown = "action.uniwin.shutdown";
+    private final static String Action_SystemShutdown1 = "android.intent.action.ACTION_REQUEST_SHUTDOWN";
+    private final static String Action_SystemReboot1 = "android.intent.action.ACTION_REQUEST_REBOOT";
+    private final static String Action_SystemReboot = "action.uniwin.reboot.receiver";
+    private final static String Action_SystemAdjustTouchTscal = "org.zeroxlab.util.tscal";
+    private final static String Action_SystemAdjustTouchCalibration = "org.zeroxlab.util.tscal.TSCalibration";
+    private final static String Action_SystemResolution = "action.ktv.settings.receiver";
+    private final static String Action_SystemEthertConfig = "action.ktv.net.receiver";
+    private final static String Action_SystemDeviceUUID = "action.device.uuid.receiver";
+    private final static String Action_SilentInstallAction = "android.intent.action.SILENT_INSTALL_PACKAGE";
+    private  Context mContext = null;
+    private  TNetUtils tNetUtils = null;
+    private  TTaskManager tTaskManager = null;
 
     public TSunshineEvent(Context context) {
         mContext = context;
         registerSunshineEventReceiver();
+        //tNetUtils = new TNetUtils(mContext);
+        //tTaskManager = new TTaskManager(mContext);
+        ///tTaskManager.setReDownload(false);
     }
 
     private void registerSunshineEventReceiver() {
         try {
             IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(SystemShutdown);//关机
-            intentFilter.addAction(SystemReboot);//重启
-            intentFilter.addAction(SystemAdjustTouchTscal);//触摸屏校准
-            intentFilter.addAction(SystemAdjustTouchCalibration);//触摸屏校准
-            intentFilter.addAction(SystemResolution);//设置分辨率
-            intentFilter.addAction(SystemEthertConfig);//以太网设置(有线网络)
-            intentFilter.addAction(SystemDeviceUUID);//获取设备序列号
+            intentFilter.addAction(Action_SystemShutdown);//关机
+            intentFilter.addAction(Action_SystemShutdown1);//关机
+            intentFilter.addAction(Action_SystemReboot);//重启
+            intentFilter.addAction(Action_SystemReboot1);//重启
+            intentFilter.addAction(Action_SystemAdjustTouchTscal);//触摸屏校准
+            intentFilter.addAction(Action_SystemAdjustTouchCalibration);//触摸屏校准
+            intentFilter.addAction(Action_SystemResolution);//设置分辨率
+            intentFilter.addAction(Action_SystemEthertConfig);//以太网设置(有线网络)
+            intentFilter.addAction(Action_SystemDeviceUUID);//获取设备序列号
+            intentFilter.addAction(Action_SilentInstallAction);//获取设备序列号
             mContext.registerReceiver(SunshineEventReceiver, intentFilter);
+            MMLog.d(TAG, "register SunshineEventReceiver successfully !!!!!!");
         } catch (Exception e) {
-            MMLog.e(TAG, "register SunshineEventReceiver failed " + e.toString());
+            MMLog.e(TAG, "register SunshineEventReceiver failed!" + e.toString());
         }
     }
 
@@ -56,62 +78,117 @@ public class TSunshineEvent {
     private final BroadcastReceiver SunshineEventReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            if(intent == null) return;
             final String action = intent.getAction();
             MMLog.log(TAG, "SunshineEvent intent action = " + action);
+
             switch (action) {
-                case SystemShutdown:
-                    systemShutdown();
+                case Action_SystemShutdown:
+                case Action_SystemShutdown1:
+                    Action_SystemShutdown();
                     break;
-                case SystemReboot:
-                    systemReboot();
+                case Action_SystemReboot:
+                case Action_SystemReboot1:
+                    Action_SystemReboot();
                     break;
-                case SystemAdjustTouchTscal:
-                    systemAdjustTouchTscal();
+                case Action_SystemAdjustTouchTscal:
+                    Action_SystemAdjustTouchTscal();
                     break;
-                case SystemAdjustTouchCalibration:
-                    systemAdjustTouchCalibration();
+                case Action_SystemAdjustTouchCalibration:
+                    Action_SystemAdjustTouchCalibration();
                     break;
-                case SystemResolution:
-                    systemResolution();
+                case Action_SystemResolution:
+                    Action_SystemResolution();
                     break;
-                case SystemEthertConfig:
-                    systemEthertConfig();
+                case Action_SystemEthertConfig:
+                    Action_SystemEthertConfig();
                     break;
-                case SystemDeviceUUID:
-                    systemGetDeviceUUID();
+                case Action_SystemDeviceUUID:
+                    Action_SystemGetDeviceUUID();
                     break;
-                //default:break;
+                case Action_SilentInstallAction:
+                    if(intent.getExtras()!=null) {
+                        String apkFilePath = intent.getExtras().getString("apkFilePath");
+                        boolean autostart = intent.getExtras().getBoolean("autostart");
+                        Action_SilentInstallAction(apkFilePath,autostart);
+                    }
+                    break;
+                default:break;
             }
         }
     };
 
-    public void systemShutdown() {
+    public void Action_SystemShutdown() {
         //TPlatform.sendKeyCode(KeyEvent.KEYCODE_F9);
         //TPlatform.sendKeyEvent(KeyEvent.KEYCODE_F9);
-        TPlatform.sendConsoleCommand("reboot -p");
+        TPlatform.ExecConsoleCommand("reboot -p");
     }
 
-    public void systemReboot() {
-        TPlatform.sendConsoleCommand("reboot");
+    public void Action_SystemReboot() {
+        TPlatform.ExecConsoleCommand("reboot");
     }
 
-    public void systemAdjustTouchTscal() {
-
-    }
-
-    public void systemAdjustTouchCalibration() {
+    public void Action_SystemAdjustTouchTscal() {
 
     }
 
-    public void systemResolution() {
+    public void Action_SystemAdjustTouchCalibration() {
 
     }
 
-    public void systemEthertConfig() {
+    public void Action_SystemResolution() {
 
     }
 
-    public String systemGetDeviceUUID() {
-        return TPlatform.getCPUSerialCode();
+    public void Action_SystemEthertConfig() {
+
+    }
+
+    public String Action_SystemGetDeviceUUID() {
+        return TPlatform.GetCPUSerialCode();
+    }
+
+    public void Action_SilentInstallAction(String filePath,boolean autostart)
+    {
+        TAppUtils.installSilent(mContext,filePath);
+    }
+
+    private static String getFWVersionName()
+    {
+        String version= android.os.Build.MODEL + ","
+                + Build.VERSION.SDK_INT + ","
+                + android.os.Build.VERSION.RELEASE;
+        return version;
+    }
+
+    private static String getRequestJSON(String mac,String ip,String region) {
+        JSONObject jsonObj = new JSONObject();
+        try {
+            jsonObj.put("name", "A40I");
+            jsonObj.put("mac", mac);
+            jsonObj.put("ip", ip);
+            jsonObj.put("region", region);
+            jsonObj.put("brand", "SunShine");
+            jsonObj.put("customer", "TianPu");
+            //jsonObj.put("appVersion",getFWVersionName());
+            jsonObj.put("fwVersion", getFWVersionName());
+        } catch (JSONException e) {
+            //e.printStackTrace();
+        }
+        //MMLog.d(TAG,"getRequestJSON = "+jsonObj.toString());
+        return jsonObj.toString();
+    }
+
+
+    @Override
+    public void onNetStatusChanged(NetworkInformation networkInformation) {
+        if (networkInformation.isConnected() &&
+                NotEmptyString(networkInformation.getInternetIP()) &&
+                NotEmptyString(networkInformation.getLocalIP()))
+        {
+          String json = getRequestJSON(networkInformation.getMAC(),networkInformation.getInternetIP(),networkInformation.regionToString());
+          if(tTaskManager !=null)
+             tTaskManager.testRequest(json);
+        }
     }
 }
