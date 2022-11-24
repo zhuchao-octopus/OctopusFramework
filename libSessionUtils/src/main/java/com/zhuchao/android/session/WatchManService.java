@@ -43,7 +43,7 @@ import java.util.List;
 
 public class WatchManService extends Service implements TNetUtils.NetworkStatusListener {
     private static final String TAG = "WatchManService";
-    private static final String VERSION_NAME = "1.0";
+    private static final String VERSION_NAME = "1.1";
     private final static String Action_TEST = "android.intent.action.ACTION_WATCHMAN_HELLO";
     private final static String Action_UPDATE_NET_STATUS = "android.intent.action.UPDATE_NET_STATUS";
     private final static String Action_SystemShutdown = "android.intent.action.ACTION_REQUEST_SHUTDOWN";
