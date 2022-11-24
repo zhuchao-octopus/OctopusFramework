@@ -57,11 +57,11 @@ public class DataID {
     public static final int TASK_STATUS_NONE = 300;
     public static final int TASK_STATUS_START = TASK_STATUS_NONE + 1;
     public static final int TASK_STATUS_PROGRESSING = TASK_STATUS_START + 1;
-    public static final int TASK_STATUS_SUCCESS = TASK_STATUS_PROGRESSING + 1;
 
-    public static final int TASK_STATUS_FINISHED_WAITING = TASK_STATUS_SUCCESS + 1; //内部使用
-    public static final int TASK_STATUS_FINISHED_STOP = TASK_STATUS_FINISHED_WAITING + 1; //内部使用
-    public static final int TASK_STATUS_FINISHED_ALL = TASK_STATUS_FINISHED_STOP + 1;//任务池中的所有任务完成标记
+    public static final int TASK_STATUS_FINISHED_WAITING = TASK_STATUS_PROGRESSING + 1; //内部等待，303
+    public static final int TASK_STATUS_SUCCESS = TASK_STATUS_FINISHED_WAITING + 1;//任务完成，304
+    public static final int TASK_STATUS_FINISHED_STOP = TASK_STATUS_SUCCESS + 1; //任务结束停止，内部使用，305
+    public static final int TASK_STATUS_FINISHED_ALL = TASK_STATUS_FINISHED_STOP + 1;//任务池中所有任务完成，306
 
     public static final int TASK_STATUS_CAN_RESTART = TASK_STATUS_FINISHED_ALL + 1; //允许重新启动
     public static final int TASK_STATUS_ERROR = TASK_STATUS_CAN_RESTART + 1;

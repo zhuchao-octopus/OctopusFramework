@@ -23,6 +23,7 @@
             <option value="$PROJECT_DIR$/libOpenDetection" />
             <option value="$PROJECT_DIR$/libPlayerUtils" />
             <option value="$PROJECT_DIR$/libSessionUtils" />
+            <option value="$PROJECT_DIR$/watchmanservice" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -145,11 +145,11 @@ public class NetworkInformation {
         str += "," + countryCode;
         str += "," + region;
         str += "," + regionName;
-        str += "," + timezone;
+        //str += "," + timezone;Asia/Shanghai
         str += "," + city;
         str += "," + organization;
         str += "," + isp;
-        str += ",(" + lon + " " + lat + ")";
+        str += "," + lon + " " + lat;
         return str;
     }
 }

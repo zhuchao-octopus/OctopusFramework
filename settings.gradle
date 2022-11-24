@@ -2,3 +2,5 @@ include ':libFileUitls', ':libJOSUtils', ':libDecodeCore', ':libPlayerUtils', ':
 include ':libOpenDetection'
 include ':libOpenComputerVision'
 include ':libICameraController'
+
+include ':watchmanservice'

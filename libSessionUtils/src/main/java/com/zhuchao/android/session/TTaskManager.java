@@ -495,7 +495,7 @@ public class TTaskManager {
             deleteTask(tTask);
             return tTask;
         }
-        if(tTask.isBusy())  return tTask;
+        if (tTask.isBusy()) return tTask;
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.invoke(new InvokeInterface() {
             @Override
@@ -542,7 +542,7 @@ public class TTaskManager {
             deleteTask(tTask);
             return tTask;
         }
-        if(tTask.isBusy())  return tTask;
+        if (tTask.isBusy()) return tTask;
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.invoke(new InvokeInterface() {
             @Override
@@ -575,14 +575,14 @@ public class TTaskManager {
         return tTask;
     }
 
-    public TTask requestPut(String fromUrl,String bodyJSOSParams) {
+    public TTask requestPut(String fromUrl, String bodyJSOSParams) {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if (EmptyString(fromUrl)) {
             tTask.free();//释放无效的任务
             deleteTask(tTask);
             return tTask;
         }
-        if(tTask.isBusy())  return tTask;
+        if (tTask.isBusy()) return tTask;
 
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.invoke(new InvokeInterface() {
@@ -591,9 +591,13 @@ public class TTaskManager {
                 HttpUtils.requestPut(tag, fromUrl, bodyJSOSParams, new HttpCallback() {
                     @Override
                     public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
-                        //if (status == DataID.TASK_STATUS_ERROR) {
+                        /*//if (status == DataID.TASK_STATUS_ERROR) {
                             //MMLog.e(TAG, "test device connection put request " + result);
                         //}
+                        if (status == DataID.TASK_STATUS_SUCCESS)
+                        {
+                            MMLog.i(TAG, "request ok --> " + result);
+                        }*/
                         if (tTask.getCallBackHandler() != null) {//记得回调传递给task
                             Message msg = taskMainLooperHandler.obtainMessage();
                             msg.obj = tTask;
@@ -618,19 +622,22 @@ public class TTaskManager {
         return tTask;
     }
 
-    public void testRequest(String jsonStr)
-    {
+    public void testRequest(String jsonStr) {
         //String fromUrl = DataID.SESSION_SOURCE_TEST_URL;
-        requestPut(DataID.SESSION_SOURCE_TEST_URL,jsonStr).callbackHandler(new TaskCallback() {
+        //MMLog.i(TAG,"testRequest:"+jsonStr);
+        requestPut(DataID.SESSION_SOURCE_TEST_URL, jsonStr).callbackHandler(new TaskCallback() {
             @Override
             public void onEventTask(Object obj, int status) {
                 if (status == DataID.TASK_STATUS_ERROR) {
                     //deleteTask((TTask)obj);
-                    ((TTask)obj).reset();
+                    ((TTask) obj).reset();
                 }
+                //MMLog.i(TAG, status + "," + ((TTask) obj).getProperties().getString("fromUrl"));
+                //MMLog.i(TAG, status + "," + ((TTask) obj).getProperties().getString("result", "null"));
             }
         }).start();
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //download task
     public void setStopContinue(boolean stopContinue) {

@@ -1,0 +1,609 @@
+package com.zhuchao.android.session;
+
+import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
+
+import android.app.ActivityManager;
+import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.os.Build;
+import android.os.IBinder;
+import android.util.Log;
+
+import com.zhuchao.android.TPlatform;
+import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fileutils.TAppUtils;
+import com.zhuchao.android.net.NetworkInformation;
+import com.zhuchao.android.net.TNetUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+
+/*第一种方式：通过StartService启动Service
+ 通过startService启动后，service会一直无限期运行下去，只有外部调用了stopService()或stopSelf()方法时，该Service才会停止运行并销毁。
+ 要创建一个这样的Service，你需要让该类继承Service类，然后重写以下方法：
+ onCreate()1.如果service没被创建过，调用startService()后会执行onCreate()回调；2.如果service已处于运行中，调用startService()不会执行onCreate()方法。也就是说，onCreate()只会在第一次创建service时候调用，多次执行startService()不会重复调用onCreate()，此方法适合完成一些初始化工作。
+ onStartCommand()如果多次执行了Context的startService()方法，那么Service的onStartCommand()方法也会相应的多次调用。onStartCommand()方法很重要，我们在该方法中根据传入的Intent参数进行实际的操作，比如会在此处创建一个线程用于下载数据或播放音乐等。
+ onBind()Service中的onBind()方法是抽象方法，Service类本身就是抽象类，所以onBind()方法是必须重写的，即使我们用不到。
+ onDestory()在销毁的时候会执行Service该方法。
+ 这几个方法都是回调方法，且在主线程中执行，由android操作系统在合适的时机调用
+ */
+
+public class WatchManService extends Service implements TNetUtils.NetworkStatusListener {
+    private static final String TAG = "WatchManService";
+    private static final String VERSION_NAME = "1.0";
+    private final static String Action_TEST = "android.intent.action.ACTION_WATCHMAN_HELLO";
+    private final static String Action_UPDATE_NET_STATUS = "android.intent.action.UPDATE_NET_STATUS";
+    private final static String Action_SystemShutdown = "android.intent.action.ACTION_REQUEST_SHUTDOWN";
+    private final static String Action_SystemReboot = "android.intent.action.ACTION_REQUEST_REBOOT";
+    private final static String Action_SilentInstall = "android.intent.action.SILENT_INSTALL_PACKAGE";
+    private final static String Action_SilentUNInstall = "android.intent.action.SILENT_UNINSTALL_PACKAGE";
+    private final static String Action_SilentCLOSE = "android.intent.action.SILENT_CLOSE_PACKAGE";
+
+    private final static String Action_SystemShutdown1 = "action.uniwin.shutdown";
+    private final static String Action_SystemReboot1 = "action.uniwin.reboot.receiver";
+    private final static String Action_SystemAdjustTouchTscal = "org.zeroxlab.util.tscal";
+    private final static String Action_SystemAdjustTouchCalibration = "org.zeroxlab.util.tscal.TSCalibration";
+    private final static String Action_SystemResolution = "action.ktv.settings.receiver";
+    private final static String Action_SystemEthertConfig = "action.ktv.net.receiver";
+    private final static String Action_SystemDeviceUUID = "action.device.uuid.receiver";
+
+    private final static String Action_SilentInstall1 = "android.intent.action.SILENT_INSTALL_PACKAGE1";
+    private final static String Action_SilentInstall2 = "android.intent.action.SILENT_INSTALL_PACKAGE2";
+
+    private Context mContext = null;
+    private TNetUtils tNetUtils = null;
+    private TTaskManager tTaskManager = null;
+    private NetworkInformation networkInformation=null;
+
+    private  String pName="A40I";
+    private  String pModel;
+    private  String pBrand="SunShine";
+    private  String pCustomer="TianPu";
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public WatchManService() {
+        MMLog.i(TAG, "WatchManService()");
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        // TODO: Return the communication channel to the service.
+        //throw new UnsupportedOperationException("Not yet implemented");
+        MMLog.d(TAG, "WatchManService on bind");
+        return null;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        MMLog.d(TAG, "onCreate()");
+        mContext = WatchManService.this;
+        registerSunshineEventReceiver();
+        tNetUtils = new TNetUtils(mContext);
+        tTaskManager = new TTaskManager(mContext);
+        tTaskManager.setReDownload(false);
+        tNetUtils.registerNetStatusCallback(this);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        MMLog.d(TAG, "onStartCommand()");
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        MMLog.d(TAG, "onDestroy()");
+        unRegisterSunshineEventReceiver();
+    }
+
+    private void registerSunshineEventReceiver() {
+        try {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(Action_TEST);//测试
+            intentFilter.addAction(Action_UPDATE_NET_STATUS);//测试
+            intentFilter.addAction(Action_SystemShutdown);//关机
+            intentFilter.addAction(Action_SystemReboot);//重启
+
+            intentFilter.addAction(Action_SilentInstall);//静默安装
+            intentFilter.addAction(Action_SilentUNInstall);//静默反安装
+            intentFilter.addAction(Action_SilentCLOSE);//静默结束
+
+            intentFilter.addAction(Action_SystemShutdown1);//关机
+            intentFilter.addAction(Action_SystemReboot1);//重启
+            intentFilter.addAction(Action_SystemAdjustTouchTscal);//触摸屏校准
+            intentFilter.addAction(Action_SystemAdjustTouchCalibration);//触摸屏校准
+            intentFilter.addAction(Action_SystemResolution);//设置分辨率
+            intentFilter.addAction(Action_SystemEthertConfig);//以太网设置(有线网络)
+            intentFilter.addAction(Action_SystemDeviceUUID);//获取设备序列号
+            intentFilter.addAction(Action_SilentInstall1);//静默安装
+            intentFilter.addAction(Action_SilentInstall2);//静默安装
+
+            mContext.registerReceiver(SunshineEventReceiver, intentFilter);
+            MMLog.d(TAG, "register SunshineEventReceiver successfully !!!!!!");
+        } catch (Exception e) {
+            MMLog.e(TAG, "register SunshineEventReceiver failed!" + e.toString());
+        }
+    }
+
+    public void unRegisterSunshineEventReceiver() {
+        try {
+            mContext.unregisterReceiver(SunshineEventReceiver);
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+    }
+
+    private  String getRequestJSON(String mac, String ip, String region) {
+        JSONObject jsonObj = new JSONObject();
+        try {
+            jsonObj.put("name", pName);
+            jsonObj.put("mac", mac);
+            jsonObj.put("ip", ip);
+            jsonObj.put("region", region);
+            jsonObj.put("brand", pBrand);
+            jsonObj.put("customer", pCustomer);
+            jsonObj.put("appVersion",VERSION_NAME);
+            jsonObj.put("fwVersion", getFWVersionName());
+        } catch (JSONException e) {
+            //e.printStackTrace();
+        }
+        //MMLog.d(TAG,"getRequestJSON = "+jsonObj.toString());
+        return jsonObj.toString();
+    }
+
+    private final BroadcastReceiver SunshineEventReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent == null) return;
+            final String action = intent.getAction();
+            MMLog.log(TAG, "SunshineEvent intent action = " + action);
+
+            switch (action) {
+                case Action_TEST:
+                    MMLog.log(TAG,"Hello it is ready! version:"+VERSION_NAME);
+                    if(networkInformation != null)
+                        MMLog.d(TAG,"host:"+ networkInformation.toString());
+                    if (intent.getExtras() != null) {
+                        pName = intent.getExtras().getString("pName","A40I");
+                        pModel = intent.getExtras().getString("pModel","OCTOPUS");
+                        pBrand = intent.getExtras().getString("pBrand","OCTOPUS");
+                        pCustomer = intent.getExtras().getString("pCustomer","OCTOPUS");
+                    }
+                    break;
+                case Action_UPDATE_NET_STATUS:
+                    Action_UPDATE_NET_STATUS();
+                    break;
+                case Action_SystemShutdown:
+                case Action_SystemShutdown1:
+                    Action_SystemShutdown();
+                    break;
+                case Action_SystemReboot:
+                case Action_SystemReboot1:
+                    Action_SystemReboot();
+                    break;
+                case Action_SystemAdjustTouchTscal:
+                    Action_SystemAdjustTouchTscal();
+                    break;
+                case Action_SystemAdjustTouchCalibration:
+                    Action_SystemAdjustTouchCalibration();
+                    break;
+                case Action_SystemResolution:
+                    Action_SystemResolution();
+                    break;
+                case Action_SystemEthertConfig:
+                    Action_SystemEthertConfig();
+                    break;
+                case Action_SystemDeviceUUID:
+                    Action_SystemGetDeviceUUID();
+                    break;
+                case Action_SilentInstall:
+                    if (intent.getExtras() != null) {
+                        String apkFilePath = intent.getExtras().getString("apkFilePath");
+                        boolean autostart = intent.getExtras().getBoolean("autostart");
+                        Action_SilentInstallAction(apkFilePath, autostart);
+                    }
+                    break;
+                case Action_SilentInstall1:
+                    if (intent.getExtras() != null) {
+                        String apkFilePath = intent.getExtras().getString("apkFilePath");
+                        boolean autostart = intent.getExtras().getBoolean("autostart");
+                        Action_SilentInstallAction1(apkFilePath, autostart);
+                    }
+                    break;
+                case Action_SilentInstall2:
+                    if (intent.getExtras() != null) {
+                        String apkFilePath = intent.getExtras().getString("apkFilePath");
+                        boolean autostart = intent.getExtras().getBoolean("autostart");
+                        Action_SilentInstallAction2(apkFilePath, autostart);
+                    }
+                    break;
+                case Action_SilentUNInstall:
+                    if (intent.getExtras() != null) {
+                        String packageName = intent.getExtras().getString("uninstall_pkg");
+                        Action_SilentUNInstallAction(packageName);
+                    }
+                    break;
+                case Action_SilentCLOSE:
+                    if (intent.getExtras() != null) {
+                        String packageName = intent.getExtras().getString("close_pkg");
+                        Action_SilentCLOSEAction(packageName);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    public void Action_UPDATE_NET_STATUS()
+    {
+        if (tTaskManager != null && networkInformation != null) {
+            String json = getRequestJSON(networkInformation.getMAC(), networkInformation.getInternetIP(), networkInformation.regionToString());
+            tTaskManager.testRequest(json);
+        }
+    }
+    public void Action_SilentUNInstallAction(String packageName) {
+        //Uninstall(packageName);
+        uninstallApk(packageName);
+    }
+
+    public void Action_SilentCLOSEAction(String packageName) {
+        //killAppProcess(packageName);
+        killAssignPkg(packageName);
+    }
+
+    private void killAssignPkg(String packageName) {
+        ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        Method method = null;
+        try {
+            method = Class.forName("android.app.ActivityManager").getMethod("forceStopPackage", String.class);
+            method.invoke(mActivityManager, packageName);
+        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void Action_SystemShutdown() {
+        //TPlatform.sendKeyCode(KeyEvent.KEYCODE_F9);
+        //TPlatform.sendKeyEvent(KeyEvent.KEYCODE_F9);
+        TPlatform.ExecConsoleCommand("reboot -p");
+    }
+
+    public void Action_SystemReboot() {
+        TPlatform.ExecConsoleCommand("reboot");
+    }
+
+    public void Action_SystemAdjustTouchTscal() {
+    }
+
+    public void Action_SystemAdjustTouchCalibration() {
+    }
+
+    public void Action_SystemResolution() {
+    }
+
+    public void Action_SystemEthertConfig() {
+    }
+
+    public String Action_SystemGetDeviceUUID() {
+        return TPlatform.GetCPUSerialCode();
+    }
+
+    public void Action_SilentInstallAction(String filePath, boolean autostart) {
+        boolean b = TAppUtils.installSilent(mContext, filePath);
+        if (b)
+            MMLog.log(TAG, "installSilent successfully! ->" + filePath);
+        else
+            MMLog.log(TAG, "installSilent failed! ->" + filePath);
+        if (autostart) {
+            PackageInfo packageInfo = TAppUtils.getPackageInfo(mContext, filePath);
+            if (packageInfo != null)
+                TAppUtils.startApp(mContext, packageInfo.packageName);
+        }
+    }
+
+    public void Action_SilentInstallAction1(String filePath, boolean autostart) {
+        TPlatform.ExecConsoleCommand("pm install -r " + filePath);
+        if (autostart) {
+            PackageInfo packageInfo = TAppUtils.getPackageInfo(mContext, filePath);
+            if (packageInfo != null)
+                TAppUtils.startApp(mContext, packageInfo.packageName);
+        }
+    }
+
+    public void Action_SilentInstallAction2(String filePath, boolean autostart) {
+        String ret = TPlatform.ExecShellCommand("pm", "install", "-f", filePath);
+        MMLog.log(TAG, ret);
+        if (autostart) {
+            PackageInfo packageInfo = TAppUtils.getPackageInfo(mContext, filePath);
+            if (packageInfo != null)
+                TAppUtils.startApp(mContext, packageInfo.packageName);
+        }
+    }
+
+    private static boolean uninstall(String packageName) {
+        Process process = null;
+        BufferedReader successResult = null;
+        BufferedReader errorResult = null;
+        StringBuilder successMsg = new StringBuilder();
+        StringBuilder errorMsg = new StringBuilder();
+        try {
+            process = new ProcessBuilder("pm", "uninstall", packageName).start();
+            successResult = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String s;
+            while ((s = successResult.readLine()) != null) {
+                successMsg.append(s);
+            }
+            while ((s = errorResult.readLine()) != null) {
+                errorMsg.append(s);
+            }
+        } catch (Exception e) {
+            MMLog.d(TAG, e.toString());
+        } finally {
+            try {
+                if (successResult != null) {
+                    successResult.close();
+                }
+                if (errorResult != null) {
+                    errorResult.close();
+                }
+            } catch (Exception e) {
+                MMLog.d(TAG, e.toString());
+            }
+            if (process != null) {
+                process.destroy();
+            }
+        }
+        //如果含有"success"单词则认为卸载成功
+        MMLog.log(TAG, successMsg.toString());
+        MMLog.log(TAG, errorMsg.toString());
+        return successMsg.toString().equalsIgnoreCase("success");
+    }
+
+    public void install(File apkFile) {
+        String cmd = "";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            cmd = "pm install -r -d " + apkFile.getAbsolutePath();
+        } else {
+            cmd = "pm install -r -d -i packageName --user 0 " + apkFile.getAbsolutePath();
+        }
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process process = runtime.exec(cmd);
+            InputStream errorInput = process.getErrorStream();
+            InputStream inputStream = process.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String error = "";
+            String result = "";
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null) {
+                result += line;
+            }
+            bufferedReader = new BufferedReader(new InputStreamReader(errorInput));
+            while ((line = bufferedReader.readLine()) != null) {
+                error += line;
+            }
+            if (result.equals("Success")) {
+                Log.i(TAG, "install: Success");
+            } else {
+                Log.i(TAG, "install: error" + error);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean installApk(String apkPath) {
+        //String [ ] args = { "pm" , "install" , "-i" , "com.example", apkPath } ;//7.0用这个，参考的博客说要加 --user，但是我发现使用了反而不成功。
+        String[] args = {"pm", "install", "-r", apkPath};
+        ProcessBuilder processBuilder = new ProcessBuilder(args);
+        Process process = null;
+        BufferedReader successResult = null;
+        BufferedReader errorResult = null;
+        StringBuilder successMsg = new StringBuilder();
+        StringBuilder errorMsg = new StringBuilder();
+        try {
+            process = processBuilder.start();
+            successResult = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String s;
+            while ((s = successResult.readLine()) != null) {
+                successMsg.append(s);
+            }
+            while ((s = errorResult.readLine()) != null) {
+                errorMsg.append(s);
+            }
+            return process.waitFor() == 0 || successMsg.toString().contains("Success");
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (successResult != null) {
+                    successResult.close();
+                }
+                if (errorResult != null) {
+                    errorResult.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (process != null) {
+                process.destroy();
+            }
+        }
+        return false;
+    }
+
+    public synchronized static void installApk(Context context, String apkPath) {
+        try {
+            PackageInfo info = TAppUtils.getPackageInfo(context, apkPath);
+            String[] args = {"pm", "install", "-i", info.packageName, "--user", "0", "-r", apkPath};
+            ProcessBuilder processBuilder = new ProcessBuilder(args);
+            Process process = null;
+            BufferedReader successResult = null;
+            BufferedReader errorResult = null;
+            StringBuilder successMsg = new StringBuilder();
+            StringBuilder errorMsg = new StringBuilder();
+            try {
+                process = processBuilder.start();
+                successResult = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                String line;
+
+                while ((line = successResult.readLine()) != null) {
+                    successMsg.append(line);
+                }
+
+                while ((line = errorResult.readLine()) != null) {
+                    errorMsg.append(line);
+                }
+
+                MMLog.i(TAG, "install success_msg " + successMsg.toString());
+                MMLog.i(TAG, "install error_msg " + errorMsg.toString());
+                if (successMsg.toString().contains("Success")) {
+
+                } else {
+
+                }
+            } catch (Exception e) {
+                MMLog.e(TAG, e.toString());
+            } finally {
+                try {
+                    if (successResult != null) {
+                        successResult.close();
+                    }
+                } catch (IOException e) {
+                    MMLog.e(TAG, e.toString());
+                }
+
+                try {
+                    if (errorResult != null) {
+                        errorResult.close();
+                    }
+                } catch (IOException e) {
+                    MMLog.e(TAG, e.toString());
+                }
+
+                try {
+                    if (process != null) {
+                        process.destroy();
+                    }
+                } catch (Exception e) {
+                    MMLog.e(TAG, e.toString());
+                }
+            }
+
+        } catch (Exception e) {
+            MMLog.e(TAG, e.toString());
+        }
+    }
+
+    public synchronized static void uninstallApk(String packageName) {
+        try {
+            String[] args = {"pm", "uninstall", "-k", "--user", "0", packageName};
+            ProcessBuilder processBuilder = new ProcessBuilder(args);
+            Process process = null;
+            BufferedReader successResult = null;
+            BufferedReader errorResult = null;
+            StringBuilder successMsg = new StringBuilder();
+            StringBuilder errorMsg = new StringBuilder();
+            try {
+                process = processBuilder.start();
+                successResult = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                String line;
+
+                while ((line = successResult.readLine()) != null) {
+                    successMsg.append(line);
+                }
+
+                while ((line = errorResult.readLine()) != null) {
+                    errorMsg.append(line);
+                }
+
+                MMLog.i(TAG, "uninstall success_msg " + successMsg.toString());
+                MMLog.i(TAG, "uninstall error_msg " + errorMsg.toString());
+                if (successMsg.toString().contains("Success")) {
+                } else {
+                }
+            } catch (Exception e) {
+                MMLog.e(TAG, e.toString());
+            } finally {
+                try {
+                    if (successResult != null) {
+                        successResult.close();
+                    }
+                } catch (IOException e) {
+                    MMLog.e(TAG, e.toString());
+                }
+                try {
+                    if (errorResult != null) {
+                        errorResult.close();
+                    }
+                } catch (IOException e) {
+                    MMLog.e(TAG, e.toString());
+                }
+                try {
+                    if (process != null) {
+                        process.destroy();
+                    }
+                } catch (Exception e) {
+                    MMLog.e(TAG, e.toString());
+                }
+            }
+
+        } catch (Exception e) {
+            MMLog.e(TAG, e.toString());
+        }
+    }
+
+    private static String getFWVersionName() {
+        String version = Build.MODEL + ","
+                + Build.VERSION.SDK_INT + ","
+                + Build.VERSION.RELEASE;
+        return version;
+    }
+
+    public void killAppProcess(String packageName) {
+        //注意：不能先杀掉主进程，否则逻辑代码无法继续执行，需先杀掉相关进程最后杀掉主进程
+        ActivityManager mActivityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> mList = mActivityManager.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : mList) {
+            //if(runningAppProcessInfo.processName)
+            MMLog.log(TAG, runningAppProcessInfo.processName);
+        }
+        //android.os.Process.killProcess(android.os.Process.myPid());
+        //System.exit(0);
+    }
+
+    @Override
+    public void onNetStatusChanged(NetworkInformation networkInformation) {
+        if (networkInformation.isConnected() &&
+                NotEmptyString(networkInformation.getInternetIP()) &&
+                NotEmptyString(networkInformation.getLocalIP())) {
+            this.networkInformation = networkInformation;
+            Action_UPDATE_NET_STATUS();
+        }
+    }
+
+}
