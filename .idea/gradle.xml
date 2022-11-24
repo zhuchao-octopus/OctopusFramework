@@ -11,6 +11,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/WatchManService" />
             <option value="$PROJECT_DIR$/libDecodeCore" />
             <option value="$PROJECT_DIR$/libEventInterface" />
             <option value="$PROJECT_DIR$/libFileUitls" />
@@ -23,7 +24,6 @@
             <option value="$PROJECT_DIR$/libOpenDetection" />
             <option value="$PROJECT_DIR$/libPlayerUtils" />
             <option value="$PROJECT_DIR$/libSessionUtils" />
-            <option value="$PROJECT_DIR$/watchmanservice" />
           </set>
         </option>
       </GradleProjectSettings>
