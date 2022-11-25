@@ -69,6 +69,10 @@ public class TTask extends Thread {
         return isKeeping;
     }
 
+    public void setKeeping(boolean keeping) {
+        isKeeping = keeping;
+    }
+
     public boolean isBusy()
     {
         return this.isAlive() || this.isKeeping;
@@ -96,11 +100,14 @@ public class TTask extends Thread {
         properties.putInt(DataID.TASK_STATUS_INTERNAL_,DataID.TASK_STATUS_CAN_RESTART);
         start();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //任务只有在 !isAlive && !isKeeping &&
+    // properties.getInt(DataID.TASK_STATUS_INTERNAL_) != DataID.TASK_STATUS_FINISHED_STOP
+    //的情况下才能启动
     @Override
     public synchronized void start() {
         if (this.isAlive() || this.isKeeping) {
-            MMLog.log(TAG, "TTask already been started isAlive Keeping = " + isKeeping);
+            //MMLog.log(TAG, "TTask already been started isAlive Keeping = " + isKeeping+",tag = "+tTag);
             return;
         }
         if (properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED_STOP) {
@@ -108,7 +115,7 @@ public class TTask extends Thread {
             return;
         }
         try {
-            isKeeping = true;
+            //isKeeping = true;有选择的keep
             super.start();
         } catch (Exception e) {
             // e.printStackTrace();
@@ -121,7 +128,7 @@ public class TTask extends Thread {
     public void run() {
         super.run();
         if (invokeInterface == null) {
-            MMLog.log(TAG, "call TTask function null,nothing to do break TTask,tTag = " + tTag);
+            MMLog.log(TAG, "call TTask function null,nothing to do, break TTask,tTag = " + tTag);
             free();
             return;
         }
@@ -133,6 +140,8 @@ public class TTask extends Thread {
         //任务主题可以是个异步任务
         if(taskCallback!=null)
             taskCallback.onEventTask(this,DataID.TASK_STATUS_FINISHED_WAITING);//异步等待标记
+
+        //v1.8 去掉 宿主任务可以提前结束
         while (isKeeping) {//hold住线程，等待异步任务完成，调用者来结束。
             try {
                 Thread.sleep(1000);
@@ -140,5 +149,8 @@ public class TTask extends Thread {
                 MMLog.e(TAG, "run() " + e.getMessage());
             }
         }
+        //内部使用，当前任务已经完成，宿主任务终止
+        //（内部使用）任务结束、终止、停止不再需要运行，305
+        properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);
     }
 }

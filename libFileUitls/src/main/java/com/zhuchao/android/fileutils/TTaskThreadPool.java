@@ -30,7 +30,7 @@ public class TTaskThreadPool extends ObjectList {
         String tag = disguiseName(Name);
         if (existObject(tag)) //存在 对象
         {
-            MMLog.log(TAG, "PTask already exist in pool,tag = " + tag + ",total count = " + getCount());
+            //MMLog.log(TAG, "PTask already exists in pool,tag = " + tag + ",total count = " + getCount());
             return (PTask) getObject(tag);
         }
 
@@ -95,7 +95,7 @@ public class TTaskThreadPool extends ObjectList {
         @Override
         public void run() {
             if (existObject(tTag)) {
-                MMLog.log(TAG, "invoke TTask demon tTag = " + tTag);
+                //MMLog.log(TAG, "invoke TTask demon tTag = " + tTag);
                 super.run(); //执行父类 TTask
                 /*//最终结束任务，从任务池中清除掉
                 //TTaskThreadPool.delete(this.tTag);结束不清除，等待
@@ -104,7 +104,6 @@ public class TTaskThreadPool extends ObjectList {
                 //isKeeping == false 后到这里
                 setTaskCounter(getTaskCounter() + 1);
                 MMLog.log(TAG, "PTask complete successfully,tag = " + tTag + ",total:" + getCount() + ",complete:" + taskCounter);
-                properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);//内部使用，当前任务已经完成和线程停止
                 if (getTaskCounter() == getCount()) {
                     if (taskCallback != null) {
                         taskCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_ALL);//池中所有任务完成

@@ -54,6 +54,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
 
     private final static String Action_SystemShutdown1 = "action.uniwin.shutdown";
     private final static String Action_SystemReboot1 = "action.uniwin.reboot.receiver";
+
     private final static String Action_SystemAdjustTouchTscal = "org.zeroxlab.util.tscal";
     private final static String Action_SystemAdjustTouchCalibration = "org.zeroxlab.util.tscal.TSCalibration";
     private final static String Action_SystemResolution = "action.ktv.settings.receiver";
