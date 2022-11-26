@@ -357,7 +357,6 @@ public class TAppUtils {
             while ((n = inputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, n);
             }
-            //写完需要关闭流，否则会抛异常“files still open”
             inputStream.close();
             inputStream = null;
             outputStream.flush();
@@ -367,8 +366,7 @@ public class TAppUtils {
             Intent intent = new Intent();
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
             IntentSender intentSender = pendingIntent.getIntentSender();
-            //提交启动安装
-            session.commit(intentSender);
+            session.commit(intentSender);//提交启动安装
             //MMLog.log(TAG, "installed: "+apkPath);
             return true;
         } catch (Exception e) {
@@ -454,7 +452,7 @@ public class TAppUtils {
         return false;
     }
 
-    public static void killApplication(Context context, String packageName) {
+    public synchronized static void killApplication(Context context, String packageName) {
         ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         Method method = null;
         try {

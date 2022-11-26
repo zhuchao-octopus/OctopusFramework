@@ -180,7 +180,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         public void onReceive(Context context, Intent intent) {
             if (intent == null) return;
             final String action = intent.getAction();
-            MMLog.log(TAG, "User event intent.Action = " + action);
+            MMLog.i(TAG, "User event intent.Action = " + action);
 
             switch (action) {
                 case Action_TEST:
@@ -290,14 +290,15 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         killAssignPkg(packageName);
     }
 
-    private void killAssignPkg(String packageName) {
+    private synchronized void killAssignPkg(String packageName) {
         ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         Method method = null;
         try {
             method = Class.forName("android.app.ActivityManager").getMethod("forceStopPackage", String.class);
             method.invoke(mActivityManager, packageName);
         } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.e(TAG,e.toString());
         }
     }
 
@@ -315,7 +316,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         return TPlatform.GetCPUSerialCode();
     }
 
-    public void Action_SilentInstallAction(String filePath, boolean autostart) {
+    public synchronized void Action_SilentInstallAction(String filePath, boolean autostart) {
         boolean b = TAppUtils.installSilent(mContext, filePath);
         if (b)
             MMLog.log(TAG, "installSilent successfully! ->" + filePath);
@@ -328,7 +329,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     }
 
-    public void Action_SilentInstallAction1(String filePath, boolean autostart) {
+    public synchronized void Action_SilentInstallAction1(String filePath, boolean autostart) {
         TPlatform.ExecConsoleCommand("pm install -r " + filePath);
         if (autostart) {
             PackageInfo packageInfo = TAppUtils.getPackageInfo(mContext, filePath);
@@ -337,7 +338,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     }
 
-    public void Action_SilentInstallAction2(String filePath, boolean autostart) {
+    public synchronized void Action_SilentInstallAction2(String filePath, boolean autostart) {
         String ret = TPlatform.ExecShellCommand("pm", "install", "-f", filePath);
         MMLog.log(TAG, ret);
         if (autostart) {
@@ -347,7 +348,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     }
 
-    public void install(File apkFile) {
+    public synchronized static void install(File apkFile) {
         String cmd = "";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             cmd = "pm install -r -d " + apkFile.getAbsolutePath();
@@ -380,7 +381,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     }
 
-    public static boolean installApk(String apkPath) {
+    public synchronized static boolean installApk(String apkPath) {
         //String [ ] args = { "pm" , "install" , "-i" , "com.example", apkPath } ;//7.0用这个，参考的博客说要加 --user，但是我发现使用了反而不成功。
         String[] args = {"pm", "install", "-r", apkPath};
         ProcessBuilder processBuilder = new ProcessBuilder(args);
@@ -528,7 +529,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     }
 
-    private static boolean uninstall(String packageName) {
+    private synchronized static boolean uninstall(String packageName) {
         Process process = null;
         BufferedReader successResult = null;
         BufferedReader errorResult = null;
