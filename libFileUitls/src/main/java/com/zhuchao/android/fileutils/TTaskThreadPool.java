@@ -38,7 +38,7 @@ public class TTaskThreadPool extends ObjectList {
         pTask.setTName(Name);
         addItem(tag, pTask);
         if(Name.contains(DataID.SESSION_SOURCE_TEST_URL))
-            MMLog.log(TAG, "create PTask name = null,tag = " + tag);
+            MMLog.log(TAG, "create PTask name = SESSION_SOURCE_TEST_URL,tag = " + tag);
         else
             MMLog.log(TAG, "create PTask name = " + Name + ",tag = " + tag);
         //MMLog.log(TAG, "create PTask successfully in pool,tag = " + tag + ",total count:" + getCount()+"|"+taskCounter);

@@ -86,7 +86,7 @@ public class HttpUtils {
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_SUCCESS, RequestCallBack);
                     } else {
                         //MMLog.log(TAG, "Request failed from " + fromUrl);
-                        ResultCallBack(tag, fromUrl, "", 0, 0, "", DataID.TASK_STATUS_ERROR, RequestCallBack);
+                        ResultCallBack(tag, fromUrl, "", 0, 0, "response is null", DataID.TASK_STATUS_ERROR, RequestCallBack);
                     }
                 } catch (IOException e) {
                     //MMLog.e(TAG, "request().onResponse " + e.getMessage());
@@ -123,7 +123,7 @@ public class HttpUtils {
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_SUCCESS, RequestCallBack);
                     } else {
                         //MMLog.log(TAG, "Put Request failed from " + fromUrl);
-                        ResultCallBack(tag, fromUrl, "", 0, 0, "response = null", DataID.TASK_STATUS_ERROR, RequestCallBack);
+                        ResultCallBack(tag, fromUrl, "", 0, 0, "response is null", DataID.TASK_STATUS_ERROR, RequestCallBack);
                     }
                 } catch (IOException e) {
                     //MMLog.e(TAG, "request().onResponse " + e.getMessage());
@@ -155,7 +155,7 @@ public class HttpUtils {
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_SUCCESS, RequestCallBack);
                     } else {
                         //MMLog.log(TAG, "Request failed from " + fromUrl);
-                        ResultCallBack(tag, fromUrl, "", 0, 0, "response = null", DataID.TASK_STATUS_ERROR, RequestCallBack);
+                        ResultCallBack(tag, fromUrl, "", 0, 0, "response is null", DataID.TASK_STATUS_ERROR, RequestCallBack);
                     }
                 } catch (IOException e) {
                     //MMLog.e(TAG, "request().onResponse " + e.getMessage());
@@ -215,7 +215,7 @@ public class HttpUtils {
                                 ResultCallBack(tag, fromUrl, toUrl, downloadLengthSum, contentLength, "SUCCESS", DataID.TASK_STATUS_SUCCESS, RequestCallBack);
                             } else {
                                 //MMLog.log(TAG, "download failed from " + fromUrl);
-                                ResultCallBack(tag, fromUrl, toUrl, 0, 0, "", DataID.TASK_STATUS_ERROR, RequestCallBack);
+                                ResultCallBack(tag, fromUrl, toUrl, 0, 0, "response is null", DataID.TASK_STATUS_ERROR, RequestCallBack);
                             }
                         } catch (Exception e) {
                             //.e(TAG, "download() response " + e.getMessage());
@@ -258,7 +258,8 @@ public class HttpUtils {
             callBack.onEventHttpRequest(tag, fromUrl, lrl, progress, total, result, status);
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // java HttpURLConnection
     private static String Get(String fromUrl) {
         URL url = null;
         String result = null;

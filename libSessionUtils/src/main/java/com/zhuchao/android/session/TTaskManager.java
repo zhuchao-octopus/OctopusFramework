@@ -504,7 +504,7 @@ public class TTaskManager {
                     @Override
                     public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
                         if (status == DataID.TASK_STATUS_ERROR) {
-                            MMLog.e(TAG, "requestGet " + fromUrl + "/" + result);
+                            MMLog.e(TAG, "requestGet " + fromUrl + "," + result);
                         }
 
                         if (NotEmptyString(fromUrl) && fromUrl.contains("TestJSON")) {
@@ -551,7 +551,7 @@ public class TTaskManager {
                     @Override
                     public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
                         if (status == DataID.TASK_STATUS_ERROR) {
-                            MMLog.e(TAG, "requestPost " + result);
+                            MMLog.e(TAG, "requestPost " + fromUrl + "," + result);
                         }
                         if (tTask.getCallBackHandler() != null) {
                             Message msg = taskMainLooperHandler.obtainMessage();
@@ -591,13 +591,9 @@ public class TTaskManager {
                 HttpUtils.requestPut(tag, fromUrl, bodyJSOSParams, new HttpCallback() {
                     @Override
                     public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
-                        /*//if (status == DataID.TASK_STATUS_ERROR) {
-                            //MMLog.e(TAG, "test device connection put request " + result);
-                        //}
-                        if (status == DataID.TASK_STATUS_SUCCESS)
-                        {
-                            MMLog.i(TAG, "request ok --> " + result);
-                        }*/
+                        if (status == DataID.TASK_STATUS_ERROR) {
+                            MMLog.e(TAG, "requestPut " + fromUrl + "," + result);
+                        }
                         if (tTask.getCallBackHandler() != null) {//记得回调传递给task
                             Message msg = taskMainLooperHandler.obtainMessage();
                             msg.obj = tTask;

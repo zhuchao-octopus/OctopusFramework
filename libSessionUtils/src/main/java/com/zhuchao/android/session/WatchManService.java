@@ -80,21 +80,13 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public WatchManService() {
-        MMLog.i(TAG, "WatchManService()");
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        //throw new UnsupportedOperationException("Not yet implemented");
-        MMLog.d(TAG, "WatchManService on bind");
-        return null;
+        MMLog.i(TAG, "1:WatchManService()");
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        MMLog.d(TAG, "onCreate()");
+        //MMLog.d(TAG, "2:onCreate()");
         mContext = WatchManService.this;
         registerSunshineEventReceiver();
         tNetUtils = new TNetUtils(mContext);
@@ -105,14 +97,22 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        MMLog.d(TAG, "onStartCommand()");
+        //MMLog.d(TAG, "3:onStartCommand()");
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        // TODO: Return the communication channel to the service.
+        //throw new UnsupportedOperationException("Not yet implemented");
+        //MMLog.d(TAG, "WatchManService on bind");
+        return null;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        MMLog.d(TAG, "onDestroy()");
+        //MMLog.d(TAG, "onDestroy()");
         unRegisterSunshineEventReceiver();
     }
 

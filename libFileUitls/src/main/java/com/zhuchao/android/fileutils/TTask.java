@@ -135,7 +135,7 @@ public class TTask extends Thread {
         //android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         setPriority(MAX_PRIORITY);
         //召唤主题。。。
-        MMLog.log(TAG, "invoke TTask demon tTag = " + tTag);
+        MMLog.log(TAG, "TTask invokes demon, tTag = " + tTag);
         invokeInterface.CALLTODO(this.tTag);//asynchronous 异步任务体
         //任务主题可以是个异步任务
         if(taskCallback!=null)
