@@ -34,6 +34,7 @@ public class HttpUtils {
     private static final int TIMEOUT_IN_MILLIONS = 5000;
     private OkHttpClient okHttpClient;
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     private HttpUtils() {
         LoggingInterceptor loggingInterceptor = new LoggingInterceptor();
         //loggingInterceptor.setLevel(BuildConfig.DEBUG ? LoggingInterceptor.Level.BODY : LoggingInterceptor.Level.NONE);
@@ -41,16 +42,16 @@ public class HttpUtils {
         okHttpClient = new OkHttpClient().newBuilder().build();
     }
 
-    private static class Holder {
+    private OkHttpClient getOkHttpClient() {
+        return okHttpClient;
+    }
+
+    private static class Holder {//包装类
         private static HttpUtils httpUtils = new HttpUtils();
     }
 
     public static HttpUtils getInstance() {
         return Holder.httpUtils;
-    }
-
-    public OkHttpClient getOkHttpClient() {
-        return okHttpClient;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

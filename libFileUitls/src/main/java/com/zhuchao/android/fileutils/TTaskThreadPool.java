@@ -37,6 +37,7 @@ public class TTaskThreadPool extends ObjectList {
         PTask pTask = new PTask(tag);
         pTask.setTName(Name);
         addItem(tag, pTask);
+
         if(Name.contains(DataID.SESSION_SOURCE_TEST_URL))
             MMLog.log(TAG, "create PTask name = SESSION_SOURCE_TEST_URL,tag = " + tag);
         else

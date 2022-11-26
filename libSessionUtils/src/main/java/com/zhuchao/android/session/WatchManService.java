@@ -49,8 +49,10 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
     private final static String Action_SystemShutdown = "android.intent.action.ACTION_REQUEST_SHUTDOWN";
     private final static String Action_SystemReboot = "android.intent.action.ACTION_REQUEST_REBOOT";
     private final static String Action_SilentInstall = "android.intent.action.SILENT_INSTALL_PACKAGE";
-    private final static String Action_SilentUNInstall = "android.intent.action.SILENT_UNINSTALL_PACKAGE";
-    private final static String Action_SilentCLOSE = "android.intent.action.SILENT_CLOSE_PACKAGE";
+    private final static String Action_SilentUninstall = "android.intent.action.SILENT_UNINSTALL_PACKAGE";
+    private final static String Action_SilentClose = "android.intent.action.SILENT_CLOSE_PACKAGE";
+    private final static String Action_SetAudioOutputChannel = "android.intent.action.SET_AUDIO_OUTPUT_CHANNEL";
+    private final static String Action_SetAudioInputChannel = "android.intent.action.SET_AUDIO_INPUT_CHANNEL";
 
     private final static String Action_SystemShutdown1 = "action.uniwin.shutdown";
     private final static String Action_SystemReboot1 = "action.uniwin.reboot.receiver";
@@ -125,8 +127,10 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
             intentFilter.addAction(Action_SystemReboot);//重启
 
             intentFilter.addAction(Action_SilentInstall);//静默安装
-            intentFilter.addAction(Action_SilentUNInstall);//静默反安装
-            intentFilter.addAction(Action_SilentCLOSE);//静默结束
+            intentFilter.addAction(Action_SilentUninstall);//静默反安装
+            intentFilter.addAction(Action_SilentClose);//静默结束
+            intentFilter.addAction(Action_SetAudioOutputChannel);
+            intentFilter.addAction(Action_SetAudioInputChannel);
 
             intentFilter.addAction(Action_SystemShutdown1);//关机
             intentFilter.addAction(Action_SystemReboot1);//重启
@@ -176,7 +180,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         public void onReceive(Context context, Intent intent) {
             if (intent == null) return;
             final String action = intent.getAction();
-            MMLog.log(TAG, "SunshineEvent intent action = " + action);
+            MMLog.log(TAG, "SunshineEvent intent.Action = " + action);
 
             switch (action) {
                 case Action_TEST:
@@ -191,7 +195,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
                     }
                     break;
                 case Action_UPDATE_NET_STATUS:
-                    Action_UPDATE_NET_STATUS();
+                    Action_UpdateNetStatus();
                     break;
                 case Action_SystemShutdown:
                 case Action_SystemShutdown1:
@@ -228,16 +232,28 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
                         Action_SilentInstallAction2(apkFilePath, autostart);
                     }
                     break;
-                case Action_SilentUNInstall:
+                case Action_SilentUninstall:
                     if (intent.getExtras() != null) {
                         String packageName = intent.getExtras().getString("uninstall_pkg");
-                        Action_SilentUNInstallAction(packageName);
+                        Action_SilentUnInstallAction(packageName);
                     }
                     break;
-                case Action_SilentCLOSE:
+                case Action_SilentClose:
                     if (intent.getExtras() != null) {
                         String packageName = intent.getExtras().getString("close_pkg");
                         Action_SilentCLOSEAction(packageName);
+                    }
+                    break;
+                case Action_SetAudioOutputChannel:
+                    if (intent.getExtras() != null) {
+                        String channel = intent.getExtras().getString("channel");
+                        Action_SetAudioOutputChannel(channel);
+                    }
+                    break;
+                case Action_SetAudioInputChannel:
+                    if (intent.getExtras() != null) {
+                        String channel = intent.getExtras().getString("channel");
+                        Action_SetAudioInputChannel(channel);
                     }
                     break;
                 default:
@@ -247,14 +263,24 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     };
 
-    public void Action_UPDATE_NET_STATUS() {
+    public void Action_SetAudioOutputChannel(String channel) {
+        TPlatform.setAudioOutputPolicy("device.audio.output.policy", channel);
+        MMLog.log(TAG,"AudioOutputPolicy--->"+TPlatform.GetAudioOutputPolicy());
+    }
+
+    public void Action_SetAudioInputChannel(String channel) {
+        TPlatform.setAudioInputPolicy("device.audio.input.policy", channel);
+        MMLog.log(TAG,"AudioInputPolicy--->"+TPlatform.GetAudioInputPolicy());
+    }
+
+    public void Action_UpdateNetStatus() {
         if (tTaskManager != null && networkInformation != null) {
             String json = getRequestJSON(networkInformation.getMAC(), networkInformation.getInternetIP(), networkInformation.regionToString());
             tTaskManager.testRequest(json);
         }
     }
 
-    public void Action_SilentUNInstallAction(String packageName) {
+    public void Action_SilentUnInstallAction(String packageName) {
         //Uninstall(packageName);
         uninstallApk(packageName);
     }
@@ -567,7 +593,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
                 NotEmptyString(networkInformation.getInternetIP()) &&
                 NotEmptyString(networkInformation.getLocalIP())) {
             this.networkInformation = networkInformation;
-            Action_UPDATE_NET_STATUS();
+            Action_UpdateNetStatus();
         }
     }
 
