@@ -11,6 +11,7 @@ public class TTask extends Thread {
     protected TaskCallback taskCallback = null;
     protected ObjectList properties = null;
     protected boolean isKeeping = false;
+    protected int invokedCount = 0;
 
     public TTask(String tag, InvokeInterface invokeInterface) {
         this.tTag = tag;
@@ -73,8 +74,11 @@ public class TTask extends Thread {
         isKeeping = keeping;
     }
 
-    public boolean isBusy()
-    {
+    public int getInvokedCount() {
+        return invokedCount;
+    }
+
+    public boolean isBusy() {
         return this.isAlive() || this.isKeeping;
     }
 
@@ -89,17 +93,16 @@ public class TTask extends Thread {
         taskCallback = null;
     }
 
-    public void reset()
-    {
-        properties.putInt(DataID.TASK_STATUS_INTERNAL_,DataID.TASK_STATUS_CAN_RESTART);
+    public void reset() {
+        properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_CAN_RESTART);
         isKeeping = false;
     }
 
-    public synchronized void startAgain()
-    {
-        properties.putInt(DataID.TASK_STATUS_INTERNAL_,DataID.TASK_STATUS_CAN_RESTART);
+    public synchronized void startAgain() {
+        properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_CAN_RESTART);
         start();
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //任务只有在 !isAlive && !isKeeping &&
     // properties.getInt(DataID.TASK_STATUS_INTERNAL_) != DataID.TASK_STATUS_FINISHED_STOP
@@ -135,11 +138,12 @@ public class TTask extends Thread {
         //android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         setPriority(MAX_PRIORITY);
         //召唤主题。。。
-        MMLog.log(TAG, "TTask invokes demon, tTag = " + tTag);
+        invokedCount++;
+        MMLog.log(TAG, "TTask invokes demon, tTag = " + tTag+",invokedCount = "+invokedCount);
         invokeInterface.CALLTODO(this.tTag);//asynchronous 异步任务体
         //任务主题可以是个异步任务
-        if(taskCallback!=null)
-            taskCallback.onEventTask(this,DataID.TASK_STATUS_FINISHED_WAITING);//异步等待标记
+        if (taskCallback != null)
+            taskCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_WAITING);//异步等待标记
 
         //v1.8 去掉 宿主任务可以提前结束
         while (isKeeping) {//hold住线程，等待异步任务完成，调用者来结束。

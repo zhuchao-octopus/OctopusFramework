@@ -90,7 +90,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         super.onCreate();
         //MMLog.d(TAG, "2:onCreate()");
         mContext = WatchManService.this;
-        registerSunshineEventReceiver();
+        registerUserEventReceiver();
         tNetUtils = new TNetUtils(mContext);
         tTaskManager = new TTaskManager(mContext);
         tTaskManager.setReDownload(false);
@@ -115,10 +115,10 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
     public void onDestroy() {
         super.onDestroy();
         //MMLog.d(TAG, "onDestroy()");
-        unRegisterSunshineEventReceiver();
+        unRegisterUserEventReceiver();
     }
 
-    private void registerSunshineEventReceiver() {
+    private void registerUserEventReceiver() {
         try {
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(Action_TEST);//测试
@@ -142,16 +142,16 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
             intentFilter.addAction(Action_SilentInstall1);//静默安装
             intentFilter.addAction(Action_SilentInstall2);//静默安装
 
-            mContext.registerReceiver(SunshineEventReceiver, intentFilter);
-            MMLog.d(TAG, "register SunshineEventReceiver successfully !!!!!!");
+            mContext.registerReceiver(UserEventReceiver, intentFilter);
+            //MMLog.d(TAG, "Register user event listener successfully.");
         } catch (Exception e) {
-            MMLog.e(TAG, "register SunshineEventReceiver failed!" + e.toString());
+            MMLog.e(TAG, "Register user event listener failed!" + e.toString());
         }
     }
 
-    public void unRegisterSunshineEventReceiver() {
+    public void unRegisterUserEventReceiver() {
         try {
-            mContext.unregisterReceiver(SunshineEventReceiver);
+            mContext.unregisterReceiver(UserEventReceiver);
         } catch (Exception e) {
             //e.printStackTrace();
         }
@@ -175,12 +175,12 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         return jsonObj.toString();
     }
 
-    private final BroadcastReceiver SunshineEventReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver UserEventReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent == null) return;
             final String action = intent.getAction();
-            MMLog.log(TAG, "SunshineEvent intent.Action = " + action);
+            MMLog.log(TAG, "User event intent.Action = " + action);
 
             switch (action) {
                 case Action_TEST:

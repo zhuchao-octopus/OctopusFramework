@@ -10,6 +10,9 @@
     <permission  android:name="android.intent.action.SILENT_INSTALL_PACKAGE" />
     <permission  android:name="android.intent.action.SILENT_UNINSTALL_PACKAGE" />
     <permission  android:name="android.intent.action.SILENT_CLOSE_PACKAGE" />
+    <permission  android:name="android.intent.action.SET_AUDIO_OUTPUT_CHANNEL" />
+    <permission  android:name="android.intent.action.SET_AUDIO_INPUT_CHANNEL" />
+
     <permission  android:name="action.uniwin.shutdown" />
     <permission  android:name="action.uniwin.reboot.receiver" />
 
