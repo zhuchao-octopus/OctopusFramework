@@ -214,10 +214,7 @@ public class FileUtils {
         if (files.size() != 0) {
             for (int i = 0; i < files.size(); i++) {
                 File file = files.get(i);
-                /**  如果是文件则删除  如果都删除可不必判断  */
-                //if (file.isFile()) {
                 file.delete();
-                //}
             }
         }
         return true;

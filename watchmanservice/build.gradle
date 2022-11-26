@@ -10,8 +10,8 @@ android {
         applicationId "com.zhuchao.android.watchmanservice"
         minSdk 25
         targetSdk 32
-        versionCode 1
-        versionName "1.1"
+        versionCode 102
+        versionName "1.02"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

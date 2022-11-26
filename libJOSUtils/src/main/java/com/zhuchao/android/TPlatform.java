@@ -3,7 +3,9 @@ package com.zhuchao.android;
 import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
 import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
 
+import android.app.ActivityManager;
 import android.app.Instrumentation;
+import android.content.Context;
 
 import com.zhuchao.android.fileutils.MMLog;
 
@@ -14,6 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Locale;
 
 public class TPlatform {
@@ -349,4 +352,25 @@ public class TPlatform {
         }
         return cpuSerial;
     }
+
+    public static boolean isServiceRunning(Context mContext, String className) {
+        boolean isRunning = false;
+        ActivityManager activityManager = (ActivityManager)
+                mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> serviceList = activityManager.getRunningServices(30);
+        if (!(serviceList.size() > 0)) {
+            return false;
+        }
+        //Log.e("OnlineService：",className);
+        MMLog.i(TAG, "RunningService:" + className);
+        for (int i = 0; i < serviceList.size(); i++) {
+            //Log.e("serviceName：",serviceList.get(i).service.getClassName());
+            if (serviceList.get(i).service.getClassName().contains(className)) {
+                isRunning = true;
+                break;
+            }
+        }
+        return isRunning;
+    }
+
 }

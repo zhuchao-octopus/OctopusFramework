@@ -352,8 +352,7 @@ public class TAppUtils {
             outputStream = session.openWrite(apkName, 0, -1);
             inputStream = new FileInputStream(file);
             byte[] buffer = new byte[4096];
-            int n;
-            //读取apk文件写入session
+            int n; //读取apk文件写入session
             while ((n = inputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, n);
             }
@@ -362,8 +361,9 @@ public class TAppUtils {
             outputStream.flush();
             outputStream.close();
             outputStream = null;
-            //配置安装完成后发起的intent，通常是打开activity（这里我做了修改，修改为广播，intent并未设置目标参数，后面有需求在这里修改补充）
+
             Intent intent = new Intent();
+            intent.setAction("android.intent.action.SILENT_INSTALL_PACKAGE");
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
             IntentSender intentSender = pendingIntent.getIntentSender();
             session.commit(intentSender);//提交启动安装
@@ -390,7 +390,6 @@ public class TAppUtils {
                 }
             }
         }
-        //MMLog.log(TAG,"failed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         return false;
     }
 

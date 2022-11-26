@@ -1,6 +1,7 @@
 package com.zhuchao.android.session;
 
 import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
+import static com.zhuchao.android.fileutils.FileUtils.deleteFiles;
 
 import android.app.ActivityManager;
 import android.app.Service;
@@ -14,6 +15,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.zhuchao.android.TPlatform;
+import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.TAppUtils;
 import com.zhuchao.android.net.NetworkInformation;
@@ -43,7 +45,7 @@ import java.util.List;
 
 public class WatchManService extends Service implements TNetUtils.NetworkStatusListener {
     private static final String TAG = "WatchManService";
-    private static final String VERSION_NAME = "1.1";
+    private static final String VERSION_NAME = "1.02";
     private final static String Action_TEST = "android.intent.action.ACTION_WATCHMAN_HELLO";
     private final static String Action_UPDATE_NET_STATUS = "android.intent.action.UPDATE_NET_STATUS";
     private final static String Action_SystemShutdown = "android.intent.action.ACTION_REQUEST_SHUTDOWN";
@@ -95,6 +97,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         tTaskManager = new TTaskManager(mContext);
         tTaskManager.setReDownload(false);
         tNetUtils.registerNetStatusCallback(this);
+        TPlatform.setSystemProperty("WatchMan.Service","true");
     }
 
     @Override
@@ -327,6 +330,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
             if (packageInfo != null)
                 TAppUtils.startApp(mContext, packageInfo.packageName);
         }
+        FileUtils.deleteFile(filePath);//安装完成后删除
     }
 
     public synchronized void Action_SilentInstallAction1(String filePath, boolean autostart) {
