@@ -31,7 +31,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         MediaPlayer.OnVideoSizeChangedListener,
         SurfaceHolder.Callback {
 
-    private final String TAG = "MPlayer>>>>";
+    private final String TAG = "MPlayer";
     private MediaPlayer mediaPlayer = null;
     private ProgressThread progressThread = null;
     //private static int playStatus = PlaybackEvent.Status_NothingIdle;
@@ -783,8 +783,6 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
                 try {
                     CallbackProgress(0);
-                } catch (IllegalStateException e) {
-                    MMLog.e(TAG, "Progress polling " + e.toString() + " playStatus = " + playerStatusInfo.getEventType());
                 } catch (Exception e) {
                     MMLog.e(TAG, "Progress polling " + e.toString() + " playStatus = " + playerStatusInfo.getEventType());
                 }

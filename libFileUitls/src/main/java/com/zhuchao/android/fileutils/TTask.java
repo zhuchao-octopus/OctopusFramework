@@ -97,14 +97,16 @@ public class TTask extends Thread {
         taskCallback = null;
     }
 
-    public void reset() {
+    public TTask reset() {
         properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_CAN_RESTART);
         free();
+        return this;
     }
 
-    public void resetAll() {
+    public TTask resetAll() {
         properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_CAN_RESTART);
         freeFree();
+        return this;
     }
 
     public synchronized void startAgain() {
@@ -128,7 +130,7 @@ public class TTask extends Thread {
             return;
         }
         if (properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED_STOP) {
-            MMLog.log(TAG, "TTask already finished, no need to run again!");
+            MMLog.log(TAG, "TTask already finished, no need to run again! tag = "+getTTag());
             return;
         }
         try {

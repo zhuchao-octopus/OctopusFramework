@@ -13,12 +13,14 @@ import android.view.TextureView;
 
 import androidx.annotation.NonNull;
 
+import com.zhuchao.android.callbackevent.InvokeInterface;
 import com.zhuchao.android.callbackevent.PlaybackEvent;
 import com.zhuchao.android.callbackevent.PlayerCallback;
 import com.zhuchao.android.callbackevent.PlayerStatusInfo;
 import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.MediaFile;
+import com.zhuchao.android.fileutils.TTask;
 import com.zhuchao.android.persist.SPreference;
 import com.zhuchao.android.player.PlayControl;
 import com.zhuchao.android.player.PlayerManager;
@@ -57,6 +59,8 @@ public class OMedia implements Serializable, PlayerCallback {
     private AssetFileDescriptor assetFileDescriptor;
     private Uri uri;
     private boolean restorePlay = false;
+    private TTask tTask = new TTask("OMedia.default",null);
+
 
     public void callback(PlayerCallback mCallback) {
         setCallback(mCallback);
@@ -272,8 +276,19 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public void playPause() {
-        if (isPlayerReady())
-            getOPlayer().playPause();
+        if(tTask.isBusy()) {
+            MMLog.i(TAG,"call playPause(), but player is busy!!");
+            return;
+        }
+        tTask.invoke(new InvokeInterface() {
+            @Override
+            public void CALLTODO(String tag) {
+                if (isPlayerReady()) {
+                    MMLog.i(TAG, "call playPause() on " + getOPlayer().getTAG());
+                    getOPlayer().playPause();
+                }
+            }
+        }).startAgain();
     }
 
     public void pause() {

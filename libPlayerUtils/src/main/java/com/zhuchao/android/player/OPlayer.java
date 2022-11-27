@@ -28,7 +28,7 @@ import java.util.Map;
 
 
 public class OPlayer extends PlayControl {
-    private String TAG = "OPlayer>>>>";
+    private String TAG = "OPlayer";
     private MediaPlayer mMediaPlayer = null;
     private Media media = null;
     private LibVLC FLibVLC = null;
