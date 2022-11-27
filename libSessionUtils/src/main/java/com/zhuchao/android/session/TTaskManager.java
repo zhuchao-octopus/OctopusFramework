@@ -38,16 +38,17 @@ public class TTaskManager {
     private final String D_EXT_NAME = ".downloading.temp";
     private Context mContext = null;
     private TTaskThreadPool tTaskThreadPool = null;
-    private boolean stopContinue = true;
-    private boolean reDownload = true;
-
-    private Handler TimerTaskHandler = new Handler(Looper.myLooper()) {
+    //private boolean stopContinue = true;
+    //private boolean reDownload = true;
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    private final Handler TimerTaskHandler = new Handler(Looper.myLooper()) {
         public void handleMessage(Message msg) {
             TransactionProcessing(msg.obj);
         }
     };
 
-    private Handler taskMainLooperHandler = new Handler(Looper.getMainLooper()) {
+    private final Handler taskMainLooperHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             TransactionProcessing(msg.obj);
         }
@@ -75,12 +76,54 @@ public class TTaskManager {
         return tTaskThreadPool.getCount();
     }
 
+    public TTask getTaskByName(String tName) {
+        return tTaskThreadPool.getTaskByName(tName);
+    }
+
     public TTask getTaskByTag(String tag) {
         return tTaskThreadPool.getTaskByTag(tag);
     }
 
-    public TTask getTaskByName(String tag) {
-        return tTaskThreadPool.getTaskByName(tag);
+    public TTask getIdleTask()
+    {
+        Collection<Object> objects = tTaskThreadPool.getAllObject();
+        for (Object o : objects) {
+            TTask tTask = ((TTask) o);
+            if(!tTask.isBusy()) return tTask;
+        }
+        return null;
+    }
+
+    public TTask getNewTask(String tName) {
+        if (existsTask(tName))
+            return tTaskThreadPool.createTask(tName+System.currentTimeMillis());
+        else
+            return tTaskThreadPool.createTask(tName);
+    }
+
+    public TTask getAvailableTask(String tName) {
+        TTask tTask = getIdleTask();
+        if(tTask != null) {
+            tTask.resetAll();
+            return tTask;
+        }
+        else
+           return getNewTask(tName);
+    }
+
+    public TTask getSingleTaskFor(String tName) {
+        TTask tTask = getTaskByName(tName);
+        if(tTask == null) {
+            return tTaskThreadPool.createTask(tName);
+        }
+        return tTask;
+    }
+
+    public boolean existsTask(String tName) {
+        if (getTaskByName(tName) != null)
+            return true;
+        else
+            return false;
     }
 
     public void deleteTask(TTask tTask) {
@@ -636,13 +679,13 @@ public class TTaskManager {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //download task
-    public void setStopContinue(boolean stopContinue) {
-        this.stopContinue = stopContinue;
-    }
+    //public void setStopContinue(boolean stopContinue) {
+    //    this.stopContinue = stopContinue;
+    //}
 
-    public void setReDownload(boolean reDownload) {
-        this.reDownload = reDownload;
-    }
+    //public void setReDownload(boolean reDownload) {
+    //    this.reDownload = reDownload;
+    //}
 
     //toPath 必须是绝对路劲下的目录
     public TTask dl(final String fromUrl, final String toPath) {
@@ -657,13 +700,50 @@ public class TTaskManager {
         tTask.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {
-                download(tag, fromUrl, toPath);
+                download(tag, fromUrl, toPath, false, true);
             }
         });
         return tTask;
     }
 
-    private void download(String tag, String fromUrl, String toPath) {
+    public TTask dl(final String fromUrl, final String toPath, boolean reDownload) {
+        TTask tTask = tTaskThreadPool.createTask(fromUrl);
+        if (EmptyString(fromUrl)) {
+            tTask.free();//释放无效的任务
+            deleteTask(tTask);
+            return tTask;
+        }
+        tTask.getProperties().putString("fromUrl", fromUrl);
+        tTask.getProperties().putString("toPath", toPath);
+        tTask.invoke(new InvokeInterface() {
+            @Override
+            public void CALLTODO(String tag) {
+                download(tag, fromUrl, toPath, reDownload, true);
+            }
+        });
+        return tTask;
+    }
+
+    public TTask dl(final String fromUrl, final String toPath, boolean reDownload, boolean stopContinue) {
+        TTask tTask = tTaskThreadPool.createTask(fromUrl);
+        if (EmptyString(fromUrl)) {
+            tTask.free();//释放无效的任务
+            deleteTask(tTask);
+            return tTask;
+        }
+        tTask.getProperties().putString("fromUrl", fromUrl);
+        tTask.getProperties().putString("toPath", toPath);
+        tTask.invoke(new InvokeInterface() {
+            @Override
+            public void CALLTODO(String tag) {
+                download(tag, fromUrl, toPath, reDownload, stopContinue);
+            }
+        });
+        return tTask;
+    }
+
+    //关联线程池中的某个线程
+    private void download(String tag, String fromUrl, String toPath, boolean reDownload, boolean stopContinue) {
         MMLog.log(TAG, "download tTask.tag = " + tag);
         TTask tTask = tTaskThreadPool.getTaskByTag(tag);
         if (tTask == null) {
@@ -697,7 +777,7 @@ public class TTaskManager {
 
         tTask.getProperties().putString("downloadingPathFileName", downloadingPathFileName);
         tTask.getProperties().putString("localPathFileName", localPathFileName);
-        if (!this.reDownload) {
+        if (!reDownload) {
             if (FileUtils.existFile(localPathFileName)) {
                 MMLog.log(TAG, "download stop,file already exist --> " + localPathFileName);
                 tTask.free();
@@ -712,7 +792,7 @@ public class TTaskManager {
                 return;
             }
         }
-        if (!this.stopContinue) {//非断点续传模式下，删除之前的未下载完的临时文件,重新完成下载
+        if (!stopContinue) {//非断点续传模式下，删除之前的未下载完的临时文件,重新完成下载
             if (FileUtils.deleteFile(downloadingPathFileName)) {
                 MMLog.log(TAG, "download delete temp file successfully " + downloadingPathFileName);
             } else {
@@ -720,9 +800,8 @@ public class TTaskManager {
                 tTask.free();
                 return;
             }
-        }//
+        }
         MMLog.log(TAG, "download file from " + fromUrl + " to " + downloadingPathFileName);
-        //MMLog.log(TAG, "download file to " + downloadingPathFileName);
         try {
             HttpUtils.download(tag, fromUrl, downloadingPathFileName, new HttpCallback() {
 
@@ -734,8 +813,8 @@ public class TTaskManager {
                     switch (status) {
                         case DataID.TASK_STATUS_ERROR:
                             MMLog.log(TAG, "download file failed, from " + fromUrl);
-                            tTask.free();//下载完成，释放任务
-                            //break;
+                            tTask.free();//下载出错，释放任务
+                            //break;下载错误也执行下面代码
                         case DataID.TASK_STATUS_PROGRESSING:
                         case DataID.TASK_STATUS_SUCCESS:
                             if ((progress == total) && (progress > 0) && (status == DataID.TASK_STATUS_SUCCESS)) {
@@ -764,8 +843,7 @@ public class TTaskManager {
                 }
             });
         } catch (Exception e) {
-            //e.printStackTrace();
-            MMLog.e(TAG, "download() " + e.getMessage());
+            MMLog.e(TAG, "download() " + e.getMessage());//e.printStackTrace();
         }
     }
 }

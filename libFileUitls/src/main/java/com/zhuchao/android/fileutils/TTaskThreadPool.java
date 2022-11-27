@@ -22,12 +22,12 @@ public class TTaskThreadPool extends ObjectList {
         //pTaskList_Ok = new ArrayList<>();
     }
 
-    public PTask createTask(String Name) {
-        if (EmptyString(Name)) {
-            Name = "default";
-            MMLog.log(TAG, "only one default PTask name/tag ,name=" + Name);
+    public PTask createTask(String tName) {
+        if (EmptyString(tName)) {
+            tName = "default";
+            MMLog.log(TAG, "only one default PTask name/tag ,name=" + tName);
         }
-        String tag = disguiseName(Name);
+        String tag = disguiseName(tName);
         if (existObject(tag)) //存在 对象
         {
             //MMLog.log(TAG, "PTask already exists in pool,tag = " + tag + ",total count = " + getCount());
@@ -35,21 +35,33 @@ public class TTaskThreadPool extends ObjectList {
         }
 
         PTask pTask = new PTask(tag);
-        pTask.setTName(Name);
+        pTask.setTName(tName);
         addItem(tag, pTask);
 
-        if (Name.contains(DataID.SESSION_SOURCE_TEST_URL))
-            MMLog.log(TAG, "create PTask name = SESSION_SOURCE_TEST_URL,tag = " + tag);
+        if (tName.contains(DataID.SESSION_SOURCE_TEST_URL))
+            MMLog.log(TAG, "create PTask name = SESSION_SOURCE_TEST,tag = " + tag);
         else
-            MMLog.log(TAG, "create PTask name = " + Name + ",tag = " + tag);
+            MMLog.log(TAG, "create PTask name = " + tName + ",tag = " + tag);
         //MMLog.log(TAG, "create PTask successfully in pool,tag = " + tag + ",total count:" + getCount()+"|"+taskCounter);
         return pTask;
     }
 
-    public TTask getTaskByName(String Name) {
-        if (EmptyString(Name))
-            return (TTask) getObject(disguiseName("default"));
-        return (TTask) getObject(disguiseName(Name));
+    private String disguiseName(String tName) {
+        return md5(tName);
+    }
+
+    private int getTaskCounter() {
+        return taskCounter;
+    }
+
+    private void setTaskCounter(int taskCounter) {
+        this.taskCounter = taskCounter;
+    }
+
+    public TTask getTaskByName(String tName) {
+        if (EmptyString(tName))
+            return null;
+        return (TTask) getObject(disguiseName(tName));
     }
 
     public TTask getTaskByTag(String tag) {
@@ -59,24 +71,17 @@ public class TTaskThreadPool extends ObjectList {
 
     public void deleteTask(String tag) {
         delete(tag);
-        MMLog.log(TAG, "delete task tag = " + tag);
+        TTask tTask = getTaskByTag(tag);
+        if (tTask != null)
+            MMLog.log(TAG, "delete task tag = " + tag + ",invokedCount = " + tTask.invokedCount);
+        else
+            MMLog.log(TAG, "delete task tag = " + tag);
     }
 
     public void deleteTask(TTask tTask) {
+        if (tTask == null) return;
         delete(tTask.getTTag());
-        MMLog.log(TAG, "delete task tag = " + tTask.getTTag() + ",name = " + tTask.getTName());
-    }
-
-    private String disguiseName(String Name) {
-        return md5(Name);
-    }
-
-    private int getTaskCounter() {
-        return taskCounter;
-    }
-
-    private void setTaskCounter(int taskCounter) {
-        this.taskCounter = taskCounter;
+        MMLog.log(TAG, "delete task tag = " + tTask.getTTag() + ",invokedCount = " + tTask.invokedCount);
     }
 
     public void free() {

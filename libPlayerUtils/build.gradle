@@ -6,9 +6,9 @@ ext {
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libPlayerUtils'
     //def LIBVLC_AAR = 'libvlc-armv7-3.1.0.aar' //PUBLISH_VERSION = '1.1'
-    //PUBLISH_VERSION = '2.5'
+    //PUBLISH_VERSION = '2.5' //v2.5 stable
     //def LIBVLC_AAR = 'libvlc-all-3.5.0-eap8.aar' //PUBLISH_VERSION = '1.2'
-    PUBLISH_VERSION = '2.6'
+    PUBLISH_VERSION = '2.6' //v2.6 stable
 }
 
 afterEvaluate {

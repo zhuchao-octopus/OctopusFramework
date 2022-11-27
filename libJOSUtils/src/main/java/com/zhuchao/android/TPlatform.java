@@ -281,7 +281,7 @@ public class TPlatform {
 
     public static boolean ExecConsoleCommand(String cmd) {
         try {
-            MMLog.log(TAG, "exec command: " + cmd);
+            MMLog.log(TAG, "Exec console command: " + cmd);
             Runtime.getRuntime().exec(cmd);
             return true;
         } catch (Exception e) {

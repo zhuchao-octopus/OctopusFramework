@@ -363,7 +363,8 @@ public class TAppUtils {
             outputStream = null;
 
             Intent intent = new Intent();
-            intent.setAction("android.intent.action.SILENT_INSTALL_PACKAGE");
+            intent.setAction("android.intent.action.SILENT_INSTALL_PACKAGE_COMPLETE");
+            intent.putExtra("apkFilePath",apkPath);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
             IntentSender intentSender = pendingIntent.getIntentSender();
             session.commit(intentSender);//提交启动安装

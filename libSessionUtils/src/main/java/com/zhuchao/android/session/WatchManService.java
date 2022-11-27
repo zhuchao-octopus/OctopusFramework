@@ -1,7 +1,7 @@
 package com.zhuchao.android.session;
 
+import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
 import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
-import static com.zhuchao.android.fileutils.FileUtils.deleteFiles;
 
 import android.app.ActivityManager;
 import android.app.Service;
@@ -15,9 +15,11 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.zhuchao.android.TPlatform;
+import com.zhuchao.android.callbackevent.InvokeInterface;
 import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.TAppUtils;
+import com.zhuchao.android.fileutils.TTask;
 import com.zhuchao.android.net.NetworkInformation;
 import com.zhuchao.android.net.TNetUtils;
 
@@ -32,6 +34,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Locale;
 
 /*第一种方式：通过StartService启动Service
  通过startService启动后，service会一直无限期运行下去，只有外部调用了stopService()或stopSelf()方法时，该Service才会停止运行并销毁。
@@ -51,6 +54,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
     private final static String Action_SystemShutdown = "android.intent.action.ACTION_REQUEST_SHUTDOWN";
     private final static String Action_SystemReboot = "android.intent.action.ACTION_REQUEST_REBOOT";
     private final static String Action_SilentInstall = "android.intent.action.SILENT_INSTALL_PACKAGE";
+    private final static String Action_SilentInstallComplete = "android.intent.action.SILENT_INSTALL_PACKAGE_COMPLETE";
     private final static String Action_SilentUninstall = "android.intent.action.SILENT_UNINSTALL_PACKAGE";
     private final static String Action_SilentClose = "android.intent.action.SILENT_CLOSE_PACKAGE";
     private final static String Action_SetAudioOutputChannel = "android.intent.action.SET_AUDIO_OUTPUT_CHANNEL";
@@ -77,6 +81,8 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
     private String pModel;
     private String pBrand = "SunShine";
     private String pCustomer = "TianPu";
+    private boolean installedDeleteFile = false;
+    private boolean installedReboot = false;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +90,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public WatchManService() {
-        MMLog.i(TAG, "1:WatchManService()");
+        MMLog.i(TAG, "WatchManService starting...");//1 first call
     }
 
     @Override
@@ -95,9 +101,8 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         registerUserEventReceiver();
         tNetUtils = new TNetUtils(mContext);
         tTaskManager = new TTaskManager(mContext);
-        tTaskManager.setReDownload(false);
         tNetUtils.registerNetStatusCallback(this);
-        TPlatform.setSystemProperty("WatchMan.Service","true");
+        //TPlatform.SetSystemProperty("WatchMan.Service","true");//导致错误
     }
 
     @Override
@@ -144,6 +149,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
             intentFilter.addAction(Action_SystemDeviceUUID);//获取设备序列号
             intentFilter.addAction(Action_SilentInstall1);//静默安装
             intentFilter.addAction(Action_SilentInstall2);//静默安装
+            intentFilter.addAction(Action_SilentInstallComplete);//静默安装后删除文件
 
             mContext.registerReceiver(UserEventReceiver, intentFilter);
             //MMLog.d(TAG, "Register user event listener successfully.");
@@ -217,8 +223,22 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
                 case Action_SilentInstall:
                     if (intent.getExtras() != null) {
                         String apkFilePath = intent.getExtras().getString("apkFilePath");
-                        boolean autostart = intent.getExtras().getBoolean("autostart");
-                        Action_SilentInstallAction(apkFilePath, autostart);
+                        boolean autostart = intent.getExtras().getBoolean("autostart", false);
+                        installedDeleteFile = intent.getExtras().getBoolean("installedDeleteFile", false);
+                        installedReboot = intent.getExtras().getBoolean("installedReboot", false);
+
+                        TTask tTask = tTaskManager.getSingleTaskFor("Silent to install " + apkFilePath);
+                        if (tTask.isBusy()) {
+                            MMLog.d(TAG, "The tTask is on working! " + tTask.getTName());
+                            break;
+                        }
+                        tTask.invoke(new InvokeInterface() {
+                            @Override
+                            public void CALLTODO(String tag) {
+                                Action_SilentInstallAction(apkFilePath, autostart);
+                            }
+                        });
+                        tTask.start();
                     }
                     break;
                 case Action_SilentInstall1:
@@ -233,6 +253,12 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
                         String apkFilePath = intent.getExtras().getString("apkFilePath");
                         boolean autostart = intent.getExtras().getBoolean("autostart");
                         Action_SilentInstallAction2(apkFilePath, autostart);
+                    }
+                    break;
+                case Action_SilentInstallComplete:
+                    if (intent.getExtras() != null) {
+                        String apkFilePath = intent.getExtras().getString("apkFilePath");
+                        Action_SilentInstallComplete(apkFilePath);
                     }
                     break;
                 case Action_SilentUninstall:
@@ -266,14 +292,26 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     };
 
-    public void Action_SetAudioOutputChannel(String channel) {
-        TPlatform.setAudioOutputPolicy("device.audio.output.policy", channel);
-        MMLog.log(TAG,"AudioOutputPolicy--->"+TPlatform.GetAudioOutputPolicy());
+    private void Action_SilentInstallComplete(String apkFilePath) {
+        if (installedDeleteFile) {
+            boolean b = FileUtils.deleteFile(apkFilePath);
+            if (b)
+                MMLog.i(TAG, "delete file successfully! ---> " + apkFilePath);
+            else
+                MMLog.i(TAG, "delete file failed! ---> " + apkFilePath);
+        }
+        if (installedReboot)
+            Action_SystemReboot();
     }
 
-    public void Action_SetAudioInputChannel(String channel) {
+    private void Action_SetAudioOutputChannel(String channel) {
+        TPlatform.setAudioOutputPolicy("device.audio.output.policy", channel);
+        MMLog.log(TAG, "AudioOutputPolicy--->" + TPlatform.GetAudioOutputPolicy());
+    }
+
+    private void Action_SetAudioInputChannel(String channel) {
         TPlatform.setAudioInputPolicy("device.audio.input.policy", channel);
-        MMLog.log(TAG,"AudioInputPolicy--->"+TPlatform.GetAudioInputPolicy());
+        MMLog.log(TAG, "AudioInputPolicy--->" + TPlatform.GetAudioInputPolicy());
     }
 
     public void Action_UpdateNetStatus() {
@@ -283,12 +321,12 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     }
 
-    public void Action_SilentUnInstallAction(String packageName) {
+    private void Action_SilentUnInstallAction(String packageName) {
         //Uninstall(packageName);
         uninstallApk(packageName);
     }
 
-    public void Action_SilentCLOSEAction(String packageName) {
+    private void Action_SilentCLOSEAction(String packageName) {
         //killAppProcess(packageName);
         killAssignPkg(packageName);
     }
@@ -301,25 +339,36 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
             method.invoke(mActivityManager, packageName);
         } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
             //e.printStackTrace();
-            MMLog.e(TAG,e.toString());
+            MMLog.e(TAG, e.toString());
         }
     }
 
-    public void Action_SystemShutdown() {
+    private void Action_SystemShutdown() {
         //TPlatform.sendKeyCode(KeyEvent.KEYCODE_F9);
         //TPlatform.sendKeyEvent(KeyEvent.KEYCODE_F9);
         TPlatform.ExecConsoleCommand("reboot -p");
     }
 
-    public void Action_SystemReboot() {
+    private void Action_SystemReboot() {
         TPlatform.ExecConsoleCommand("reboot");
     }
 
-    public String Action_SystemGetDeviceUUID() {
+    private String Action_SystemGetDeviceUUID() {
         return TPlatform.GetCPUSerialCode();
     }
 
-    public synchronized void Action_SilentInstallAction(String filePath, boolean autostart) {
+    private synchronized void Action_SilentInstallAction(String filePath, boolean autostart) {
+        if (EmptyString(filePath)) {
+            return;
+        }
+        if (!FileUtils.existFile(filePath)) {
+            MMLog.log(TAG, "file does not exists! --->" + filePath);
+            return;
+        }
+        if (!filePath.toLowerCase(Locale.ROOT).endsWith(".apk")) {
+            MMLog.log(TAG, "file is not a valid apk file! --->" + filePath);
+            return;
+        }
         boolean b = TAppUtils.installSilent(mContext, filePath);
         if (b)
             MMLog.log(TAG, "installSilent successfully! ->" + filePath);
@@ -330,10 +379,9 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
             if (packageInfo != null)
                 TAppUtils.startApp(mContext, packageInfo.packageName);
         }
-        FileUtils.deleteFile(filePath);//安装完成后删除
     }
 
-    public synchronized void Action_SilentInstallAction1(String filePath, boolean autostart) {
+    private synchronized void Action_SilentInstallAction1(String filePath, boolean autostart) {
         TPlatform.ExecConsoleCommand("pm install -r " + filePath);
         if (autostart) {
             PackageInfo packageInfo = TAppUtils.getPackageInfo(mContext, filePath);
@@ -342,7 +390,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     }
 
-    public synchronized void Action_SilentInstallAction2(String filePath, boolean autostart) {
+    private synchronized void Action_SilentInstallAction2(String filePath, boolean autostart) {
         String ret = TPlatform.ExecShellCommand("pm", "install", "-f", filePath);
         MMLog.log(TAG, ret);
         if (autostart) {
@@ -352,7 +400,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     }
 
-    public synchronized static void install(File apkFile) {
+    private synchronized static void install(File apkFile) {
         String cmd = "";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             cmd = "pm install -r -d " + apkFile.getAbsolutePath();
@@ -385,7 +433,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     }
 
-    public synchronized static boolean installApk(String apkPath) {
+    private synchronized static boolean installApk(String apkPath) {
         //String [ ] args = { "pm" , "install" , "-i" , "com.example", apkPath } ;//7.0用这个，参考的博客说要加 --user，但是我发现使用了反而不成功。
         String[] args = {"pm", "install", "-r", apkPath};
         ProcessBuilder processBuilder = new ProcessBuilder(args);
@@ -426,7 +474,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         return false;
     }
 
-    public synchronized static void installApk(Context context, String apkPath) {
+    private synchronized static void installApk(Context context, String apkPath) {
         try {
             PackageInfo info = TAppUtils.getPackageInfo(context, apkPath);
             String[] args = {"pm", "install", "-i", info.packageName, "--user", "0", "-r", apkPath};
@@ -481,7 +529,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     }
 
-    public synchronized static void uninstallApk(String packageName) {
+    private synchronized static void uninstallApk(String packageName) {
         try {
             String[] args = {"pm", "uninstall", "-k", "--user", "0", packageName};
             ProcessBuilder processBuilder = new ProcessBuilder(args);
@@ -580,7 +628,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         return version;
     }
 
-    public void killAppProcess(String packageName) {
+    private void killAppProcess(String packageName) {
         //注意：不能先杀掉主进程，否则逻辑代码无法继续执行，需先杀掉相关进程最后杀掉主进程
         ActivityManager mActivityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> mList = mActivityManager.getRunningAppProcesses();

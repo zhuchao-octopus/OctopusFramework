@@ -29,6 +29,10 @@ public class TTask extends Thread {
     }
 
     public TTask invoke(InvokeInterface callFunction) {
+        if(isBusy()) {
+            MMLog.i(TAG, "this task is busy! tag = " + this.tTag);
+            return this;
+        }
         invokeInterface = callFunction;
         return this;
     }
@@ -95,11 +99,21 @@ public class TTask extends Thread {
 
     public void reset() {
         properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_CAN_RESTART);
-        isKeeping = false;
+        free();
+    }
+
+    public void resetAll() {
+        properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_CAN_RESTART);
+        freeFree();
     }
 
     public synchronized void startAgain() {
         properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_CAN_RESTART);
+        start();
+    }
+
+    public synchronized void startWait() {
+        isKeeping =true;
         start();
     }
 
