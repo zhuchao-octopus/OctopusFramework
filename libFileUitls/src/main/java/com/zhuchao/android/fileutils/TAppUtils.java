@@ -414,9 +414,10 @@ public class TAppUtils {
                 while ((line = errorResult.readLine()) != null) {
                     errorMsg.append(line);
                 }
-                MMLog.i(TAG, "uninstall " + successMsg.toString());
-                MMLog.i(TAG, "uninstall " + errorMsg.toString());
-                if (successMsg.toString().contains("Success")) {
+                if(!EmptyString(errorMsg.toString()))
+                    MMLog.i(TAG, "uninstall " + errorMsg.toString());
+                if (!EmptyString(successMsg.toString()) && successMsg.toString().contains("Success")) {
+                    MMLog.i(TAG, "uninstall " + successMsg.toString());
                     return true;
                 } else {
                     return false;
