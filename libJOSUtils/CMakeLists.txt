@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 3.4.1)
 # automatically packages shared libraries with your APK.
 
 add_library( # Specifies the name of the library.
-        serial_port
+        uart
 
         # Sets the library as a shared library.
         SHARED
@@ -31,7 +31,7 @@ find_library( # Sets the name of the path variable.
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-        serial_port
+        uart
 
         # Links the target library to the log library
         # included in the NDK.

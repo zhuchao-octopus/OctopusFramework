@@ -17,15 +17,21 @@ public class BootBroadCastReceiver extends BroadcastReceiver {
         // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
         //throw new UnsupportedOperationException("Not yet implemented");
-        MMLog.d(TAG,intent.getAction().toString());
-        if (intent.getAction().equals(ACTION)) {
-            Intent intent1 = new Intent(context, WatchManService.class);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                //android8.0以上通过startForegroundService启动service
-                context.startForegroundService(intent1);
-            } else {
-                context.startService(intent1);
+        try {
+            MMLog.d(TAG,intent.getAction().toString());
+            if (intent.getAction().equals(ACTION)) {
+                Intent intent1 = new Intent(context, WatchManService.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    //android8.0以上通过startForegroundService启动service
+                    context.startForegroundService(intent1);
+                } else {
+                    context.startService(intent1);
+                    //context.startActivityAsUser();
+
+                }
             }
+        } catch (Exception e) {
+            //e.printStackTrace();
         }
 
     }

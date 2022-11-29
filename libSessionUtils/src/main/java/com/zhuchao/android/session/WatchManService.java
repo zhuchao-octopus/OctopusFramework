@@ -20,6 +20,7 @@ import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.TAppUtils;
 import com.zhuchao.android.fileutils.TTask;
+import com.zhuchao.android.fileutils.ThreadUtils;
 import com.zhuchao.android.net.NetworkInformation;
 import com.zhuchao.android.net.TNetUtils;
 
@@ -33,7 +34,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Locale;
 
 /*第一种方式：通过StartService启动Service
@@ -48,9 +48,10 @@ import java.util.Locale;
 
 public class WatchManService extends Service implements TNetUtils.NetworkStatusListener {
     private static final String TAG = "WatchManService";
-    private static final String VERSION_NAME = "1.02";
-    private final static String Action_TEST = "android.intent.action.ACTION_WATCHMAN_HELLO";
+    private final static String Action_HELLO = "android.intent.action.ACTION_WATCHMAN_HELLO";
     private final static String Action_UPDATE_NET_STATUS = "android.intent.action.UPDATE_NET_STATUS";
+    private final static String Action_GET_RUNNING_TASK = "android.intent.action.GET_RUNNING_TASK";
+    private final static String Action_WATCHMAN_SWITCH_ONOFF = "android.intent.action.WATCHMAN_SWITCH_ONOFF";
     private final static String Action_SystemShutdown = "android.intent.action.ACTION_REQUEST_SHUTDOWN";
     private final static String Action_SystemReboot = "android.intent.action.ACTION_REQUEST_REBOOT";
     private final static String Action_SilentInstall = "android.intent.action.SILENT_INSTALL_PACKAGE";
@@ -83,6 +84,8 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
     private String pCustomer = "TianPu";
     private boolean installedDeleteFile = false;
     private boolean installedReboot = false;
+    private boolean watchManSwitchOnOff = true;
+    private String VERSION_NAME = "0.01";
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +93,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public WatchManService() {
-        MMLog.i(TAG, "WatchManService starting...");//1 first call
+        //MMLog.i(TAG, "WatchManService starting...");//1 first call
     }
 
     @Override
@@ -98,11 +101,23 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         super.onCreate();
         //MMLog.d(TAG, "2:onCreate()");
         mContext = WatchManService.this;
-        registerUserEventReceiver();
-        tNetUtils = new TNetUtils(mContext);
-        tTaskManager = new TTaskManager(mContext);
-        tNetUtils.registerNetStatusCallback(this);
-        //TPlatform.SetSystemProperty("WatchMan.Service","true");//导致错误
+        ThreadUtils.runThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    VERSION_NAME = TAppUtils.getAppVersionName(WatchManService.this, WatchManService.this.getPackageName());
+                    tTaskManager = new TTaskManager(mContext);
+                    tNetUtils = new TNetUtils(mContext);
+                    tNetUtils.registerNetStatusCallback(WatchManService.this);
+                    registerUserEventReceiver();
+                    MMLog.i(TAG, "WatchManService version:"+ VERSION_NAME +" "+getFWVersionName()+" starting...");//2 first call
+                    //TPlatform.SetSystemProperty("WatchMan.Service","true");//导致错误
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                    MMLog.e(TAG, e.getMessage());
+                }
+            }
+        });
     }
 
     @Override
@@ -129,8 +144,11 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
     private void registerUserEventReceiver() {
         try {
             IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(Action_TEST);//测试
+            intentFilter.addAction(Action_HELLO);//测试
             intentFilter.addAction(Action_UPDATE_NET_STATUS);//测试
+            intentFilter.addAction(Action_GET_RUNNING_TASK);
+            intentFilter.addAction(Action_WATCHMAN_SWITCH_ONOFF);
+
             intentFilter.addAction(Action_SystemShutdown);//关机
             intentFilter.addAction(Action_SystemReboot);//重启
 
@@ -166,36 +184,17 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     }
 
-    private String getRequestJSON(String mac, String ip, String region) {
-        JSONObject jsonObj = new JSONObject();
-        try {
-            jsonObj.put("name", pName);
-            jsonObj.put("mac", mac);
-            jsonObj.put("ip", ip);
-            jsonObj.put("region", region);
-            jsonObj.put("brand", pBrand);
-            jsonObj.put("customer", pCustomer);
-            jsonObj.put("appVersion", VERSION_NAME);
-            jsonObj.put("fwVersion", getFWVersionName());
-        } catch (JSONException e) {
-            //e.printStackTrace();
-        }
-        //MMLog.d(TAG,"getRequestJSON = "+jsonObj.toString());
-        return jsonObj.toString();
-    }
-
     private final BroadcastReceiver UserEventReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent == null) return;
             final String action = intent.getAction();
             MMLog.i(TAG, "User event intent.Action = " + action);
-
             switch (action) {
-                case Action_TEST:
+                case Action_HELLO:
                     MMLog.log(TAG, "Hello it is ready! version:" + VERSION_NAME);
                     if (networkInformation != null)
-                        MMLog.d(TAG, "Host:" + networkInformation.toString());
+                        MMLog.d(TAG, "HOST:" + networkInformation.toString());
                     if (intent.getExtras() != null) {
                         pName = intent.getExtras().getString("pName", "A40I");
                         pModel = intent.getExtras().getString("pModel", "OCTOPUS");
@@ -206,6 +205,20 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
                 case Action_UPDATE_NET_STATUS:
                     Action_UpdateNetStatus();
                     break;
+                case Action_GET_RUNNING_TASK:
+                    Action_GETRUNNINGTASK();
+                    break;
+                case Action_WATCHMAN_SWITCH_ONOFF:
+                    //Action_WATCHMAN_SWITCH_ONOFF();
+                    watchManSwitchOnOff = !watchManSwitchOnOff;
+                    MMLog.i(TAG, "watchManSwitchOnOff = " + watchManSwitchOnOff);
+                    break;
+            }
+            if (!watchManSwitchOnOff) return;
+            ////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            switch (action) {
                 case Action_SystemShutdown:
                 case Action_SystemShutdown1:
                     Action_SystemShutdown();
@@ -292,6 +305,21 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     };
 
+    private void Action_GETRUNNINGTASK() {
+        TAppUtils.getRunningProcess(mContext).print();
+    }
+
+    private void Action_WATCHMANSWITCHONOFF() {
+
+    }
+
+    public void Action_UpdateNetStatus() {
+        if (tTaskManager != null && networkInformation != null) {
+            String json = getRequestJSON(networkInformation.getMAC(), networkInformation.getInternetIP(), networkInformation.regionToString());
+            tTaskManager.testRequest(json);
+        }
+    }
+
     private void Action_SilentInstallComplete(String apkFilePath) {
         if (installedDeleteFile) {
             boolean b = FileUtils.deleteFile(apkFilePath);
@@ -314,21 +342,15 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         MMLog.log(TAG, "AudioInputPolicy--->" + TPlatform.GetAudioInputPolicy());
     }
 
-    public void Action_UpdateNetStatus() {
-        if (tTaskManager != null && networkInformation != null) {
-            String json = getRequestJSON(networkInformation.getMAC(), networkInformation.getInternetIP(), networkInformation.regionToString());
-            tTaskManager.testRequest(json);
-        }
-    }
-
     private void Action_SilentUnInstallAction(String packageName) {
         //Uninstall(packageName);
-        uninstallApk(packageName);
+        TAppUtils.uninstallApk(packageName);
     }
 
     private void Action_SilentCLOSEAction(String packageName) {
         //killAppProcess(packageName);
-        killAssignPkg(packageName);
+        //killAssignPkg(packageName);
+        TAppUtils.killApplication(mContext,packageName);
     }
 
     private synchronized void killAssignPkg(String packageName) {
@@ -400,6 +422,8 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     private synchronized static void install(File apkFile) {
         String cmd = "";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
@@ -529,58 +553,6 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         }
     }
 
-    private synchronized static void uninstallApk(String packageName) {
-        try {
-            String[] args = {"pm", "uninstall", "-k", "--user", "0", packageName};
-            ProcessBuilder processBuilder = new ProcessBuilder(args);
-            Process process = null;
-            BufferedReader successResult = null;
-            BufferedReader errorResult = null;
-            StringBuilder successMsg = new StringBuilder();
-            StringBuilder errorMsg = new StringBuilder();
-            try {
-                process = processBuilder.start();
-                successResult = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                String line;
-                while ((line = successResult.readLine()) != null) {
-                    successMsg.append(line);
-                }
-                while ((line = errorResult.readLine()) != null) {
-                    errorMsg.append(line);
-                }
-                MMLog.i(TAG, "uninstall success_msg " + successMsg.toString());
-                MMLog.i(TAG, "uninstall error_msg " + errorMsg.toString());
-            } catch (Exception e) {
-                MMLog.e(TAG, e.toString());
-            } finally {
-                try {
-                    if (successResult != null) {
-                        successResult.close();
-                    }
-                } catch (IOException e) {
-                    MMLog.e(TAG, e.toString());
-                }
-                try {
-                    if (errorResult != null) {
-                        errorResult.close();
-                    }
-                } catch (IOException e) {
-                    MMLog.e(TAG, e.toString());
-                }
-                try {
-                    if (process != null) {
-                        process.destroy();
-                    }
-                } catch (Exception e) {
-                    MMLog.e(TAG, e.toString());
-                }
-            }
-        } catch (Exception e) {
-            MMLog.e(TAG, e.toString());
-        }
-    }
-
     private synchronized static boolean uninstall(String packageName) {
         Process process = null;
         BufferedReader successResult = null;
@@ -628,16 +600,22 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         return version;
     }
 
-    private void killAppProcess(String packageName) {
-        //注意：不能先杀掉主进程，否则逻辑代码无法继续执行，需先杀掉相关进程最后杀掉主进程
-        ActivityManager mActivityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningAppProcessInfo> mList = mActivityManager.getRunningAppProcesses();
-        for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : mList) {
-            //if(runningAppProcessInfo.processName)
-            MMLog.log(TAG, runningAppProcessInfo.processName);
+    private String getRequestJSON(String mac, String ip, String region) {
+        JSONObject jsonObj = new JSONObject();
+        try {
+            jsonObj.put("name", pName);
+            jsonObj.put("mac", mac);
+            jsonObj.put("ip", ip);
+            jsonObj.put("region", region);
+            jsonObj.put("brand", pBrand);
+            jsonObj.put("customer", pCustomer);
+            jsonObj.put("appVersion", VERSION_NAME);
+            jsonObj.put("fwVersion", getFWVersionName());
+        } catch (JSONException e) {
+            //e.printStackTrace();
         }
-        //android.os.Process.killProcess(android.os.Process.myPid());
-        //System.exit(0);
+        //MMLog.d(TAG,"getRequestJSON = "+jsonObj.toString());
+        return jsonObj.toString();
     }
 
     @Override

@@ -163,7 +163,7 @@ public final class SerialPort {
     }
 
     static {
-        System.loadLibrary("serial_port");
+        System.loadLibrary("uart");
     }
 
     public static Builder newBuilder(File device, int baudrate) {

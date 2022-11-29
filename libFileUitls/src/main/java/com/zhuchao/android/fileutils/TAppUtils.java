@@ -206,7 +206,7 @@ public class TAppUtils {
         else return false;
     }
 
-    public static String getVersionName(Context context, String packageName) {
+    public static String getAppVersionName(Context context, String packageName) {
         if (EmptyString(packageName)) return "";
         try {
             PackageManager packageManager = context.getPackageManager();
@@ -459,9 +459,31 @@ public class TAppUtils {
         try {
             method = Class.forName("android.app.ActivityManager").getMethod("forceStopPackage", String.class);
             method.invoke(mActivityManager, packageName);
+            MMLog.i(TAG,"Kill application: "+packageName);
         } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
             MMLog.log(TAG,e.toString());//e.printStackTrace();
         }
+    }
+
+    public static ObjectArray getRunningProcess(Context context) {
+        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> mList = mActivityManager.getRunningAppProcesses();
+        ObjectArray objectArray = new ObjectArray();
+        //ArrayList<Integer> arrayList = new ArrayList<>();
+        for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : mList) {
+            objectArray.add(runningAppProcessInfo.processName);
+        }
+        return objectArray;
+    }
+
+    public static boolean isProcessRunning(Context context,String PackageName) {
+        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> mList = mActivityManager.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : mList) {
+            if(runningAppProcessInfo.processName.equals(PackageName))
+                return true;
+        }
+        return false;
     }
 
     public static boolean isForegroundApp(Context context) {
@@ -553,7 +575,8 @@ public class TAppUtils {
         return null;
     }
 
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public static class AppInfo {
         private ApplicationInfo applicationInfo;
         private String packageName;

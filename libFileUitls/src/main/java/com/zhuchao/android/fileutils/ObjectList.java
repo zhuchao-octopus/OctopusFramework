@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
+//内部以链表作为底层实现的集合在执行插入，删除操作时有较好的性能
 public class ObjectList {
     private final String TAG = "ObjectList";
     private HashMap<String, Object> FHashMap;

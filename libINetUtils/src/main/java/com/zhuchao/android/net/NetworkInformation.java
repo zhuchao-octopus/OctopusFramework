@@ -139,17 +139,21 @@ public class NetworkInformation {
         str += ",(" + lon + " " + lat + ")";
         return str;
     }
+
     public String regionToString() {
         String str = internetIP;
         str += "," + country;
-        str += "," + countryCode;
-        str += "," + region;
+        //str += "," + countryCode;
+        //str += "," + region;
         str += "," + regionName;
-        //str += "," + timezone;Asia/Shanghai
-        str += "," + city;
-        str += "," + organization;
+        str += "," + timezone;//Asia/Shanghai
+        str += "," + city;//当前城市
+        str += "," + organization;//什么网络
         str += "," + isp;
         str += "," + lon + " " + lat;
-        return str;
+        if (str.length() > 99)
+            return str.substring(0, 99);
+        else
+            return str;
     }
 }
