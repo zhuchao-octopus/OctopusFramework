@@ -1,4 +1,4 @@
-package com.zhuchao.android.callbackevent;
+package com.zhuchao.android.eventinterface;
 
 public class PlaybackEvent {
     public static final int MediaChanged = 256;

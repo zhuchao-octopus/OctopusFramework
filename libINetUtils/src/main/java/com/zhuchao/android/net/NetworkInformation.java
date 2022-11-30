@@ -1,5 +1,15 @@
 package com.zhuchao.android.net;
 
+import static com.zhuchao.android.net.TNetUtils.TAG;
+
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.zhuchao.android.fileutils.MMLog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import com.google.gson.Gson;
+
 public class NetworkInformation {
     boolean isAvailable;
     boolean isConnected;
@@ -151,9 +161,43 @@ public class NetworkInformation {
         str += "," + organization;//什么网络
         str += "," + isp;
         str += "," + lon + " " + lat;
-        if (str.length() > 99)
-            return str.substring(0, 99);
-        else
-            return str;
+        //if (str.length() > 99)
+        //   return str.substring(0, 99);
+        //else
+        return str;
     }
+
+    public String regionToJson()
+    {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("internetIP",internetIP);
+            jsonObject.put("country",country);
+            jsonObject.put("regionName",regionName);
+            jsonObject.put("timezone",timezone);
+            jsonObject.put("city",city);
+            jsonObject.put("organization",organization);
+            jsonObject.put("isp",isp);
+            jsonObject.put("lon",lon);
+            jsonObject.put("lat",lat);
+        } catch (JSONException e) {
+            //e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }
+
+    public String toJson()
+    {
+        //JSONObject jsonObject = new JSONObject();
+        //jsonObject.put()
+        try {
+            Gson gson = new GsonBuilder().serializeNulls().disableHtmlEscaping().create();
+            return gson.toJson(this);
+        } catch (JsonSyntaxException e) {
+            //e.printStackTrace();
+            MMLog.e(TAG,e.getMessage());
+        }
+        return "null";
+    }
+
 }

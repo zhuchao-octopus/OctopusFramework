@@ -12,10 +12,10 @@ import android.os.Message;
 
 import androidx.annotation.RequiresApi;
 
-import com.zhuchao.android.callbackevent.HttpCallback;
-import com.zhuchao.android.callbackevent.InvokeInterface;
-import com.zhuchao.android.callbackevent.NormalCallback;
-import com.zhuchao.android.callbackevent.TaskCallback;
+import com.zhuchao.android.eventinterface.HttpCallback;
+import com.zhuchao.android.eventinterface.InvokeInterface;
+import com.zhuchao.android.eventinterface.NormalCallback;
+import com.zhuchao.android.eventinterface.TaskCallback;
 import com.zhuchao.android.fileutils.DataID;
 import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.FilesFinger;
@@ -662,8 +662,6 @@ public class TTaskManager {
     }
 
     public void testRequest(String jsonStr) {
-        //String fromUrl = DataID.SESSION_SOURCE_TEST_URL;
-        //MMLog.i(TAG,"testRequest:"+jsonStr);
         requestPut(DataID.SESSION_SOURCE_TEST_URL, jsonStr).callbackHandler(new TaskCallback() {
             @Override
             public void onEventTask(Object obj, int status) {
@@ -671,8 +669,9 @@ public class TTaskManager {
                     //deleteTask((TTask)obj);
                     ((TTask) obj).reset();
                 }
-                //MMLog.i(TAG, status + "," + ((TTask) obj).getProperties().getString("fromUrl"));
-                //MMLog.i(TAG, status + "," + ((TTask) obj).getProperties().getString("result", "null"));
+                //MMLog.i(TAG, fromUrl + "," + ((TTask) obj).getProperties().getString("fromUrl")+jsonStr);
+                //MMLog.i(TAG, status + "," + ((TTask) obj).getProperties().getString("status"));
+                //MMLog.i(TAG, result + "," + ((TTask) obj).getProperties().getString("result", "null"));
             }
         }).start();
     }

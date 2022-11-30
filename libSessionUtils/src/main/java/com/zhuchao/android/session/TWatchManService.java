@@ -15,7 +15,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.zhuchao.android.TPlatform;
-import com.zhuchao.android.callbackevent.InvokeInterface;
+import com.zhuchao.android.eventinterface.InvokeInterface;
 import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.TAppUtils;
@@ -39,15 +39,16 @@ import java.util.Locale;
 /*第一种方式：通过StartService启动Service
  通过startService启动后，service会一直无限期运行下去，只有外部调用了stopService()或stopSelf()方法时，该Service才会停止运行并销毁。
  要创建一个这样的Service，你需要让该类继承Service类，然后重写以下方法：
- onCreate()1.如果service没被创建过，调用startService()后会执行onCreate()回调；2.如果service已处于运行中，调用startService()不会执行onCreate()方法。也就是说，onCreate()只会在第一次创建service时候调用，多次执行startService()不会重复调用onCreate()，此方法适合完成一些初始化工作。
- onStartCommand()如果多次执行了Context的startService()方法，那么Service的onStartCommand()方法也会相应的多次调用。onStartCommand()方法很重要，我们在该方法中根据传入的Intent参数进行实际的操作，比如会在此处创建一个线程用于下载数据或播放音乐等。
+ onCreate()
+ 1.如果service没被创建过，调用startService()后会执行onCreate()回调；
+ 2.如果service已处于运行中，调用startService()不会执行onCreate()方法,多次执行startService()不会重复调用onCreate().
+ onStartCommand()如果多次执行了Context的startService()方法，那么Service的onStartCommand()方法也会相应的多次调用。
  onBind()Service中的onBind()方法是抽象方法，Service类本身就是抽象类，所以onBind()方法是必须重写的，即使我们用不到。
  onDestory()在销毁的时候会执行Service该方法。
- 这几个方法都是回调方法，且在主线程中执行，由android操作系统在合适的时机调用
  */
 
-public class WatchManService extends Service implements TNetUtils.NetworkStatusListener {
-    private static final String TAG = "WatchManService";
+public class TWatchManService extends Service implements TNetUtils.NetworkStatusListener {
+    private static final String TAG = "TWatchManService";
     private final static String Action_HELLO = "android.intent.action.ACTION_WATCHMAN_HELLO";
     private final static String Action_UPDATE_NET_STATUS = "android.intent.action.UPDATE_NET_STATUS";
     private final static String Action_GET_RUNNING_TASK = "android.intent.action.GET_RUNNING_TASK";
@@ -73,14 +74,14 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
     private final static String Action_SilentInstall1 = "android.intent.action.SILENT_INSTALL_PACKAGE1";
     private final static String Action_SilentInstall2 = "android.intent.action.SILENT_INSTALL_PACKAGE2";
 
-    private Context mContext = null;
+    //private Context mContext = null;
     private TNetUtils tNetUtils = null;
     private TTaskManager tTaskManager = null;
     private NetworkInformation networkInformation = null;
 
     private String pName = "A40I";
-    private String pModel;
-    private String pBrand = "SunShine";
+    private String pModel= "A40I";
+    private String pBrand = "TianPu";
     private String pCustomer = "TianPu";
     private boolean installedDeleteFile = false;
     private boolean installedReboot = false;
@@ -92,23 +93,17 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public WatchManService() {
-        //MMLog.i(TAG, "WatchManService starting...");//1 first call
-    }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        //MMLog.d(TAG, "2:onCreate()");
-        mContext = WatchManService.this;
+    public void start()
+    {
         ThreadUtils.runThread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    VERSION_NAME = TAppUtils.getAppVersionName(WatchManService.this, WatchManService.this.getPackageName());
-                    tTaskManager = new TTaskManager(mContext);
-                    tNetUtils = new TNetUtils(mContext);
-                    tNetUtils.registerNetStatusCallback(WatchManService.this);
+                    VERSION_NAME = TAppUtils.getAppVersionName(TWatchManService.this, TWatchManService.this.getPackageName());
+                    tTaskManager = new TTaskManager(TWatchManService.this);
+                    tNetUtils = new TNetUtils(TWatchManService.this);
+                    tNetUtils.registerNetStatusCallback(TWatchManService.this);
                     registerUserEventReceiver();
                     MMLog.i(TAG, "WatchManService version:"+ VERSION_NAME +" "+getFWVersionName()+" starting...");//2 first call
                     //TPlatform.SetSystemProperty("WatchMan.Service","true");//导致错误
@@ -120,10 +115,42 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         });
     }
 
+    public void start(Context context)
+    {
+        ThreadUtils.runThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    //VERSION_NAME = TAppUtils.getAppVersionName(TWatchManService.this, TWatchManService.this.getPackageName());
+                    tTaskManager = new TTaskManager(context);
+                    tNetUtils = new TNetUtils(context);
+                    tNetUtils.registerNetStatusCallback(TWatchManService.this);
+                    registerUserEventReceiver();
+                    MMLog.i(TAG, "WatchManService version:"+ VERSION_NAME +" "+getFWVersionName()+" starting...");//2 first call
+                    //TPlatform.SetSystemProperty("WatchMan.Service","true");//导致错误
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                    MMLog.e(TAG, e.getMessage());
+                }
+            }
+        });
+    }
+
+    public TWatchManService() {
+        //MMLog.i(TAG, "TWatchManService construct with no parameters.");//1 first call
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        //MMLog.d(TAG, "onCreate()");//2 second call
+        start();
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //MMLog.d(TAG, "3:onStartCommand()");
         return super.onStartCommand(intent, flags, startId);
+        //MMLog.d(TAG, "onStartCommand()");//3 call
     }
 
     @Override
@@ -169,7 +196,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
             intentFilter.addAction(Action_SilentInstall2);//静默安装
             intentFilter.addAction(Action_SilentInstallComplete);//静默安装后删除文件
 
-            mContext.registerReceiver(UserEventReceiver, intentFilter);
+            registerReceiver(UserEventReceiver, intentFilter);
             //MMLog.d(TAG, "Register user event listener successfully.");
         } catch (Exception e) {
             MMLog.e(TAG, "Register user event listener failed!" + e.toString());
@@ -178,7 +205,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
 
     public void unRegisterUserEventReceiver() {
         try {
-            mContext.unregisterReceiver(UserEventReceiver);
+            unregisterReceiver(UserEventReceiver);
         } catch (Exception e) {
             //e.printStackTrace();
         }
@@ -306,7 +333,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
     };
 
     private void Action_GETRUNNINGTASK() {
-        TAppUtils.getRunningProcess(mContext).print();
+        TAppUtils.getRunningProcess(this).print();
     }
 
     private void Action_WATCHMANSWITCHONOFF() {
@@ -315,7 +342,8 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
 
     public void Action_UpdateNetStatus() {
         if (tTaskManager != null && networkInformation != null) {
-            String json = getRequestJSON(networkInformation.getMAC(), networkInformation.getInternetIP(), networkInformation.regionToString());
+            String json = getRequestJSON(networkInformation.getMAC(), networkInformation.getInternetIP(), networkInformation.regionToJson());
+            //MMLog.d(TAG,"networkInformation.regionToJson()="+networkInformation.regionToJson());
             tTaskManager.testRequest(json);
         }
     }
@@ -350,7 +378,7 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
     private void Action_SilentCLOSEAction(String packageName) {
         //killAppProcess(packageName);
         //killAssignPkg(packageName);
-        TAppUtils.killApplication(mContext,packageName);
+        TAppUtils.killApplication(this,packageName);
     }
 
     private synchronized void killAssignPkg(String packageName) {
@@ -391,24 +419,24 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
             MMLog.log(TAG, "file is not a valid apk file! --->" + filePath);
             return;
         }
-        boolean b = TAppUtils.installSilent(mContext, filePath);
+        boolean b = TAppUtils.installSilent(this, filePath);
         if (b)
             MMLog.log(TAG, "installSilent successfully! ->" + filePath);
         else
             MMLog.log(TAG, "installSilent failed! ->" + filePath);
         if (autostart) {
-            PackageInfo packageInfo = TAppUtils.getPackageInfo(mContext, filePath);
+            PackageInfo packageInfo = TAppUtils.getPackageInfo(this, filePath);
             if (packageInfo != null)
-                TAppUtils.startApp(mContext, packageInfo.packageName);
+                TAppUtils.startApp(this, packageInfo.packageName);
         }
     }
 
     private synchronized void Action_SilentInstallAction1(String filePath, boolean autostart) {
         TPlatform.ExecConsoleCommand("pm install -r " + filePath);
         if (autostart) {
-            PackageInfo packageInfo = TAppUtils.getPackageInfo(mContext, filePath);
+            PackageInfo packageInfo = TAppUtils.getPackageInfo(this, filePath);
             if (packageInfo != null)
-                TAppUtils.startApp(mContext, packageInfo.packageName);
+                TAppUtils.startApp(this, packageInfo.packageName);
         }
     }
 
@@ -416,9 +444,9 @@ public class WatchManService extends Service implements TNetUtils.NetworkStatusL
         String ret = TPlatform.ExecShellCommand("pm", "install", "-f", filePath);
         MMLog.log(TAG, ret);
         if (autostart) {
-            PackageInfo packageInfo = TAppUtils.getPackageInfo(mContext, filePath);
+            PackageInfo packageInfo = TAppUtils.getPackageInfo(this, filePath);
             if (packageInfo != null)
-                TAppUtils.startApp(mContext, packageInfo.packageName);
+                TAppUtils.startApp(this, packageInfo.packageName);
         }
     }
 

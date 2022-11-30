@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Build;
 
 import com.zhuchao.android.fileutils.MMLog;
-import com.zhuchao.android.session.WatchManService;
+import com.zhuchao.android.session.TWatchManService;
 
 public class BootBroadCastReceiver extends BroadcastReceiver {
     private static final String TAG = "BootBroadcastReceiver";
@@ -20,7 +20,7 @@ public class BootBroadCastReceiver extends BroadcastReceiver {
         try {
             MMLog.d(TAG,intent.getAction().toString());
             if (intent.getAction().equals(ACTION)) {
-                Intent intent1 = new Intent(context, WatchManService.class);
+                Intent intent1 = new Intent(context, TWatchManService.class);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     //android8.0以上通过startForegroundService启动service
                     context.startForegroundService(intent1);

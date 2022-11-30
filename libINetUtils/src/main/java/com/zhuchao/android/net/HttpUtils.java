@@ -2,7 +2,7 @@ package com.zhuchao.android.net;
 
 import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
 
-import com.zhuchao.android.callbackevent.HttpCallback;
+import com.zhuchao.android.eventinterface.HttpCallback;
 import com.zhuchao.android.fileutils.DataID;
 import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.MMLog;

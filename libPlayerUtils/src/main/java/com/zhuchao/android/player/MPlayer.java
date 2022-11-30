@@ -15,8 +15,8 @@ import android.view.TextureView;
 
 import androidx.annotation.NonNull;
 
-import com.zhuchao.android.callbackevent.PlaybackEvent;
-import com.zhuchao.android.callbackevent.PlayerCallback;
+import com.zhuchao.android.eventinterface.PlaybackEvent;
+import com.zhuchao.android.eventinterface.PlayerCallback;
 import com.zhuchao.android.fileutils.MMLog;
 
 import java.io.FileDescriptor;

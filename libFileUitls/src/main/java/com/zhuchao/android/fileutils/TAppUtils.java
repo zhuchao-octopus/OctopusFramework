@@ -22,7 +22,7 @@ import android.text.TextUtils;
 
 import androidx.core.content.FileProvider;
 
-import com.zhuchao.android.callbackevent.AppChangedListener;
+import com.zhuchao.android.eventinterface.AppChangedListener;
 import com.zhuchao.android.libfileutils.BuildConfig;
 
 import java.io.BufferedReader;

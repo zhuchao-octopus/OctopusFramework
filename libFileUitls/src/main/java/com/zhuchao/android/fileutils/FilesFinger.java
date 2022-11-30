@@ -3,7 +3,7 @@ package com.zhuchao.android.fileutils;
 import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
 import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
 
-import com.zhuchao.android.callbackevent.NormalCallback;
+import com.zhuchao.android.eventinterface.NormalCallback;
 
 import java.io.File;
 import java.util.ArrayList;

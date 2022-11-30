@@ -1,6 +1,6 @@
 package com.zhuchao.android.fileutils;
 
-import com.zhuchao.android.callbackevent.InvokeInterface;
+import com.zhuchao.android.eventinterface.InvokeInterface;
 
 import java.util.ArrayList;
 import java.util.concurrent.locks.LockSupport;

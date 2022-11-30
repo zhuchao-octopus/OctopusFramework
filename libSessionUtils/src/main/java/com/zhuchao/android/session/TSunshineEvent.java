@@ -7,10 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
-import android.view.KeyEvent;
 
 import com.zhuchao.android.TPlatform;
-import com.zhuchao.android.callbackevent.TaskCallback;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.TAppUtils;
 import com.zhuchao.android.net.NetworkInformation;

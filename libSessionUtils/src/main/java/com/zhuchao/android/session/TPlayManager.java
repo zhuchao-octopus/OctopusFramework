@@ -11,10 +11,10 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
-import com.zhuchao.android.callbackevent.NormalCallback;
-import com.zhuchao.android.callbackevent.PlaybackEvent;
-import com.zhuchao.android.callbackevent.PlayerCallback;
-import com.zhuchao.android.callbackevent.PlayerStatusInfo;
+import com.zhuchao.android.eventinterface.NormalCallback;
+import com.zhuchao.android.eventinterface.PlaybackEvent;
+import com.zhuchao.android.eventinterface.PlayerCallback;
+import com.zhuchao.android.eventinterface.PlayerStatusInfo;
 import com.zhuchao.android.fileutils.DataID;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.ObjectList;

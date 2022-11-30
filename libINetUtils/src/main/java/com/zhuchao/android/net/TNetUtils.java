@@ -265,7 +265,10 @@ public class TNetUtils {
         if (EmptyString(mac)) {
             mac = getEthernetMacFromInterface();
         }
-        return mac;
+        if (EmptyString(mac))
+            return mac;
+        else
+            return mac.toUpperCase();
     }
 
     public static String getEthernetMacFromInterface() {

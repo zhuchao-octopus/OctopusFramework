@@ -1,4 +1,4 @@
-package com.zhuchao.android.callbackevent;
+package com.zhuchao.android.eventinterface;
 
 public class PlayerStatusInfo {
     private int EventType;

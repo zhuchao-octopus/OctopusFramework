@@ -6,8 +6,8 @@ import android.net.Uri;
 import android.view.SurfaceView;
 import android.view.TextureView;
 
-import com.zhuchao.android.callbackevent.PlayerCallback;
-import com.zhuchao.android.callbackevent.PlayerStatusInfo;
+import com.zhuchao.android.eventinterface.PlayerCallback;
+import com.zhuchao.android.eventinterface.PlayerStatusInfo;
 
 import java.io.FileDescriptor;
 import java.util.Map;

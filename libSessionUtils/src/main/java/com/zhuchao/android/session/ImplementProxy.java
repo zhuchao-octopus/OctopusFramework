@@ -7,7 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.zhuchao.android.callbackevent.HttpCallback;
+import com.zhuchao.android.eventinterface.HttpCallback;
 import com.zhuchao.android.fileutils.DataID;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.net.HttpUtils;
@@ -22,13 +22,13 @@ import java.util.Map;
 
 public class ImplementProxy implements HttpCallback {
     public final String TAG = "ImplementProxy";
-    private com.zhuchao.android.callbackevent.SessionCallback SessionCallback = null;
+    private com.zhuchao.android.eventinterface.SessionCallback SessionCallback = null;
 
     private Map<Integer, String> mVideoCategory = null;// = new HashMap<Integer, String>();
     private Map<Integer, String> mVideoType = null;// = new HashMap<Integer, String>();
     private MovieListBean mMovieListBean = null;
 
-    public ImplementProxy(com.zhuchao.android.callbackevent.SessionCallback sessionCallback) {
+    public ImplementProxy(com.zhuchao.android.eventinterface.SessionCallback sessionCallback) {
         SessionCallback = sessionCallback;
     }
 

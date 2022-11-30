@@ -16,7 +16,7 @@ package com.zhuchao.android.video;
 
 import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
 
-import com.zhuchao.android.callbackevent.NormalCallback;
+import com.zhuchao.android.eventinterface.NormalCallback;
 import com.zhuchao.android.fileutils.DataID;
 import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.MMLog;

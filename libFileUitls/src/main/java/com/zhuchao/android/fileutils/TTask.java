@@ -1,7 +1,7 @@
 package com.zhuchao.android.fileutils;
 
-import com.zhuchao.android.callbackevent.InvokeInterface;
-import com.zhuchao.android.callbackevent.TaskCallback;
+import com.zhuchao.android.eventinterface.InvokeInterface;
+import com.zhuchao.android.eventinterface.TaskCallback;
 
 public class TTask extends Thread {
     private final String TAG = "TTask";

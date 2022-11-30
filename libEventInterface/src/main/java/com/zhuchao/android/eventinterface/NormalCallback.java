@@ -1,4 +1,4 @@
-package com.zhuchao.android.callbackevent;
+package com.zhuchao.android.eventinterface;
 
 public interface NormalCallback {
     void onEventRequest(String Result, int Index);

@@ -3,4 +3,4 @@ include ':libOpenDetection'
 include ':libOpenComputerVision'
 include ':libICameraController'
 
-include ':WatchManService'
+include ':TestApplication'

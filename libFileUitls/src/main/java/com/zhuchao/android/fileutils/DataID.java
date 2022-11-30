@@ -65,9 +65,9 @@ public class DataID {
     //任务池中的所有任务完成 306
     public static final int TASK_STATUS_FINISHED_ALL = TASK_STATUS_FINISHED_STOP + 1;//306
     //任务复位后可以再次启动
-    public static final int TASK_STATUS_CAN_RESTART = TASK_STATUS_FINISHED_ALL + 1; //允许重新启动
+    public static final int TASK_STATUS_CAN_RESTART = TASK_STATUS_FINISHED_ALL + 1; //307允许重新启动
     //任务出错 与 TASK_STATUS_SUCCESS 相反
-    public static final int TASK_STATUS_ERROR = TASK_STATUS_CAN_RESTART + 1;
+    public static final int TASK_STATUS_ERROR = TASK_STATUS_CAN_RESTART + 1;//308
 
 
     public static final int DEVICE_TYPE = 400;

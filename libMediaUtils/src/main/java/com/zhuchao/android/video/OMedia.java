@@ -13,10 +13,10 @@ import android.view.TextureView;
 
 import androidx.annotation.NonNull;
 
-import com.zhuchao.android.callbackevent.InvokeInterface;
-import com.zhuchao.android.callbackevent.PlaybackEvent;
-import com.zhuchao.android.callbackevent.PlayerCallback;
-import com.zhuchao.android.callbackevent.PlayerStatusInfo;
+import com.zhuchao.android.eventinterface.InvokeInterface;
+import com.zhuchao.android.eventinterface.PlaybackEvent;
+import com.zhuchao.android.eventinterface.PlayerCallback;
+import com.zhuchao.android.eventinterface.PlayerStatusInfo;
 import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.MediaFile;
