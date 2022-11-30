@@ -171,6 +171,7 @@ public class NetworkInformation {
     {
         JSONObject jsonObject = new JSONObject();
         try {
+            jsonObject.put("localIP",localIP);
             jsonObject.put("internetIP",internetIP);
             jsonObject.put("country",country);
             jsonObject.put("regionName",regionName);

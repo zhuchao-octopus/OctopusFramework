@@ -669,9 +669,9 @@ public class TTaskManager {
                     //deleteTask((TTask)obj);
                     ((TTask) obj).reset();
                 }
-                //MMLog.i(TAG, fromUrl + "," + ((TTask) obj).getProperties().getString("fromUrl")+jsonStr);
+                //MMLog.i(TAG, status + "," + ((TTask) obj).getProperties().getString("fromUrl")+jsonStr);
                 //MMLog.i(TAG, status + "," + ((TTask) obj).getProperties().getString("status"));
-                //MMLog.i(TAG, result + "," + ((TTask) obj).getProperties().getString("result", "null"));
+                //MMLog.i(TAG, status + "," + ((TTask) obj).getProperties().getString("result", "null"));
             }
         }).start();
     }

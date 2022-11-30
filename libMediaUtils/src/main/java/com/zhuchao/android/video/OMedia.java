@@ -310,7 +310,23 @@ public class OMedia implements Serializable, PlayerCallback {
             MMLog.log(TAG, e.toString());
         }
     }
-
+    public void stopFree()
+    {
+        if(tTask.isBusy()) {
+            MMLog.i(TAG,"call stopFree(), but player is busy!!");
+            return;
+        }
+        tTask.invoke(new InvokeInterface() {
+            @Override
+            public void CALLTODO(String tag) {
+                if (isPlayerReady()) {
+                    MMLog.i(TAG, "call stopFree() on " + getOPlayer().getTAG());
+                   stop();
+                   free();
+                }
+            }
+        }).startAgain();
+    }
     public void resume() {//唤醒，恢复播放
         //if (isPlayerReady())
         {//允许此处创建新的播放器

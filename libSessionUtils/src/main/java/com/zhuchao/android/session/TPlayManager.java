@@ -133,9 +133,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     public synchronized void stopFree() {
         if (oMedia != null) {
-            oMedia.stop();
-            oMedia.free();
-            //oMedia = null;
+            oMedia.stopFree();
         }
     }
 

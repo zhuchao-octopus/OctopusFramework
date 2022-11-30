@@ -79,7 +79,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     private TTaskManager tTaskManager = null;
     private NetworkInformation networkInformation = null;
 
-    private String pName = "A40I";
+    private String pName = null;//"A40I";
     private String pModel= "A40I";
     private String pBrand = "TianPu";
     private String pCustomer = "TianPu";
@@ -223,7 +223,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                     if (networkInformation != null)
                         MMLog.d(TAG, "HOST:" + networkInformation.toString());
                     if (intent.getExtras() != null) {
-                        pName = intent.getExtras().getString("pName", "A40I");
+                        pName = intent.getExtras().getString("pName", null);
                         pModel = intent.getExtras().getString("pModel", "OCTOPUS");
                         pBrand = intent.getExtras().getString("pBrand", "OCTOPUS");
                         pCustomer = intent.getExtras().getString("pCustomer", "OCTOPUS");
@@ -631,7 +631,8 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     private String getRequestJSON(String mac, String ip, String region) {
         JSONObject jsonObj = new JSONObject();
         try {
-            jsonObj.put("name", pName);
+            if(NotEmptyString(pName))
+              jsonObj.put("name", pName); //不推送pName
             jsonObj.put("mac", mac);
             jsonObj.put("ip", ip);
             jsonObj.put("region", region);
