@@ -628,7 +628,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                 jsonObj.put("ip", networkInformation.getInternetIP());
                 jsonObj.put("region", networkInformation.regionToJson());
             }
-            jsonObj.put("appVersion", null);//VERSION_NAME
+            jsonObj.put("appVersion", VERSION_NAME);//VERSION_NAME
             jsonObj.put("fwVersion", getFWVersionName());
         } catch (JSONException e) {
             //e.printStackTrace();
