@@ -36,9 +36,9 @@ public class HttpUtils {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     private HttpUtils() {
-        LoggingInterceptor loggingInterceptor = new LoggingInterceptor();
-        //loggingInterceptor.setLevel(BuildConfig.DEBUG ? LoggingInterceptor.Level.BODY : LoggingInterceptor.Level.NONE);
-        loggingInterceptor.setLevel(LoggingInterceptor.Level.NONE);
+        //LoggingInterceptor loggingInterceptor = new LoggingInterceptor();
+        //loggingInterceptor.setLevel(LoggingInterceptor.Level.BODY);
+        //loggingInterceptor.setLevel(LoggingInterceptor.Level.NONE);
         okHttpClient = new OkHttpClient().newBuilder().build();
     }
 
@@ -93,6 +93,8 @@ public class HttpUtils {
                     //MMLog.e(TAG, "request().onResponse " + e.getMessage());
                     ResultCallBack(tag, fromUrl, "", 0, 0, e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
                 }
+                if(response != null)
+                   response.close();
             }
         });
     }
@@ -130,6 +132,8 @@ public class HttpUtils {
                     //MMLog.e(TAG, "request().onResponse " + e.getMessage());
                     ResultCallBack(tag, fromUrl, "", 0, 0, e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
                 }
+                if(response != null)
+                    response.close();
             }
         });
     }
@@ -162,6 +166,8 @@ public class HttpUtils {
                     //MMLog.e(TAG, "request().onResponse " + e.getMessage());
                     ResultCallBack(tag, fromUrl, "", 0, 0, "fromUrl = " + fromUrl + "," + e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
                 }
+                if(response != null)
+                    response.close();
             }
         });
     }
@@ -222,6 +228,8 @@ public class HttpUtils {
                             //.e(TAG, "download() response " + e.getMessage());
                             ResultCallBack(tag, fromUrl, toUrl, 0, 0, e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
                         }
+                        if(response != null)
+                            response.close();
                     }
                 });//{//asynchronous
     }

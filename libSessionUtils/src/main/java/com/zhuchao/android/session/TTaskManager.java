@@ -15,7 +15,6 @@ import androidx.annotation.RequiresApi;
 import com.zhuchao.android.eventinterface.HttpCallback;
 import com.zhuchao.android.eventinterface.InvokeInterface;
 import com.zhuchao.android.eventinterface.NormalCallback;
-import com.zhuchao.android.eventinterface.TaskCallback;
 import com.zhuchao.android.fileutils.DataID;
 import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.FilesFinger;
@@ -70,6 +69,7 @@ public class TTaskManager {
     public TTaskManager(Context context) {
         mContext = context;
         tTaskThreadPool = new TTaskThreadPool(100);
+        TTaskThreadPool_SESSION_UPDATE_TEST_INIT();
     }
 
     public int getTaskCount() {
@@ -84,38 +84,69 @@ public class TTaskManager {
         return tTaskThreadPool.getTaskByTag(tag);
     }
 
-    public TTask getIdleTask()
-    {
+    public TTask getIdleTask() {
         Collection<Object> objects = tTaskThreadPool.getAllObject();
         for (Object o : objects) {
             TTask tTask = ((TTask) o);
-            if(!tTask.isBusy()) return tTask;
+            if (!tTask.isBusy()) return tTask;
+        }
+        return null;
+    }
+
+    public TTask getIdleTaskLock() {
+        Collection<Object> objects = tTaskThreadPool.getAllObject();
+        for (Object o : objects) {
+            TTask tTask = ((TTask) o);
+            if (!tTask.isBusy()) {
+                tTask.lock();
+                return tTask;
+            }
         }
         return null;
     }
 
     public TTask getNewTask(String tName) {
         if (existsTask(tName))
-            return tTaskThreadPool.createTask(tName+System.currentTimeMillis());
+            return tTaskThreadPool.createTask(tName + System.currentTimeMillis());
         else
             return tTaskThreadPool.createTask(tName);
     }
 
     public TTask getAvailableTask(String tName) {
         TTask tTask = getIdleTask();
-        if(tTask != null) {
+        if (tTask != null) {
             tTask.resetAll();
             return tTask;
+        } else
+            return getNewTask(tName);
+    }
+
+    public TTask getAvailableTaskLock(String tName) {
+        TTask tTask = getIdleTaskLock();
+        if (tTask != null) {
+            tTask.resetAll();
+        } else {
+            tTask =getNewTask(tName);
+            tTask.lock();
         }
-        else
-           return getNewTask(tName);
+        return tTask;
     }
 
     public TTask getSingleTaskFor(String tName) {
         TTask tTask = getTaskByName(tName);
-        if(tTask == null) {
+        if (tTask == null) {
             return tTaskThreadPool.createTask(tName);
         }
+        return tTask;
+    }
+
+    public synchronized TTask getSingleTaskLock(String tName) {
+        TTask tTask = getTaskByName(tName);
+        if (tTask == null) {
+            tTask = tTaskThreadPool.createTask(tName);
+        }
+        if (tTask.isBusy()) return null;//无法锁定
+        tTask.lock();
         return tTask;
     }
 
@@ -550,10 +581,6 @@ public class TTaskManager {
                             MMLog.e(TAG, "requestGet " + fromUrl + "," + result);
                         }
 
-                        if (NotEmptyString(fromUrl) && fromUrl.contains("TestJSON")) {
-                            testRequest(tTask.getProperties().getString("TestJSON"));
-                        }
-
                         if (tTask.getCallBackHandler() != null) {//回调传递给task
                             Message msg = taskMainLooperHandler.obtainMessage();
                             msg.obj = tTask;
@@ -661,21 +688,18 @@ public class TTaskManager {
         return tTask;
     }
 
-    public void testRequest(String jsonStr) {
-        requestPut(DataID.SESSION_SOURCE_TEST_URL, jsonStr).callbackHandler(new TaskCallback() {
-            @Override
-            public void onEventTask(Object obj, int status) {
-                if (status == DataID.TASK_STATUS_ERROR) {
-                    //deleteTask((TTask)obj);
-                    ((TTask) obj).reset();
-                }
-                //MMLog.i(TAG, status + "," + ((TTask) obj).getProperties().getString("fromUrl")+jsonStr);
-                //MMLog.i(TAG, status + "," + ((TTask) obj).getProperties().getString("status"));
-                //MMLog.i(TAG, status + "," + ((TTask) obj).getProperties().getString("result", "null"));
-            }
-        }).start();
+    private void TTaskThreadPool_SESSION_UPDATE_TEST_INIT() {
+        //TTask tTask = getSingleTaskFor(DataID.SESSION_UPDATE_TEST_NAME);
+        TNetTask tNetTask = new TNetTask(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
+        boolean b = tTaskThreadPool.addTask(tNetTask);
+        if(b) {
+            ;//MMLog.i(TAG, "INIT SESSION_UPDATE_JHZ_TEST_UPDATE_NAME SUCCESS!");
+        }
+        else {
+            tNetTask.freeFree();
+            MMLog.i(TAG,"INIT SESSION_UPDATE_JHZ_TEST_UPDATE_NAME FAILED!");
+        }
     }
-
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //download task
     //public void setStopContinue(boolean stopContinue) {

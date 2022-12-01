@@ -8,8 +8,11 @@ public class DataID {
     public static final int DB_VERSION = 1;
     //public static final String DB_DIRECTORY = CommonValues.application.getFilesDir().getPath();
     public static final int SESSION_TYPE_GET_MOVIELIST_DEFAULT_PAGESIZE = 100;
-    public static String OPLAYER_SESSION_ROOT_URL = "http://test.jhzdesign.cn:8005/";
+    public static String SESSION_SESSION_ROOT_JHZ = "http://test.jhzdesign.cn:8005/";
     public static String SESSION_SOURCE_TEST_URL = "http://47.106.172.94:8090/zhuchao/devices/test";
+    public static String SESSION_UPDATE_TEST_INIT = SESSION_SOURCE_TEST_URL;
+    public static String SESSION_UPDATE_JHZ_TEST_UPDATE_NAME = "SESSION_UPDATE_JHZ_ROOT_TEST";
+
     //////////////////////////////////////////////////////////////////////
     public static final int SESSION_SOURCE_NONE = -1; //
     public static final int SESSION_SOURCE_ALL = 10; //
@@ -103,7 +106,7 @@ public class DataID {
 
     public static String getActionUrl(int sessionId, String categoryName, int pageIndexOrVid) {
         StringBuilder builder = new StringBuilder();
-        builder.append(OPLAYER_SESSION_ROOT_URL);
+        builder.append(SESSION_SESSION_ROOT_JHZ);
         switch (sessionId) {
             case SESSION_TYPE_GET_MOVIELIST_VNAME:
                 builder.append("/getVideoList?movieName=" + categoryName + "&limit=" + SESSION_TYPE_GET_MOVIELIST_DEFAULT_PAGESIZE);

@@ -1,5 +1,7 @@
 package com.zhuchao.android.fileutils;
 
+import static com.zhuchao.android.fileutils.FileUtils.md5;
+
 import com.zhuchao.android.eventinterface.InvokeInterface;
 import com.zhuchao.android.eventinterface.TaskCallback;
 
@@ -13,21 +15,29 @@ public class TTask extends Thread {
     protected boolean isKeeping = false;
     protected int invokedCount = 0;
 
-    public TTask(String tag, InvokeInterface invokeInterface) {
-        this.tTag = tag;
-        this.tName = tag;
+    public TTask(String tName) {
+        this.tName = tName;
+        this.tTag = md5(tName);
+        this.invokeInterface = null;
+        this.properties = new ObjectList();
+    }
+
+    public TTask(String tName, InvokeInterface invokeInterface) {
+        this.tName = tName;
+        this.tTag = md5(tName);
         this.invokeInterface = invokeInterface;
         this.properties = new ObjectList();
     }
 
-    public TTask(String tag, InvokeInterface invokeInterface, TaskCallback TaskCallback) {
-        this.tTag = tag;
-        this.tName = tag;
+    public TTask(String tName, InvokeInterface invokeInterface, TaskCallback TaskCallback) {
+        this.tName = tName;
+        this.tTag = md5(tName);
         this.invokeInterface = invokeInterface;
         this.taskCallback = TaskCallback;
         this.properties = new ObjectList();
     }
 
+    //任务主题
     public TTask invoke(InvokeInterface callFunction) {
         if(isBusy()) {
             MMLog.i(TAG, "this task is busy! tag = " + this.tTag);
@@ -36,10 +46,14 @@ public class TTask extends Thread {
         invokeInterface = callFunction;
         return this;
     }
-
+    //任务完成后的回调
     public TTask callbackHandler(TaskCallback TaskCallback) {
         this.taskCallback = TaskCallback;
         return this;
+    }
+
+    public InvokeInterface getInvokeInterface() {
+        return invokeInterface;
     }
 
     public TaskCallback getCallBackHandler() {
@@ -76,6 +90,14 @@ public class TTask extends Thread {
 
     public void setKeeping(boolean keeping) {
         isKeeping = keeping;
+    }
+
+    public void lock() {
+        isKeeping = true;
+    }
+
+    public void unLock() {
+        isKeeping = false;
     }
 
     public int getInvokedCount() {

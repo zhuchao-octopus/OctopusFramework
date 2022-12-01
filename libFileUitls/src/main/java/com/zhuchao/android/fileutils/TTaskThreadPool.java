@@ -19,7 +19,6 @@ public class TTaskThreadPool extends ObjectList {
     public TTaskThreadPool(int maxThreadCount) {
         super();
         this.maxThreadCount = maxThreadCount;
-        //pTaskList_Ok = new ArrayList<>();
     }
 
     public PTask createTask(String tName) {
@@ -27,27 +26,15 @@ public class TTaskThreadPool extends ObjectList {
             tName = "default";
             MMLog.log(TAG, "only one default PTask name/tag ,name=" + tName);
         }
-        String tag = disguiseName(tName);
-        if (existObject(tag)) //存在 对象
-        {
-            //MMLog.log(TAG, "PTask already exists in pool,tag = " + tag + ",total count = " + getCount());
-            return (PTask) getObject(tag);
-        }
 
-        PTask pTask = new PTask(tag);
-        pTask.setTName(tName);
-        addItem(tag, pTask);
+        TTask tTask = getTaskByTag(md5(tName));
+        if(tTask != null)//存在直接返回
+          return (PTask)tTask;
 
-        if (tName.contains(DataID.SESSION_SOURCE_TEST_URL))
-            MMLog.log(TAG, "create PTask name = SESSION_SOURCE_TEST,tag = " + tag);
-        else
-            MMLog.log(TAG, "create PTask name = " + tName + ",tag = " + tag);
-        //MMLog.log(TAG, "create PTask successfully in pool,tag = " + tag + ",total count:" + getCount()+"|"+taskCounter);
+        PTask pTask = new PTask(tName);
+        addItem(pTask.getTTag(), pTask);
+        MMLog.log(TAG, "create PTask name = " + pTask.getTName() + ",tag = " + pTask.getTTag());
         return pTask;
-    }
-
-    private String disguiseName(String tName) {
-        return md5(tName);
     }
 
     private int getTaskCounter() {
@@ -61,12 +48,22 @@ public class TTaskThreadPool extends ObjectList {
     public TTask getTaskByName(String tName) {
         if (EmptyString(tName))
             return null;
-        return (TTask) getObject(disguiseName(tName));
+        return (TTask) getObject(md5(tName));
     }
 
     public TTask getTaskByTag(String tag) {
         if (EmptyString(tag)) return null;
         return (TTask) getObject(tag);
+    }
+
+    public boolean addTask(TTask tTask)
+    {
+        String tTag = tTask.tTag;
+        if(!existObject(tTag)) {
+            addItem(tTag, tTask);
+            return true;
+        }
+        return false;
     }
 
     public void deleteTask(String tag) {
@@ -95,8 +92,8 @@ public class TTaskThreadPool extends ObjectList {
         private final String TAG = "PTask";
 
         //private TTaskThreadPool TTaskThreadPool = null;
-        public PTask(String tag) {
-            super(tag, null);
+        public PTask(String tName) {
+            super(tName, null);
         }
 
         @Override

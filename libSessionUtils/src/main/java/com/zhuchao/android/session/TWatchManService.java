@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.zhuchao.android.TPlatform;
 import com.zhuchao.android.eventinterface.InvokeInterface;
+import com.zhuchao.android.fileutils.DataID;
 import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.TAppUtils;
@@ -80,9 +81,10 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     private NetworkInformation networkInformation = null;
 
     private String pName = null;//"A40I";
-    private String pModel= "A40I";
-    private String pBrand = "TianPu";
-    private String pCustomer = "TianPu";
+    private String pModel = null;//"A40I";
+    private String pBrand = null;//"TianPu";
+    private String pCustomer = null;//"TianPu";
+
     private boolean installedDeleteFile = false;
     private boolean installedReboot = false;
     private boolean watchManSwitchOnOff = true;
@@ -94,8 +96,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void start()
-    {
+    public void start() {
         ThreadUtils.runThread(new Runnable() {
             @Override
             public void run() {
@@ -105,7 +106,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                     tNetUtils = new TNetUtils(TWatchManService.this);
                     tNetUtils.registerNetStatusCallback(TWatchManService.this);
                     registerUserEventReceiver();
-                    MMLog.i(TAG, "WatchManService version:"+ VERSION_NAME +" "+getFWVersionName()+" starting...");//2 first call
+                    MMLog.i(TAG, "WatchManService version:" + VERSION_NAME + " " + getFWVersionName() + " starting...");//2 first call
                     //TPlatform.SetSystemProperty("WatchMan.Service","true");//导致错误
                 } catch (Exception e) {
                     //e.printStackTrace();
@@ -115,8 +116,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         });
     }
 
-    public void start(Context context)
-    {
+    public void start(Context context) {
         ThreadUtils.runThread(new Runnable() {
             @Override
             public void run() {
@@ -126,7 +126,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                     tNetUtils = new TNetUtils(context);
                     tNetUtils.registerNetStatusCallback(TWatchManService.this);
                     registerUserEventReceiver();
-                    MMLog.i(TAG, "WatchManService version:"+ VERSION_NAME +" "+getFWVersionName()+" starting...");//2 first call
+                    MMLog.i(TAG, "WatchManService version:" + VERSION_NAME + " " + getFWVersionName() + " starting...");//2 first call
                     //TPlatform.SetSystemProperty("WatchMan.Service","true");//导致错误
                 } catch (Exception e) {
                     //e.printStackTrace();
@@ -224,13 +224,13 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                         MMLog.d(TAG, "HOST:" + networkInformation.toString());
                     if (intent.getExtras() != null) {
                         pName = intent.getExtras().getString("pName", null);
-                        pModel = intent.getExtras().getString("pModel", "OCTOPUS");
-                        pBrand = intent.getExtras().getString("pBrand", "OCTOPUS");
-                        pCustomer = intent.getExtras().getString("pCustomer", "OCTOPUS");
+                        pModel = intent.getExtras().getString("pModel", null);
+                        pBrand = intent.getExtras().getString("pBrand", null);
+                        pCustomer = intent.getExtras().getString("pCustomer", null);
                     }
                     break;
-                case Action_UPDATE_NET_STATUS:
-                    Action_UpdateNetStatus();
+                case Action_UPDATE_NET_STATUS://
+                    checkAndUpdateDevice(true);
                     break;
                 case Action_GET_RUNNING_TASK:
                     Action_GETRUNNINGTASK();
@@ -336,18 +336,6 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         TAppUtils.getRunningProcess(this).print();
     }
 
-    private void Action_WATCHMANSWITCHONOFF() {
-
-    }
-
-    public void Action_UpdateNetStatus() {
-        if (tTaskManager != null && networkInformation != null) {
-            String json = getRequestJSON(networkInformation.getMAC(), networkInformation.getInternetIP(), networkInformation.regionToJson());
-            //MMLog.d(TAG,"networkInformation.regionToJson()="+networkInformation.regionToJson());
-            tTaskManager.testRequest(json);
-        }
-    }
-
     private void Action_SilentInstallComplete(String apkFilePath) {
         if (installedDeleteFile) {
             boolean b = FileUtils.deleteFile(apkFilePath);
@@ -378,7 +366,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     private void Action_SilentCLOSEAction(String packageName) {
         //killAppProcess(packageName);
         //killAssignPkg(packageName);
-        TAppUtils.killApplication(this,packageName);
+        TAppUtils.killApplication(this, packageName);
     }
 
     private synchronized void killAssignPkg(String packageName) {
@@ -628,23 +616,46 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         return version;
     }
 
-    private String getRequestJSON(String mac, String ip, String region) {
+    private String getRequestJSON() {
         JSONObject jsonObj = new JSONObject();
+        //networkInformation.getMAC(), networkInformation.getInternetIP(), networkInformation.regionToJson()
         try {
-            if(NotEmptyString(pName))
-              jsonObj.put("name", pName); //不推送pName
-            jsonObj.put("mac", mac);
-            jsonObj.put("ip", ip);
-            jsonObj.put("region", region);
+            jsonObj.put("name", pName); //不推送pName
             jsonObj.put("brand", pBrand);
             jsonObj.put("customer", pCustomer);
+            if (networkInformation != null) {
+                jsonObj.put("mac", networkInformation.getMAC());
+                jsonObj.put("ip", networkInformation.getInternetIP());
+                jsonObj.put("region", networkInformation.regionToJson());
+            }
             jsonObj.put("appVersion", VERSION_NAME);
             jsonObj.put("fwVersion", getFWVersionName());
         } catch (JSONException e) {
             //e.printStackTrace();
         }
-        //MMLog.d(TAG,"getRequestJSON = "+jsonObj.toString());
         return jsonObj.toString();
+    }
+
+    private void checkAndUpdateDevice(boolean startAgainFlag) {
+        TTask tTask = tTaskManager.getTaskByName(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
+        if (tTask == null) {
+            MMLog.i(TAG, "NOT FOUND TASK SESSION_UPDATE_JHZ_TEST_UPDATE_NAME!!");
+            return;
+        }
+
+        if (!tTask.isBusy()) {
+            ((TNetTask) (tTask)).setRequestParameter(getRequestJSON());
+            if (startAgainFlag)
+                ((TNetTask) (tTask)).startAgain();
+            else
+                ((TNetTask) (tTask)).start();
+        }
+    }
+
+    private void onNetStatusChanged() {
+        if (tTaskManager != null && networkInformation != null) {
+            checkAndUpdateDevice(false);
+        }
     }
 
     @Override
@@ -653,7 +664,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                 NotEmptyString(networkInformation.getInternetIP()) &&
                 NotEmptyString(networkInformation.getLocalIP())) {
             this.networkInformation = networkInformation;
-            Action_UpdateNetStatus();
+            onNetStatusChanged();
         }
     }
 
