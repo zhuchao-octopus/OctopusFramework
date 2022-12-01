@@ -14,6 +14,7 @@ public class TTask extends Thread {
     protected ObjectList properties = null;
     protected boolean isKeeping = false;
     protected int invokedCount = 0;
+    private long delayedMillis = 0;
 
     public TTask(String tName) {
         this.tName = tName;
@@ -39,13 +40,14 @@ public class TTask extends Thread {
 
     //任务主题
     public TTask invoke(InvokeInterface callFunction) {
-        if(isBusy()) {
+        if (isBusy()) {
             MMLog.i(TAG, "this task is busy! tag = " + this.tTag);
             return this;
         }
         invokeInterface = callFunction;
         return this;
     }
+
     //任务完成后的回调
     public TTask callbackHandler(TaskCallback TaskCallback) {
         this.taskCallback = TaskCallback;
@@ -137,8 +139,18 @@ public class TTask extends Thread {
     }
 
     public synchronized void startWait() {
-        isKeeping =true;
+        isKeeping = true;
         start();
+    }
+
+    public synchronized void startDelayed(long millis) {
+        delayedMillis = millis;
+        start();
+    }
+
+    public synchronized void startAgainDelayed(long millis) {
+        delayedMillis = millis;
+        startAgain();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +164,7 @@ public class TTask extends Thread {
             return;
         }
         if (properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED_STOP) {
-            MMLog.log(TAG, "TTask already finished, no need to run again! tag = "+getTTag());
+            MMLog.log(TAG, "TTask already finished, no need to run again! tag = " + getTTag());
             return;
         }
         try {
@@ -175,9 +187,18 @@ public class TTask extends Thread {
         }
         //android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         setPriority(MAX_PRIORITY);
+
+        if(delayedMillis > 0)
+        {
+            try {
+                Thread.sleep(delayedMillis);
+            } catch (InterruptedException e) {
+            }
+        }
+        delayedMillis = 0;
         //召唤主题。。。
         invokedCount++;
-        MMLog.log(TAG, "TTask invokes demon, tTag = " + tTag+",invokedCount = "+invokedCount);
+        MMLog.log(TAG, "TTask invokes demon, tTag = " + tTag + ",invokedCount = " + invokedCount);
         invokeInterface.CALLTODO(this.tTag);//asynchronous 异步任务体
         //任务主题可以是个异步任务
         if (taskCallback != null)
