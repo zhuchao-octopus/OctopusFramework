@@ -505,8 +505,8 @@ public class TTaskManager {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //timer
-    public TTask timer(long period, String tag) {
-        TTask tTask = tTaskThreadPool.createTask(tag);
+    public TTask timer(long period, String tName) {
+        TTask tTask = tTaskThreadPool.createTask(tName);
         tTask.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {
@@ -532,8 +532,8 @@ public class TTaskManager {
         return tTask;
     }
 
-    public TTask timerOnUIMain(long period, String tag) {
-        TTask tTask = tTaskThreadPool.createTask(tag);
+    public TTask timerOnUIMain(long period, String tName) {
+        TTask tTask = tTaskThreadPool.createTask(tName);
         tTask.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {
