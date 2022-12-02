@@ -4,7 +4,6 @@ import com.zhuchao.android.eventinterface.HttpCallback;
 import com.zhuchao.android.eventinterface.InvokeInterface;
 import com.zhuchao.android.eventinterface.TaskCallback;
 import com.zhuchao.android.fileutils.DataID;
-import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.TTask;
 import com.zhuchao.android.net.HttpUtils;
 

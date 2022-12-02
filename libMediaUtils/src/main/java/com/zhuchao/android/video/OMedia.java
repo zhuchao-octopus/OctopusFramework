@@ -59,7 +59,7 @@ public class OMedia implements Serializable, PlayerCallback {
     private AssetFileDescriptor assetFileDescriptor;
     private Uri uri;
     private boolean restorePlay = false;
-    private TTask tTask = new TTask("OMedia.default",null);
+    private TTask tTask = new TTask("OMedia.default", null);
 
 
     public void callback(PlayerCallback mCallback) {
@@ -276,8 +276,8 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public void playPause() {
-        if(tTask.isBusy()) {
-            MMLog.i(TAG,"call playPause(), but player is busy!!");
+        if (tTask.isBusy()) {
+            MMLog.i(TAG, "call playPause(), but player is busy!!");
             return;
         }
         tTask.invoke(new InvokeInterface() {
@@ -310,10 +310,10 @@ public class OMedia implements Serializable, PlayerCallback {
             MMLog.log(TAG, e.toString());
         }
     }
-    public void stopFree()
-    {
-        if(tTask.isBusy()) {
-            MMLog.i(TAG,"call stopFree(), but player is busy!!");
+
+    public void stopFree() {
+        if (tTask.isBusy()) {
+            MMLog.i(TAG, "call stopFree(), but player is busy!!");
             return;
         }
         tTask.invoke(new InvokeInterface() {
@@ -321,12 +321,13 @@ public class OMedia implements Serializable, PlayerCallback {
             public void CALLTODO(String tag) {
                 if (isPlayerReady()) {
                     MMLog.i(TAG, "call stopFree() on " + getOPlayer().getTAG());
-                   stop();
-                   free();
+                    stop();
+                    free();
                 }
             }
         }).startAgain();
     }
+
     public void resume() {//唤醒，恢复播放
         //if (isPlayerReady())
         {//允许此处创建新的播放器
@@ -454,7 +455,7 @@ public class OMedia implements Serializable, PlayerCallback {
     public void setTime(long time) {
         if (isPlayerReady() && time >= 0) {
             if (isPlayerReady())
-            getOPlayer().setPlayTime(time);
+                getOPlayer().setPlayTime(time);
         }
     }
 
@@ -621,11 +622,9 @@ public class OMedia implements Serializable, PlayerCallback {
 
     protected PlayControl getOPlayer() {
         if (this.context == null) return null;
-        if (FPlayer == null)
-        {
+        if (FPlayer == null) {
             MMLog.d(TAG, "getOPlayer() magicNumber = " + magicNumber);
-            switch (magicNumber)
-            {
+            switch (magicNumber) {
                 case 0:
                 default:
                     FPlayer = PlayerManager.getSingleMPlayer(context, this);

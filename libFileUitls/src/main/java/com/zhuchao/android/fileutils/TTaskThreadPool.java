@@ -28,8 +28,8 @@ public class TTaskThreadPool extends ObjectList {
         }
 
         TTask tTask = getTaskByTag(md5(tName));
-        if(tTask != null)//存在直接返回
-          return (PTask)tTask;
+        if (tTask != null)//存在直接返回
+            return (PTask) tTask;
 
         PTask pTask = new PTask(tName);
         addItem(pTask.getTTag(), pTask);
@@ -56,14 +56,38 @@ public class TTaskThreadPool extends ObjectList {
         return (TTask) getObject(tag);
     }
 
-    public boolean addTask(TTask tTask)
-    {
+    public <T> T getObjectByName(String tName) {
+        if (EmptyString(tName))
+            return null;
+        return (T) getObject(md5(tName));
+    }
+
+    public boolean addTask(TTask tTask) {
         String tTag = tTask.tTag;
-        if(!existObject(tTag)) {
+        if (!existObject(tTag)) {
             addItem(tTag, tTask);
             return true;
         }
         return false;
+    }
+
+    public boolean addTaskInterface(TTaskInterface tTask) {
+        String tTag = tTask.getTTag();
+        if (!existObject(tTag)) {
+            addItem(tTag, tTask);
+            return true;
+        }
+        return false;
+    }
+
+    public void deleteTaskInterface(TTaskInterface tTask) {
+        String tTag = tTask.getTTag();
+        delete(tTag);
+        TTaskInterface tTaskInterface = getTaskByTag(tTag);
+        if (tTaskInterface != null)
+            MMLog.log(TAG, "delete task tag = " + tTag + ",invokedCount = " + tTaskInterface.getInvokedCount());
+        else
+            MMLog.log(TAG, "delete task tag = " + tTag);
     }
 
     public void deleteTask(String tag) {

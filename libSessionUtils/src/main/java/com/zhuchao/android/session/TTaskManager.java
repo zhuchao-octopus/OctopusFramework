@@ -1,7 +1,6 @@
 package com.zhuchao.android.session;
 
 import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
-import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
 import static java.lang.Thread.MAX_PRIORITY;
 
 import android.content.Context;
@@ -21,6 +20,7 @@ import com.zhuchao.android.fileutils.FilesFinger;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.ObjectList;
 import com.zhuchao.android.fileutils.TTask;
+import com.zhuchao.android.fileutils.TTaskInterface;
 import com.zhuchao.android.fileutils.TTaskThreadPool;
 import com.zhuchao.android.net.HttpUtils;
 
@@ -69,7 +69,20 @@ public class TTaskManager {
     public TTaskManager(Context context) {
         mContext = context;
         tTaskThreadPool = new TTaskThreadPool(100);
-        TTaskThreadPool_SESSION_UPDATE_TEST_INIT();
+        //TTaskThreadPool_SESSION_UPDATE_TEST_INIT();
+        TTaskThreadPool_SESSION_INIT();
+    }
+
+    public <T> T getTask(String tName) {
+        return tTaskThreadPool.getObjectByName(tName);
+    }
+
+    public <T> T getByName(String tName) {
+        return tTaskThreadPool.getObjectByName(tName);
+    }
+
+    public <T> T getObjectByName(String tName) {
+        return tTaskThreadPool.getObjectByName(tName);
     }
 
     public int getTaskCount() {
@@ -126,7 +139,7 @@ public class TTaskManager {
         if (tTask != null) {
             tTask.resetAll();
         } else {
-            tTask =getNewTask(tName);
+            tTask = getNewTask(tName);
             tTask.lock();
         }
         return tTask;
@@ -174,6 +187,8 @@ public class TTaskManager {
         tTaskThreadPool.free();
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //copy files
@@ -692,23 +707,24 @@ public class TTaskManager {
         //TTask tTask = getSingleTaskFor(DataID.SESSION_UPDATE_TEST_NAME);
         TNetTask tNetTask = new TNetTask(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
         boolean b = tTaskThreadPool.addTask(tNetTask);
-        if(b) {
+        if (b) {
             ;//MMLog.i(TAG, "INIT SESSION_UPDATE_JHZ_TEST_UPDATE_NAME SUCCESS!");
-        }
-        else {
+        } else {
             tNetTask.freeFree();
-            MMLog.i(TAG,"INIT SESSION_UPDATE_JHZ_TEST_UPDATE_NAME FAILED!");
+            MMLog.i(TAG, "INIT SESSION_UPDATE_JHZ_TEST_UPDATE_NAME FAILED!");
         }
     }
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //download task
-    //public void setStopContinue(boolean stopContinue) {
-    //    this.stopContinue = stopContinue;
-    //}
 
-    //public void setReDownload(boolean reDownload) {
-    //    this.reDownload = reDownload;
-    //}
+    private void TTaskThreadPool_SESSION_INIT() {
+        TTaskInterface updateSession = new Session0();
+        boolean b = tTaskThreadPool.addTaskInterface(updateSession);
+        if (b) {
+            ;//MMLog.i(TAG, "INIT SESSION_UPDATE_JHZ_TEST_UPDATE_NAME SUCCESS!");
+        } else {
+            //updateSession.freeFree();
+            MMLog.i(TAG, "INIT SESSION_UPDATE_JHZ_TEST_UPDATE_NAME FAILED!");
+        }
+    }
 
     //toPath 必须是绝对路劲下的目录
     public TTask dl(final String fromUrl, final String toPath) {

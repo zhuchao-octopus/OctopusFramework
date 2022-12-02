@@ -5,7 +5,7 @@ import static com.zhuchao.android.fileutils.FileUtils.md5;
 import com.zhuchao.android.eventinterface.InvokeInterface;
 import com.zhuchao.android.eventinterface.TaskCallback;
 
-public class TTask extends Thread {
+public class TTask extends Thread implements TTaskInterface {
     private final String TAG = "TTask";
     protected String tName = null;
     protected String tTag = null;
@@ -49,8 +49,8 @@ public class TTask extends Thread {
     }
 
     //任务完成后的回调
-    public TTask callbackHandler(TaskCallback TaskCallback) {
-        this.taskCallback = TaskCallback;
+    public TTask callbackHandler(TaskCallback taskCallback) {
+        this.taskCallback = taskCallback;
         return this;
     }
 
@@ -188,8 +188,7 @@ public class TTask extends Thread {
         //android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         setPriority(MAX_PRIORITY);
 
-        if(delayedMillis > 0)
-        {
+        if (delayedMillis > 0) {
             try {
                 Thread.sleep(delayedMillis);
             } catch (InterruptedException e) {
