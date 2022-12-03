@@ -669,9 +669,9 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         if (!tTask.isBusy()) {
             ((TRequestEventInterface) (tTask)).setRequestParameter(getRequestJSON());
             if (startAgainFlag)
-                ((TTaskInterface) (tTask)).startAgainDelayed(2 * 60000);
+                ((TTaskInterface) (tTask)).startAgain();
             else
-                ((TTaskInterface) (tTask)).startDelayed(2 * 60000);
+                ((TTaskInterface) (tTask)).start();
         }
     }
 

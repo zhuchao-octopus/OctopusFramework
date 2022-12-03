@@ -158,6 +158,11 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
     }
 
     @Override
+    public void start() {
+        tTask.start();
+    }
+
+    @Override
     public void startAgain() {
         tTask.startAgain();
     }
