@@ -16,11 +16,13 @@ import android.util.Log;
 
 import com.zhuchao.android.TPlatform;
 import com.zhuchao.android.eventinterface.InvokeInterface;
+import com.zhuchao.android.eventinterface.TRequestEventInterface;
 import com.zhuchao.android.fileutils.DataID;
 import com.zhuchao.android.fileutils.FileUtils;
 import com.zhuchao.android.fileutils.MMLog;
 import com.zhuchao.android.fileutils.TAppUtils;
 import com.zhuchao.android.fileutils.TTask;
+import com.zhuchao.android.fileutils.TTaskInterface;
 import com.zhuchao.android.fileutils.ThreadUtils;
 import com.zhuchao.android.net.NetworkInformation;
 import com.zhuchao.android.net.TNetUtils;
@@ -115,7 +117,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             }
         });
     }
-
+    /*
     public void start(Context context) {
         ThreadUtils.runThread(new Runnable() {
             @Override
@@ -134,8 +136,12 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                 }
             }
         });
-    }
+    }*/
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public TWatchManService() {
         //MMLog.i(TAG, "TWatchManService construct with no parameters.");//1 first call
     }
@@ -219,7 +225,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             MMLog.i(TAG, "User event intent.Action = " + action);
             switch (action) {
                 case Action_HELLO:
-                    MMLog.log(TAG, "Hello it is ready! version:" + VERSION_NAME);
+                    MMLog.log(TAG, "Hello it is ready! version:" + VERSION_NAME+ " " + getFWVersionName());
                     if (networkInformation != null)
                         MMLog.d(TAG, "HOST:" + networkInformation.toString());
                     if (intent.getExtras() != null) {
@@ -230,7 +236,8 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                     }
                     break;
                 case Action_UPDATE_NET_STATUS://
-                    checkAndUpdateDevice(true);
+                    //checkAndUpdateDevice(true);
+                    session_jhz_test_update_session(true);
                     break;
                 case Action_GET_RUNNING_TASK:
                     Action_GETRUNNINGTASK();
@@ -652,9 +659,26 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         }
     }
 
+    private  void session_jhz_test_update_session(boolean startAgainFlag) {
+        TTaskInterface tTask = tTaskManager.getObjectByName(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
+        if (tTask == null) {
+            MMLog.i(TAG, "NOT FOUND TASK SESSION_UPDATE_JHZ_TEST_UPDATE_NAME!!");
+            return;
+        }
+        //if (EmptyString(properties.getString("product_name", null))) return;
+        if (!tTask.isBusy()) {
+            ((TRequestEventInterface) (tTask)).setRequestParameter(getRequestJSON());
+            if (startAgainFlag)
+                ((TTaskInterface) (tTask)).startAgainDelayed(2 * 60000);
+            else
+                ((TTaskInterface) (tTask)).startDelayed(2 * 60000);
+        }
+    }
+
     private void onNetStatusChanged() {
         if (tTaskManager != null && networkInformation != null) {
-            checkAndUpdateDevice(false);
+            //checkAndUpdateDevice(false);
+            session_jhz_test_update_session(false);
         }
     }
 
