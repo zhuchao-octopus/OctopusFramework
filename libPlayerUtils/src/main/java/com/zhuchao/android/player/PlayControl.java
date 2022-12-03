@@ -22,7 +22,6 @@ public abstract class PlayControl {
     protected int DefaultVolumeValue = 50;
     protected PlayerStatusInfo playerStatusInfo;
 
-
     public PlayControl(Context context, PlayerCallback callback) {
         mContext = context;
         playerEventCallBack = callback;
