@@ -1,0 +1,60 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+
+ext {
+    GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
+    PUBLISH_GROUP_ID = 'com.zhuchao.android'
+    PUBLISH_ARTIFACT_ID = 'libFBaseUitls'
+    PUBLISH_VERSION = '1.8'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+            }
+        }
+        repositories {
+            maven {
+                allowInsecureProtocol true
+                url GITHUB_REPO_PATH
+            }
+        }
+    }
+}
+
+android {
+    compileSdkVersion 33
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 33
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        ndkBuild {
+            //path 'src/main/jni/Android.mk'
+        }
+    }
+    namespace 'com.zhuchao.android.libfileutils'
+}
+
+task copyJniLibs(type: Copy) {
+    //from fileTree(dir: file('build/intermediates/ndkbuild/debug/obj/local'), include: '*/*.so')
+    //into file('src/main/jniLibs')
+}
+
+dependencies {
+    implementation project(path: ':libEventInterface')
+    implementation('androidx.appcompat:appcompat:1.6.0-alpha01')
+    api('androidx.annotation:annotation:1.4.0-alpha02')
+}
