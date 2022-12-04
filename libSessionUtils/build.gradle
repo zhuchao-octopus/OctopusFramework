@@ -47,7 +47,7 @@ android {
 
 dependencies {
     implementation project(path: ':libEventInterface')
-    implementation project(path: ':libFileUitls')
+    implementation project(path: ':libFBaseUitls')
     implementation project(path: ':libJOSUtils')
     implementation project(path: ':libINetUtils')
     implementation project(path: ':libMediaUtils')

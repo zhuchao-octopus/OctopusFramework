@@ -1,53 +1,46 @@
-package com.zhuchao.android.fileutils;
+package com.zhuchao.android.fbase;
 
-import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
-import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
-
-import com.zhuchao.android.eventinterface.NormalCallback;
+import static com.zhuchao.android.fbase.FileUtils.EmptyString;
+import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
+import com.zhuchao.android.eventinterface.FileFingerCallback;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class FilesFinger extends ObjectList {
-    private final String TAG = "FilesFinger";
-    private NormalCallback RequestCallBack = null;
+public class FilesFinder extends ObjectArray{
+    private final String TAG = "FilesFinder";
+    private FileFingerCallback fileFingerCallback = null;
     private int count = 0;
     private boolean stopScan = false;
     private int sleepTime = -1;
-    private List<String> dirList = null;
-    private List<ScanThread> threadPool = null;
-    private long lStart = 0;
+    private final List<String> dirList  = new ArrayList<String>();
+    private final List<ScanThread> threadPool= new ArrayList<ScanThread>();
+    //private long lStart = 0;
     private boolean bNeedProgress = true;
     private boolean bMultiThread = true;
     private long totalSize = 0;
-    private List<String> fileTypes = null;
+    private final List<String> fileTypes = new ArrayList<String>();
 
-    public FilesFinger() {
+    public FilesFinder() {
         super();
         count = 0;
-        RequestCallBack = null;
-        dirList = new ArrayList<String>();
-        threadPool = new ArrayList<ScanThread>();
-        fileTypes = new ArrayList<String>();
+        //fileFingerCallback = null;
     }
 
-    public FilesFinger(NormalCallback requestCallBack) {
+    public FilesFinder(FileFingerCallback fileFingerCallback) {
         super();
         count = 0;
-        RequestCallBack = requestCallBack;
-        dirList = new ArrayList<String>();
-        threadPool = new ArrayList<ScanThread>();
-        fileTypes = new ArrayList<String>();
+        this.fileFingerCallback = fileFingerCallback;
     }
 
     public void setMultiThread(boolean bMultiThread) {
         this.bMultiThread = bMultiThread;
     }
 
-    public void callBack(NormalCallback requestCallBack) {
-        RequestCallBack = requestCallBack;
+    public FilesFinder callBack(FileFingerCallback fileFingerCallback) {
+        this.fileFingerCallback = fileFingerCallback;
+        return this ;
     }
 
     public void setNeedProgress(boolean bNeedProgress) {
@@ -61,44 +54,11 @@ public class FilesFinger extends ObjectList {
     public void addFile(String filePathName) {
         File file = new File(filePathName);
         if (file.exists())
-            addItem(filePathName, file);
-    }
-
-    public void addFile(String fileKey, File file) {
-        addItem(fileKey, file);
-    }
-
-    public void addFile(File file) {
-        addItem(file.getAbsolutePath(), file);
-    }
-
-    public File getFile(String fileKey) {
-        Object obj = getObject(fileKey);
-        if (obj != null)
-            return (File) obj;
-        return null;
-    }
-
-    public File getFile(int Index) {
-        Object obj = getObject(Index);
-        if (obj != null)
-            return (File) obj;
-        return null;
-    }
-
-    public File getRandom() {
-        Object obj = getRandom();
-        if (obj != null)
-            return (File) obj;
-        return null;
+            add(filePathName);
     }
 
     public String getFileName(int Index) {
-        return getName(Index);
-    }
-
-    public HashMap<String, Object> getAllFiles() {
-        return getAll();
+        return (String) get(Index);
     }
 
     public void addType(String extName) {
@@ -108,7 +68,6 @@ public class FilesFinger extends ObjectList {
     private boolean fileTypesMatch(String fileName) {
         if (fileTypes.size() <= 0) return true;
         if (EmptyString(fileName)) return false;
-
         for (String ext : fileTypes) {
             if (ext.equals(".*")) return true;
             if (fileName.endsWith(ext))
@@ -120,7 +79,7 @@ public class FilesFinger extends ObjectList {
     public void fingerFromDir(String dirPath) {
         if (dirList.contains(dirPath))
             return;
-        lStart = System.currentTimeMillis();
+        //lStart = System.currentTimeMillis();
         searchDir(dirPath);
     }
 
@@ -170,11 +129,11 @@ public class FilesFinger extends ObjectList {
                 totalSize = totalSize + file.length();
                 String filePathName = file.getAbsolutePath();// file.getPath();
                 if (fileTypesMatch(filePathName)) {
-                    addFile(filePathName, file);
+                    addFile(filePathName);
                     if (bNeedProgress) {
                         fileCounter();
-                        if (RequestCallBack != null) {
-                            RequestCallBack.onEventRequest(filePathName, count);
+                        if (fileFingerCallback != null) {
+                            fileFingerCallback.onFileCallback(filePathName,file.length(),count);
                         }
 
                     }
@@ -189,7 +148,6 @@ public class FilesFinger extends ObjectList {
 
     private class ScanThread extends Thread {
         String tag = null;
-
         @Override
         public void run() {
             super.run();
@@ -204,8 +162,8 @@ public class FilesFinger extends ObjectList {
                     //MMLog.log(TAG,"return "+getCount()+ ":" + tag);
                 }
             }
-            if (RequestCallBack != null && threadPool.isEmpty()) {
-                RequestCallBack.onEventRequest("EndTimeElapsed:" + (System.currentTimeMillis() - lStart) + "ms-->" + tag, getCount());
+            if (fileFingerCallback != null && threadPool.isEmpty()) {
+                fileFingerCallback.onFileCallback(null, totalSize,size());
             }
         }
     }
@@ -220,14 +178,6 @@ public class FilesFinger extends ObjectList {
 
     public int getStatus() {
         return sleepTime;
-    }
-
-    public void saveToFile(String fileName) {
-        saveObject(fileName);
-    }
-
-    public void readFromFile(String fileName) {
-        readObject(fileName);
     }
 
     public void clearAll() {

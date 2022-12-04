@@ -14,7 +14,7 @@
             <option value="$PROJECT_DIR$/TestApplication" />
             <option value="$PROJECT_DIR$/libDecodeCore" />
             <option value="$PROJECT_DIR$/libEventInterface" />
-            <option value="$PROJECT_DIR$/libFileUitls" />
+            <option value="$PROJECT_DIR$/libFBaseUitls" />
             <option value="$PROJECT_DIR$/libGPersistUtils" />
             <option value="$PROJECT_DIR$/libICameraController" />
             <option value="$PROJECT_DIR$/libINetUtils" />

@@ -1,7 +1,7 @@
 package com.zhuchao.android.serialport;
 
-import com.zhuchao.android.fileutils.ByteUtils;
-import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fbase.ByteUtils;
+import com.zhuchao.android.fbase.MMLog;
 
 public class TProtocol_Package {
     private final String TAG = "TProtocol_Package";

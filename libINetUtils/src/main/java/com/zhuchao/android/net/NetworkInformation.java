@@ -4,7 +4,7 @@ import static com.zhuchao.android.net.TNetUtils.TAG;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fbase.MMLog;
 
 import org.json.JSONException;
 import org.json.JSONObject;

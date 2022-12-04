@@ -1,13 +1,13 @@
 package com.zhuchao.android;
 
-import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
-import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
+import static com.zhuchao.android.fbase.FileUtils.EmptyString;
+import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
 import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.content.Context;
 
-import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fbase.MMLog;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -17,7 +17,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Locale;
 
 public class TPlatform {
     private static final String TAG = "TPlatform";
@@ -252,7 +251,7 @@ public class TPlatform {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public static void resetDebugLogOnOffByProperty() {
         String sOnOff = GetSystemProperty(MMLog.LOG_SYSTEM_PROPERTY);
-        if (NotEmptyString(sOnOff) && sOnOff.toLowerCase(Locale.ROOT).contains("false")) {
+        if (NotEmptyString(sOnOff) && sOnOff.toLowerCase().contains("false")) {
             MMLog.setDebugOnOff(false);
         } else {
             MMLog.setDebugOnOff(true);

@@ -92,7 +92,7 @@
         android:persistent="true"
         android:networkSecurityConfig="@xml/network_security_config">
         <receiver
-            android:name=".BootBroadCastReceiver"
+            android:name="com.zhuchao.android.wms.BootBroadCastReceiver"
             android:enabled="true"
             android:exported="true"
             tools:ignore="ExtraText">

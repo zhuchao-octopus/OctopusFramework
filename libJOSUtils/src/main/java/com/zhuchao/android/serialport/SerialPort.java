@@ -16,7 +16,7 @@
 
 package com.zhuchao.android.serialport;
 
-import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fbase.MMLog;
 
 import java.io.File;
 import java.io.FileDescriptor;

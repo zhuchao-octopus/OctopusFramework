@@ -1,11 +1,11 @@
-package com.zhuchao.android.watchmanservice;
+package com.zhuchao.android.wms;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.session.TWatchManService;
 
 public class BootBroadCastReceiver extends BroadcastReceiver {

@@ -1,6 +1,7 @@
 package com.zhuchao.android.net;
 
-import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.fbase.FileUtils.EmptyString;
+import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,8 +16,8 @@ import android.os.Looper;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.zhuchao.android.fileutils.FileUtils;
-import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fbase.FileUtils;
+import com.zhuchao.android.fbase.MMLog;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -339,6 +340,9 @@ public class TNetUtils {
         WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         if (wifiManager == null) return "";
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        String wifiMac = wifiInfo.getMacAddress();
+        if(NotEmptyString(wifiMac))
+            return wifiMac.toUpperCase();
         return wifiInfo.getMacAddress();
     }
 

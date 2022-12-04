@@ -1,6 +1,6 @@
 package com.zhuchao.android.session;
 
-import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static java.lang.Thread.MAX_PRIORITY;
 
 import android.content.Context;
@@ -14,14 +14,14 @@ import androidx.annotation.RequiresApi;
 import com.zhuchao.android.eventinterface.HttpCallback;
 import com.zhuchao.android.eventinterface.InvokeInterface;
 import com.zhuchao.android.eventinterface.NormalCallback;
-import com.zhuchao.android.fileutils.DataID;
-import com.zhuchao.android.fileutils.FileUtils;
-import com.zhuchao.android.fileutils.FilesFinger;
-import com.zhuchao.android.fileutils.MMLog;
-import com.zhuchao.android.fileutils.ObjectList;
-import com.zhuchao.android.fileutils.TTask;
-import com.zhuchao.android.fileutils.TTaskInterface;
-import com.zhuchao.android.fileutils.TTaskThreadPool;
+import com.zhuchao.android.fbase.DataID;
+import com.zhuchao.android.fbase.FileUtils;
+import com.zhuchao.android.fbase.FilesFinger;
+import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.ObjectList;
+import com.zhuchao.android.fbase.TTask;
+import com.zhuchao.android.fbase.TTaskInterface;
+import com.zhuchao.android.fbase.TTaskThreadPool;
 import com.zhuchao.android.net.HttpUtils;
 
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public class TTaskManager {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public TTaskManager(Context context) {
         mContext = context;
-        tTaskThreadPool = new TTaskThreadPool(100);
+        tTaskThreadPool = new TTaskThreadPool();
         //TTaskThreadPool_SESSION_UPDATE_TEST_INIT();
         TTaskThreadPool_SESSION_INIT();
     }
@@ -192,147 +192,6 @@ public class TTaskManager {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //copy files
-    public TTask copyDirectory(String fromPath, String toPath) {
-        //final int maxTaskCount = tTaskThreadPool.getCount() + tCount;
-        TTask tTask = tTaskThreadPool.createTask(fromPath);
-        tTask.getProperties().putString("fromPath", fromPath);
-        tTask.getProperties().putString("toPath", toPath);
-        tTask.getProperties().putLong("startTime", System.currentTimeMillis());
-        tTask.getProperties().putInt("status", DataID.TASK_STATUS_PROGRESSING);
-
-        ConcurrentLinkedQueue concurrentLinkedQueue = new ConcurrentLinkedQueue();
-
-        if (!FileUtils.existDirectory(fromPath)) {
-            MMLog.log(TAG, "do not exists fromPath " + fromPath);
-            return tTask;
-        }
-
-        FilesFinger filesFinger = new FilesFinger();
-        filesFinger.callBack(new NormalCallback() {
-            @Override
-            public void onEventRequest(String Result, int Index) {
-                tTask.getProperties().putString("fromFile", Result);
-                tTask.getProperties().putInt("totalCount", Index);
-                tTask.getProperties().putLong("totalSize", filesFinger.getTotalSize());
-                long tick = System.currentTimeMillis() - tTask.getProperties().getLong("startTime");
-                tTask.getProperties().putLong("takeUpTime", tick);
-                Message msg = taskMainLooperHandler.obtainMessage();
-                msg.obj = tTask;
-                taskMainLooperHandler.sendMessage(msg);
-
-                if (Result.startsWith("End")) {
-                    tTask.getProperties().putString("fingerStatus", "fingerEnd");
-                    LockSupport.unpark(tTask);
-                } else {
-                    concurrentLinkedQueue.add(Result);
-                }
-            }
-        });
-
-
-        FileUtils.CheckDirsExists(toPath);
-        FileUtils.setFilePermissions2(toPath);
-        tTask.invoke(new InvokeInterface() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void CALLTODO(String tag) {
-                //MMLog.log(TAG, "tTask start copyDirectory CALLTODO");
-                int taskCount = 0;
-                if (filesFinger.getCount() <= 0) {
-                    //filesFinger.setMultiThread(false);
-                    filesFinger.fingerFromDir(fromPath);
-                    //MMLog.log(TAG, "tTask finger files waiting... " + fromPath);
-                    if (tTask.getProperties().getBoolean("fingerFirst", true))
-                        LockSupport.park(tTask);
-                }
-                //MMLog.log(TAG, "tTask start copying files...");
-                tTask.getProperties().putInt("copiedCount", 0);
-                //Collection<Object> objects = filesFinger.getAllObject();
-                while (true)
-                //for (Object o : objects)
-                {
-                    if ("fingerEnd".equals(tTask.getProperties().getString("fingerStatus"))) {
-                        if (tTask.getProperties().getInt("copiedCount") >= filesFinger.getCount())
-                            break;//等待任务完成
-                    }
-                    //String fromFile = ((File) o).getAbsolutePath();
-                    Object o = concurrentLinkedQueue.poll();
-                    if (o == null) {
-                        if ("fingerEnd".equals(tTask.getProperties().getString("fingerStatus")))
-                            break;
-                        continue;
-                    }
-
-                    String fromFile = o.toString();
-                    String fp = tTask.getProperties().getString("fromPath");
-                    String ff = fromFile;
-                    String tp = tTask.getProperties().getString("toPath");
-                    String sbs = ff.substring(fp.length());
-                    String tf = tp + "/" + sbs;
-                    tf = tf.replace("//", "/");
-
-                    if (!FileUtils.existFile(tf) && FileUtils.existFile(ff)) {
-                        //校验目录 中间存在目录 创建多级目录
-                        String parentDir = FileUtils.getFilePathFromPathName(tf);
-                        FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
-                        FileUtils.setFilePermissions2(parentDir);
-                        //MMLog.log(TAG,"copy file from "+ff +" to "+tf);
-                        tTask.getProperties().putString("toFile", tf);
-                        boolean bRet = false;
-                        int copyMethod = tTask.getProperties().getInt("copyMethod", 0);
-                        if (copyMethod == 1) {
-                            long tickCount = System.currentTimeMillis();
-                            bRet = FileUtils.pathCopy(ff, tf);
-                            MMLog.log(TAG, "pathCopy take up time: " + (System.currentTimeMillis() - tickCount) + " / " + FileUtils.getFileSize(tf));
-                        } else if (copyMethod == 2)
-                            bRet = FileUtils.bufferCopyFile(ff, tf);
-                        else if (copyMethod == 3)
-                            bRet = FileUtils.streamCopy(ff, tf);
-                        else {
-                            long tickCount = System.currentTimeMillis();
-                            //MMLog.log(TAG,"channelTransferTo take up time: "+ tickCount);
-                            bRet = FileUtils.channelTransferTo(ff, tf);
-                            MMLog.log(TAG, "channelTransferTo take up time: " + (System.currentTimeMillis() - tickCount));
-                            //MMLog.log(TAG,"channelTransferTo take up time2: "+(System.currentTimeMillis() - tTask.getProperties().getLong("startTime")));
-                        }
-
-                        if (bRet) {
-                            FileUtils.setFilePermissions2(tf);
-                        } else {
-                            MMLog.log(TAG, "tTaskCopyFile copy file failed -->" + ff + " to " + tf);
-                            FileUtils.deleteFile(tf);
-                        }
-                    }
-
-                    int CCount = tTask.getProperties().getInt("copiedCount", 0);
-                    ++CCount;
-                    tTask.getProperties().putInt("copiedCount", CCount);
-                    long tick = System.currentTimeMillis() - tTask.getProperties().getLong("startTime");
-                    tTask.getProperties().putLong("takeUpTime", tick);
-
-                    Message msg = taskMainLooperHandler.obtainMessage();
-                    msg.obj = tTask;
-                    taskMainLooperHandler.sendMessage(msg);
-                }//for (Object o : objects)
-
-                /////////////////////////////////////////////////////////////////////////////////////
-                //完成
-                tTask.getProperties().putLong("endTime", System.currentTimeMillis());
-                long tick = System.currentTimeMillis() - tTask.getProperties().getLong("startTime");
-                tTask.getProperties().putLong("takeUpTime", tick);
-
-                Message msg = taskMainLooperHandler.obtainMessage();
-                msg.obj = tTask;
-                tTask.getProperties().putInt("status", DataID.TASK_STATUS_FINISHED_STOP);
-                taskMainLooperHandler.sendMessage(msg);
-                tTask.free();
-                filesFinger.free();
-                //MMLog.log(TAG, "");
-            }
-        });
-        return tTask;
-    }
-
     public TTask copyDirectory(String fromPath, String toPath, int tCount) {
         final int maxTaskCount = tTaskThreadPool.getCount() + tCount;
         TTask tTask = tTaskThreadPool.createTask(fromPath);
@@ -341,29 +200,7 @@ public class TTaskManager {
         tTask.getProperties().putLong("startTime", System.currentTimeMillis());
         tTask.getProperties().putInt("status", DataID.TASK_STATUS_PROGRESSING);
         ConcurrentLinkedQueue concurrentLinkedQueue = new ConcurrentLinkedQueue();
-
         FilesFinger filesFinger = new FilesFinger();
-        filesFinger.callBack(new NormalCallback() {
-            @Override
-            public void onEventRequest(String Result, int Index) {
-                tTask.getProperties().putString("fromFile", Result);
-                tTask.getProperties().putInt("totalCount", Index);
-                tTask.getProperties().putLong("totalSize", filesFinger.getTotalSize());
-                long tick = System.currentTimeMillis() - tTask.getProperties().getLong("startTime");
-                tTask.getProperties().putLong("takeUpTime", tick);
-                Message msg = taskMainLooperHandler.obtainMessage();
-                msg.obj = tTask;
-                taskMainLooperHandler.sendMessage(msg);
-
-                if (Result.startsWith("End")) {
-                    tTask.getProperties().putString("fingerStatus", "fingerEnd");
-                    LockSupport.unpark(tTask);
-                } else {
-                    concurrentLinkedQueue.add(Result);
-                }
-            }
-        });
-
         if (!FileUtils.existDirectory(fromPath)) {
             MMLog.log(TAG, "do not exists fromPath " + fromPath);
             return tTask;

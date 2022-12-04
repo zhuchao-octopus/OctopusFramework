@@ -1,8 +1,8 @@
 package com.zhuchao.android.video;
 
 
-import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
-import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
+import static com.zhuchao.android.fbase.FileUtils.EmptyString;
+import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 import static com.zhuchao.android.player.PlayerManager.MPLAYER;
 
 import android.content.Context;
@@ -17,10 +17,10 @@ import com.zhuchao.android.eventinterface.InvokeInterface;
 import com.zhuchao.android.eventinterface.PlaybackEvent;
 import com.zhuchao.android.eventinterface.PlayerCallback;
 import com.zhuchao.android.eventinterface.PlayerStatusInfo;
-import com.zhuchao.android.fileutils.FileUtils;
-import com.zhuchao.android.fileutils.MMLog;
-import com.zhuchao.android.fileutils.MediaFile;
-import com.zhuchao.android.fileutils.TTask;
+import com.zhuchao.android.fbase.FileUtils;
+import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.MediaFile;
+import com.zhuchao.android.fbase.TTask;
 import com.zhuchao.android.persist.SPreference;
 import com.zhuchao.android.player.PlayControl;
 import com.zhuchao.android.player.PlayerManager;
@@ -615,8 +615,7 @@ public class OMedia implements Serializable, PlayerCallback {
             bf = true;//MediaFile.isMediaFile(movie.getsUrl());
         else if (NotEmptyString(cachePath) && FileUtils.existFile(cachePath + "/" + movie.getName()))
             bf = MediaFile.isMediaFile(cachePath + "/" + movie.getName());
-        //else if (FileUtils.getExtNameFromPathName(movie.getsUrl().toLowerCase(Locale.ROOT).equals("flv")))
-        //   bf = true;
+
         return bf;
     }
 

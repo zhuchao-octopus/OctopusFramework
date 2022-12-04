@@ -1,6 +1,6 @@
 package com.zhuchao.android.player;
 
-import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 
 import com.zhuchao.android.eventinterface.PlaybackEvent;
 import com.zhuchao.android.eventinterface.PlayerCallback;
-import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fbase.MMLog;
 
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;

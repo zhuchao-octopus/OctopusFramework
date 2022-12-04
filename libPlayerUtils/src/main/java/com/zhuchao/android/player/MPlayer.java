@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 
 import com.zhuchao.android.eventinterface.PlaybackEvent;
 import com.zhuchao.android.eventinterface.PlayerCallback;
-import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fbase.MMLog;
 
 import java.io.FileDescriptor;
 import java.io.IOException;

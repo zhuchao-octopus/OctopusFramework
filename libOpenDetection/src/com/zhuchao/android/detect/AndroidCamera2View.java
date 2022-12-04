@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.AttributeSet;
 
-import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fbase.MMLog;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.JavaCamera2View;

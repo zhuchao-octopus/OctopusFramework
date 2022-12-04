@@ -1,11 +1,11 @@
 package com.zhuchao.android.serialport;
 
-import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 
-import com.zhuchao.android.fileutils.TCourierEventListener;
-import com.zhuchao.android.fileutils.EventCourier;
-import com.zhuchao.android.fileutils.DataID;
-import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fbase.TCourierEventListener;
+import com.zhuchao.android.fbase.EventCourier;
+import com.zhuchao.android.fbase.DataID;
+import com.zhuchao.android.fbase.MMLog;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -3,8 +3,8 @@ package com.zhuchao.android.session;
 import com.zhuchao.android.eventinterface.HttpCallback;
 import com.zhuchao.android.eventinterface.InvokeInterface;
 import com.zhuchao.android.eventinterface.TaskCallback;
-import com.zhuchao.android.fileutils.DataID;
-import com.zhuchao.android.fileutils.TTask;
+import com.zhuchao.android.fbase.DataID;
+import com.zhuchao.android.fbase.TTask;
 import com.zhuchao.android.net.HttpUtils;
 
 public class TNetTask extends TTask implements InvokeInterface {

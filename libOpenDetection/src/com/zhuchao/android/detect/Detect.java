@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.zhuchao.android.eventinterface.NormalCallback;
-import com.zhuchao.android.fileutils.MMLog;
+import com.zhuchao.android.fbase.MMLog;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;

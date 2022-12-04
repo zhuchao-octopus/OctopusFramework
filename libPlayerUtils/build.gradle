@@ -52,11 +52,10 @@ dependencies {
     //compileOnly files('libs/libvlc-armv7-3.1.0.aar')
     compileOnly files('libs/libvlc-all-3.5.0-eap8.aar')
     //compileOnly 'org.videolan.android:libvlc-all:3.5.0-eap8'
-    implementation project(path: ':libEventInterface')
     implementation project(path: ':libDecodeCore')
+    implementation project(path: ':libEventInterface')
+    implementation project(path: ':libFBaseUitls')
     implementation project(path: ':libINetUtils')
-
-    implementation project(path: ':libFileUitls')
     implementation project(path: ':libJOSUtils')
 
 }

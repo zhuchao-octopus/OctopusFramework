@@ -14,13 +14,13 @@
 
 package com.zhuchao.android.video;
 
-import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
+import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 
 import com.zhuchao.android.eventinterface.NormalCallback;
-import com.zhuchao.android.fileutils.DataID;
-import com.zhuchao.android.fileutils.FileUtils;
-import com.zhuchao.android.fileutils.MMLog;
-import com.zhuchao.android.fileutils.MediaFile;
+import com.zhuchao.android.fbase.DataID;
+import com.zhuchao.android.fbase.FileUtils;
+import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.MediaFile;
 
 import java.io.File;
 import java.util.ArrayList;

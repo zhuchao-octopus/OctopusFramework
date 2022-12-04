@@ -59,6 +59,6 @@ dependencies {
     //implementation files('libs\\javalib.jar')
     implementation files('libs/javalib.jar')
     implementation project(path: ':libEventInterface')
-    implementation project(path: ':libFileUitls')
+    implementation project(path: ':libFBaseUitls')
 }
 

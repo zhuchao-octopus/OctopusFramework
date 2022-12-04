@@ -1,7 +1,7 @@
 package com.zhuchao.android.session;
 
-import static com.zhuchao.android.fileutils.FileUtils.EmptyString;
-import static com.zhuchao.android.fileutils.FileUtils.NotEmptyString;
+import static com.zhuchao.android.fbase.FileUtils.EmptyString;
+import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
 import android.app.ActivityManager;
 import android.app.Service;
@@ -17,13 +17,13 @@ import android.util.Log;
 import com.zhuchao.android.TPlatform;
 import com.zhuchao.android.eventinterface.InvokeInterface;
 import com.zhuchao.android.eventinterface.TRequestEventInterface;
-import com.zhuchao.android.fileutils.DataID;
-import com.zhuchao.android.fileutils.FileUtils;
-import com.zhuchao.android.fileutils.MMLog;
-import com.zhuchao.android.fileutils.TAppUtils;
-import com.zhuchao.android.fileutils.TTask;
-import com.zhuchao.android.fileutils.TTaskInterface;
-import com.zhuchao.android.fileutils.ThreadUtils;
+import com.zhuchao.android.fbase.DataID;
+import com.zhuchao.android.fbase.FileUtils;
+import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.TAppUtils;
+import com.zhuchao.android.fbase.TTask;
+import com.zhuchao.android.fbase.TTaskInterface;
+import com.zhuchao.android.fbase.ThreadUtils;
 import com.zhuchao.android.net.NetworkInformation;
 import com.zhuchao.android.net.TNetUtils;
 
@@ -37,7 +37,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Locale;
 
 /*第一种方式：通过StartService启动Service
  通过startService启动后，service会一直无限期运行下去，只有外部调用了stopService()或stopSelf()方法时，该Service才会停止运行并销毁。
@@ -410,7 +409,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             MMLog.log(TAG, "file does not exists! --->" + filePath);
             return;
         }
-        if (!filePath.toLowerCase(Locale.ROOT).endsWith(".apk")) {
+        if (!filePath.toLowerCase().endsWith(".apk")) {
             MMLog.log(TAG, "file is not a valid apk file! --->" + filePath);
             return;
         }

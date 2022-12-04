@@ -4,12 +4,13 @@ import com.zhuchao.android.eventinterface.HttpCallback;
 import com.zhuchao.android.eventinterface.InvokeInterface;
 import com.zhuchao.android.eventinterface.TRequestEventInterface;
 import com.zhuchao.android.eventinterface.TaskCallback;
-import com.zhuchao.android.fileutils.DataID;
-import com.zhuchao.android.fileutils.ObjectList;
-import com.zhuchao.android.fileutils.TTask;
-import com.zhuchao.android.fileutils.TTaskInterface;
+import com.zhuchao.android.fbase.DataID;
+import com.zhuchao.android.fbase.ObjectList;
+import com.zhuchao.android.fbase.TTask;
+import com.zhuchao.android.fbase.TTaskInterface;
 import com.zhuchao.android.net.HttpUtils;
 
+//Session0 本身不是一个基于Thread的TTask，而是一个实现了指向TTask的接口，在这里最终指向内部一个TTask实例。
 public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeInterface {
     private final String TAG = "UpdateSession";
     private String SessionName;
@@ -19,7 +20,7 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
     private static final TTask tTask = new TTask(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
 
     public Session0() {
-        SessionName = DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME;
+        SessionName = tTask.getTTag();
         tTask.invoke(this);
     }
 
