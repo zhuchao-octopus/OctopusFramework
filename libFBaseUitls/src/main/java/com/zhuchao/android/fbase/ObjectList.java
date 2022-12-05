@@ -2,12 +2,16 @@ package com.zhuchao.android.fbase;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 //内部以链表作为底层实现的集合在执行插入，删除操作时有较好的性能
 public class ObjectList {
@@ -246,6 +250,25 @@ public class ObjectList {
         } catch (IOException | ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+    }
+
+    public void saveToFile(String filePathName)
+    {
+        try {
+            String line = System.getProperty("line.separator");
+            StringBuffer stringBuffer = new StringBuffer();
+            FileWriter fw = new FileWriter(filePathName, true);
+            Set set = FHashMap.entrySet();
+            Iterator iterator = set.iterator();
+            while(iterator.hasNext()){
+                Map.Entry entry = (Map.Entry)iterator.next();
+                stringBuffer.append(entry.getKey()+" : "+entry.getValue()).append(line);
+            }
+            fw.write(stringBuffer.toString());
+            fw.close();
+        } catch (IOException e) {
+           MMLog.e(TAG,e.getMessage()); //e.printStackTrace();
         }
     }
 }

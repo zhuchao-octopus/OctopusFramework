@@ -24,6 +24,15 @@ public class TUartFile extends TDevice implements TCourierEventListener {
     private static String frame_end_hex = "7E";
     private static String f_separator = " ";
     private TCourierEventListener deviceEventListener = null;
+    private long writeDelayTime_millis = 0;
+
+    public long getWriteDelayTime() {
+        return writeDelayTime_millis;
+    }
+
+    public void setWriteDelayTime(long millis) {
+        this.writeDelayTime_millis = millis;
+    }
 
     public TUartFile(String devicePath, int baudrate) {
         if (EmptyString(devicePath) || (baudrate <= 0)) {
@@ -83,11 +92,19 @@ public class TUartFile extends TDevice implements TCourierEventListener {
             MMLog.d(TAG, "no data to write ");
             return;
         }
+        if(writeDelayTime_millis > 0)
+        {
+            try {
+                Thread.sleep(writeDelayTime_millis);
+            } catch (InterruptedException e) {
+                //e.printStackTrace();
+            }
+        }
         try {
             if (serialPort.getOutputStream() != null) {
                 serialPort.getOutputStream().write(bytes);
                 serialPort.getOutputStream().flush();
-                MMLog.d(TAG, "device write data " + BufferToHexStr(bytes, " ") + " " + toDeviceString());
+                MMLog.d(TAG, "uart write data: " + BufferToHexStr(bytes, " ") + " " + toDeviceString());
             }
         } catch (IOException e) {
             MMLog.d(TAG, "device write failed " + e.toString());

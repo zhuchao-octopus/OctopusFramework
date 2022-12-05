@@ -77,6 +77,15 @@ public class TCourierEventBus implements InvokeInterface {
         }
     }
 
+    public void postDelay(EventCourier eventCourier,long millis)
+    {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            //e.printStackTrace();
+        }
+        post(eventCourier);
+    }
     @Override
     public void CALLTODO(String tag) {
         //MMLog.log(TAG,"CALLTODO "+ keepDoing);
