@@ -1,16 +1,14 @@
 package com.zhuchao.android.fbase;
 
-import androidx.annotation.NonNull;
-
 import java.util.ArrayList;
-import java.util.Collection;
 
 
-public class ObjectArray extends ArrayList{
+public class ObjectArray<E> extends ArrayList<E>{
     private final String TAG = "ObjectArray";
 
     public ObjectArray() {
     }
+
 
     public void print()
     {

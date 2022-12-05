@@ -616,10 +616,9 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     }
 
     private static String getFWVersionName() {
-        String version = Build.MODEL + ","
+        return Build.MODEL + ","
                 + Build.VERSION.SDK_INT + ","
                 + Build.VERSION.RELEASE;
-        return version;
     }
 
     private String getRequestJSON() {

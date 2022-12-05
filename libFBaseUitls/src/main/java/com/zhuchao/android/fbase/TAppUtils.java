@@ -465,10 +465,10 @@ public class TAppUtils {
         }
     }
 
-    public static ObjectArray getRunningProcess(Context context) {
+    public static ObjectArray<String> getRunningProcess(Context context) {
         ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> mList = mActivityManager.getRunningAppProcesses();
-        ObjectArray objectArray = new ObjectArray();
+        ObjectArray<String> objectArray = new ObjectArray<String>();
         //ArrayList<Integer> arrayList = new ArrayList<>();
         for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : mList) {
             objectArray.add(runningAppProcessInfo.processName);
