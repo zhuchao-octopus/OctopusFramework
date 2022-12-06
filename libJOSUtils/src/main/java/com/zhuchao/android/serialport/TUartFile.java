@@ -2,10 +2,10 @@ package com.zhuchao.android.serialport;
 
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 
-import com.zhuchao.android.fbase.TCourierEventListener;
-import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.DataID;
+import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.TCourierEventListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+//实现总线接口，接收异步总线写入
 public class TUartFile extends TDevice implements TCourierEventListener {
     private final String TAG = "TUartFile";
     private SerialPort serialPort = null;
@@ -23,7 +24,7 @@ public class TUartFile extends TDevice implements TCourierEventListener {
     private static int frame_size = 9;
     private static String frame_end_hex = "7E";
     private static String f_separator = " ";
-    private TCourierEventListener deviceEventListener = null;
+    private TCourierEventListener deviceReadingEventListener = null;
     private long writeDelayTime_millis = 0;
 
     public long getWriteDelayTime() {
@@ -45,7 +46,7 @@ public class TUartFile extends TDevice implements TCourierEventListener {
                     .stopBits(1) // 停止位，默认1；1:1位停止位；2:2位停止位
                     .parity(0) // 校验位；0:无校验位(NONE，默认)；1:奇校验位(ODD);2:偶校验位(EVEN)
                     .build();
-            MMLog.log(TAG, "device open successfully," + toDeviceString());
+            MMLog.log(TAG, "device open successfully " + toDeviceString());
         } catch (IOException e) {
             //e.printStackTrace();
             MMLog.e(TAG, "getSerialPort() returns null " + e.toString() + "," + devicePath + " " + baudrate);
@@ -83,53 +84,25 @@ public class TUartFile extends TDevice implements TCourierEventListener {
         }
     }
 
-    public void writeBytes(byte[] bytes) {
-        if (!isReadyPooling()) {
-            MMLog.d(TAG, "device does not work ");
-            return;
-        }
-        if (bytes.length <= 0) {
-            MMLog.d(TAG, "no data to write ");
-            return;
-        }
-        if(writeDelayTime_millis > 0)
-        {
-            try {
-                Thread.sleep(writeDelayTime_millis);
-            } catch (InterruptedException e) {
-                //e.printStackTrace();
-            }
-        }
-        try {
-            if (serialPort.getOutputStream() != null) {
-                serialPort.getOutputStream().write(bytes);
-                serialPort.getOutputStream().flush();
-                MMLog.d(TAG, "uart write data: " + BufferToHexStr(bytes, " ") + " " + toDeviceString());
-            }
-        } catch (IOException e) {
-            MMLog.d(TAG, "device write failed " + e.toString());
-        }
-    }
-
     private void dispatchCourier(EventCourier eventCourier) {
-        if (deviceEventListener != null) {//处理一帧数据
+        if (deviceReadingEventListener != null) {//处理一帧数据
             TProtocol_Package tProtocol_package = new TProtocol_Package();
             tProtocol_package.parse(eventCourier.getDatas());
             eventCourier.setObj(tProtocol_package);
-            deviceEventListener.onCourierEvent(eventCourier);
+            deviceReadingEventListener.onCourierEvent(eventCourier);
         }
     }
 
     public void callback(TCourierEventListener deviceEventListener) {
-        this.deviceEventListener = deviceEventListener;
+        this.deviceReadingEventListener = deviceEventListener;
     }
 
-    public void registerCallback(TCourierEventListener deviceEventListener) {
-        this.deviceEventListener = deviceEventListener;
+    public void registerReadingCallback(TCourierEventListener deviceEventListener) {
+        this.deviceReadingEventListener = deviceEventListener;
     }
 
     public void registerReceivedCallback(TCourierEventListener deviceEventListener) {
-        this.deviceEventListener = deviceEventListener;
+        this.deviceReadingEventListener = deviceEventListener;
     }
 
     public boolean isReadyPooling() {
@@ -189,13 +162,46 @@ public class TUartFile extends TDevice implements TCourierEventListener {
         return " ";
     }
 
+    private void writeBytes(byte[] bytes) {
+        if (!isReadyPooling()) {
+            MMLog.d(TAG, "device does not work ");
+            return;
+        }
+        if (bytes.length <= 0) {
+            MMLog.d(TAG, "no data to write ");
+            return;
+        }
+
+        try {
+            if (serialPort.getOutputStream() != null) {
+                serialPort.getOutputStream().write(bytes);
+                serialPort.getOutputStream().flush();
+                MMLog.d(TAG, "uart write data: " + BufferToHexStr(bytes, " ") + " " + toDeviceString());
+            }
+        } catch (IOException e) {
+            MMLog.d(TAG, "device write failed " + e.toString());
+        }
+    }
+
+    public void writeBytesWait(byte[] bytes) {
+        writeBytes(bytes);
+        //写入后休眠等待外部设备,
+        if (writeDelayTime_millis > 0) {
+            try {
+                Thread.sleep(writeDelayTime_millis);
+            } catch (InterruptedException ignored) {
+            }
+        }
+    }
+
     @Override
     public synchronized boolean onCourierEvent(EventCourier eventCourier) {
         if (serialPort == null) return false;
         if (eventCourier.getId() == DataID.DEVICE_EVENT_WRITE
                 && eventCourier.getTag().equals(serialPort.getDevice().getAbsolutePath())) {
-            if (eventCourier.getDatas() != null)
-                writeBytes(eventCourier.getDatas());
+            if (eventCourier.getDatas() != null) {
+                writeBytesWait(eventCourier.getDatas());
+            }
             return true;
         }
         return false;
