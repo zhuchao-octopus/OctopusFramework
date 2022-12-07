@@ -6,7 +6,7 @@ public class EventCourier {
     private int id;
     private byte[] datas;
     private Object obj;
-    private String fromClass;
+    private final String fromClass;
 
     public EventCourier(String tag, int id) {
         this.tag = tag;
