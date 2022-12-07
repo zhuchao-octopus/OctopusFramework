@@ -6,12 +6,14 @@ public class EventCourier {
     private int id;
     private byte[] datas;
     private Object obj;
+    private String fromClass;
 
     public EventCourier(String tag, int id) {
         this.tag = tag;
         this.id = id;
         this.datas = new byte[1];
         this.obj = null;
+        this.fromClass = getClass().getName();
     }
 
     public EventCourier(String tag, int id, byte value) {
@@ -20,6 +22,7 @@ public class EventCourier {
         this.datas = new byte[1];
         this.datas[0] = value;
         this.obj = null;
+        this.fromClass = getClass().getName();
     }
 
     public EventCourier(String tag, int id, int value) {
@@ -27,6 +30,7 @@ public class EventCourier {
         this.id = id;
         this.datas = ByteUtils.intToBytes(value);
         this.obj = null;
+        this.fromClass = getClass().getName();
     }
 
     public EventCourier(String tag, int id, byte[] datas) {
@@ -34,6 +38,7 @@ public class EventCourier {
         this.id = id;
         this.datas = datas;
         this.obj = null;
+        this.fromClass = getClass().getName();
     }
 
     public EventCourier(String tag, int id, Object obj) {
@@ -41,6 +46,7 @@ public class EventCourier {
         this.id = id;
         this.datas = new byte[1];
         this.obj = obj;
+        this.fromClass = getClass().getName();
     }
 
     public EventCourier(String tag, int id, byte[] datas, Object obj) {
@@ -48,6 +54,56 @@ public class EventCourier {
         this.id = id;
         this.datas = datas;
         this.obj = obj;
+        this.fromClass = getClass().getName();
+    }
+
+    public EventCourier(int id) {
+        this.tag = null;
+        this.id = id;
+        this.datas = new byte[1];
+        this.obj = null;
+        this.fromClass = getClass().getName();
+    }
+
+    public EventCourier(int id, byte value) {
+        this.tag = null;
+        this.id = id;
+        this.datas = new byte[1];
+        this.datas[0] = value;
+        this.obj = null;
+        this.fromClass = getClass().getName();
+    }
+
+    public EventCourier(int id, int value) {
+        this.tag = null;
+        this.id = id;
+        this.datas = ByteUtils.intToBytes(value);
+        this.obj = null;
+        this.fromClass = getClass().getName();
+    }
+
+    public EventCourier(int id, byte[] datas) {
+        this.tag = null;
+        this.id = id;
+        this.datas = datas;
+        this.obj = null;
+        this.fromClass = getClass().getName();
+    }
+
+    public EventCourier(int id, Object obj) {
+        this.tag = null;
+        this.id = id;
+        this.datas = new byte[1];
+        this.obj = obj;
+        this.fromClass = getClass().getName();
+    }
+
+    public EventCourier(int id, byte[] datas, Object obj) {
+        this.tag = null;
+        this.id = id;
+        this.datas = datas;
+        this.obj = obj;
+        this.fromClass = getClass().getName();
     }
 
     public String getTag() {
@@ -80,6 +136,10 @@ public class EventCourier {
 
     public void setObj(Object obj) {
         this.obj = obj;
+    }
+
+    public String getFromClass() {
+        return fromClass;
     }
 
     public byte getByte() {

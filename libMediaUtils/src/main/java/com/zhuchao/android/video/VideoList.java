@@ -152,7 +152,7 @@ public class VideoList {
     }
 
     public OMedia findByPath(String fileName) {
-        String md5Key = FileUtils.md5(fileName);
+        String md5Key = FileUtils.MD5(fileName);
         return (OMedia) FHashMap.get(md5Key);
     }
 
@@ -197,7 +197,7 @@ public class VideoList {
     }
 
     public boolean exist(String fileName) {
-        String md5Key = FileUtils.md5(fileName);
+        String md5Key = FileUtils.MD5(fileName);
         return FHashMap.containsKey(md5Key);
     }
 

@@ -1,6 +1,6 @@
 package com.zhuchao.android.fbase;
 
-import static com.zhuchao.android.fbase.FileUtils.md5;
+import static com.zhuchao.android.fbase.FileUtils.MD5;
 
 import com.zhuchao.android.eventinterface.InvokeInterface;
 import com.zhuchao.android.eventinterface.TaskCallback;
@@ -18,21 +18,21 @@ public class TTask extends Thread implements TTaskInterface {
 
     public TTask(String tName) {
         this.tName = tName;
-        this.tTag = md5(tName);
+        this.tTag = MD5(tName);
         this.invokeInterface = null;
         this.properties = new ObjectList();
     }
 
     public TTask(String tName, InvokeInterface invokeInterface) {
         this.tName = tName;
-        this.tTag = md5(tName);
+        this.tTag = MD5(tName);
         this.invokeInterface = invokeInterface;
         this.properties = new ObjectList();
     }
 
     public TTask(String tName, InvokeInterface invokeInterface, TaskCallback TaskCallback) {
         this.tName = tName;
-        this.tTag = md5(tName);
+        this.tTag = MD5(tName);
         this.invokeInterface = invokeInterface;
         this.taskCallback = TaskCallback;
         this.properties = new ObjectList();

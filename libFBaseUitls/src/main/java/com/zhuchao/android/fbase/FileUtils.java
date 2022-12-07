@@ -3,7 +3,6 @@ package com.zhuchao.android.fbase;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -61,6 +60,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class FileUtils {
     private final static String TAG = "FileUtils";
@@ -422,9 +422,41 @@ public class FileUtils {
             return null;
     }
 
-    /**
-     * 判断SD卡是否挂载
-     */
+    public static String getDirBaseExternalStorageDirectory(String myDir) {
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+        if(NotEmptyString(myDir))
+            path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"+myDir;
+        if (existDirectory(path)) {
+            return path;
+        }
+        File file = null;
+        try {
+            file = new File(path);
+            if (file.exists() && file.isFile()) {
+                return null;//是一个已经存在的文件，返回
+            } else {
+                file.mkdirs();//创建目录
+                //MMLog.log(TAG,"make dir = " + path);
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            MMLog.e(TAG, e.toString());
+        }
+        if (file != null)
+            return file.getAbsolutePath();
+        else
+            return null;
+    }
+
+    public static String getDiskCachePath(Context context) {
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                || !Environment.isExternalStorageRemovable()) {
+            return context.getExternalCacheDir().getAbsolutePath();
+        } else {
+            return context.getCacheDir().getAbsolutePath();
+        }
+    }
+
     public static boolean isSDCardAvailable() {
         return Environment.MEDIA_MOUNTED.equals(Environment
                 .getExternalStorageState());
@@ -526,10 +558,12 @@ public class FileUtils {
             getPath = volumeInfoClazz.getMethod("getPath");
             volumes = (List<?>) getVolumes.invoke(mStorageManager);
 
+            assert volumes != null;
             for (Object vol : volumes) {
                 if (vol != null && (boolean) isMountedReadable.invoke(vol) && (int) getType.invoke(vol) == 0) {
                     File path2 = (File) getPath.invoke(vol);
                     String p1 = (String) getBestVolumeDescription.invoke(mStorageManager, vol);
+                    assert path2 != null;
                     String p2 = path2.getPath();
                     USBDiscs.put(p1, p2);
                     rpath = p2;
@@ -543,18 +577,11 @@ public class FileUtils {
         return rpath;
     }
 
-    /**
-     * 获取本机音乐列表
-     *
-     * @return
-     */
     public static List<LMusic> getMusics(Context context) {
         ArrayList<LMusic> musics = new ArrayList<>();
         ContentResolver mContentResolver = context.getContentResolver();
-        Cursor c = null;
-        try {
-            c = mContentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null,
-                    MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+        try (Cursor c = mContentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null,
+                MediaStore.Audio.Media.DEFAULT_SORT_ORDER)) {
 
             while (c.moveToNext()) {
                 String path = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));// 路径
@@ -576,27 +603,14 @@ public class FileUtils {
 
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (c != null) {
-                c.close();
-            }
         }
         return musics;
     }
 
-    /**
-     * 获取本机视频列表
-     *
-     * @return
-     */
     public static List<LVideo> getVideos(Context context) {
         List<LVideo> videos = new ArrayList<LVideo>();
         ContentResolver mContentResolver = context.getContentResolver();
-        Cursor c = null;
-        try {
-            // String[] mediaColumns = { "_id", "_data", "_display_name",
-            // "_size", "date_modified", "duration", "resolution" };
-            c = mContentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Video.Media.DEFAULT_SORT_ORDER);
+        try (Cursor c = mContentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Video.Media.DEFAULT_SORT_ORDER)) {
             while (c.moveToNext()) {
                 String path = c.getString(c.getColumnIndexOrThrow(MediaStore.Video.Media.DATA));// 路径
                 if (!new File(path).exists()) {
@@ -615,10 +629,6 @@ public class FileUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (c != null) {
-                c.close();
-            }
         }
         return videos;
     }
@@ -641,9 +651,7 @@ public class FileUtils {
         List<FileBean> files = new ArrayList<FileBean>();
         ContentResolver mContentResolver = context.getContentResolver();
         // 扫描files文件库
-        Cursor c = null;
-        try {
-            c = mContentResolver.query(MediaStore.Files.getContentUri("external"), new String[]{"_id", "_data", "_size"}, null, null, null);
+        try (Cursor c = mContentResolver.query(MediaStore.Files.getContentUri("external"), new String[]{"_id", "_data", "_size"}, null, null, null)) {
             int dataIndex = c.getColumnIndex(MediaStore.Files.FileColumns.DATA);
             int sizeIndex = c.getColumnIndex(MediaStore.Files.FileColumns.SIZE);
 
@@ -660,26 +668,17 @@ public class FileUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (c != null) {
-                c.close();
-            }
         }
         return files;
     }
 
-    /**
-     * 得到图片文件夹集合
-     */
     public static List<ImgFolderBean> getImageFolders(Context context) {
         List<ImgFolderBean> folders = new ArrayList<ImgFolderBean>();
         ContentResolver mContentResolver = context.getContentResolver();
         // 扫描图片
-        Cursor c = null;
-        try {
-            c = mContentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
-                    MediaStore.Images.Media.MIME_TYPE + "= ? or " + MediaStore.Images.Media.MIME_TYPE + "= ?",
-                    new String[]{"image/jpeg", "image/png"}, MediaStore.Images.Media.DATE_MODIFIED);
+        try (Cursor c = mContentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
+                MediaStore.Images.Media.MIME_TYPE + "= ? or " + MediaStore.Images.Media.MIME_TYPE + "= ?",
+                new String[]{"image/jpeg", "image/png"}, MediaStore.Images.Media.DATE_MODIFIED)) {
             List<String> mDirs = new ArrayList<String>();//用于保存已经添加过的文件夹目录
             while (c.moveToNext()) {
                 @SuppressLint("Range") String path = c.getString(c.getColumnIndex(MediaStore.Images.Media.DATA));// 路径
@@ -697,37 +696,24 @@ public class FileUtils {
                 folderBean.setFistImgPath(path);
                 if (parentFile.list() == null)
                     continue;
-                int count = parentFile.list(new FilenameFilter() {
+                int count = Objects.requireNonNull(parentFile.list(new FilenameFilter() {
                     @Override
                     public boolean accept(File dir, String filename) {
                         return filename.endsWith(".jpeg") || filename.endsWith(".jpg") || filename.endsWith(".png");
                     }
-                }).length;
+                })).length;
 
                 folderBean.setCount(count);
                 folders.add(folderBean);
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (c != null) {
-                c.close();
-            }
         }
         return folders;
     }
 
-    public static String getDiskCachePath(Context context) {
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                || !Environment.isExternalStorageRemovable()) {
-            return context.getExternalCacheDir().getAbsolutePath();
-        } else {
-            return context.getCacheDir().getAbsolutePath();
-        }
-    }
-
     public static List<String> ReadTxtFile(String filePath) {
-        List newList = new ArrayList<String>();
+        List<String> newList = new ArrayList<>();
         try {
             File file = new File(filePath);
             int count = 0;//初始化 key值
@@ -755,20 +741,17 @@ public class FileUtils {
     public static void writeFile(String filePath, String data, boolean append) {
         FileOutputStream out;
         BufferedWriter writer = null;
-        //String Path = getDiskCachePath(context) + "/" + fileName + ".xml";
         File file = new File(filePath);
         if (!file.exists()) {
-            MMLog.log("FilesManager", "Not found file:" + filePath);
+            MMLog.log(TAG, "Not found file:" + filePath);
             return;
         }
         try {
             out = new FileOutputStream(file, append);
             writer = new BufferedWriter(new OutputStreamWriter(out));
             writer.write(data);
-
         } catch (Exception e) {
             e.printStackTrace();
-            //log(Tag, "写入文件失败");
         } finally {
             try {
                 if (writer != null) {
@@ -776,23 +759,20 @@ public class FileUtils {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                //log(Tag, e.getMessage());
             }
         }
     }
 
     // 将字符串写入到文本文件中
-    public static void writeTxtToFile(String strcontent, String filePath, String fileName) {
-        //生成文件夹之后，再生成文件，不然会出错
+    public static void writeTxtToFile(String txtString, String filePath, String fileName) {
         makeFilePath(filePath, fileName);
-
         String strFilePath = filePath + fileName;
         // 每次写入时，都换行写
-        String strContent = strcontent + "\r\n";
+        String strContent = txtString + "\r\n";
         try {
             File file = new File(strFilePath);
             if (!file.exists()) {
-                MMLog.log("TestFile", "Create the file:" + strFilePath);
+                //MMLog.log( TAG,"Create the file:" + strFilePath);
                 file.getParentFile().mkdirs();
                 file.createNewFile();
             }
@@ -801,12 +781,12 @@ public class FileUtils {
             raf.write(strContent.getBytes());
             raf.close();
         } catch (Exception e) {
-            MMLog.log("TestFile", "Error on write File:" + e);
+            MMLog.log(TAG, "Error on write File:" + e);
         }
     }
 
-    private static File makeFilePath(String filePath, String fileName) {
-        File file = null;
+    private static void makeFilePath(String filePath, String fileName) {
+        File file;
         makeDirectory(filePath);
         try {
             file = new File(filePath + fileName);
@@ -814,9 +794,9 @@ public class FileUtils {
                 file.createNewFile();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.e(TAG,e.toString());
         }
-        return file;
     }
 
     private static void makeDirectory(String filePath) {
@@ -827,7 +807,7 @@ public class FileUtils {
                 file.mkdir();
             }
         } catch (Exception e) {
-            MMLog.log("error:", e + "");
+            MMLog.log(TAG, e.toString());
         }
     }
 
@@ -862,11 +842,10 @@ public class FileUtils {
         return Uri.fromFile(new File(filePath));
     }
 
-    @TargetApi(19)
     public static String getImageAbsolutePath(Context context, Uri imageUri) {
         if (context == null || imageUri == null)
             return null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, imageUri)) {
+        if (DocumentsContract.isDocumentUri(context, imageUri)) {
             if (isExternalStorageDocument(imageUri)) {
                 String docId = DocumentsContract.getDocumentId(imageUri);
                 String[] split = docId.split(":");
@@ -925,7 +904,7 @@ public class FileUtils {
         return null;
     }
 
-    public static String md5(String str) {
+    public static String MD5(String str) {
         if (str == null) return "null";
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
@@ -958,49 +937,14 @@ public class FileUtils {
             fis.close();
             byte[] b = md.digest();
             bi = new BigInteger(1, b);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (NoSuchAlgorithmException | IOException e) {
+            //e.printStackTrace();
         }
         if (bi != null)
             return bi.toString(16);
         else
             return "";
     }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is ExternalStorageProvider.
-     */
-    public static boolean isExternalStorageDocument(Uri uri) {
-        return "com.android.externalstorage.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is DownloadsProvider.
-     */
-    public static boolean isDownloadsDocument(Uri uri) {
-        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is MediaProvider.
-     */
-    public static boolean isMediaDocument(Uri uri) {
-        return "com.android.providers.media.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is Google Photos.
-     */
-    public static boolean isGooglePhotosUri(Uri uri) {
-        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
-    }
-
 
     public static void getFiles(String FilePath, List<String> FileList) {
         //List<String> FileList = new ArrayList<String>();
@@ -1054,12 +998,6 @@ public class FileUtils {
         return null;
     }
 
-    /**
-     * object转化为文件
-     *
-     * @param obj
-     * @param fos
-     */
     public static void object2File(Object obj, FileOutputStream fos) {
         ObjectOutputStream oos = null;
         //FileOutputStream fos = null;
@@ -1087,4 +1025,31 @@ public class FileUtils {
         }
     }
 
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is Google Photos.
+     */
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
 }

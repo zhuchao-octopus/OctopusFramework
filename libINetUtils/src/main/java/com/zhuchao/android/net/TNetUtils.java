@@ -466,7 +466,7 @@ public class TNetUtils {
         String deviceID = getCPUSerialCode();
         if (EmptyString(deviceID) || deviceID.equals("0000000000000000")) {
             deviceID = getEthernetMacFromFile();
-            return FileUtils.md5(deviceID);
+            return FileUtils.MD5(deviceID);
         }
         return (deviceID);
     }

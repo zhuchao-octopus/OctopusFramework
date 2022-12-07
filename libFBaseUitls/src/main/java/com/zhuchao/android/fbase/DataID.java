@@ -8,11 +8,11 @@ public class DataID {
     public static final int DB_VERSION = 1;
     //public static final String DB_DIRECTORY = CommonValues.application.getFilesDir().getPath();
     public static final int SESSION_TYPE_GET_MOVIELIST_DEFAULT_PAGESIZE = 100;
-    public static String SESSION_SESSION_ROOT_JHZ = "http://test.jhzdesign.cn:8005/";
-    public static String SESSION_SOURCE_TEST_URL = "http://47.106.172.94:8090/zhuchao/devices/test";
-    public static String SESSION_UPDATE_TEST_INIT = SESSION_SOURCE_TEST_URL;
-    public static String SESSION_UPDATE_JHZ_TEST_UPDATE_NAME = "SESSION_UPDATE_JHZ_ROOT_TEST";
-
+    public static final String SESSION_SESSION_ROOT_JHZ = "http://test.jhzdesign.cn:8005/";
+    public static final String SESSION_SOURCE_TEST_URL = "http://47.106.172.94:8090/zhuchao/devices/test";
+    public static final String SESSION_UPDATE_TEST_INIT = SESSION_SOURCE_TEST_URL;
+    public static final String SESSION_UPDATE_JHZ_TEST_UPDATE_NAME = "SESSION_UPDATE_JHZ_ROOT_TEST";
+    public static final String TASK_STATUS_INTERNAL_ = "_status_";
     //////////////////////////////////////////////////////////////////////
     public static final int SESSION_SOURCE_NONE = -1; //
     public static final int SESSION_SOURCE_ALL = 10; //
@@ -81,11 +81,14 @@ public class DataID {
     public static final int DEVICE_EVENT = 500;
     public static final int DEVICE_EVENT_OPEN = DEVICE_EVENT + 1;
     public static final int DEVICE_EVENT_READ = DEVICE_EVENT_OPEN + 1;
+
     public static final int DEVICE_EVENT_WRITE = DEVICE_EVENT_READ + 1;
-    public static final int DEVICE_EVENT_CLOSE = DEVICE_EVENT_WRITE + 1;
+    public static final int DEVICE_EVENT_UART_WRITE = DEVICE_EVENT_WRITE + 1;
+
+    public static final int DEVICE_EVENT_CLOSE = DEVICE_EVENT_UART_WRITE + 1;
     public static final int DEVICE_EVENT_ERROR = DEVICE_EVENT_CLOSE + 1;
 
-    public static final String TASK_STATUS_INTERNAL_ = "_status_";
+
 
     public static String getRequestUrl(String fromUrl, ObjectList requestParams) {
         StringBuilder builder = new StringBuilder();

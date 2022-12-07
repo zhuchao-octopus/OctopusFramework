@@ -1,5 +1,6 @@
 package com.zhuchao.android.fbase;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -9,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -19,6 +21,10 @@ public class ObjectList {
 
     public ObjectList() {
         //this.FHashMap = ;
+    }
+
+    public int getCount() {
+        return FHashMap.size();
     }
 
     public void addItem(String Name, Object Obj) {
@@ -72,16 +78,20 @@ public class ObjectList {
         return values[generator.nextInt(values.length)];
     }
 
-    public boolean existObject(String Name) {
-        return FHashMap.containsKey(Name);
-    }
-
     public boolean exist(String Name) {
         return FHashMap.containsKey(Name);
     }
 
-    public boolean contains(String Name) {
+    public boolean existObject(String Name) {
         return FHashMap.containsKey(Name);
+    }
+
+    public boolean containsTag(String Name) {
+        return FHashMap.containsKey(Name);
+    }
+
+    public boolean containsObject(Object obj) {
+        return FHashMap.containsValue(obj);
     }
 
     public HashMap<String, Object> getAll() {
@@ -226,16 +236,12 @@ public class ObjectList {
         }
     }
 
-    public int getCount() {
-        return FHashMap.size();
-    }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////////
     public void printAll() {
         for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
             MMLog.log(TAG, m.getKey() + ":" + m.getValue().toString());
         }
     }
-
 
     public void saveObject(String filePath) {
         FileOutputStream outStream = null;
@@ -263,9 +269,32 @@ public class ObjectList {
 
     public void saveToFile(String filePathName) {
         try {
+            String parentDir = FileUtils.getFilePathFromPathName(filePathName);
+            FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
             String line = System.getProperty("line.separator");
             StringBuilder stringBuffer = new StringBuilder();
-            FileWriter fw = new FileWriter(filePathName, true);
+            FileWriter fw = new FileWriter(filePathName);
+
+            Set<Map.Entry<String, Object>> set = FHashMap.entrySet();
+            for (Map.Entry<String, Object> stringObjectEntry : set) {
+                stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
+            }
+            fw.write(stringBuffer.toString());
+            fw.close();
+        } catch (IOException e) {
+            MMLog.e(TAG, e.getMessage()); //e.printStackTrace();
+        }
+    }
+    public void saveToFile() {
+        try {
+            String line = System.getProperty("line.separator");
+            String filePathName = FileUtils.getDirBaseExternalStorageDirectory(null)+"/properties";
+            String parentDir = FileUtils.getFilePathFromPathName(filePathName);
+            FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
+
+            StringBuilder stringBuffer = new StringBuilder();
+            FileWriter fw = new FileWriter(filePathName);
+
             Set<Map.Entry<String, Object>> set = FHashMap.entrySet();
             for (Map.Entry<String, Object> stringObjectEntry : set) {
                 stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);

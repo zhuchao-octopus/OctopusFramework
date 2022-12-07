@@ -1,7 +1,7 @@
 package com.zhuchao.android.fbase;
 
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
-import static com.zhuchao.android.fbase.FileUtils.md5;
+import static com.zhuchao.android.fbase.FileUtils.MD5;
 
 import java.util.Collection;
 
@@ -33,7 +33,7 @@ public class TTaskThreadPool extends ObjectList {
             return null;
         }
 
-        TTask tTask = getTaskByTag(md5(tName));
+        TTask tTask = getTaskByTag(MD5(tName));
         if (tTask != null)//存在直接返回
             return (PTask) tTask;
 
@@ -54,7 +54,7 @@ public class TTaskThreadPool extends ObjectList {
     public TTask getTaskByName(String tName) {
         if (EmptyString(tName))
             return null;
-        return (TTask) getObject(md5(tName));
+        return (TTask) getObject(MD5(tName));
     }
 
     public TTask getTaskByTag(String tag) {
@@ -65,7 +65,7 @@ public class TTaskThreadPool extends ObjectList {
     public <T> T getObjectByName(String tName) {
         if (EmptyString(tName))
             return null;
-        return (T) getObject(md5(tName));
+        return (T) getObject(MD5(tName));
     }
 
     public boolean addTask(TTask tTask) {

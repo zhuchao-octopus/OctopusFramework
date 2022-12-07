@@ -572,7 +572,7 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public String md5() {
-        return FileUtils.md5(movie.getsUrl());
+        return FileUtils.MD5(movie.getsUrl());
     }
 
     private void restorePlay(float position, long Length) {
@@ -593,7 +593,7 @@ public class OMedia implements Serializable, PlayerCallback {
         if (movie == null) return;
         if (context == null) return;
         if (EmptyString(movie.getsUrl())) return;
-        String md5 = FileUtils.md5(movie.getsUrl());
+        String md5 = FileUtils.MD5(movie.getsUrl());
         //SPreference.saveSharedPreferences(mContext, md5, "name", mMovie.getMovieName());
         //SPreference.saveSharedPreferences(mContext, md5, "url", mMovie.getSourceUrl());
         SPreference.putLong(context, md5, "playTime", playTime);
@@ -603,7 +603,7 @@ public class OMedia implements Serializable, PlayerCallback {
         if (movie == null) return;
         if (context == null) return;
         if (EmptyString(movie.getsUrl())) return;
-        String md5 = FileUtils.md5(movie.getsUrl());
+        String md5 = FileUtils.MD5(movie.getsUrl());
         playTime = SPreference.getLong(context, md5, "playTime");
     }
 

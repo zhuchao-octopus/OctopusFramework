@@ -32,6 +32,10 @@ public class TCourierEventBus implements InvokeInterface {
     public void registerEventObserver(String tag, TCourierEventListener courierEventListener) {
         InvokerList.addItem(tag, courierEventListener);
     }
+    public void unRegisterEventObserver(String tag) {
+        //if(InvokerList.containsTag(tag))
+        InvokerList.remove(tag);
+    }
 
     public void postMain(EventCourier eventCourier) {
         try {
