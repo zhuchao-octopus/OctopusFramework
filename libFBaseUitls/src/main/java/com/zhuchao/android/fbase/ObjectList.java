@@ -288,7 +288,7 @@ public class ObjectList {
     public void saveToFile() {
         try {
             String line = System.getProperty("line.separator");
-            String filePathName = FileUtils.getDirBaseExternalStorageDirectory(null)+"/properties";
+            String filePathName = FileUtils.getDirBaseExternalStorageDirectory(".zhuchao")+"/properties";
             String parentDir = FileUtils.getFilePathFromPathName(filePathName);
             FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
 

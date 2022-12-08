@@ -6,7 +6,7 @@ public class EventCourier {
     private int id;
     private byte[] datas;
     private Object obj;
-    private final String fromClass;
+    private String fromClass;
 
     public EventCourier(String tag, int id) {
         this.tag = tag;
@@ -140,6 +140,10 @@ public class EventCourier {
 
     public String getFromClass() {
         return fromClass;
+    }
+
+    public void setFromClass(String fromClass) {
+        this.fromClass = fromClass;
     }
 
     public byte getByte() {

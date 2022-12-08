@@ -81,8 +81,9 @@ public class DataID {
     public static final int DEVICE_EVENT = 500;
     public static final int DEVICE_EVENT_OPEN = DEVICE_EVENT + 1;
     public static final int DEVICE_EVENT_READ = DEVICE_EVENT_OPEN + 1;
+    public static final int DEVICE_EVENT_UART_READ = DEVICE_EVENT_READ + 1;
 
-    public static final int DEVICE_EVENT_WRITE = DEVICE_EVENT_READ + 1;
+    public static final int DEVICE_EVENT_WRITE = DEVICE_EVENT_UART_READ + 1;
     public static final int DEVICE_EVENT_UART_WRITE = DEVICE_EVENT_WRITE + 1;
 
     public static final int DEVICE_EVENT_CLOSE = DEVICE_EVENT_UART_WRITE + 1;

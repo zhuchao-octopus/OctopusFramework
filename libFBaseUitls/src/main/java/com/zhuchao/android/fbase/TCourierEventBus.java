@@ -32,25 +32,32 @@ public class TCourierEventBus implements InvokeInterface {
     public void registerEventObserver(String tag, TCourierEventListener courierEventListener) {
         InvokerList.addItem(tag, courierEventListener);
     }
+
     public void unRegisterEventObserver(String tag) {
         //if(InvokerList.containsTag(tag))
         InvokerList.remove(tag);
     }
 
-    public void postMain(EventCourier eventCourier) {
-        try {
-            if (couriersLockQueueMA)
-                CourierEventsQueueMainB.add(eventCourier);
-            else
-                CourierEventsQueueMainA.add(eventCourier);
+    public ObjectList getInvokerList() {
+        return InvokerList;
+    }
 
-            if (tTask != null && CourierEventsQueueMainA.size() > 0 && !tTask.isAlive()) {
+    public void postMain(EventCourier eventCourier) {
+        if (couriersLockQueueMA)
+            CourierEventsQueueMainB.add(eventCourier);
+        else
+            CourierEventsQueueMainA.add(eventCourier);
+        try {
+            if (tTask != null && !tTask.isAlive()) {
                 keepDoing = true;
                 tTask.start();
-                MMLog.log(TAG, "CourierEventBus start...");
+                //MMLog.log(TAG, "CourierEventBus main start...");
             }
+        } catch (Exception e) {
+            MMLog.log(TAG, "postMain event failed," + e.toString());
+        }
+        try {
             if (tTask != null) {
-                //tTask.notifyAll();
                 LockSupport.unpark(tTask);
             }
         } catch (Exception e) {
@@ -59,17 +66,20 @@ public class TCourierEventBus implements InvokeInterface {
     }
 
     public void post(EventCourier eventCourier) {
+        if (couriersLockQueueA)
+            CourierEventsQueueB.add(eventCourier);
+        else
+            CourierEventsQueueA.add(eventCourier);
         try {
-            if (couriersLockQueueA)
-                CourierEventsQueueB.add(eventCourier);
-            else
-                CourierEventsQueueA.add(eventCourier);
-
-            if (tTask != null && CourierEventsQueueA.size() > 0 && !tTask.isAlive()) {
+            if (tTask != null && !tTask.isAlive()) {
                 keepDoing = true;
                 tTask.start();
-                MMLog.log(TAG, "CourierEventBus start...");
+                //MMLog.log(TAG, "CourierEventBus start...");
             }
+        } catch (Exception e) {
+            MMLog.log(TAG, "post event failed," + e.toString());
+        }
+        try {
             if (tTask != null) {
                 //tTask.notifyAll();
                 LockSupport.unpark(tTask);
@@ -91,6 +101,7 @@ public class TCourierEventBus implements InvokeInterface {
     @Override
     public void CALLTODO(String tag) {
         //MMLog.log(TAG,"CALLTODO "+ keepDoing);
+        MMLog.log(TAG, "Courier Event Bus start...");
         while (keepDoing) {
             //if (CourierEventsQueueA != null && CourierEventsQueueB != null)
             {
@@ -138,6 +149,7 @@ public class TCourierEventBus implements InvokeInterface {
             }
 
         }//while (keepDoing)
+        MMLog.log(TAG, "Courier Event Bus stop...");
     }
 
     private void poolingAB(ArrayList<EventCourier> couriers) {
@@ -153,15 +165,19 @@ public class TCourierEventBus implements InvokeInterface {
                         try {
                             TCourierEventListener tCourierEventListener = (TCourierEventListener) obj;
                             tCourierEventListener.onCourierEvent(eventCourier);
+                            //MMLog.i(TAG,eventCourier.getTag()+","+ eventCourier.getFromClass());
                         } catch (Exception e) {
                             //e.printStackTrace();
                             MMLog.e(TAG, e.getMessage());
                         }
                     }
                 } else {
+                    //MMLog.i(TAG,eventCourier.getTag()+","+ InvokerList.getCount());
+                    //InvokerList.printAll();
                     TCourierEventListener courierEventListener = getCourierEventListener(eventCourier);
                     if (courierEventListener != null) {
                         courierEventListener.onCourierEvent(eventCourier);
+                        //MMLog.i(TAG,eventCourier.getTag()+","+ eventCourier.getFromClass());
                     }
                 }
             }
