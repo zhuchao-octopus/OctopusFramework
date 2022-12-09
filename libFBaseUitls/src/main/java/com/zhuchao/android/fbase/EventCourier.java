@@ -146,6 +146,21 @@ public class EventCourier {
         this.fromClass = fromClass;
     }
 
+    public EventCourier fromClass(String fromClass) {
+        this.fromClass = fromClass;
+        return this;
+    }
+
+    public EventCourier f(String fromClass) {
+        this.fromClass = fromClass;
+        return this;
+    }
+
+    public EventCourier f(Class classzz) {
+        this.fromClass = classzz.getName();
+        return this;
+    }
+
     public byte getByte() {
         if (datas.length > 0)
             return datas[0];
