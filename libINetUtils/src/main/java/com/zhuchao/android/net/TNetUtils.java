@@ -341,7 +341,7 @@ public class TNetUtils {
         if (wifiManager == null) return "";
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         String wifiMac = wifiInfo.getMacAddress();
-        if(NotEmptyString(wifiMac))
+        if (NotEmptyString(wifiMac))
             return wifiMac.toUpperCase();
         return wifiInfo.getMacAddress();
     }

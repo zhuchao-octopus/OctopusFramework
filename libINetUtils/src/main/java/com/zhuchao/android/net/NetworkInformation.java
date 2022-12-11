@@ -2,13 +2,13 @@ package com.zhuchao.android.net;
 
 import static com.zhuchao.android.net.TNetUtils.TAG;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.zhuchao.android.fbase.MMLog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.google.gson.Gson;
 
 public class NetworkInformation {
     boolean isAvailable;
@@ -167,28 +167,26 @@ public class NetworkInformation {
         return str;
     }
 
-    public String regionToJson()
-    {
+    public String regionToJson() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("localIP",localIP);
-            jsonObject.put("internetIP",internetIP);
-            jsonObject.put("country",country);
-            jsonObject.put("regionName",regionName);
-            jsonObject.put("timezone",timezone);
-            jsonObject.put("city",city);
-            jsonObject.put("organization",organization);
-            jsonObject.put("isp",isp);
-            jsonObject.put("lon",lon);
-            jsonObject.put("lat",lat);
+            jsonObject.put("localIP", localIP);
+            jsonObject.put("internetIP", internetIP);
+            jsonObject.put("country", country);
+            jsonObject.put("regionName", regionName);
+            jsonObject.put("timezone", timezone);
+            jsonObject.put("city", city);
+            jsonObject.put("organization", organization);
+            jsonObject.put("isp", isp);
+            jsonObject.put("lon", lon);
+            jsonObject.put("lat", lat);
         } catch (JSONException e) {
             //e.printStackTrace();
         }
         return jsonObject.toString();
     }
 
-    public String toJson()
-    {
+    public String toJson() {
         //JSONObject jsonObject = new JSONObject();
         //jsonObject.put()
         try {
@@ -196,7 +194,7 @@ public class NetworkInformation {
             return gson.toJson(this);
         } catch (JsonSyntaxException e) {
             //e.printStackTrace();
-            MMLog.e(TAG,e.getMessage());
+            MMLog.e(TAG, e.getMessage());
         }
         return "null";
     }

@@ -1,6 +1,10 @@
 package com.zhuchao.android.fbase;
 
-import java.io.File;
+import android.animation.TypeConverter;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -285,10 +289,55 @@ public class ObjectList {
             MMLog.e(TAG, e.getMessage()); //e.printStackTrace();
         }
     }
+
+    public void saveToDir(String dir) {
+        try {
+            FileUtils.CheckDirsExists(Objects.requireNonNull(dir));
+            String filePathName = dir +"/properties";
+            String line = System.getProperty("line.separator");
+            StringBuilder stringBuffer = new StringBuilder();
+            FileWriter fw = new FileWriter(filePathName);
+
+            Set<Map.Entry<String, Object>> set = FHashMap.entrySet();
+            for (Map.Entry<String, Object> stringObjectEntry : set) {
+                stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
+            }
+            fw.write(stringBuffer.toString());
+            fw.close();
+        } catch (IOException e) {
+            MMLog.e(TAG, e.getMessage()); //e.printStackTrace();
+        }
+    }
+
+    public void saveToDirAsJson(String dir) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            FileUtils.CheckDirsExists(Objects.requireNonNull(dir));
+            String filePathName = dir +"/properties";
+            //String line = System.getProperty("line.separator");
+            StringBuilder stringBuffer = new StringBuilder();
+            FileWriter fw = new FileWriter(filePathName);
+            Set<Map.Entry<String, Object>> set = FHashMap.entrySet();
+
+            for (Map.Entry<String, Object> stringObjectEntry : set) {
+                //stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
+                jsonObject.put(((Map.Entry<?, ?>) stringObjectEntry).getKey().toString(),
+                               ((Map.Entry<?, ?>) stringObjectEntry).getValue().toString());
+            }
+            stringBuffer.append(jsonObject.toString());
+            fw.write(stringBuffer.toString());
+            fw.close();
+        } catch (IOException e) {
+            MMLog.e(TAG, e.getMessage()); //e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void saveToFile() {
         try {
             String line = System.getProperty("line.separator");
-            String filePathName = FileUtils.getDirBaseExternalStorageDirectory(".zhuchao")+"/properties";
+            String filePathName = FileUtils.getDirBaseExternalStorageDirectory(".zhuchao") + "/properties";
             String parentDir = FileUtils.getFilePathFromPathName(filePathName);
             FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
 
@@ -305,4 +354,26 @@ public class ObjectList {
             MMLog.e(TAG, e.getMessage()); //e.printStackTrace();
         }
     }
+
+    /*public void saveToCache() {
+        try {
+            String line = System.getProperty("line.separator");
+            //String filePathName = FileUtils.getDirBaseExternalStorageDirectory(".zhuchao") + "/properties";
+            String filePathName = FileUtils.getDiskCachePath().getDirBaseExternalStorageDirectory(".zhuchao") + "/properties";
+            String parentDir = FileUtils.getFilePathFromPathName(filePathName);
+            FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
+
+            StringBuilder stringBuffer = new StringBuilder();
+            FileWriter fw = new FileWriter(filePathName);
+
+            Set<Map.Entry<String, Object>> set = FHashMap.entrySet();
+            for (Map.Entry<String, Object> stringObjectEntry : set) {
+                stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
+            }
+            fw.write(stringBuffer.toString());
+            fw.close();
+        } catch (IOException e) {
+            MMLog.e(TAG, e.getMessage()); //e.printStackTrace();
+        }
+    }*/
 }
