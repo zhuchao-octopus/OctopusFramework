@@ -267,6 +267,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void stop() {
         if (mediaPlayer == null) return;
+        if (!mediaPlayer.isPlaying()) return;
         if (playerStatusInfo.getEventType() == PlaybackEvent.Status_Stopped) return;
         try {
             mediaPlayer.stop();

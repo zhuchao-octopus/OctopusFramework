@@ -291,6 +291,7 @@ public class ObjectList {
     }
 
     public void saveToDir(String dir) {
+        if(FileUtils.EmptyString(dir)) return;
         try {
             FileUtils.CheckDirsExists(Objects.requireNonNull(dir));
             String filePathName = dir +"/properties";
@@ -310,6 +311,7 @@ public class ObjectList {
     }
 
     public void saveToDirAsJson(String dir) {
+        if(FileUtils.EmptyString(dir)) return;
         try {
             JSONObject jsonObject = new JSONObject();
             FileUtils.CheckDirsExists(Objects.requireNonNull(dir));
@@ -322,7 +324,7 @@ public class ObjectList {
             for (Map.Entry<String, Object> stringObjectEntry : set) {
                 //stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
                 jsonObject.put(((Map.Entry<?, ?>) stringObjectEntry).getKey().toString(),
-                               ((Map.Entry<?, ?>) stringObjectEntry).getValue().toString());
+                               ((Map.Entry<?, ?>) stringObjectEntry).getValue());
             }
             stringBuffer.append(jsonObject.toString());
             fw.write(stringBuffer.toString());
