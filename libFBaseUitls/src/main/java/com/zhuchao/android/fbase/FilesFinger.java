@@ -4,12 +4,12 @@ import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
 import com.zhuchao.android.eventinterface.FileFingerCallback;
-import com.zhuchao.android.eventinterface.NormalCallback;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class FilesFinger extends ObjectList {
     private final String TAG = "FilesFinger";
@@ -17,30 +17,31 @@ public class FilesFinger extends ObjectList {
     private int count = 0;
     private boolean stopScan = false;
     private int sleepTime = -1;
-    private List<String> dirList = null;
-    private List<ScanThread> threadPool = null;
-    private long lStart = 0;
+    private final List<String> dirList = new ArrayList<String>();
+    private final List<ScanThread> threadPool = new ArrayList<ScanThread>();
+    private final List<String> fileTypes = new ArrayList<String>();
+    //private long lStart = 0;
     private boolean bNeedProgress = true;
     private boolean bMultiThread = true;
     private long totalSize = 0;
-    private List<String> fileTypes = null;
+
 
     public FilesFinger() {
         super();
         count = 0;
         RequestCallBack = null;
-        dirList = new ArrayList<String>();
-        threadPool = new ArrayList<ScanThread>();
-        fileTypes = new ArrayList<String>();
+        //dirList = new ArrayList<String>();
+        //threadPool = new ArrayList<ScanThread>();
+        //fileTypes = new ArrayList<String>();
     }
 
     public FilesFinger(FileFingerCallback fileFingerCallback) {
         super();
         count = 0;
         RequestCallBack = fileFingerCallback;
-        dirList = new ArrayList<String>();
-        threadPool = new ArrayList<ScanThread>();
-        fileTypes = new ArrayList<String>();
+        //dirList = new ArrayList<String>();
+        //threadPool = new ArrayList<ScanThread>();
+        //fileTypes = new ArrayList<String>();
     }
 
     public void setMultiThread(boolean bMultiThread) {
@@ -49,7 +50,7 @@ public class FilesFinger extends ObjectList {
 
     public FilesFinger callBack(FileFingerCallback fileFingerCallback) {
         RequestCallBack = fileFingerCallback;
-        return this ;
+        return this;
     }
 
     public void setNeedProgress(boolean bNeedProgress) {
@@ -88,13 +89,6 @@ public class FilesFinger extends ObjectList {
         return null;
     }
 
-    public File getRandom() {
-        Object obj = getRandom();
-        if (obj != null)
-            return (File) obj;
-        return null;
-    }
-
     public String getFileName(int Index) {
         return getName(Index);
     }
@@ -105,6 +99,42 @@ public class FilesFinger extends ObjectList {
 
     public void addType(String extName) {
         fileTypes.add(extName);
+    }
+
+    public void stopScan() {
+        stopScan = true;
+    }
+
+    public void sleepScan(int time) {
+        sleepTime = time;
+    }
+
+    public int getStatus() {
+        return sleepTime;
+    }
+
+    public void saveToFile(String fileName) {
+        saveObject(fileName);
+    }
+
+    public void readFromFile(String fileName) {
+        readObject(fileName);
+    }
+
+    private synchronized void fileCounter() {
+        this.count++;
+    }
+
+    public void clearAll() {
+        stopScan();
+        dirList.clear();
+        threadPool.clear();
+        clear();
+        fileTypes.clear();
+    }
+
+    public void free() {
+        clearAll();
     }
 
     private boolean fileTypesMatch(String fileName) {
@@ -122,7 +152,7 @@ public class FilesFinger extends ObjectList {
     public void fingerFromDir(String dirPath) {
         if (dirList.contains(dirPath))
             return;
-        lStart = System.currentTimeMillis();
+        //lStart = System.currentTimeMillis();
         searchDir(dirPath);
     }
 
@@ -152,6 +182,7 @@ public class FilesFinger extends ObjectList {
     }
 
     private void getFileList(File[] files) {
+        if (files == null) return;
         for (File file : files) {
             if (stopScan) break;
             try {
@@ -166,7 +197,7 @@ public class FilesFinger extends ObjectList {
                 if (bMultiThread)
                     searchDir(file.getAbsolutePath());
                 else
-                    getFileList(file.listFiles());
+                    getFileList(Objects.requireNonNull(file.listFiles()));
             } else //if(file.isFile())
             {
                 totalSize = totalSize + file.length();
@@ -176,17 +207,12 @@ public class FilesFinger extends ObjectList {
                     if (bNeedProgress) {
                         fileCounter();
                         if (RequestCallBack != null) {
-                            RequestCallBack.onFileCallback(filePathName,file.length(),count);
+                            RequestCallBack.onFileCallback(filePathName, file.length(), count);
                         }
-
                     }
                 }
             }
         }
-    }
-
-    private synchronized void fileCounter() {
-        this.count++;
     }
 
     private class ScanThread extends Thread {
@@ -207,40 +233,9 @@ public class FilesFinger extends ObjectList {
                 }
             }
             if (RequestCallBack != null && threadPool.isEmpty()) {
-                RequestCallBack.onFileCallback(null, totalSize,getCount());
+                RequestCallBack.onFileCallback(null, totalSize, getCount());
             }
         }
     }
 
-    public void stopScan() {
-        stopScan = true;
-    }
-
-    public void sleepScan(int time) {
-        sleepTime = time;
-    }
-
-    public int getStatus() {
-        return sleepTime;
-    }
-
-    public void saveToFile(String fileName) {
-        saveObject(fileName);
-    }
-
-    public void readFromFile(String fileName) {
-        readObject(fileName);
-    }
-
-    public void clearAll() {
-        stopScan();
-        dirList.clear();
-        threadPool.clear();
-        clear();
-        fileTypes.clear();
-    }
-
-    public void free() {
-        clearAll();
-    }
 }
