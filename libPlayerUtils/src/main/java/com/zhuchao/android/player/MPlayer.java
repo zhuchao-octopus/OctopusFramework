@@ -116,10 +116,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             playerStatusInfo.setEventType(PlaybackEvent.Status_Opening);
             CallbackProgress(0);
             mediaPlayer.setDataSource(fd);
-        } catch (IllegalArgumentException e) {
-            MMLog.e(TAG, "setSource() " + e.toString());
-            playerStatusInfo.setEventType(PlaybackEvent.Status_Error);
-        } catch (IOException e) {
+        } catch (IllegalArgumentException | IOException e) {
             MMLog.e(TAG, "setSource() " + e.toString());
             playerStatusInfo.setEventType(PlaybackEvent.Status_Error);
         } catch (Exception e) {
@@ -661,25 +658,25 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                                 playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
                                 playerStatusInfo.setSourcePrepared(true);
                                 CallbackProgress(0);//给前端seek to 的机会
-                            } catch (Exception e) {
+
+                                if (!mp.isPlaying()) {
+                                    mp.start();
+                                    playerStatusInfo.setEventType(PlaybackEvent.Status_Playing);
+                                    MMLog.log(TAG, "AsyncPlayProcess() start playing... playStatus = " + playerStatusInfo.getEventType());
+                                }
+                            } catch (IllegalStateException e) {
                                 MMLog.e(TAG, "AsyncPlayProcess().getDuration() " + "playStatus = " + playerStatusInfo.getEventType() + " " + e.toString());
                             }
-                            if (!mp.isPlaying()) {
-                                mp.start();
-                                playerStatusInfo.setEventType(PlaybackEvent.Status_Playing);
-                                MMLog.log(TAG, "AsyncPlayProcess() start playing... playStatus = " + playerStatusInfo.getEventType());
-                            }
                         }
-                    });
+                    });//mediaPlayer.setOnPreparedListener...
+                    ///////////////////////////////////////////////////////////////////////////
                     try {
                         mediaPlayer.prepareAsync();
-                    } catch (Exception e) {//不做任何处理交给onError()处理
+                    } catch (IllegalStateException e) {//不做任何处理交给onError()处理
                         MMLog.e(TAG, "AsyncPlayProcess().prepareAsync() " + "playStatus = " + playerStatusInfo.getEventType() + " " + e.toString());
                         if (playerStatusInfo.getEventType() == PlaybackEvent.Status_Buffering)//没有激活onError()
-                            playerStatusInfo.setEventType(PlaybackEvent.Status_Error);//激活错误处理
-                        //onError() 复位后进入end模式跳到下一曲
+                            playerStatusInfo.setEventType(PlaybackEvent.Status_Error);//激活错误处理onError() 复位后进入end模式跳到下一曲
                     }
-
                     break;
                 case PlaybackEvent.Status_Buffering:
                 case PlaybackEvent.Status_Playing:
@@ -692,7 +689,11 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                         MMLog.log(TAG, "source is not prepared can not start to play = " + Status);
                         break;
                     }
-                    mediaPlayer.start();
+                    try {
+                        mediaPlayer.start();
+                    } catch (IllegalStateException e) {
+                        e.printStackTrace();
+                    }
                     playerStatusInfo.setEventType(PlaybackEvent.Status_Playing);
                     break;
                 case PlaybackEvent.Status_Ended:

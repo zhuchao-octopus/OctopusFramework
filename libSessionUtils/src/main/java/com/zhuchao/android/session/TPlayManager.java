@@ -30,7 +30,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     private int magicNumber = 0;
     private Context context;
     private SurfaceView surfaceView = null;
-    private OMedia oMedia = null;
+    private OMedia oMediaPlaying = null;
     private boolean oMediaLoading = false;
     private PlayerCallback callback = null;
     private int playOrder = DataID.PLAY_MANAGER_PLAY_ORDER2;
@@ -52,10 +52,10 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     }
 
     public boolean isPlaying() {
-        if (oMedia == null) {
+        if (oMediaPlaying == null) {
             return false;
         }
-        int sta = oMedia.getPlayStatus();
+        int sta = oMediaPlaying.getPlayStatus();
         if (sta >= PlaybackEvent.Status_Opening && sta <= PlaybackEvent.Status_Playing)
             return true;
         else
@@ -82,64 +82,64 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
         MMLog.log(TAG, "StartPlay--> " + oMedia.getMovie().getsUrl());
         this.oMediaLoading = true;
-        this.oMedia = oMedia;
-        this.oMedia.setMagicNumber(magicNumber);
-        this.oMedia.with(context);
+        this.oMediaPlaying = oMedia;
+        this.oMediaPlaying.setMagicNumber(magicNumber);
+        this.oMediaPlaying.with(context);
         //this.oMedia.setNormalRate();
-        this.oMedia.callback(this);
-        this.oMedia.onView(surfaceView);//set surface view
+        this.oMediaPlaying.callback(this);
+        this.oMediaPlaying.onView(surfaceView);//set surface view
         //this.oMedia.playCache(downloadPath);//set source path
-        this.oMedia.play();
+        this.oMediaPlaying.play();
         this.oMediaLoading = false;
     }
 
     public synchronized void startPlay(String url) {
-        oMedia = getOMediaFromPlayLists(url);// defaultPlayingList.findByPath(url);
-        if (oMedia == null) {
-            oMedia = new OMedia(url);
+        oMediaPlaying = getOMediaFromPlayLists(url);// defaultPlayingList.findByPath(url);
+        if (oMediaPlaying == null) {
+            oMediaPlaying = new OMedia(url);
         }
-        startPlay(oMedia);
+        startPlay(oMediaPlaying);
     }
 
     public synchronized void startPlay(FileDescriptor FD) {
-        oMedia = getOMediaFromPlayLists(FD.toString());// defaultPlayingList.findByPath(FD.toString());
-        if (oMedia == null) {
-            oMedia = new OMedia(FD);
+        oMediaPlaying = getOMediaFromPlayLists(FD.toString());// defaultPlayingList.findByPath(FD.toString());
+        if (oMediaPlaying == null) {
+            oMediaPlaying = new OMedia(FD);
         }
-        startPlay(oMedia);
+        startPlay(oMediaPlaying);
     }
 
     public synchronized void startPlay(AssetFileDescriptor AFD) {
-        oMedia = getOMediaFromPlayLists(AFD.toString());//defaultPlayingList.findByPath(AFD.toString());
-        if (oMedia == null) {
-            oMedia = new OMedia(AFD);
+        oMediaPlaying = getOMediaFromPlayLists(AFD.toString());//defaultPlayingList.findByPath(AFD.toString());
+        if (oMediaPlaying == null) {
+            oMediaPlaying = new OMedia(AFD);
         }
-        startPlay(oMedia);
+        startPlay(oMediaPlaying);
     }
 
     public synchronized void startPlay(Uri uri) {
-        oMedia = getOMediaFromPlayLists(uri.getPath());//defaultPlayingList.findByPath(uri.getPath());
-        if (oMedia == null) {
-            oMedia = new OMedia(uri);
+        oMediaPlaying = getOMediaFromPlayLists(uri.getPath());//defaultPlayingList.findByPath(uri.getPath());
+        if (oMediaPlaying == null) {
+            oMediaPlaying = new OMedia(uri);
         }
-        startPlay(oMedia);
+        startPlay(oMediaPlaying);
     }
 
     public synchronized void stopPlay() {
-        if (oMedia != null) {
-            oMedia.stop();
+        if (oMediaPlaying != null) {
+            oMediaPlaying.stop();
         }
     }
 
     public synchronized void stopFree() {
-        if (oMedia != null) {
-            oMedia.stopFree();
+        if (oMediaPlaying != null) {
+            oMediaPlaying.stopFree();
         }
     }
 
     public synchronized void resumePlay() {
-        if (oMedia != null) {
-            oMedia.resume();
+        if (oMediaPlaying != null) {
+            oMediaPlaying.resume();
         } else {
             autoPlay();
         }
@@ -151,12 +151,12 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             return;
         }
         lStartTick = System.currentTimeMillis();
-        if (oMedia == null) {
+        if (oMediaPlaying == null) {
             autoPlay();
             return;
         }
-        MMLog.log(TAG, "playPause() playStatus = " + oMedia.getPlayStatus());
-        switch (oMedia.getPlayStatus()) {
+        MMLog.log(TAG, "playPause() playStatus = " + oMediaPlaying.getPlayStatus());
+        switch (oMediaPlaying.getPlayStatus()) {
             //case PlaybackEvent.Status_NothingIdle:
             //MMLog.log(TAG, "PlaybackEvent.Status_NothingIdle go next");
             //     playNext();//play next
@@ -166,8 +166,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                 break;
             case PlaybackEvent.Status_Playing:
             case PlaybackEvent.Status_Paused:
-                if (oMedia.getFPlayer() != null && oMedia.getFPlayer().getPlayerStatusInfo().isSourcePrepared())
-                    oMedia.playPause();
+                if (oMediaPlaying.getFPlayer() != null && oMediaPlaying.getFPlayer().getPlayerStatusInfo().isSourcePrepared())
+                    oMediaPlaying.playPause();
                 else
                     autoPlay();
                 break;
@@ -207,8 +207,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     public synchronized void setSurfaceView(@NonNull SurfaceView sfView) {
         this.surfaceView = sfView;
-        if (oMedia != null) {
-            oMedia.setSurfaceView(this.surfaceView);
+        if (oMediaPlaying != null) {
+            oMediaPlaying.setSurfaceView(this.surfaceView);
         }
     }
 
@@ -218,29 +218,29 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     public synchronized void attachSurfaceView(@NonNull SurfaceView sfView) {
         this.surfaceView = sfView;
-        if (oMedia != null) {
-            oMedia.reAttachSurfaceView(surfaceView);
+        if (oMediaPlaying != null) {
+            oMediaPlaying.reAttachSurfaceView(surfaceView);
         }
     }
 
     public void setOption(String option) {
-        if (oMedia != null)
-            oMedia.setOption(option);
+        if (oMediaPlaying != null)
+            oMediaPlaying.setOption(option);
     }
 
     public void setVolume(int var1) {
-        if (oMedia != null)
-            this.oMedia.setVolume(var1);
+        if (oMediaPlaying != null)
+            this.oMediaPlaying.setVolume(var1);
     }
 
     public int getVolume() {
-        if (oMedia != null)
-            return this.oMedia.getVolume();
+        if (oMediaPlaying != null)
+            return this.oMediaPlaying.getVolume();
         return 0;
     }
 
     public OMedia getPlayingMedia() {
-        return oMedia;
+        return oMediaPlaying;
     }
 
     public int getPlayOrder() {
@@ -333,8 +333,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 */
     public void setMagicNumber(int magicNumber) {
         this.magicNumber = magicNumber;
-        if (oMedia != null)
-            oMedia.setMagicNumber(this.magicNumber);
+        if (oMediaPlaying != null)
+            oMediaPlaying.setMagicNumber(this.magicNumber);
     }
 
     public void setAutoPlaySource(int autoPlaySource) {
@@ -354,8 +354,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     }
 
     public int getPlayerStatus() {
-        if (oMedia != null)
-            return oMedia.getPlayStatus();
+        if (oMediaPlaying != null)
+            return oMediaPlaying.getPlayStatus();
         else
             return PlaybackEvent.Status_NothingIdle;
     }
@@ -372,7 +372,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     private OMedia getNextAvailable() {
         Collection<Object> objects = allPlayLists.getAllObject();
-        if (oMedia == null) {
+        if (oMediaPlaying == null) {
             for (Object o : objects) {
                 OMedia oOMedia = ((VideoList) o).getNextAvailable(null);
                 if (oOMedia != null) return oOMedia;
@@ -380,17 +380,31 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             return null;
         }
 
+        OMedia oOMedia = null;
+        OMedia retOMedia = null;
         for (Object o : objects) {
-            OMedia oOMedia = ((VideoList) o).getNextAvailable(oMedia);
-            if (oOMedia != null) return oOMedia;
+            if(oMediaPlaying.equals(oOMedia))//是自己只有一首
+                oOMedia = ((VideoList) o).getNextAvailable(null);//跳到下一个列表
+            else
+               oOMedia = ((VideoList) o).getNextAvailable(oMediaPlaying);
+
+            if (oOMedia != null)
+            {
+                if(oMediaPlaying.equals(oOMedia))//是自己只有一首
+                {
+                    retOMedia = oOMedia;
+                    continue;//多列表搜索下一个
+                }
+                return oOMedia;
+            }
         }
-        return null;
+        return retOMedia;
     }
 
     private OMedia getPreAvailable() {
         //OMedia ooMedia = null;
         Collection<Object> objects = allPlayLists.getAllObject();
-        if (oMedia == null) {
+        if (oMediaPlaying == null) {
             for (Object o : objects) {
                 OMedia oOMedia = ((VideoList) o).getPreAvailable(null);
                 if (oOMedia != null) return oOMedia;
@@ -399,7 +413,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         }
 
         for (Object o : objects) {
-            OMedia oOMedia = ((VideoList) o).getPreAvailable(oMedia);
+            OMedia oOMedia = ((VideoList) o).getPreAvailable(oMediaPlaying);
             if (oOMedia != null) return oOMedia;
         }
         return null;
@@ -484,7 +498,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             case PlaybackEvent.Status_NothingIdle:
                 if (autoPlaySource >= DataID.SESSION_SOURCE_ALL) //立即跳转到收藏列表
                 {
-                    MMLog.log(TAG, "OnEventCallBack.EventType = " + playerStatusInfo.getEventType() + ", " + oMedia.getPathName());
+                    MMLog.log(TAG, "OnEventCallBack.EventType = " + playerStatusInfo.getEventType() + ", " + oMediaPlaying.getPathName());
                     playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                 }
                 break;
@@ -496,11 +510,11 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             case PlaybackEvent.MediaChanged:
                 break;
             case PlaybackEvent.Status_Ended:
-                MMLog.log(TAG, "OnEventCallBack.EventType = Status_Ended, " + oMedia.getPathName());
+                MMLog.log(TAG, "OnEventCallBack.EventType = Status_Ended, " + oMediaPlaying.getPathName());
                 playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                 break;
             case PlaybackEvent.Status_Error:
-                MMLog.log(TAG, "OnEventCallBack.EventType = Status_Error, stop play " + oMedia.getPathName());
+                MMLog.log(TAG, "OnEventCallBack.EventType = Status_Error, stop play " + oMediaPlaying.getPathName());
                 playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                 break;
         }
@@ -531,7 +545,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                 break;
             case DataID.PLAY_MANAGER_PLAY_ORDER4://单曲循环
                 if (!isPlaying())
-                    startPlay(oMedia);
+                    startPlay(oMediaPlaying);
                 break;
             case DataID.PLAY_MANAGER_PLAY_ORDER5://随机播放
                 if (!isPlaying())
@@ -549,7 +563,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             PlayerStatusInfo playerStatusInfo = (PlayerStatusInfo) msg.obj;
-            if (oMedia == null || oMedia.getFPlayer() == null) return;
+            if (oMediaPlaying == null || oMediaPlaying.getFPlayer() == null) return;
             switch (playerStatusInfo.getEventType()) {
                 case PlaybackEvent.Status_NothingIdle:
                 case PlaybackEvent.Status_Opening:
