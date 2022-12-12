@@ -583,7 +583,6 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         } catch (Exception e) {
             MMLog.e(TAG, "freed() " + e.toString());
         }
-
     }
 
     private void freeSurfaceView() {
