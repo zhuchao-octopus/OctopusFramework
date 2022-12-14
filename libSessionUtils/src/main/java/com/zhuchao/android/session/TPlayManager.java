@@ -26,8 +26,6 @@ import java.util.Collection;
 
 public class TPlayManager implements PlayerCallback, NormalCallback {
     private final String TAG = "PlayManager";
-    private final int ACTION_DELAY = 600;
-    private int magicNumber = 0;
     private Context context;
     private SurfaceView surfaceView = null;
     private OMedia oMediaPlaying = null;
@@ -37,6 +35,9 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     private int autoPlaySource = DataID.SESSION_SOURCE_NONE;
     private ObjectList allPlayLists = null;
     private long lStartTick = 0;
+    private final int ACTION_DELAY = 600;
+    private int magicNumber = 0;
+
 
     public TPlayManager(Context mContext, SurfaceView sfView) {
         this.context = mContext;
@@ -267,6 +268,16 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         allPlayLists.clear();
     }
 
+    public int getTotalMediaCount() {
+        if (allPlayLists.getCount() <= 0) return 0;
+        int count = 0;
+        Collection<Object> objects = allPlayLists.getAllObject();
+        for (Object o : objects) {
+           count = count +  ((VideoList) o).getCount();
+        }
+        return count;
+    }
+
     //public synchronized void setPlayingPath(String CachedPath) {
     //    this.playingPath = CachedPath;
     //    defaultPlayingList.loadFromDir(playingPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
@@ -383,14 +394,13 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         OMedia oOMedia = null;
         OMedia retOMedia = null;
         for (Object o : objects) {
-            if(oMediaPlaying.equals(oOMedia))//是自己只有一首
+            if (oMediaPlaying.equals(oOMedia))//是自己只有一首
                 oOMedia = ((VideoList) o).getNextAvailable(null);//跳到下一个列表
             else
-               oOMedia = ((VideoList) o).getNextAvailable(oMediaPlaying);
+                oOMedia = ((VideoList) o).getNextAvailable(oMediaPlaying);
 
-            if (oOMedia != null)
-            {
-                if(oMediaPlaying.equals(oOMedia))//是自己只有一首
+            if (oOMedia != null) {
+                if (oMediaPlaying.equals(oOMedia))//是自己只有一首
                 {
                     retOMedia = oOMedia;
                     continue;//多列表搜索下一个

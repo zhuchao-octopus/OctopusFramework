@@ -132,20 +132,6 @@ public class OMedia implements Serializable, PlayerCallback {
         }
     }
 
-    public OMedia playCache(String cachedPath) {
-        String cachedFile = cachedPath + movie.getName();
-        if (assetFileDescriptor != null)
-            return play(assetFileDescriptor);
-        else if (fileDescriptor != null)
-            return play(fileDescriptor);
-        else if (FileUtils.existFile(cachedFile))//缓存优先与在线播放
-            return play(cachedFile);
-        else if (uri != null)
-            return play(uri);
-        else
-            return play(movie.getsUrl());
-    }
-
     private OMedia play(String url) {
         getOPlayer();
         if (!isPlayerReady()) {
@@ -183,6 +169,20 @@ public class OMedia implements Serializable, PlayerCallback {
     public OMedia playOn(TextureView playView) {
         getOPlayer().setTextureView(playView);
         return play();
+    }
+
+    public OMedia playCache(String cachedPath) {
+        String cachedFile = cachedPath + movie.getName();
+        if (assetFileDescriptor != null)
+            return play(assetFileDescriptor);
+        else if (fileDescriptor != null)
+            return play(fileDescriptor);
+        else if (FileUtils.existFile(cachedFile))//缓存优先与在线播放
+            return play(cachedFile);
+        else if (uri != null)
+            return play(uri);
+        else
+            return play(movie.getsUrl());
     }
 
     public OMedia onView(TextureView playView) {
@@ -428,7 +428,8 @@ public class OMedia implements Serializable, PlayerCallback {
     public void setRate(float v) {
         if (isPlayerReady()) {
             playRate = v;
-            getOPlayer().setRate(playRate);
+            if(getOPlayer().isPlaying())
+              getOPlayer().setRate(playRate);
         }
     }
 
@@ -558,6 +559,9 @@ public class OMedia implements Serializable, PlayerCallback {
             case PlaybackEvent.Status_Opening:
             case PlaybackEvent.Status_Buffering:
             case PlaybackEvent.Status_Playing:
+                if(playRate != playerStatusInfo.getPlayRate())
+                    setRate(playRate);//动态调整播放速度
+                break;
             case PlaybackEvent.Status_Paused:
             case PlaybackEvent.Status_Stopped:
                 break;

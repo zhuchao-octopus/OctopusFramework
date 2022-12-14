@@ -50,6 +50,7 @@ public class OPlayer extends PlayControl {
             playerStatusInfo.setOutCount(event.getVoutCount());
             playerStatusInfo.setChangedType(event.getEsChangedType());
             playerStatusInfo.setBuffering(event.getBuffering());
+            playerStatusInfo.setPlayRate(mMediaPlayer.getRate());
             if (playerEventCallBack != null)
                 playerEventCallBack.onEventPlayerStatus(playerStatusInfo);
         }

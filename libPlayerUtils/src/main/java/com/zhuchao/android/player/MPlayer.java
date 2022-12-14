@@ -308,8 +308,10 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public Long getTime() {
         try {
-            if ((mediaPlayer != null) && (isPlaying()))
-                playerStatusInfo.setTimeChanged(Long.valueOf(mediaPlayer.getCurrentPosition()));
+            if ((mediaPlayer != null) && (isPlaying())) {
+                playerStatusInfo.setTimeChanged((long) mediaPlayer.getCurrentPosition());
+                playerStatusInfo.setPlayRate(mediaPlayer.getPlaybackParams().getSpeed());
+            }
         } catch (Exception e) {
             MMLog.e(TAG, "getTime() " + e.toString());
         }

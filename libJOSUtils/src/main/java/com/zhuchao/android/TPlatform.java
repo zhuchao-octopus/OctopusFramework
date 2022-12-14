@@ -3,6 +3,7 @@ package com.zhuchao.android;
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.content.Context;
@@ -39,55 +40,35 @@ public class TPlatform {
     public static final String INPUT_USB_MIC = "usb.mic";
     public static final String INPUT_BT_MIC = "bt.mic";
 
-    private static Class<?> getSystemProperties() {
-        Class<?> aClass = null;
+    public static String systemPropertiesGet(String key) {
+        String result = "";
         try {
-            aClass = Class.forName("android.os.SystemProperties");
-        } catch (ClassNotFoundException e) {
-            MMLog.log(TAG, e.toString());
+            @SuppressLint("PrivateApi") Class<?> c = Class.forName("android.os.SystemProperties");
+            Method get = c.getMethod("get", String.class);
+            result = (String) get.invoke(c, key);
+
+        } catch (ClassNotFoundException | InvocationTargetException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException e) {
+            e.printStackTrace();
         }
-        return aClass;
+        return result;
+    }
+
+    public static void systemPropertiesSet(String key, String val) {
+        try {
+            @SuppressLint("PrivateApi") Class<?> c = Class.forName("android.os.SystemProperties");
+            Method set = c.getMethod("set", String.class, String.class);
+            set.invoke(c, key, val);
+        } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
     }
 
     public static String getSystemProperty(String key) {
-        Class<?> aClass = getSystemProperties();
-        if (aClass == null) return null;
-        Method get = null;
-        try {
-            get = aClass.getMethod("get", String.class);
-        } catch (NoSuchMethodException e) {
-            MMLog.log(TAG, e.toString());
-            return null;
-        }
-        try {
-            return (String) get.invoke(aClass, key);
-        } catch (IllegalAccessException e) {
-            MMLog.log(TAG, e.toString());
-        } catch (InvocationTargetException e) {
-            MMLog.log(TAG, e.toString());
-        }
-        return null;
+        return systemPropertiesGet(key);
     }
 
-    public static boolean setSystemProperty(String key, String val) {
-        Class<?> aClass = getSystemProperties();
-        if (aClass == null) return false;
-        Method set = null;
-        try {
-            set = aClass.getMethod("set", String.class);
-        } catch (NoSuchMethodException e) {
-            MMLog.log(TAG, e.toString());
-            return false;
-        }
-        try {
-            set.invoke(aClass, key, val);
-            return true;
-        } catch (IllegalAccessException e) {
-            MMLog.log(TAG, e.toString());
-        } catch (InvocationTargetException e) {
-            MMLog.log(TAG, e.toString());
-        }
-        return false;
+    public static void setSystemProperty(String key, String val) {
+        systemPropertiesSet(key, val);
     }
 
     public static void setAudioOutputPolicy(String policyName, String val) {
