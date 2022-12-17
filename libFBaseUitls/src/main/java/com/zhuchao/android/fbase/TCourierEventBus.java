@@ -31,6 +31,7 @@ public class TCourierEventBus implements InvokeInterface {
 
     public void registerEventObserver(String tag, TCourierEventListener courierEventListener) {
         InvokerList.addItem(tag, courierEventListener);
+        MMLog.i(TAG,"registerEventObserver -> " +tag);
     }
 
     public void unRegisterEventObserver(String tag) {
