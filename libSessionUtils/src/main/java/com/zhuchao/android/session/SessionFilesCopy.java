@@ -170,9 +170,8 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
     }
 
     @Override
-    public TTask resetAll() {
+    public void resetAll() {
         tMainTask.resetAll();
-        return tMainTask;
     }
 
     @Override

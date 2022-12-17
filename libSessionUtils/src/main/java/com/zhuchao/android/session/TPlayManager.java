@@ -26,10 +26,10 @@ import java.util.Collection;
 
 public class TPlayManager implements PlayerCallback, NormalCallback {
     private final String TAG = "PlayManager";
-    private Context context;
+    private final Context context;
     private SurfaceView surfaceView = null;
     private OMedia oMediaPlaying = null;
-    private boolean oMediaLoading = false;
+    //private boolean oMediaLoading = false;
     private PlayerCallback callback = null;
     private int playOrder = DataID.PLAY_MANAGER_PLAY_ORDER2;
     private int autoPlaySource = DataID.SESSION_SOURCE_NONE;
@@ -63,10 +63,10 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     }
 
     public synchronized void startPlay(OMedia oMedia) {
-        if (oMediaLoading) {
-            MMLog.log(TAG, "oMedia is loading! status = " + getPlayerStatus());
-            return;
-        }
+        //if (oMediaLoading) {
+        //    MMLog.log(TAG, "oMedia is loading! status = " + getPlayerStatus());
+        //    return;
+        //}
         if (surfaceView == null) {
             MMLog.log(TAG, "surfaceView  is not ready! return");
             return;
@@ -76,21 +76,24 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             MMLog.log(TAG, "There is no media to play!");
             return;
         } else if (!oMedia.isAvailable(null)) {
-            MMLog.log(TAG, "The oMedia is not available! ---> " + oMedia.getMovie().getsUrl());
+            MMLog.log(TAG, "The oMedia is not available! ---> " + oMedia.getMovie().getSrcUrl());
             return;
         }
 
-        MMLog.log(TAG, "StartPlay--> " + oMedia.getMovie().getsUrl());
-        this.oMediaLoading = true;
-        this.oMediaPlaying = oMedia;
-        this.oMediaPlaying.setMagicNumber(magicNumber);
-        this.oMediaPlaying.with(context);
-        //this.oMedia.setNormalRate();
-        this.oMediaPlaying.callback(this);
-        this.oMediaPlaying.onView(surfaceView);//set surface view
-        //this.oMedia.playCache(downloadPath);//set source path
-        this.oMediaPlaying.play();
-        this.oMediaLoading = false;
+        {
+            MMLog.log(TAG, "StartPlay--> " + oMedia.getMovie().getSrcUrl());
+            //this.oMediaLoading = true;
+            this.oMediaPlaying = oMedia;
+            this.oMediaPlaying.setMagicNumber(magicNumber);
+            this.oMediaPlaying.with(context);
+            this.oMediaPlaying.callback(this);
+            this.oMediaPlaying.playOn(surfaceView);
+
+            //this.oMediaPlaying.onView(surfaceView);//set surface view
+            //this.oMedia.playCache(downloadPath);//set source path
+            //this.oMediaPlaying.play();
+            //this.oMediaLoading = false;
+        }
     }
 
     public synchronized void startPlay(String url) {

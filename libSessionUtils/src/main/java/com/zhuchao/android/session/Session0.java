@@ -153,9 +153,8 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
     }
 
     @Override
-    public TTask resetAll() {
+    public void resetAll() {
         tTask.resetAll();
-        return tTask;
     }
 
     @Override

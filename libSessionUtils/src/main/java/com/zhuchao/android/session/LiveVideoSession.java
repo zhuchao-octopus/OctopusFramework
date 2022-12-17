@@ -204,7 +204,7 @@ public class LiveVideoSession implements SessionCallback {
             List<LVideo> lVideos = FileUtils.getVideos(context);
             for (LVideo lVideo : lVideos) {
                 Movie movie = new Movie(lVideo.getPath());
-                String fileName = getFileName(movie.getsUrl());
+                String fileName = getFileName(movie.getSrcUrl());
                 if (NotEmptyString(fileName))
                     movie.setName(fileName);
                 OMedia oMedia = new OMedia(movie);
@@ -214,7 +214,7 @@ public class LiveVideoSession implements SessionCallback {
             List<LMusic> lMusics = FileUtils.getMusics(context);
             for (LMusic lmusic : lMusics) {
                 Movie movie = new Movie(lmusic.getPath());
-                String fileName = getFileName(movie.getsUrl());
+                String fileName = getFileName(movie.getSrcUrl());
                 if (NotEmptyString(fileName))
                     movie.setName(fileName);
                 OMedia oMedia = new OMedia(movie);
@@ -239,7 +239,7 @@ public class LiveVideoSession implements SessionCallback {
         List<String> FileList = MediaFile.getMediaFiles(FilePath, fType);
         for (int i = 0; i < FileList.size(); i++) {
             Movie movie = new Movie(FileList.get(i));
-            String fileName = getFileName(movie.getsUrl());
+            String fileName = getFileName(movie.getSrcUrl());
             if (NotEmptyString(fileName))
                 movie.setName(fileName);
             OMedia oMedia = new OMedia(movie);
@@ -258,7 +258,7 @@ public class LiveVideoSession implements SessionCallback {
         if (!f) {
             for (int i = 0; i < FileList.size(); i++) {
                 Movie movie = new Movie(FileList.get(i));
-                String fileName = getFileName(movie.getsUrl());
+                String fileName = getFileName(movie.getSrcUrl());
                 if (NotEmptyString(fileName))
                     movie.setName(fileName);
                 OMedia oMedia = new OMedia(movie);

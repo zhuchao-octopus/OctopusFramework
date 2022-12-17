@@ -41,7 +41,7 @@ public class TTask extends Thread implements TTaskInterface {
     //任务主题
     public TTask invoke(InvokeInterface callFunction) {
         if (isBusy()) {
-            MMLog.i(TAG, "this task is busy! tag = " + this.tTag);
+            MMLog.i(TAG, "this task is busy! not allow invoking another method tag = " + this.tTag);
             return this;
         }
         invokeInterface = callFunction;
@@ -127,10 +127,9 @@ public class TTask extends Thread implements TTaskInterface {
         return this;
     }
 
-    public TTask resetAll() {
+    public void resetAll() {
         properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_CAN_RESTART);
         freeFree();
-        return this;
     }
 
     public synchronized void startAgain() {
@@ -191,7 +190,7 @@ public class TTask extends Thread implements TTaskInterface {
         if (delayedMillis > 0) {
             try {
                 Thread.sleep(delayedMillis);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
         delayedMillis = 0;

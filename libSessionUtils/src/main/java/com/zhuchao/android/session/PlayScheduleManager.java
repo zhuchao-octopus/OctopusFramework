@@ -223,7 +223,7 @@ public class PlayScheduleManager implements SessionCallback {
                     saveDataToSharedPreferences("EndDate", scheduleVideo.getmEndDate());
                     saveDataToSharedPreferences("PlayTime", scheduleVideo.getmPlayTime());
                     saveDataToSharedPreferences("StopTime", scheduleVideo.getmStopTime());
-                    saveDataToSharedPreferences("SourceUrl", scheduleVideo.getMovie().getsUrl());
+                    saveDataToSharedPreferences("SourceUrl", scheduleVideo.getMovie().getSrcUrl());
                     //DownloadManager.getInstance().with(mContext).downloadFrom(scheduleVideo.getmMovie().getSourceUrl());
                     return scheduleVideo;
                 }

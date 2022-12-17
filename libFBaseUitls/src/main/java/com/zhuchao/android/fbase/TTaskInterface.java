@@ -23,7 +23,7 @@ public abstract interface TTaskInterface {
     public void free();
     public void freeFree();
     public TTask reset();
-    public TTask resetAll();
+    public void resetAll();
     public void start();
     public void startAgain();
     public void startWait();
