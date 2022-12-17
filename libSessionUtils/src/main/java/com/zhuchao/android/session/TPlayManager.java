@@ -35,7 +35,6 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     private int autoPlaySource = DataID.SESSION_SOURCE_NONE;
     private ObjectList allPlayLists = null;
     private long lStartTick = 0;
-    private final int ACTION_DELAY = 600;
     private int magicNumber = 0;
 
 
@@ -147,6 +146,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     }
 
     public void playPause() {//非阻塞模式
+        final int  ACTION_DELAY = 600;
         if ((System.currentTimeMillis() - lStartTick) <= ACTION_DELAY) {
             MMLog.log(TAG, "playPause() not allowed to do this now");
             return;

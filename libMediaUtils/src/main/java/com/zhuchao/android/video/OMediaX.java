@@ -9,7 +9,7 @@ public class OMediaX extends OMedia {
     }
 
     @Override
-    public OPlayer getOPlayer() {
+    public OPlayer getPlayer() {
         if (FPlayer == null)
             FPlayer = PlayerManager.getMultiOPlayer(context, options, this);
         return (OPlayer) FPlayer;

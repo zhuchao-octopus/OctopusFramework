@@ -18,6 +18,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.text.TextUtils;
 
 import androidx.core.content.FileProvider;
@@ -46,7 +47,7 @@ public class TAppUtils {
     private final Context mContext;
     private AppChangedListener mAppChangedCallback = null;
     //private ExecutorService mExecutorService;
-    private PackageManager mPackageManager;
+    private final PackageManager mPackageManager;
     private List<AppInfo> AllAppInfo = null;
     //private List<AppInfor> UserAppInfors = new ArrayList<AppInfor>();
     //private List<String> Filter = new ArrayList<String>();
@@ -93,20 +94,12 @@ public class TAppUtils {
             appInfo.setSize(size);
             //获取到安装应用程序的标记
             int flags = packageInfo.applicationInfo.flags;
-            if ((flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                //表示系统app
-                appInfo.setUserApp(false);
-            } else {
-                //表示用户app
-                appInfo.setUserApp(true);
-            }
-            if ((flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0) {
-                //表示在sd卡
-                appInfo.setRom(false);
-            } else {
-                //表示内存
-                appInfo.setRom(true);
-            }
+            //表示系统app
+            //表示用户app
+            appInfo.setUserApp((flags & ApplicationInfo.FLAG_SYSTEM) == 0);
+            //表示在sd卡
+            //表示内存
+            appInfo.setRom((flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) == 0);
             if (!AllAppInfo.contains(appInfo)) {
                 AllAppInfo.add(appInfo);
                 callUserCallback(packageName);
@@ -189,7 +182,7 @@ public class TAppUtils {
         if (packageName == null) return null;
         for (AppInfo Info : AllAppInfo) {
             //if (Info == null) continue;
-            if (packageName == Info.getPackageName()) return Info;
+            if (packageName.equals(Info.getPackageName())) return Info;
         }
         return null;
     }
@@ -266,19 +259,17 @@ public class TAppUtils {
         }
     }
 
-    public static boolean startApp(Context context, String packageName) {
+    public static void startApp(Context context, String packageName) {
         if (EmptyString(packageName)) {
-            return false;
+            return;
         }
         Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
             MMLog.log(TAG, "startApp ... " + packageName);
-            return true;
         } else {
             MMLog.log(TAG, "app not found " + packageName);
-            return false;
         }
     }
 
@@ -322,8 +313,7 @@ public class TAppUtils {
 
     public static PackageInfo getPackageInfo(Context context, String apkPath) {
         PackageManager packageManager = context.getPackageManager();
-        PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
-        return packageInfo;
+        return packageManager.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
     }
 
     public static String getPackageName(Context context, String apkPath) {
@@ -477,10 +467,21 @@ public class TAppUtils {
     }
 
     public static boolean isProcessRunning(Context context,String PackageName) {
-        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningAppProcessInfo> mList = mActivityManager.getRunningAppProcesses();
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> mList = activityManager.getRunningAppProcesses();
         for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : mList) {
             if(runningAppProcessInfo.processName.equals(PackageName))
+                return true;
+        }
+        return false;
+    }
+    public static boolean isServiceRunning(Context context, String serviceName)
+    {
+        ActivityManager activityManager=(ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+        ArrayList<ActivityManager.RunningServiceInfo> mList = (ArrayList<ActivityManager.RunningServiceInfo>) activityManager.getRunningServices(30);
+
+        for (ActivityManager.RunningServiceInfo runningServiceInfo : mList) {
+            if(runningServiceInfo.service.getClassName().equals(serviceName))
                 return true;
         }
         return false;
@@ -575,6 +576,19 @@ public class TAppUtils {
         return null;
     }
 
+    public static void startSystemSetting(Context context)
+    {
+        context.startActivity(
+                new Intent(Settings.ACTION_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        );
+    }
+
+    public static void startWifiSetting(Context context)
+    {
+        context.startActivity(
+                new Intent(Settings.ACTION_WIFI_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        );
+    }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public static class AppInfo {
