@@ -12,7 +12,7 @@ public class TCourierEventBus implements InvokeInterface {
     private final ArrayList<EventCourier> CourierEventsQueueB = new ArrayList<EventCourier>();
     private final ArrayList<EventCourier> CourierEventsQueueMainA = new ArrayList<EventCourier>();
     private final ArrayList<EventCourier> CourierEventsQueueMainB = new ArrayList<EventCourier>();
-    private TTask tTask;
+    private final TTask tTask;
     //private InvokeInterface invokeInterface = null;
     private boolean keepDoing = true;
     private boolean couriersLockQueueA = false;
