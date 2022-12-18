@@ -32,19 +32,21 @@ public class TCourierEventBus implements InvokeInterface {
     }
 
     public void registerEventObserver(String tag, TCourierEventListener courierEventListener) {
-        String eventType = getEventType(courierEventListener);
+        Class<?> eventType = getEventType(courierEventListener);
         InvokerList.addItem(tag, courierEventListener);
-        EventTypeList.addItem(tag,eventType);
+        EventTypeList.addItem(courierEventListener.getClass().getName(),eventType);
         //MMLog.i(TAG,"registerEventObserver -> " +tag);
-        MMLog.i(TAG,"registerEventObserver -> " +courierEventListener.getClass().getName()+",eventType:"+eventType);
+        assert eventType != null;
+        MMLog.i(TAG,"registerEventObserver -> " +courierEventListener.getClass().getName()+",eventType:"+eventType.getName());
     }
 
     public void registerEventObserver(TCourierEventListener courierEventListener) {
-        String eventType = getEventType(courierEventListener);
+        Class<?> eventType = getEventType(courierEventListener);
         String tag = courierEventListener.getClass().getName();
         InvokerList.addItem(tag, courierEventListener);
         EventTypeList.addItem(tag,eventType);
-        MMLog.i(TAG,"registerEventObserver -> " +courierEventListener.getClass().getName()+",eventType:"+eventType);
+        assert eventType != null;
+        MMLog.i(TAG,"registerEventObserver -> " +courierEventListener.getClass().getName()+",eventType:"+eventType.getName());
     }
 
     public void unRegisterEventObserver(String tag) {
@@ -199,8 +201,7 @@ public class TCourierEventBus implements InvokeInterface {
                     TCourierEventListener courierEventListener = getCourierEventListener(eventCourier);
                     if (courierEventListener != null) {//调用指定接口
                         courierEventListener.onCourierEvent(eventCourier);
-                        //MMLog.i(TAG,"eventCourier.getClass().getName() = "+ eventCourier.getClass().getName());
-                        //MMLog.i(TAG,"eventCourier.getClass().getName() = "+ courierEventListener.getClass().getName());
+                        //handleSingleEventType(courierEventListener,eventCourier);
                     }
                 }
             }
@@ -262,7 +263,7 @@ public class TCourierEventBus implements InvokeInterface {
         return null;
     }
 
-    private String getEventType(TCourierEventListener courierEventListener)
+    private Class<?> getEventType(TCourierEventListener courierEventListener)
     {
       Method[] methods = courierEventListener.getClass().getMethods();
         for(int i=0 ; i< methods.length-1;i++)
@@ -270,7 +271,7 @@ public class TCourierEventBus implements InvokeInterface {
             if(methods[i].getName().equals("onCourierEvent"))
             {
                 Class<?>[] classes = methods[i].getParameterTypes();
-                return classes[0].getName();
+                return classes[0];
             }
             //MMLog.i(TAG,"method  = " +methods[i].getName()+",getParameterTypes = "+ Arrays.toString(methods[i].getParameterTypes()));
         }
@@ -279,9 +280,23 @@ public class TCourierEventBus implements InvokeInterface {
 
     private void handleSingleEventType(TCourierEventListener courierEventListener,Object event)
     {
-       String eventType = EventTypeList.get(courierEventListener.getClass().getName(),null);
-       if(event.getClass().getName().equals(eventType)) {
-           //courierEventListener.onCourierEvent(event);
+       if(courierEventListener == null || event == null) return;
+       String eventInterfaceName = courierEventListener.getClass().getName();
+        Class<?> listenerEventType = (Class<?>) EventTypeList.getObject(eventInterfaceName);
+       if(listenerEventType == null)
+       {
+           MMLog.e(TAG,"getEventInterfaceName "+eventInterfaceName + " event type null");
+           return;
+       }
+       if(event.getClass().getName().equals(listenerEventType.getName())) {
+           //courierEventListener.onCourierEvent((Class<?>) event);
+           //MMLog.i(TAG,"match ok    eventType= " +event.getClass().getName());
+           //MMLog.i(TAG,"EventListener   type = " +listenerEventType.getName());
+       }
+       else
+       {
+           MMLog.e(TAG,"match fail eventType = " +event.getClass().getName());
+           MMLog.e(TAG,"EventListener   type = " +listenerEventType.getName());
        }
     }
 
