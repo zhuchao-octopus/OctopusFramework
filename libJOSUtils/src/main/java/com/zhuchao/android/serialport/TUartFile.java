@@ -4,6 +4,7 @@ import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.EventCourier;
+import com.zhuchao.android.fbase.EventCourierInterface;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.TCourierEventListener;
 
@@ -209,8 +210,8 @@ public class TUartFile extends TDevice implements TCourierEventListener {
         }
     }
 
-    @Override
-    public synchronized boolean onCourierEvent(EventCourier eventCourier) {
+    @Override//接收外部事件消息
+    public synchronized boolean onCourierEvent(EventCourierInterface eventCourier) {
         if (serialPort == null) return false;
         switch (eventCourier.getId()) {
             case DataID.DEVICE_EVENT_UART_WRITE:

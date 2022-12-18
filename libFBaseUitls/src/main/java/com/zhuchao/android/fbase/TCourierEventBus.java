@@ -10,10 +10,10 @@ public class TCourierEventBus implements InvokeInterface {
     private final String TAG = "TCourierEventBus";
     private final ObjectList InvokerList = new ObjectList();
     private final ObjectList EventTypeList = new ObjectList();
-    private final ArrayList<EventCourier> CourierEventsQueueA = new ArrayList<EventCourier>();
-    private final ArrayList<EventCourier> CourierEventsQueueB = new ArrayList<EventCourier>();
-    private final ArrayList<EventCourier> CourierEventsQueueMainA = new ArrayList<EventCourier>();
-    private final ArrayList<EventCourier> CourierEventsQueueMainB = new ArrayList<EventCourier>();
+    private final ArrayList<EventCourierInterface> CourierEventsQueueA = new ArrayList<EventCourierInterface>();
+    private final ArrayList<EventCourierInterface> CourierEventsQueueB = new ArrayList<EventCourierInterface>();
+    private final ArrayList<EventCourierInterface> CourierEventsQueueMainA = new ArrayList<EventCourierInterface>();
+    private final ArrayList<EventCourierInterface> CourierEventsQueueMainB = new ArrayList<EventCourierInterface>();
     private final TTask tTask;
     //private InvokeInterface invokeInterface = null;
     private boolean keepDoing = true;
@@ -34,19 +34,19 @@ public class TCourierEventBus implements InvokeInterface {
     public void registerEventObserver(String tag, TCourierEventListener courierEventListener) {
         Class<?> eventType = getEventType(courierEventListener);
         InvokerList.addItem(tag, courierEventListener);
-        EventTypeList.addItem(courierEventListener.getClass().getName(),eventType);
+        EventTypeList.addItem(courierEventListener.getClass().getName(), eventType);
         //MMLog.i(TAG,"registerEventObserver -> " +tag);
         assert eventType != null;
-        MMLog.i(TAG,"registerEventObserver -> " +courierEventListener.getClass().getName()+",eventType:"+eventType.getName());
+        MMLog.i(TAG, "registerEventObserver -> " + courierEventListener.getClass().getName() + ",eventType:" + eventType.getName());
     }
 
     public void registerEventObserver(TCourierEventListener courierEventListener) {
         Class<?> eventType = getEventType(courierEventListener);
         String tag = courierEventListener.getClass().getName();
         InvokerList.addItem(tag, courierEventListener);
-        EventTypeList.addItem(tag,eventType);
+        EventTypeList.addItem(tag, eventType);
         assert eventType != null;
-        MMLog.i(TAG,"registerEventObserver -> " +courierEventListener.getClass().getName()+",eventType:"+eventType.getName());
+        MMLog.i(TAG, "registerEventObserver -> " + courierEventListener.getClass().getName() + ",eventType:" + eventType.getName());
     }
 
     public void unRegisterEventObserver(String tag) {
@@ -64,7 +64,7 @@ public class TCourierEventBus implements InvokeInterface {
         return InvokerList;
     }
 
-    public void postMain(EventCourier eventCourier) {
+    public void postMain(EventCourierInterface eventCourier) {
         if (couriersLockQueueMA)
             CourierEventsQueueMainB.add(eventCourier);
         else
@@ -87,7 +87,7 @@ public class TCourierEventBus implements InvokeInterface {
         }
     }
 
-    public void post(EventCourier eventCourier) {
+    public void post(EventCourierInterface eventCourier) {
         if (couriersLockQueueA)
             CourierEventsQueueB.add(eventCourier);
         else
@@ -111,7 +111,7 @@ public class TCourierEventBus implements InvokeInterface {
         }
     }
 
-    public void postDelay(EventCourier eventCourier, long millis) {
+    public void postDelay(EventCourierInterface eventCourier, long millis) {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
@@ -174,35 +174,21 @@ public class TCourierEventBus implements InvokeInterface {
         MMLog.log(TAG, "Courier Event Bus stop...");
     }
 
-    private void poolingAB(ArrayList<EventCourier> couriers) {
+    private void poolingAB(ArrayList<EventCourierInterface> couriers) {
         try {
-            for (int i = 0; i < couriers.size(); i++)
-            {
-                EventCourier eventCourier = couriers.get(i);
+            for (int i = 0; i < couriers.size(); i++) {
+                EventCourierInterface eventCourier = couriers.get(i);
                 if (eventCourier == null) {
                     continue; //couriers.remove(i);//丢弃
                 }
-                if (eventCourier.getTag() == null)
-                {//如果为空，调用所有接口似广播
+                if (eventCourier.getTag() == null) {//如果为空，调用所有接口似广播
                     for (Object obj : InvokerList.getAllObject()) {
-                        if (obj == null) break;
-                        try {
-                            TCourierEventListener tCourierEventListener = (TCourierEventListener) obj;
-                            tCourierEventListener.onCourierEvent(eventCourier);
-                            //MMLog.i(TAG,eventCourier.getTag()+","+ eventCourier.getFromClass());
-                        } catch (Exception e) {
-                            //e.printStackTrace();
-                            MMLog.e(TAG, e.getMessage());
-                        }
+                        if (obj != null)
+                            handleSingleEventType((TCourierEventListener) obj, eventCourier);
                     }
-                }
-                else
-                {
+                } else {
                     TCourierEventListener courierEventListener = getCourierEventListener(eventCourier);
-                    if (courierEventListener != null) {//调用指定接口
-                        courierEventListener.onCourierEvent(eventCourier);
-                        //handleSingleEventType(courierEventListener,eventCourier);
-                    }
+                    handleSingleEventType(courierEventListener, eventCourier);
                 }
             }
             couriers.clear();
@@ -212,38 +198,39 @@ public class TCourierEventBus implements InvokeInterface {
         }
     }
 
-    private void poolingABM(ArrayList<EventCourier> couriers) {
+    private void poolingABM(ArrayList<EventCourierInterface> couriers) {
         try {
             for (int i = 0; i < couriers.size(); i++) {
-
-                EventCourier eventCourier = couriers.get(i);
+                EventCourierInterface eventCourier = couriers.get(i);
                 if (eventCourier == null) {
                     continue; //couriers.remove(i);//丢弃
                 }
 
-                if (eventCourier.getTag() == null) { //如果为空，调用所有接口，类似广播
-                    for (Object obj : InvokerList.getAllObject()) {
-                        if (obj == null) break;
-                        try {
+                if (eventCourier.getTag() == null)
+                { //如果为空，调用所有接口，类似广播
+                    for (Object obj : InvokerList.getAllObject())
+                    {
+                        if (obj != null)
+                        {
                             ThreadUtils.runOnMainUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    TCourierEventListener tCourierEventListener = (TCourierEventListener) obj;
-                                    tCourierEventListener.onCourierEvent(eventCourier);
+
+                                    handleSingleEventType((TCourierEventListener) obj, eventCourier);
                                 }
                             });
-                        } catch (Exception e) {
-                            //e.printStackTrace();
-                            MMLog.e(TAG, e.getMessage());
                         }
                     }
-                } else {
+                }
+                else
+                {
                     TCourierEventListener courierEventListener = getCourierEventListener(eventCourier);
-                    if (courierEventListener != null) {
+                    if (courierEventListener != null)
+                    {
                         ThreadUtils.runOnMainUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                courierEventListener.onCourierEvent(eventCourier);
+                                handleSingleEventType(courierEventListener, eventCourier);
                             }
                         });
                     }
@@ -256,20 +243,17 @@ public class TCourierEventBus implements InvokeInterface {
         }
     }
 
-    private TCourierEventListener getCourierEventListener(EventCourier eventCourier) {
+    private TCourierEventListener getCourierEventListener(EventCourierInterface eventCourier) {
         if (eventCourier.getTag() != null) {
             return (TCourierEventListener) InvokerList.getObject(eventCourier.getTag());
         }
         return null;
     }
 
-    private Class<?> getEventType(TCourierEventListener courierEventListener)
-    {
-      Method[] methods = courierEventListener.getClass().getMethods();
-        for(int i=0 ; i< methods.length-1;i++)
-        {
-            if(methods[i].getName().equals("onCourierEvent"))
-            {
+    private Class<?> getEventType(TCourierEventListener courierEventListener) {
+        Method[] methods = courierEventListener.getClass().getMethods();
+        for (int i = 0; i < methods.length - 1; i++) {
+            if (methods[i].getName().equals("onCourierEvent")) {
                 Class<?>[] classes = methods[i].getParameterTypes();
                 return classes[0];
             }
@@ -278,26 +262,35 @@ public class TCourierEventBus implements InvokeInterface {
         return null;
     }
 
-    private void handleSingleEventType(TCourierEventListener courierEventListener,Object event)
-    {
-       if(courierEventListener == null || event == null) return;
-       String eventInterfaceName = courierEventListener.getClass().getName();
+    private void handleSingleEventType(TCourierEventListener courierEventListener, EventCourierInterface event) {
+        if (courierEventListener == null || event == null) return;
+        try {
+            courierEventListener.onCourierEvent(event);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleSingleMatchEventType(TCourierEventListener courierEventListener, EventCourierInterface event) {
+        if (courierEventListener == null || event == null) return;
+        String eventInterfaceName = courierEventListener.getClass().getName();
         Class<?> listenerEventType = (Class<?>) EventTypeList.getObject(eventInterfaceName);
-       if(listenerEventType == null)
-       {
-           MMLog.e(TAG,"getEventInterfaceName "+eventInterfaceName + " event type null");
-           return;
-       }
-       if(event.getClass().getName().equals(listenerEventType.getName())) {
-           //courierEventListener.onCourierEvent((Class<?>) event);
-           //MMLog.i(TAG,"match ok    eventType= " +event.getClass().getName());
-           //MMLog.i(TAG,"EventListener   type = " +listenerEventType.getName());
-       }
-       else
-       {
-           MMLog.e(TAG,"match fail eventType = " +event.getClass().getName());
-           MMLog.e(TAG,"EventListener   type = " +listenerEventType.getName());
-       }
+        if (listenerEventType == null) {
+            MMLog.e(TAG, "getEventInterfaceName " + eventInterfaceName + " event type null");
+            return;
+        }
+        if (event.getClass().getName().equals(listenerEventType.getName())) {
+            try {
+                courierEventListener.onCourierEvent(event);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //MMLog.i(TAG,"match ok    eventType= " +event.getClass().getName());
+            //MMLog.i(TAG,"EventListener   type = " +listenerEventType.getName());
+        } else {
+            MMLog.e(TAG, "match fail eventType = " + event.getClass().getName());
+            MMLog.e(TAG, "EventListener   type = " + listenerEventType.getName());
+        }
     }
 
     public void free() {

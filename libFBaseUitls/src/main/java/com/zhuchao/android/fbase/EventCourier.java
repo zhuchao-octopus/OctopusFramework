@@ -1,6 +1,6 @@
 package com.zhuchao.android.fbase;
 
-public class EventCourier {
+public class EventCourier implements EventCourierInterface{
     private final String TAG = "EventCourier";
     private String tag;
     private int id;
