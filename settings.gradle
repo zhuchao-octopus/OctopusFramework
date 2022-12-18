@@ -1,10 +1,15 @@
-include  ':libDecodeCore',':libFBaseUitls',
-         ':libJOSUtils', ':libPlayerUtils',
-         ':libSessionUtils', ':libINetUtils',
-         ':libGPersistUtils', ':libMediaUtils',
-         ':libEventInterface'
-include ':libOpenDetection'
-include ':libOpenComputerVision'
+include ':libDecodeCore'
+include ':libFBaseUitls'
+include ':libJOSUtils'
+include ':libPlayerUtils'
+include ':libSessionUtils'
+include ':libINetUtils'
+include ':libGPersistUtils'
+include ':libMediaUtils'
+include ':libEventInterface'
+
 include ':libICameraController'
+include ':libOpenComputerVision'
+include ':libOpenDetection'
 
 include ':TestApplication'

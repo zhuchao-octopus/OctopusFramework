@@ -9,6 +9,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.zhuchao.android.eventinterface.NormalCallback;
+import com.zhuchao.android.fbase.DateTimeUtils;
+import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
 
 import org.opencv.android.CameraBridgeViewBase;
@@ -61,7 +63,7 @@ public class FaceDetector extends Detect {
         mRgba = new Mat();
         faces = new MatOfRect();
 
-        //faceFileSavedPath = FileUtils.getDirBaseExternalStorageDirectory("com.zhuchao.face");
+        faceFileSavedPath = FileUtils.getDirBaseExternalStorageDirectory("com.zhuchao.face");
         //String parentDir = FileUtils.getFilePathFromPathName(filePathName);
         //FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
     }
@@ -179,10 +181,10 @@ public class FaceDetector extends Detect {
         }
         // 检测到人脸
         Rect[] facesArray = faces.toArray();
-        for (int i = 0; i < facesArray.length; i++) {
-            Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 2);
+        for (Rect rect : facesArray) {
+            Imgproc.rectangle(mRgba, rect.tl(), rect.br(), FACE_RECT_COLOR, 2);
             if (null != mOnFaceDetectorListener) {
-                mOnFaceDetectorListener.onFace(mRgba, facesArray[i]);
+                mOnFaceDetectorListener.onFace(mRgba, rect);
             }
         }
         return mRgba;
@@ -190,9 +192,9 @@ public class FaceDetector extends Detect {
 
     private void saveFace(Mat face) {
         //long millSecs = System.currentTimeMillis();
-        String millSecs = "";//DataTimeUtils.getCurrentTime2();
+        String millSecs = DateTimeUtils.getCurrentTime2();
         int temp = (int) (Math.random() * 1000);
-        StringBuffer outputImgName = new StringBuffer();
+        StringBuilder outputImgName = new StringBuilder();
         outputImgName.append(faceFileSavedPath).append("/").append(millSecs).append(temp).append(".jpg");
         if (face != null) {
             Imgcodecs.imwrite(outputImgName.toString(), face);
