@@ -1,7 +1,6 @@
 package com.zhuchao.android.fbase;
 
 
-import java.util.Iterator;
 import java.util.Map;
 
 public class DataID {
@@ -77,8 +76,8 @@ public class DataID {
     public static final int DEVICE_TYPE_FILE = DEVICE_TYPE + 1;
     public static final int DEVICE_TYPE_UART = DEVICE_TYPE_FILE + 1;
 
-
-    public static final int DEVICE_EVENT = 500;
+    //Event bus id
+    public static final int DEVICE_EVENT = 10000;
     public static final int DEVICE_EVENT_OPEN = DEVICE_EVENT + 1;
     public static final int DEVICE_EVENT_READ = DEVICE_EVENT_OPEN + 1;
     public static final int DEVICE_EVENT_UART_READ = DEVICE_EVENT_READ + 1;
@@ -90,22 +89,21 @@ public class DataID {
     public static final int DEVICE_EVENT_ERROR = DEVICE_EVENT_CLOSE + 1;
 
 
-
     public static String getRequestUrl(String fromUrl, ObjectList requestParams) {
         StringBuilder builder = new StringBuilder();
         builder.append(fromUrl);
         try {
-            Iterator<Map.Entry<String, Object>> it = requestParams.getAll().entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<String, Object> entry = it.next();
-                builder.append(entry.getKey() + "=" + entry.getValue().toString() + "&");
+            for (Map.Entry<String, Object> entry : requestParams.getAll().entrySet()) {
+                builder.append(entry.getKey()).append("=").append(entry.getValue().toString()).append("&");
             }
         } catch (Exception e) {
             //e.printStackTrace();
         }
-        if (builder == null)
-            return "Sorry i am can not ";
-        return builder.toString();
+        String str = builder.toString();
+        if (str.length() <= 0) return null;
+        if (builder.toString().charAt(str.length() - 1) == '&')
+            str = str.substring(0, str.length() - 1);
+        return str;
     }
 
     public static String getActionUrl(int sessionId, String categoryName, int pageIndexOrVid) {

@@ -18,6 +18,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.objdetect.CascadeClassifier;
 
 import java.io.File;
@@ -46,6 +47,7 @@ public class FaceDetector extends Detect {
     private int mAbsoluteFaceSize = 0;
 
     private OnDetectorListener mOnFaceDetectorListener;
+    private String faceFileSavedPath;
 
     public FaceDetector(Context context) {
         super(context, null);
@@ -58,6 +60,10 @@ public class FaceDetector extends Detect {
         mGray = new Mat();
         mRgba = new Mat();
         faces = new MatOfRect();
+
+        //faceFileSavedPath = FileUtils.getDirBaseExternalStorageDirectory("com.zhuchao.face");
+        //String parentDir = FileUtils.getFilePathFromPathName(filePathName);
+        //FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
     }
 
     public static synchronized FaceDetector create(Context context) {
@@ -180,6 +186,18 @@ public class FaceDetector extends Detect {
             }
         }
         return mRgba;
+    }
+
+    private void saveFace(Mat face) {
+        //long millSecs = System.currentTimeMillis();
+        String millSecs = "";//DataTimeUtils.getCurrentTime2();
+        int temp = (int) (Math.random() * 1000);
+        StringBuffer outputImgName = new StringBuffer();
+        outputImgName.append(faceFileSavedPath).append("/").append(millSecs).append(temp).append(".jpg");
+        if (face != null) {
+            Imgcodecs.imwrite(outputImgName.toString(), face);
+            //logger.info(">>>>>>write image into->" + outputDir);
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package com.zhuchao.android.fbase;
 
 import static android.content.Context.ALARM_SERVICE;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -28,18 +29,17 @@ public class DateTimeUtils {
 
     public static String getCurrentDateStr(String formatType) {
         Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat(formatType);
+        SimpleDateFormat sdf = new SimpleDateFormat(formatType,Locale.getDefault());
         return sdf.format(date);
     }
 
     public static int getDateData(String DATE1, String formatType) {
-
-        DateFormat df = new SimpleDateFormat(formatType);
+        @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat(formatType);
         try {
             Date dt1 = df.parse(DATE1);
+            assert dt1 != null;
             String str = df.format(dt1);
-            int data = Integer.parseInt(str);
-            return data;
+            return Integer.parseInt(str);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -51,6 +51,7 @@ public class DateTimeUtils {
         return date.getTime();
     }
 
+    @SuppressLint("SimpleDateFormat")
     public static String date2String(Date date, String formatType) {
         return new SimpleDateFormat(formatType).format(date);
     }
@@ -58,18 +59,16 @@ public class DateTimeUtils {
     public static Date long2Date(long time, String formatType) {
         Date oldDate = new Date(time);
         String dateStr = date2String(oldDate, formatType);
-        Date date = string2Date(dateStr, formatType);
-        return date;
+        return string2Date(dateStr, formatType);
     }
 
     public static String long2String(long time, String formatType) {
         Date date = long2Date(time, formatType);
-        String strTime = date2String(date, formatType);
-        return strTime;
+        return date2String(date, formatType);
     }
 
     public static Date string2Date(String strTime, String formatType) {
-        SimpleDateFormat format = new SimpleDateFormat(formatType);
+        SimpleDateFormat format = new SimpleDateFormat(formatType,Locale.getDefault());
         Date date = null;
         try {
             date = format.parse(strTime);
@@ -84,25 +83,20 @@ public class DateTimeUtils {
         if (date == null) {
             return 0;
         } else {
-            long time = date2Long(date);
-            return time;
+            return date2Long(date);
         }
     }
 
     public static int compare_date(String DATE1, String DATE2, String formatType) {
-        DateFormat df = new SimpleDateFormat(formatType);
+        DateFormat df = new SimpleDateFormat(formatType,Locale.getDefault());
         try {
             Date dt1 = df.parse(DATE1);
             Date dt2 = df.parse(DATE2);
-            if (dt1.getTime() > dt2.getTime()) {
-                //System.out.println("dt1 在dt2前");
-                return 1;
-            } else if (dt1.getTime() < dt2.getTime()) {
-                //System.out.println("dt1在dt2后");
-                return -1;
-            } else {
-                return 0;
-            }
+            assert dt1 != null;
+            //System.out.println("dt1 在dt2前");
+            //System.out.println("dt1在dt2后");
+            assert dt2 != null;
+            return Long.compare(dt1.getTime(), dt2.getTime());
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -112,7 +106,7 @@ public class DateTimeUtils {
 
     public long dateDiff(String startTime, String endTime, String format) {
         // 按照传入的格式生成一个simpledateformate对象
-        SimpleDateFormat sd = new SimpleDateFormat(format);
+        SimpleDateFormat sd = new SimpleDateFormat(format,Locale.getDefault());
         long nd = 1000 * 24 * 60 * 60;// 一天的毫秒数
         long nh = 1000 * 60 * 60;// 一小时的毫秒数
         long nm = 1000 * 60;// 一分钟的毫秒数
@@ -138,14 +132,11 @@ public class DateTimeUtils {
                 } else {
                     return 0;
                 }
-
             }
-
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return 0;
-
     }
 
     public static void setSysDate(Context context, int year, int month, int day) {
@@ -153,9 +144,7 @@ public class DateTimeUtils {
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month);
         c.set(Calendar.DAY_OF_MONTH, day);
-
         long when = c.getTimeInMillis();
-
         if (when / 1000 < Integer.MAX_VALUE) {
             ((AlarmManager) context.getSystemService(ALARM_SERVICE)).setTime(when);
         }
@@ -167,9 +156,7 @@ public class DateTimeUtils {
         c.set(Calendar.MINUTE, minute);
         c.set(Calendar.SECOND, ss);
         c.set(Calendar.MILLISECOND, 0);
-
         long when = c.getTimeInMillis();
-
         if (when / 1000 < Integer.MAX_VALUE) {
             ((AlarmManager) context.getSystemService(ALARM_SERVICE)).setTime(when);
         }
@@ -179,7 +166,14 @@ public class DateTimeUtils {
     public static String getCurrentTime() {
         long currentTime = System.currentTimeMillis();
         Date date = new Date(currentTime);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss",Locale.getDefault());
+        return formatter.format(date);
+    }
+
+    public static String getCurrentTime2() {
+        long currentTime = System.currentTimeMillis();
+        Date date = new Date(currentTime);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss",Locale.getDefault());
         return formatter.format(date);
     }
 
@@ -190,7 +184,6 @@ public class DateTimeUtils {
 
     public static void setTimeZone(Context context, String timeZone) {
         final Calendar now = Calendar.getInstance();
-
         MMLog.log(TAG, "getCurrentTimeZone=" + getCurrentTimeZone());
         TimeZone tz = TimeZone.getTimeZone(timeZone);
         now.setTimeZone(tz);
@@ -198,7 +191,6 @@ public class DateTimeUtils {
         AlarmManager alarm = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         //alarm.setTimeZone(id);//默认时区的id
         alarm.setTimeZone(timeZone);
-
         MMLog.log(TAG, "setTimeZone=" + tz);
         MMLog.log(TAG, "getCurrentTimeZone=" + getCurrentTimeZone());
     }
@@ -227,10 +219,9 @@ public class DateTimeUtils {
     }
 
     public static String getTimeByMillisecond(long millisecond) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.CHINA);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));// time为转换格式后的字符串
-        String time = dateFormat.format(new Date(millisecond));
-        return time;
+        return dateFormat.format(new Date(millisecond));
     }
 
 }

@@ -63,12 +63,12 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':libOpenComputerVision')
     implementation project(path: ':libEventInterface')
     implementation project(path: ':libFBaseUitls')
+    implementation project(path: ':libOpenComputerVision')
+
     implementation 'androidx.annotation:annotation:1.4.0-alpha02'
     implementation 'androidx.exifinterface:exifinterface:1.3.3'
-
     implementation group: 'org.bytedeco', name: 'javacv-platform', version: '1.5.8'
     //implementation group: 'org.bytedeco.javacpp-presets', name: 'opencv', version: '4.0.1-1.4.4', classifier: 'android-arm'
     //implementation group: 'org.bytedeco.javacpp-presets', name: 'opencv', version: '3.4.2-1.4.2', classifier: 'android-x86'

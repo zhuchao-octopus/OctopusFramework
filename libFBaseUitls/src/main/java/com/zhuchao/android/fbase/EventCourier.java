@@ -106,6 +106,14 @@ public class EventCourier {
         this.fromClass = getClass().getName();
     }
 
+    public EventCourier(Object obj) {
+        this.tag = null;
+        this.id = -1;
+        this.datas = new byte[1];
+        this.obj = obj;
+        this.fromClass = getClass().getName();
+    }
+
     public String getTag() {
         return tag;
     }
