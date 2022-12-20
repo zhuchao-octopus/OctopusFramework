@@ -61,15 +61,19 @@ public class TCourierEventBus implements InvokeInterface {
 
     //@Deprecated
     public void unRegisterEventObserver(@NotNull String tag) {
-        InvokerList.remove(tag+DEFAULT_EVENT_METHOD_NAME);//移除默认观察者
-        //EventTypeList.remove(tag);
+        try {
+            synchronized (InvokerList){ InvokerList.remove(tag+DEFAULT_EVENT_METHOD_NAME);}//移除默认观察者
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void unRegisterEventObserver(@NotNull Object courierEventListener) {
-        //if(InvokerList.containsTag(tag))
-        //InvokerList.remove(courierEventListener.getClass().getName());
-        //EventTypeList.remove(courierEventListener.getClass().getName());
-        InvokerList.removeObjectsLike(courierEventListener.getClass().getName());
+        try {
+           synchronized (InvokerList){ InvokerList.removeObjectsLike(courierEventListener.getClass().getName());}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public ObjectList getInvokerList() {

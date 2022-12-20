@@ -56,10 +56,15 @@ public class ObjectList {
     }
 
     public void removeObjectsLike(String keyLike) {
+        List<String> list = new Vector<>();
         for (Map.Entry<String, Object> entity : FHashMap.entrySet()) {
             if (entity.getKey().contains(keyLike)) {
-                FHashMap.remove(entity.getKey());
+                //FHashMap.remove(entity.getKey());
+                list.add(entity.getKey());
             }
+        }
+        for (String key : list) {
+            FHashMap.remove(key);
         }
     }
 
@@ -113,6 +118,7 @@ public class ObjectList {
     public Collection<Object> getAllObject() {
         return FHashMap.values();
     }
+
     public List<?> getObjectsLike(String keyLike) {
         List<Object> list = new Vector<>();
         for (Map.Entry<String, Object> entity : FHashMap.entrySet()) {
@@ -262,7 +268,7 @@ public class ObjectList {
     public void printAll() {
         int i = 0;
         for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
-            MMLog.log(TAG, i+":"+m.getKey() + ":" + m.getValue().toString());
+            MMLog.log(TAG, i + ":" + m.getKey() + ":" + m.getValue().toString());
             i++;
         }
     }

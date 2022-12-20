@@ -630,10 +630,10 @@ public class OMedia implements Serializable, PlayerCallback {
         return bf;
     }
 
-    protected PlayControl getPlayer() {
+    protected synchronized PlayControl getPlayer() {
         if (this.context == null) return null;
         if (FPlayer == null) {
-            MMLog.d(TAG, "getOPlayer() magicNumber = " + magicNumber);
+            MMLog.d(TAG, "Get Player MagicNumber = " + magicNumber);
             switch (magicNumber) {
                 case 0:
                 default:
@@ -661,9 +661,7 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public boolean isPlayerReady() {
-        if (FPlayer == null) return false;
-        else
-            return true;
+        return FPlayer != null;
     }
 
     public void free() {
