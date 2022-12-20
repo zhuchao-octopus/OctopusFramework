@@ -120,7 +120,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         }
         try {
             mSurfaceView.getHolder().addCallback(this);
-            MMLog.d(TAG, "setSurfaceView().addCallback to  " + surfaceView.toString());
+            MMLog.d(TAG, "setSurfaceView().addCallback to " + surfaceView.toString());
         } catch (Exception e) {
             //e.printStackTrace();
             MMLog.e(TAG, "setSurfaceView().addCallback " + e.toString());
@@ -131,7 +131,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                 if (!mSurfaceView.getHolder().isCreating()) {
                     if (mSurfaceView.getHolder().getSurface().isValid()) {
                         mediaPlayer.setDisplay(mSurfaceView.getHolder());
-                        MMLog.d(TAG, "setSurfaceView().setDisplay to  " + surfaceView.toString());
+                        MMLog.d(TAG, "setSurfaceView().setDisplay  to " + surfaceView.toString());
                     } else
                         MMLog.d(TAG, "setSurfaceView().setDisplay failed ,is invalid");
                 } else
@@ -581,7 +581,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                 playerStatusInfo.setEventType(PlaybackEvent.Status_NothingIdle);
 
             freeSurfaceView();
-            MMLog.d(TAG, "free() freed all component ");
+            MMLog.d(TAG, "call free() to release all player context");
         } catch (Exception e) {
             MMLog.e(TAG, "freed() " + e.toString());
         }
@@ -599,7 +599,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     private synchronized void PreparePlayerComponent() {
-        MMLog.d(TAG, "PreparePlayerComponent() ,playStatus = " + playerStatusInfo.getEventType());
+        MMLog.d(TAG, "prepare player context ,playStatus = " + playerStatusInfo.getEventType());
         try {
             if (mediaPlayer == null)
                 mediaPlayer = new MediaPlayer();

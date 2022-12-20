@@ -16,5 +16,5 @@ public interface EventCourierInterface {
     abstract EventCourier f(Class classzz);
     abstract byte getByte();
     abstract int getValue();
-    abstract String dataToHexStr();
+    abstract String toString();
 }

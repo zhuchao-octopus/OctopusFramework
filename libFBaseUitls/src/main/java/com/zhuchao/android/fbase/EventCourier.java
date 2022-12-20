@@ -1,5 +1,7 @@
 package com.zhuchao.android.fbase;
 
+import java.util.Arrays;
+
 public class EventCourier implements EventCourierInterface{
     private final String TAG = "EventCourier";
     private String tag;
@@ -13,7 +15,7 @@ public class EventCourier implements EventCourierInterface{
         this.id = id;
         this.datas = new byte[1];
         this.obj = null;
-        this.fromClass = getClass().getName();
+        this.fromClass = getCallerClass();
     }
 
     public EventCourier(String tag, int id, byte value) {
@@ -22,7 +24,7 @@ public class EventCourier implements EventCourierInterface{
         this.datas = new byte[1];
         this.datas[0] = value;
         this.obj = null;
-        this.fromClass = getClass().getName();
+        this.fromClass = getCallerClass();
     }
 
     public EventCourier(String tag, int id, int value) {
@@ -30,7 +32,7 @@ public class EventCourier implements EventCourierInterface{
         this.id = id;
         this.datas = ByteUtils.intToBytes(value);
         this.obj = null;
-        this.fromClass = getClass().getName();
+        this.fromClass = getCallerClass();
     }
 
     public EventCourier(String tag, int id, byte[] datas) {
@@ -38,7 +40,7 @@ public class EventCourier implements EventCourierInterface{
         this.id = id;
         this.datas = datas;
         this.obj = null;
-        this.fromClass = getClass().getName();
+        this.fromClass = getCallerClass();
     }
 
     public EventCourier(String tag, int id, Object obj) {
@@ -46,7 +48,7 @@ public class EventCourier implements EventCourierInterface{
         this.id = id;
         this.datas = new byte[1];
         this.obj = obj;
-        this.fromClass = getClass().getName();
+        this.fromClass = getCallerClass();
     }
 
     public EventCourier(String tag, int id, byte[] datas, Object obj) {
@@ -54,7 +56,7 @@ public class EventCourier implements EventCourierInterface{
         this.id = id;
         this.datas = datas;
         this.obj = obj;
-        this.fromClass = getClass().getName();
+        this.fromClass = getCallerClass();
     }
 
     public EventCourier(int id) {
@@ -62,7 +64,7 @@ public class EventCourier implements EventCourierInterface{
         this.id = id;
         this.datas = new byte[1];
         this.obj = null;
-        this.fromClass = getClass().getName();
+        this.fromClass = getCallerClass();
     }
 
     public EventCourier(int id, byte value) {
@@ -71,7 +73,7 @@ public class EventCourier implements EventCourierInterface{
         this.datas = new byte[1];
         this.datas[0] = value;
         this.obj = null;
-        this.fromClass = getClass().getName();
+        this.fromClass = getCallerClass();
     }
 
     public EventCourier(int id, int value) {
@@ -79,7 +81,7 @@ public class EventCourier implements EventCourierInterface{
         this.id = id;
         this.datas = ByteUtils.intToBytes(value);
         this.obj = null;
-        this.fromClass = getClass().getName();
+        this.fromClass = getCallerClass();
     }
 
     public EventCourier(int id, byte[] datas) {
@@ -87,7 +89,7 @@ public class EventCourier implements EventCourierInterface{
         this.id = id;
         this.datas = datas;
         this.obj = null;
-        this.fromClass = getClass().getName();
+        this.fromClass = getCallerClass();
     }
 
     public EventCourier(int id, Object obj) {
@@ -95,7 +97,7 @@ public class EventCourier implements EventCourierInterface{
         this.id = id;
         this.datas = new byte[1];
         this.obj = obj;
-        this.fromClass = getClass().getName();
+        this.fromClass = getCallerClass();
     }
 
     public EventCourier(int id, byte[] datas, Object obj) {
@@ -103,7 +105,7 @@ public class EventCourier implements EventCourierInterface{
         this.id = id;
         this.datas = datas;
         this.obj = obj;
-        this.fromClass = getClass().getName();
+        this.fromClass = getCallerClass();
     }
 
     public EventCourier(Object obj) {
@@ -111,7 +113,7 @@ public class EventCourier implements EventCourierInterface{
         this.id = -1;
         this.datas = new byte[1];
         this.obj = obj;
-        this.fromClass = getClass().getName();
+        this.fromClass = getCallerClass();
     }
 
     public String getTag() {
@@ -203,8 +205,12 @@ public class EventCourier implements EventCourierInterface{
         return ret;
     }
 
+    private String getCallerClass()
+    {
+        return Thread.currentThread().getStackTrace()[1].getClassName();
+    }
     //字节数组转转hex字符串
-    public String dataToHexStr() {
+    private String dataToHexStr() {
         StringBuilder strBuilder = new StringBuilder();
         for (byte valueOf : datas) {
             //strBuilder.append(toHexStr(Byte.valueOf(valueOf)));
@@ -212,6 +218,17 @@ public class EventCourier implements EventCourierInterface{
             strBuilder.append(" ");
         }
         return strBuilder.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "EventCourier{" +
+                ", tag='" + tag + '\'' +
+                ", id=" + id +
+                ", datas=" + Arrays.toString(datas) +
+                ", obj=" + obj +
+                ", fromClass='" + fromClass + '\'' +
+                '}';
     }
 
     //1字节转2个Hex字符

@@ -307,9 +307,10 @@ public class OMedia implements Serializable, PlayerCallback {
             if (isPlayerReady()) {
                 if (getPlayer().getPlayerStatusInfo().getEventType() != PlaybackEvent.Status_Stopped) {
                     playTime = getTime();
-                    MMLog.log(TAG, "oMedia stop, stopTime = " + playTime);
+                    MMLog.log(TAG, "o media playing time = " + playTime);
                 }
                 getPlayer().stop();
+                MMLog.log(TAG, "o media has stopped at time " + playTime);
             }
         } catch (Exception e) {
             //e.printStackTrace();

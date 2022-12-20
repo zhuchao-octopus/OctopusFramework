@@ -1,7 +1,5 @@
 package com.zhuchao.android.fbase;
 
-import android.animation.TypeConverter;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,10 +11,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.Vector;
 
 //内部以链表作为底层实现的集合在执行插入，删除操作时有较好的性能
 public class ObjectList {
@@ -53,6 +53,14 @@ public class ObjectList {
 
     public void clear() {
         FHashMap.clear();
+    }
+
+    public void removeObjectsLike(String keyLike) {
+        for (Map.Entry<String, Object> entity : FHashMap.entrySet()) {
+            if (entity.getKey().contains(keyLike)) {
+                FHashMap.remove(entity.getKey());
+            }
+        }
     }
 
     public Object get(String Name) {
@@ -104,6 +112,15 @@ public class ObjectList {
 
     public Collection<Object> getAllObject() {
         return FHashMap.values();
+    }
+    public List<?> getObjectsLike(String keyLike) {
+        List<Object> list = new Vector<>();
+        for (Map.Entry<String, Object> entity : FHashMap.entrySet()) {
+            if (entity.getKey().contains(keyLike)) {
+                list.add(entity.getValue());
+            }
+        }
+        return list;
     }
 
     public void putString(String key, String value) {
@@ -240,10 +257,13 @@ public class ObjectList {
         }
     }
 
+
     /////////////////////////////////////////////////////////////////////////////////////////////////
     public void printAll() {
+        int i = 0;
         for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
-            MMLog.log(TAG, m.getKey() + ":" + m.getValue().toString());
+            MMLog.log(TAG, i+":"+m.getKey() + ":" + m.getValue().toString());
+            i++;
         }
     }
 
@@ -291,10 +311,10 @@ public class ObjectList {
     }
 
     public void saveToDir(String dir) {
-        if(FileUtils.EmptyString(dir)) return;
+        if (FileUtils.EmptyString(dir)) return;
         try {
             FileUtils.CheckDirsExists(Objects.requireNonNull(dir));
-            String filePathName = dir +"/properties";
+            String filePathName = dir + "/properties";
             String line = System.getProperty("line.separator");
             StringBuilder stringBuffer = new StringBuilder();
             FileWriter fw = new FileWriter(filePathName);
@@ -311,11 +331,11 @@ public class ObjectList {
     }
 
     public void saveToDirAsJson(String dir) {
-        if(FileUtils.EmptyString(dir)) return;
+        if (FileUtils.EmptyString(dir)) return;
         try {
             JSONObject jsonObject = new JSONObject();
             FileUtils.CheckDirsExists(Objects.requireNonNull(dir));
-            String filePathName = dir +"/properties";
+            String filePathName = dir + "/properties";
             //String line = System.getProperty("line.separator");
             StringBuilder stringBuffer = new StringBuilder();
             FileWriter fw = new FileWriter(filePathName);
@@ -324,7 +344,7 @@ public class ObjectList {
             for (Map.Entry<String, Object> stringObjectEntry : set) {
                 //stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
                 jsonObject.put(((Map.Entry<?, ?>) stringObjectEntry).getKey().toString(),
-                               ((Map.Entry<?, ?>) stringObjectEntry).getValue());
+                        ((Map.Entry<?, ?>) stringObjectEntry).getValue());
             }
             stringBuffer.append(jsonObject.toString());
             fw.write(stringBuffer.toString());
