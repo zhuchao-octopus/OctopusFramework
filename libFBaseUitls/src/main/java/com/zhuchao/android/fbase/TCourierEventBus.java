@@ -270,11 +270,11 @@ public class TCourierEventBus implements InvokeInterface {
             if(context != null)
             {
                 if(tCourierEventListenerBundleManager.getMethod() != null) {//优先考虑订阅方法
-                    printEventLog("default onCourierEvent",tCourierEventListenerBundleManager,event);
+                    printEventLog("subscriber "+tCourierEventListenerBundleManager.getMethod().getName(),tCourierEventListenerBundleManager,event);
                     tCourierEventListenerBundleManager.getMethod().invoke(context, event);//呼叫指定方法
                 }
                 else if(TCourierEventListener.class.isAssignableFrom(context.getClass())) {
-                    printEventLog("subscriber onCourierEvent",tCourierEventListenerBundleManager,event);
+                    printEventLog("default onCourierEvent",tCourierEventListenerBundleManager,event);
                     ((TCourierEventListener) context).onCourierEvent(event);//call 默认接口onCourierEvent(event);
                 }
             }
