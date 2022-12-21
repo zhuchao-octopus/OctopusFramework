@@ -422,16 +422,10 @@ public class TCourierEventBus implements InvokeInterface {
 
     private void printEventLog(String tag,@NotNull TCourierEventListenerBundleManager tCourierEventListenerBundleManager,@NotNull Object event)
     {
-        //if(event.getTag() != null) return;
-        MMLog.d(TAG,tag+" EventListener:"+tCourierEventListenerBundleManager.toToString()+",ev:"+event.getClass().getName());
-        //MMLog.d(TAG,"Courier Event = "+event.toString() + ",class = "+event.getClass().getName());
-        //MMLog.d(TAG,"tCourierEventListenerBundleManager = " +tCourierEventListenerBundleManager.toToString());
-        //InvokerList.printAll();
+        //MMLog.d(TAG,tag+" EventListener:"+tCourierEventListenerBundleManager.toToString()+",ev:"+event.getClass().getName());
     }
     private void printEventLog2(@NotNull TCourierEventListenerBundleManager tCourierEventListenerBundleManager,@NotNull EventCourierInterface event)
     {
-        //if(event.getTag() != null) return;
-        //MMLog.d(TAG,"Courier Event = "+event.toString() + ",class = "+event.getClass().getName());
         //MMLog.d(TAG,"tCourierEventListenerBundleManager = " +tCourierEventListenerBundleManager.toToString());
     }
 }
