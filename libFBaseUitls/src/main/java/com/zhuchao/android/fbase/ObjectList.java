@@ -119,7 +119,7 @@ public class ObjectList {
         return FHashMap.values();
     }
 
-    public List<?> getObjectsLike(String keyLike) {
+    public List<Object> getObjectsLike(String keyLike) {
         List<Object> list = new Vector<>();
         for (Map.Entry<String, Object> entity : FHashMap.entrySet()) {
             if (entity.getKey().contains(keyLike)) {

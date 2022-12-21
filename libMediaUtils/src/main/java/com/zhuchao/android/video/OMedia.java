@@ -172,7 +172,7 @@ public class OMedia implements Serializable, PlayerCallback {
             public void CALLTODO(String tag) {
                 _play();
             }
-        }).start();
+        }).startAgain();
         return this;
     }
 
