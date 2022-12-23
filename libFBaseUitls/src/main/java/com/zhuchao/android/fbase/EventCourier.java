@@ -2,7 +2,7 @@ package com.zhuchao.android.fbase;
 
 import java.util.Arrays;
 
-public class EventCourier implements EventCourierInterface{
+public class EventCourier implements EventCourierInterface {
     private final String TAG = "EventCourier";
     private String tag;
     private int id;
@@ -14,6 +14,15 @@ public class EventCourier implements EventCourierInterface{
         this.tag = tag;
         this.id = id;
         this.datas = new byte[1];
+        this.obj = null;
+        this.fromClass = getCallerClass();
+    }
+
+    public EventCourier(String tag, int id, boolean value) {
+        this.tag = tag;
+        this.id = id;
+        this.datas = new byte[1];
+        this.datas[0] = (byte) (value ? 1 : 0);
         this.obj = null;
         this.fromClass = getCallerClass();
     }
@@ -205,10 +214,14 @@ public class EventCourier implements EventCourierInterface{
         return ret;
     }
 
-    private String getCallerClass()
-    {
-        return Thread.currentThread().getStackTrace()[1].getClassName();
+    private String getCallerClass() {
+        try {
+            return Thread.currentThread().getStackTrace()[1].getClassName();
+        } catch (Exception ignored) {
+        }
+        return null;
     }
+
     //字节数组转转hex字符串
     private String dataToHexStr() {
         StringBuilder strBuilder = new StringBuilder();

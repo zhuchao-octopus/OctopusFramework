@@ -1,16 +1,20 @@
 package com.zhuchao.android.fbase;
 
+
 import com.zhuchao.android.eventinterface.InvokeInterface;
 import org.jetbrains.annotations.NotNull;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.LockSupport;
 
 public class TCourierEventBus implements InvokeInterface {
     private final String TAG = "TCourierEventBus";
-    private final String DEFAULT_EVENT_METHOD_NAME = "onCourierEvent";
+    //private final String DEFAULT_EVENT_METHOD_NAME = "onCourierEvent";
     private final ObjectList InvokerList = new ObjectList();
     //private final ObjectList EventTypeList = new ObjectList();
     private final ArrayList<Object> CourierEventsQueueA = new ArrayList<Object>();
@@ -37,33 +41,32 @@ public class TCourierEventBus implements InvokeInterface {
     //@Deprecated
     public void registerEventObserver(@NotNull String tag, @NotNull TCourierEventListener courierEventListener) {
         //if (InvokerList.containsTag(tagName)) return;
-        TCourierEventListenerBundleManager tCourierEventListenerBundleManager = new TCourierEventListenerBundleManager((Object) courierEventListener, null, null, null);
-        String tagName = tag+DEFAULT_EVENT_METHOD_NAME;
-        InvokerList.addItem(tagName, tCourierEventListenerBundleManager);
-        //EventTypeList.addItem(courierEventListener.getClass().getName(), eventType);
-        //MMLog.i(TAG,"registerEventObserver -> " +tag);
-        //assert eventType != null;
-        findCourierSubscribeEventType(tag,courierEventListener);//分析当前类的有无订阅者
+        //TCourierEventListenerBundleManager tCourierEventListenerBundleManager = new TCourierEventListenerBundleManager((Object) courierEventListener, null, null, null);
+        //String tagName = tag+DEFAULT_EVENT_METHOD_NAME;
+        //InvokerList.addItem(tagName, tCourierEventListenerBundleManager);//显示注册默认接口
+
+        findCourierEventTypeSubscriber(tag,courierEventListener);//分析当前类有无订阅者
         MMLog.i(TAG, "registerEventObserver -> " + courierEventListener.getClass().getName()+",tag = "+tag);
+        //printAllEventListener();
     }
     //观察订阅
     public void registerEventObserver(@NotNull Object context) {
-
         //if (InvokerList.containsTag(tag)) return;
-        if(TCourierEventListener.class.isAssignableFrom(context.getClass()))
-        {
-            String tagName = context.getClass().getName()+DEFAULT_EVENT_METHOD_NAME;
-            TCourierEventListenerBundleManager tCourierEventListenerBundleManager = new TCourierEventListenerBundleManager(context, null, null, null);
-            InvokerList.addItem(tagName, tCourierEventListenerBundleManager);
-        }
-        findCourierSubscribeEventType(null,context);//分析当前类的有无订阅者
+        //if(TCourierEventListener.class.isAssignableFrom(context.getClass()))//隐式注册默认接口
+        //{
+        //    String tagName = context.getClass().getName()+DEFAULT_EVENT_METHOD_NAME;
+        //    TCourierEventListenerBundleManager tCourierEventListenerBundleManager = new TCourierEventListenerBundleManager(context, null, null, null);
+        //    InvokerList.addItem(tagName, tCourierEventListenerBundleManager);
+        //}
+        findCourierEventTypeSubscriber(null,context);//分析当前类有无订阅者
         MMLog.i(TAG, "registerEventObserver -> " + context.getClass().getName());
+        //printAllEventListener();
     }
 
     //@Deprecated
     public void unRegisterEventObserver(@NotNull String tag) {
         try {
-            synchronized (InvokerList){ InvokerList.remove(tag+DEFAULT_EVENT_METHOD_NAME);}//移除默认观察者
+            synchronized (InvokerList){ InvokerList.removeObjectsLike(tag);}
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -278,11 +281,15 @@ public class TCourierEventBus implements InvokeInterface {
         return InvokerList.getObjectsLike(tag);
     }
     //查找订阅的方法
-    private void findCourierSubscribeEventType(String tag,Object courierEventListener) {
+    private void findCourierEventTypeSubscriber(String tag,Object courierEventListener) {
         Method[] methods = courierEventListener.getClass().getMethods();
+        //Method[] methods = courierEventListener.getClass().getDeclaredMethods();
         for (int i = 0; i < methods.length - 1; i++) {
             TCourierSubscribe tCourierSubscribe = methods[i].getAnnotation(TCourierSubscribe.class);
-            if (tCourierSubscribe != null) {
+            Class<?>[] courierInterfaceParameterTypes = methods[i].getParameterTypes();
+
+            if (tCourierSubscribe != null && (Modifier.toString(methods[i].getModifiers()).contains("public"))) //显示的订阅了总线接口 && courierInterfaceParameterTypes.length == 1
+            {//显示订阅
                 Class<?>[] classes = methods[i].getParameterTypes();
                 methods[i].setAccessible(true);
                 TCourierEventListenerBundleManager tCourierEventListenerBundleManager = new TCourierEventListenerBundleManager(courierEventListener, methods[i], tCourierSubscribe, classes);
@@ -292,10 +299,19 @@ public class TCourierEventBus implements InvokeInterface {
                     InvokerList.addItem(courierEventListener.getClass().getName()+methods[i].getName(), tCourierEventListenerBundleManager);
                 //MMLog.i(TAG, tCourierEventListenerBundleManager.toToString());
             }
-            //else
-            //{
-                //MMLog.i(TAG, methods[i].getName()+","+methods[i].getAnnotation(TCourierSubscribe.class));
-            //}
+            //else if(methods[i].getName().equals(DEFAULT_EVENT_METHOD_NAME))//默认方法名特殊处理,自动匹配订阅(隐式订阅)
+            //对参数实现EventCourierInterface接口的方法进行隐式订阅
+            else if(courierInterfaceParameterTypes.length == 1
+                    && EventCourierInterface.class.isAssignableFrom(courierInterfaceParameterTypes[0])
+                    && (Modifier.toString(methods[i].getModifiers()).contains("public")))
+            {
+                methods[i].setAccessible(true);
+                TCourierEventListenerBundleManager listenerBundleManager = new TCourierEventListenerBundleManager(courierEventListener, methods[i], new defaultSubscriber(), courierInterfaceParameterTypes);
+                if(FileUtils.NotEmptyString(tag))//自动增加匹配接口默认方法，无需显示申明接口
+                    InvokerList.addItem(tag+methods[i].getName(), listenerBundleManager);
+                else
+                    InvokerList.addItem(courierEventListener.getClass().getName()+methods[i].getName(), listenerBundleManager);
+            }
         }
     }
 
@@ -305,7 +321,7 @@ public class TCourierEventBus implements InvokeInterface {
             Object context = tCourierEventListenerBundleManager.getCourierEventListener();
             if(context != null)
             {
-                if(tCourierEventListenerBundleManager.getMethod() != null) {//优先考虑订阅方法
+                if(tCourierEventListenerBundleManager.getMethod() != null) {//优先考虑订阅方法,等效if(tCourierSubscribe != null)//订阅的消息接口
                     printEventLog("subscriber "+tCourierEventListenerBundleManager.getMethod().getName(),tCourierEventListenerBundleManager,event);
                     tCourierEventListenerBundleManager.getMethod().invoke(context, event);//呼叫指定订阅方法
                 }
@@ -323,7 +339,7 @@ public class TCourierEventBus implements InvokeInterface {
     private void handleSingleMatchedEventType(@NotNull TCourierEventListenerBundleManager tCourierEventListenerBundleManager,@NotNull Object event) {
         //Class<?>[] listenerParameterTypes = tCourierEventListenerBundleManager.parameterTypes;
         TCourierSubscribe tCourierSubscribe = tCourierEventListenerBundleManager.getCourierSubscribe();
-        if(tCourierSubscribe != null)
+        if(tCourierSubscribe != null )//处理显示订阅的消息接口&&tCourierEventListenerBundleManager.getMethod() != null
         {
             switch (tCourierSubscribe.threadMode()) {
                 case MAIN:
@@ -344,9 +360,10 @@ public class TCourierEventBus implements InvokeInterface {
                     break;
             }
         }
-        else //if(TCourierEventListener.class.isAssignableFrom(tCourierEventListenerBundleManager.getCourierEventListener().getClass()))
+        else if(tCourierEventListenerBundleManager.getMethod() == null) //默认处理接口,默认接口只处理EventCourierInterface消息
         {
-            handleSingleEventType(tCourierEventListenerBundleManager, event);
+            if(EventCourierInterface.class.isAssignableFrom(event.getClass()))
+               handleSingleEventType(tCourierEventListenerBundleManager, event);//显示、隐式注册的默认接口（显示实现了总线接口）
         }
     }
 
@@ -365,9 +382,10 @@ public class TCourierEventBus implements InvokeInterface {
                     break;
             }
         }
-        else //if(TCourierEventListener.class.isAssignableFrom(tCourierEventListenerBundleManager.getCourierEventListener().getClass()))
+        else if(tCourierEventListenerBundleManager.getMethod() == null) //默认处理接口
         {
-            handleSingleEventType(tCourierEventListenerBundleManager, event);
+            if(EventCourierInterface.class.isAssignableFrom(event.getClass()))
+               handleSingleEventType(tCourierEventListenerBundleManager, event);
         }
     }
 
@@ -406,20 +424,46 @@ public class TCourierEventBus implements InvokeInterface {
             //&& listenerParameterTypes[0] != null
             //&& listenerParameterTypes[0].isAssignableFrom(event.getClass())
             //Class<?>[] listenerParameterTypes = tCourierEventListenerBundleManager.parameterTypes;
-            return parameterTypes != null && parameterTypes[0] != null &&
-                    parameterTypes[0].isAssignableFrom(event.getClass());
+            return parameterTypes != null
+                    && parameterTypes[0] != null
+                    && parameterTypes.length == 1
+                    && parameterTypes[0].isAssignableFrom(event.getClass());
         }
 
         public String toToString()
         {
             String str = this.courierEventListener.getClass().getName();
-            if(method != null)
-                str = str + ","+this.method.getName().toString();
-            if(parameterTypes != null)
-                str = str+ "," + this.parameterTypes[0].getName();
+            if(method != null) {
+                if(parameterTypes != null) {
+                    if(parameterTypes.length > 0)
+                    str = str + " " + this.method.getName().toString() + "(" +
+                            (parameterTypes[0].getSimpleName()) + ")";
+                    else
+                        str = str + " " + this.method.getName().toString() + "(" +
+                                Arrays.toString(parameterTypes) + ")";
+                }
+                else
+                    str = str + " " + this.method.getName().toString() + "(null)";
+            }
+            else
+                str = str + "(null)";
             if(tCourierSubscribe != null)
                 str = str+ "," + this.tCourierSubscribe.threadMode().toString();
             return str;
+        }
+    }
+
+    @SuppressWarnings("ClassExplicitlyAnnotation")
+    static class defaultSubscriber implements TCourierSubscribe {
+
+        @Override
+        public MethodThreadMode.threadMode threadMode() {
+            return MethodThreadMode.threadMode.BACKGROUND;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return null;
         }
     }
 
@@ -434,4 +478,14 @@ public class TCourierEventBus implements InvokeInterface {
         //MMLog.d(TAG,tag+" ev:"+event.getClass().getSimpleName() +" -> EventListener:"+tCourierEventListenerBundleManager.toToString());
     }
 
+    public void printAllEventListener()
+    {
+        for (Object obj : InvokerList.getAllObject()) {
+            TCourierEventListenerBundleManager listenerBundle = (TCourierEventListenerBundleManager)obj;
+            if(listenerBundle.getMethod() != null)
+            MMLog.d(TAG,"EventListener:"+Modifier.toString(listenerBundle.getMethod().getModifiers())+" "+listenerBundle.toToString());
+            else
+                MMLog.d(TAG,"EventListener:？"+listenerBundle.toToString());
+        }
+    }
 }
