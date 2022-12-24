@@ -21,10 +21,10 @@ public class TUartFile extends TDevice implements TCourierEventListener {
     private SerialPort serialPort = null;
     private ReadThread readThread = null;
     private ParserThread parserThread = null;
-    private static final Queue<Byte> queueDatas = new LinkedBlockingQueue<>();
-    private static int frame_size = 9;//当前串口协议一个数据包至少9个字节
-    private static String frame_end_hex = "7E";
-    private static String f_separator = " ";
+    private final Queue<Byte> queueDatas = new LinkedBlockingQueue<>();
+    private int frame_size = 9;//当前串口协议一个数据包至少9个字节
+    private String frame_end_hex = "7E";
+    private String f_separator = " ";
     private TCourierEventListener deviceReadingEventListener = null;
     private long writeDelayTime_millis = 0;
 
@@ -123,28 +123,28 @@ public class TUartFile extends TDevice implements TCourierEventListener {
             return false;
     }
 
-    public static int getFrame_size() {
+    public int getFrame_size() {
         return frame_size;
     }
 
-    public static void setFrame_size(int frame_size) {
-        TUartFile.frame_size = frame_size;
+    public void setFrame_size(int frame_size) {
+        this.frame_size = frame_size;
     }
 
-    public static String getFrame_end_hex() {
+    public String getFrame_end_hex() {
         return frame_end_hex;
     }
 
-    public static void setFrame_end_hex(String frame_end_hex) {
-        TUartFile.frame_end_hex = frame_end_hex;
+    public void setFrame_end_hex(String frame_end_hex) {
+        this.frame_end_hex = frame_end_hex;
     }
 
-    public static String getF_separator() {
+    public String getF_separator() {
         return f_separator;
     }
 
-    public static void setF_separator(String f_separator) {
-        TUartFile.f_separator = f_separator;
+    public void setF_separator(String f_separator) {
+        this.f_separator = f_separator;
     }
 
     public String toDeviceString() {
