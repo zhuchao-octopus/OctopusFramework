@@ -332,7 +332,8 @@ public class TCourierEventBus implements InvokeInterface {
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
             //e.printStackTrace();
-            MMLog.e(TAG, e.getMessage());
+            MMLog.e(TAG,tCourierEventListenerBundle.toToString());
+            MMLog.e(TAG, e.getMessage() + ":"+event.getClass().getSimpleName());
         }
     }
 
