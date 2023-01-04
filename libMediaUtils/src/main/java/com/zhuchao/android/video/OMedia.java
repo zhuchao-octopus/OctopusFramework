@@ -630,6 +630,21 @@ public class OMedia implements Serializable, PlayerCallback {
         return bf;
     }
 
+    public boolean isPlayingVideo()
+    {
+      return MediaFile.isVideoFile(movie.getSrcUrl());
+    }
+
+    public boolean isPlayingAudio()
+    {
+        return MediaFile.isAudioFile(movie.getSrcUrl());
+    }
+
+    public boolean isPlayingImage()
+    {
+        return MediaFile.isImageFile(movie.getSrcUrl());
+    }
+
     protected synchronized PlayControl getPlayer() {
         if (this.context == null) return null;
         if (FPlayer == null) {

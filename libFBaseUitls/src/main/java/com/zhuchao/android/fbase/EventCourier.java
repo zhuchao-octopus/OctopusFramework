@@ -216,7 +216,7 @@ public class EventCourier implements EventCourierInterface {
 
     private String getCallerClass() {
         try {
-            return Thread.currentThread().getStackTrace()[1].getClassName();
+            return Thread.currentThread().getStackTrace()[1].getClass().getSimpleName();
         } catch (Exception ignored) {
         }
         return null;
@@ -236,7 +236,7 @@ public class EventCourier implements EventCourierInterface {
     @Override
     public String toString() {
         return "EventCourier{" +
-                ", tag='" + tag + '\'' +
+                "tag='" + tag + '\'' +
                 ", id=" + id +
                 ", datas=" + Arrays.toString(datas) +
                 ", obj=" + obj +

@@ -290,6 +290,8 @@ public class TCourierEventBus implements InvokeInterface {
             if(classes.length != 1) continue;
 
             String pName = classes[0].getSimpleName();
+            pName = pName+courierEventListener.hashCode();
+
             if (tCourierSubscribe != null && (Modifier.toString(methods[i].getModifiers()).contains("public"))) //显示的订阅了总线接口 && courierInterfaceParameterTypes.length == 1
             {//显示订阅
                 methods[i].setAccessible(true);

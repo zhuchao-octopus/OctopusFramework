@@ -615,10 +615,11 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         return successMsg.toString().equalsIgnoreCase("success");
     }
 
-    private static String getFWVersionName() {
+    private  String getFWVersionName() {
         return Build.MODEL + ","
                 + Build.VERSION.SDK_INT + ","
-                + Build.VERSION.RELEASE;
+                + Build.VERSION.RELEASE + ","
+                + VERSION_NAME; //wms version
     }
 
     private String getRequestJSON() {
