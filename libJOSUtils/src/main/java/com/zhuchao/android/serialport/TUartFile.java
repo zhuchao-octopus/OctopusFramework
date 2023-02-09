@@ -91,6 +91,11 @@ public class TUartFile extends TDevice implements TCourierEventListener {
             tProtocol_package.parse(eventCourier.getDatas());
             eventCourier.setObj(tProtocol_package);
             deviceReadingEventListener.onCourierEvent(eventCourier);
+            //MMLog.log(TAG, "deviceReadingEventListener = "+deviceReadingEventListener.toString()+", eventCourier = "+eventCourier.toString());
+        }
+        else
+        {
+            MMLog.log(TAG, "deviceReadingEventListener = null, eventCourier = "+eventCourier.toString());
         }
     }
 
@@ -268,20 +273,22 @@ public class TUartFile extends TDevice implements TCourierEventListener {
                     byteArrayList.add(aByte);
                     String strEndFrame = ByteToHexStr(aByte);
                     if (frame_end_hex.equals(strEndFrame) && byteArrayList.size() >= frame_size) {
-                        List<Byte> newData = new ArrayList<>();
-                        Collections.addAll(newData, new Byte[byteArrayList.size()]);//复制容量
-                        Collections.copy(newData, byteArrayList);//复制内容
-                        Byte[] byteData = newData.toArray(new Byte[newData.size()]);//列表转成数组类（引用）
+                        List<Byte> newByteListData = new ArrayList<>();
+                        Collections.addAll(newByteListData, new Byte[byteArrayList.size()]);//复制容量
+                        Collections.copy(newByteListData, byteArrayList);//复制内容
+                        Byte[] byteData = newByteListData.toArray(new Byte[newByteListData.size()]);//列表转成数组类（引用）
 
                         //将类引用转换成字节数组
-                        byte[] bytes = new byte[newData.size()];
+                        byte[] bytes = new byte[newByteListData.size()];
                         for (int i = 0; i < byteData.length; i++) {
                             bytes[i] = byteData[i];
                         }
-                        //MMLog.log(TAG,"READ UART:"+BufferToHexStr(bytes,f_separator));
                         byteArrayList.clear();
                         //处理一帧数据
+                        //MMLog.log(TAG,"DEBUG READ UART:"+BufferToHexStr(bytes,f_separator));
                         dispatchCourier(new EventCourier(serialPort.getDevice().getAbsolutePath(), DataID.DEVICE_EVENT_UART_READ, bytes));
+                    } else if (frame_end_hex.equals("FF")) {
+                        MMLog.log(TAG, "RT READ UART:" + strEndFrame);
                     }
                 } catch (Exception e) {
                     //e.printStackTrace();

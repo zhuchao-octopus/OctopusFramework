@@ -119,13 +119,21 @@ public class TProtocol_Package {
             MMLog.log(TAG, "parse failed buffer = " + null);
             return;
         }
+        datas = new byte[1];
+        this.msgLength = datas.length;
+
         if (buffer.length >= 9) {
             this.msgHead = getIntVale(0, 2, buffer);
+
+            if(this.msgHead != DEFAULT_HEAD) return;
+            this.msgEnd = getIntVale(buffer.length - 1, 1, buffer);
+            if(this.msgEnd != DEFAULT_END) return;
+
             this.msgID = getIntVale(2, 2, buffer);
             this.msgIndex = getIntVale(4, 1, buffer);
             this.msgLength = getIntVale(5, 2, buffer);
             this.msgCRC = getIntVale(buffer.length - 2, 1, buffer);
-            this.msgEnd = getIntVale(buffer.length - 1, 1, buffer);
+
         } else {
             MMLog.log(TAG, "parse failed length = " + buffer.length);
         }

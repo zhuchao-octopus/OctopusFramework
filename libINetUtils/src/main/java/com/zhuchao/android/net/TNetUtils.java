@@ -619,7 +619,8 @@ public class TNetUtils {
             Object object = new Gson().fromJson(json, classOfT);
             return (T) object;
         } catch (JsonSyntaxException e) {
-            MMLog.e(TAG, "fromJson failed " + e.toString() + "," + json);
+            //MMLog.e(TAG, "fromJson failed! e = " + e.toString() + "," + json);
+            MMLog.e(TAG, "fromJson failed! " + e.toString());
             return null;
         }
     }
