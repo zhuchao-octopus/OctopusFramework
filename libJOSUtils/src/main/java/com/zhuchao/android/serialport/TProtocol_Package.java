@@ -5,8 +5,8 @@ import com.zhuchao.android.fbase.MMLog;
 
 public class TProtocol_Package {
     private final String TAG = "TProtocol_Package";
-    private final int DEFAULT_HEAD = 0x0101;
-    private final int DEFAULT_END = 0x7E;
+    public final int DEFAULT_HEAD = 0x0101;
+    public final int DEFAULT_END = 0x7E;
     private final int DEFAULT_MSGID_LENGTH = 2;
     private final int DEFAULT_MSGINDEX_LENGTH = 2;
     private final int DEFAULT_MSGLENGTH_LENGTH = 2;
@@ -24,11 +24,13 @@ public class TProtocol_Package {
     public TProtocol_Package() {
         this.msgHead = DEFAULT_END;
         this.msgEnd = DEFAULT_END;
+        this.msgLength = 0;
     }
 
     public TProtocol_Package(int msgHead, int msg_End) {
         this.msgHead = msgHead;
         this.msgEnd = msg_End;
+        this.msgLength = 0;
     }
 
     public int getDEFAULT_HEAD() {
@@ -115,17 +117,17 @@ public class TProtocol_Package {
     }
 
     public void parse(byte[] buffer) {
+        //datas = new byte[1];
+        //this.msgLength = datas.length;
         if (buffer == null) {
             MMLog.log(TAG, "parse failed buffer = " + null);
             return;
         }
-        datas = new byte[1];
-        this.msgLength = datas.length;
 
         if (buffer.length >= 9) {
             this.msgHead = getIntVale(0, 2, buffer);
-
             if(this.msgHead != DEFAULT_HEAD) return;
+
             this.msgEnd = getIntVale(buffer.length - 1, 1, buffer);
             if(this.msgEnd != DEFAULT_END) return;
 

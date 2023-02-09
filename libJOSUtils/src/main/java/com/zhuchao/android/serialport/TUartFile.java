@@ -89,7 +89,10 @@ public class TUartFile extends TDevice implements TCourierEventListener {
         if (deviceReadingEventListener != null) {//处理一帧数据
             TProtocol_Package tProtocol_package = new TProtocol_Package();
             tProtocol_package.parse(eventCourier.getDatas());
+            //if(tProtocol_package.getMsg_End() == tProtocol_package.DEFAULT_END &&
+            //        tProtocol_package.getMsg_End() == tProtocol_package.DEFAULT_END)
             eventCourier.setObj(tProtocol_package);
+
             deviceReadingEventListener.onCourierEvent(eventCourier);
             //MMLog.log(TAG, "deviceReadingEventListener = "+deviceReadingEventListener.toString()+", eventCourier = "+eventCourier.toString());
         }
