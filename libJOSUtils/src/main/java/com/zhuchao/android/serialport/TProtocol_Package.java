@@ -22,8 +22,8 @@ public class TProtocol_Package {
     private int msgEnd = DEFAULT_END;
 
     public TProtocol_Package() {
-        this.msgHead = DEFAULT_END;
-        this.msgEnd = DEFAULT_END;
+        //this.msgHead = DEFAULT_END;
+        //this.msgEnd = DEFAULT_END;
         this.msgLength = 0;
     }
 
