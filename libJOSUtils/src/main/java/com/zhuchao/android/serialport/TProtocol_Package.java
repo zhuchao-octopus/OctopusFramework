@@ -33,13 +33,13 @@ public class TProtocol_Package {
         this.msgLength = 0;
     }
 
-    public int getDEFAULT_HEAD() {
-        return DEFAULT_HEAD;
-    }
+    //public int getDEFAULT_HEAD() {
+    //    return DEFAULT_HEAD;
+    //}
 
-    public int getDEFAULT_END() {
-        return DEFAULT_END;
-    }
+    //public int getDEFAULT_END() {
+    //   return DEFAULT_END;
+    //}
 
     public int getMsgHead() {
         return msgHead;
