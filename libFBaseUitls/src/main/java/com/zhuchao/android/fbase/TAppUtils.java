@@ -24,7 +24,6 @@ import android.text.TextUtils;
 import androidx.core.content.FileProvider;
 
 import com.zhuchao.android.eventinterface.AppChangedListener;
-import com.zhuchao.android.libfileutils.BuildConfig;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -277,8 +276,9 @@ public class TAppUtils {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Uri contentUri = FileProvider.getUriForFile(mContext, BuildConfig.LIBRARY_PACKAGE_NAME + ".fileProvider", new File(filePath));
+            Uri contentUri = FileProvider.getUriForFile(mContext, mContext.getPackageName() + ".fileProvider", new File(filePath));
             intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+            MMLog.log(TAG,"fileProvider path = "+mContext.getPackageName() + ".fileProvider");
         } else {
             intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -288,10 +288,12 @@ public class TAppUtils {
 
     public static void install(Context context, String filePath) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
+        //BuildConfig.LIBRARY_PACKAGE_NAME
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Uri contentUri = FileProvider.getUriForFile(context, BuildConfig.LIBRARY_PACKAGE_NAME + ".fileProvider", new File(filePath));
+            Uri contentUri = FileProvider.getUriForFile(context, context.getPackageName() + ".fileProvider", new File(filePath));
             intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+            MMLog.log(TAG,"fileProvider path = "+context.getPackageName() + ".fileProvider");
         } else {
             intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

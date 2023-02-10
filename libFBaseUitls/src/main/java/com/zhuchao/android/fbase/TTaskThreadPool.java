@@ -4,14 +4,15 @@ import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.MD5;
 
 import java.util.Collection;
+import java.util.Random;
 
 public class TTaskThreadPool extends ObjectList {
     private final String TAG = "TaskThreadPool";
-    private int maxThreadCount = 5000;
+    private int maxThreadCount = 10000;
     private int minThreadCount = 0;
     private int taskCounter = 0;
     //private List<PTask> pTaskList_Ok = null;
-
+    private final String ANONYMOUS_NAME ="anonymous-default";
     public TTaskThreadPool() {
         super();
     }
@@ -21,10 +22,15 @@ public class TTaskThreadPool extends ObjectList {
         this.maxThreadCount = maxThreadCount;
     }
 
+    public PTask createTask() {
+       return createTask("");
+    }
+
     public PTask createTask(String tName) {
         if (EmptyString(tName)) {
-            tName = "default";
-            MMLog.log(TAG, "only one default PTask name/tag ,name=" + tName);
+            //Random random = new Random();
+            tName = ANONYMOUS_NAME+System.currentTimeMillis();//匿名线程
+            //MMLog.log(TAG, "only one default PTask name/tag ,name=" + tName);
         }
 
         if(this.getCount() > maxThreadCount)
@@ -116,6 +122,7 @@ public class TTaskThreadPool extends ObjectList {
         for (Object o : objects) {
             ((PTask) o).freeFree();
         }
+        this.clear();
     }
 
     class PTask extends TTask {
@@ -124,6 +131,12 @@ public class TTaskThreadPool extends ObjectList {
         //private TTaskThreadPool TTaskThreadPool = null;
         public PTask(String tName) {
             super(tName, null);
+        }
+
+        public void free()
+        {
+           this.freeFree();
+           deleteTask(this);
         }
 
         @Override
@@ -142,6 +155,10 @@ public class TTaskThreadPool extends ObjectList {
                     if (taskCallback != null) {
                         taskCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_ALL);//池中所有任务完成
                     }
+                }
+                if (this.getTName().contains("ANONYMOUS_NAME"))
+                {
+                    free();//清除匿名线程
                 }
             } else {
                 MMLog.log(TAG, "not found PTask object in pool,break tag = " + tTag);

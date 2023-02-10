@@ -51,6 +51,10 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     @Override
     public void setSource(String filePath) {
+        if(mediaPlayer == null) {
+            MMLog.e(TAG, "Wrong!!!! player is missed!!!!!!!!!!");
+            return;
+        }
         try {
             PreparePlayerComponent();
             playerStatusInfo.setEventType(PlaybackEvent.Status_Opening);
