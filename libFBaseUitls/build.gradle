@@ -57,5 +57,5 @@ dependencies {
     implementation project(path: ':libEventInterface')
     implementation('androidx.appcompat:appcompat:1.6.0-alpha01')
     api('androidx.annotation:annotation:1.4.0-alpha02')
-    api('com.google.code.gson:gson:2.10')
+    api('com.google.code.gson:gson:2.10.1')
 }

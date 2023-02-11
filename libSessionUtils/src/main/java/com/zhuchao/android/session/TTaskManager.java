@@ -435,7 +435,6 @@ public class TTaskManager {
 
                         if (tTask.getCallBackHandler() != null) {//回调传递给task
                             Message msg = taskMainLooperHandler.obtainMessage();
-                            msg.obj = tTask;
                             tTask.getProperties().putString("tag", tag);
                             tTask.getProperties().putString("fromUrl", fromUrl);
                             tTask.getProperties().putString("toUrl", toUrl);
@@ -443,12 +442,14 @@ public class TTaskManager {
                             tTask.getProperties().putLong("total", total);
                             tTask.getProperties().putString("result", result);
                             tTask.getProperties().putInt("status", status);
+                            msg.obj = tTask;
                             taskMainLooperHandler.sendMessage(msg);
                             //taskMainLooperHandler.sendMessage(msg)后
                             //tTask.getProperties().getString("fromUrl")有可能被清空
-                            tTask.free();//释放线程tTask.run
+                            //tTask.free();//释放线程tTask.run //不能释放，连续的调用导致结果数据丢失
+                            //MMLog.d(TAG, "requestGet " + fromUrl + "," + result);
                         } else {
-                            deleteTask(tTask);//没有回调任务，直接清除tTask
+                            //deleteTask(tTask);//没有回调任务，直接清除tTask//无需删除，给调用者删除
                         }
                     }
                 });

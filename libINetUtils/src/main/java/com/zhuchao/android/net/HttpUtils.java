@@ -157,6 +157,7 @@ public class HttpUtils {
                 try {
                     if (response != null && response.isSuccessful()) {
                         result = response.body().string();
+                        //MMLog.log(TAG, "Request ok result " + result);
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_SUCCESS, RequestCallBack);
                     } else {
                         //MMLog.log(TAG, "Request failed from " + fromUrl);

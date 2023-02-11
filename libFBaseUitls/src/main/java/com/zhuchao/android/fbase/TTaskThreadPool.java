@@ -156,8 +156,9 @@ public class TTaskThreadPool extends ObjectList {
                         taskCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_ALL);//池中所有任务完成
                     }
                 }
-                if (this.getTName().contains("ANONYMOUS_NAME"))
+                if (this.getTName().contains(ANONYMOUS_NAME))
                 {
+                    MMLog.log(TAG,"free anonymous task name = "+this.getTName());
                     free();//清除匿名线程
                 }
             } else {
