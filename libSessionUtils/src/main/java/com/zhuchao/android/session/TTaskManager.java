@@ -417,11 +417,13 @@ public class TTaskManager {
     public TTask request(final String fromUrl) {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if (EmptyString(fromUrl)) {
-            tTask.free();//释放无效的任务
-            deleteTask(tTask);
+            //tTask.free();//释放无效的任务
+            //deleteTask(tTask);
+            MMLog.d(TAG, "requestGet fromUrl = " + fromUrl);
             return tTask;
         }
         if (tTask.isBusy()) return tTask;
+
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.invoke(new InvokeInterface() {
             @Override

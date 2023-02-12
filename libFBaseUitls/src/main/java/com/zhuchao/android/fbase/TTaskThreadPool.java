@@ -127,16 +127,8 @@ public class TTaskThreadPool extends ObjectList {
 
     class PTask extends TTask {
         private final String TAG = "PTask";
-
-        //private TTaskThreadPool TTaskThreadPool = null;
         public PTask(String tName) {
             super(tName, null);
-        }
-
-        public void free()
-        {
-           this.freeFree();
-           deleteTask(this);
         }
 
         @Override
@@ -150,7 +142,7 @@ public class TTaskThreadPool extends ObjectList {
                 */
                 //isKeeping == false 后到这里
                 setTaskCounter(getTaskCounter() + 1);
-                MMLog.log(TAG, "PTask complete successfully,tag = " + tTag + ",total:" + getCount() + ",complete:" + taskCounter);
+                MMLog.log(TAG, "PTask was successfully completed,tTag = " + tTag + ",total:" + getCount() + ",completed:" + taskCounter);
                 if (getTaskCounter() == getCount()) {
                     if (taskCallback != null) {
                         taskCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_ALL);//池中所有任务完成
@@ -159,7 +151,9 @@ public class TTaskThreadPool extends ObjectList {
                 if (this.getTName().contains(ANONYMOUS_NAME))
                 {
                     MMLog.log(TAG,"free anonymous task name = "+this.getTName());
-                    free();//清除匿名线程
+                    //free();//自动清除匿名线程
+                    freeFree();
+                    deleteTask(this);
                 }
             } else {
                 MMLog.log(TAG, "not found PTask object in pool,break tag = " + tTag);
