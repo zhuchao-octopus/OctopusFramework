@@ -172,6 +172,10 @@ public class TNetUtils {
         }
     }
 
+    public boolean isInternetAvailable() {
+        return !EmptyString(networkInformation.internetIP) && !EmptyString(networkInformation.localIP) && !EmptyString(networkInformation.MAC);
+    }
+
     public boolean isNetCanConnect() {
         if (EmptyString(networkInformation.internetIP) || EmptyString(networkInformation.localIP) || EmptyString(networkInformation.MAC)) {
             return isInternetOk();
@@ -209,16 +213,6 @@ public class TNetUtils {
         return false;
     }
 
-    public int getConnectType() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager == null) return -1;
-        NetworkInfo mNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        if (mNetworkInfo != null && mNetworkInfo.isAvailable()) {
-            return mNetworkInfo.getType();
-        }
-        return -1;
-    }
-
     public boolean isAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager == null) return false;
@@ -230,6 +224,16 @@ public class TNetUtils {
     //判断是否有外网连接
     public synchronized static final boolean isInternetOk() {
         return checkInternet();
+    }
+
+    public int getConnectType() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) return -1;
+        NetworkInfo mNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        if (mNetworkInfo != null && mNetworkInfo.isAvailable()) {
+            return mNetworkInfo.getType();
+        }
+        return -1;
     }
 
     private synchronized static final boolean checkInternet() {
@@ -620,7 +624,7 @@ public class TNetUtils {
             return (T) object;
         } catch (JsonSyntaxException e) {
             //MMLog.e(TAG, "fromJson failed! e = " + e.toString() + "," + json);
-            MMLog.e(TAG, "fromJson failed! " + e.toString());
+            MMLog.e(TAG, "fromJson failed!");
             return null;
         }
     }
