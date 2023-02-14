@@ -270,6 +270,8 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                     if (intent.getExtras() != null) {
                         String apkFilePath = intent.getExtras().getString("apkFilePath");
                         boolean autostart = intent.getExtras().getBoolean("autostart", false);
+                        boolean installedAutoStart = intent.getExtras().getBoolean("installedAutoStart", false);
+
                         installedDeleteFile = intent.getExtras().getBoolean("installedDeleteFile", false);
                         installedReboot = intent.getExtras().getBoolean("installedReboot", false);
 
@@ -281,7 +283,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                         tTask.invoke(new InvokeInterface() {
                             @Override
                             public void CALLTODO(String tag) {
-                                Action_SilentInstallAction(apkFilePath, autostart);
+                                Action_SilentInstallAction(apkFilePath, autostart || installedAutoStart);
                             }
                         });
                         tTask.start();
@@ -291,14 +293,16 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                     if (intent.getExtras() != null) {
                         String apkFilePath = intent.getExtras().getString("apkFilePath");
                         boolean autostart = intent.getExtras().getBoolean("autostart");
-                        Action_SilentInstallAction1(apkFilePath, autostart);
+                        boolean installedAutoStart = intent.getExtras().getBoolean("installedAutoStart", false);
+                        Action_SilentInstallAction1(apkFilePath, autostart || installedAutoStart);
                     }
                     break;
                 case Action_SilentInstall2:
                     if (intent.getExtras() != null) {
                         String apkFilePath = intent.getExtras().getString("apkFilePath");
                         boolean autostart = intent.getExtras().getBoolean("autostart");
-                        Action_SilentInstallAction2(apkFilePath, autostart);
+                        boolean installedAutoStart = intent.getExtras().getBoolean("installedAutoStart", false);
+                        Action_SilentInstallAction2(apkFilePath, autostart || installedAutoStart);
                     }
                     break;
                 case Action_SilentInstallComplete:
