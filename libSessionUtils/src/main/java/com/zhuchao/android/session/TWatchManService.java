@@ -350,8 +350,10 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             else
                 MMLog.i(TAG, "delete file failed! ---> " + apkFilePath);
         }
-        if (installedReboot)
+        MMLog.i(TAG, "installedReboot == " + installedReboot);
+        if (installedReboot) {
             Action_SystemReboot();
+        }
     }
 
     private void Action_SetAudioOutputChannel(String channel) {

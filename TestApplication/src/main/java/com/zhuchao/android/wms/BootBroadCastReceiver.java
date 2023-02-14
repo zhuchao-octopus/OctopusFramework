@@ -27,7 +27,6 @@ public class BootBroadCastReceiver extends BroadcastReceiver {
                 } else {
                     context.startService(intent1);
                     //context.startActivityAsUser();
-
                 }
             }
         } catch (Exception e) {
