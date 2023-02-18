@@ -16,21 +16,21 @@ import android.os.Looper;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.zhuchao.android.eventinterface.HttpCallback;
+import com.zhuchao.android.eventinterface.InvokeInterface;
+import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.TTask;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -50,7 +50,8 @@ public class TNetUtils {
     private NetworkStatusListener networkStatusListener;
     //private WifiManager wifiManager;
     //private ConnectivityManager connectivityManager;
-    private NetworkInformation networkInformation;
+    private final NetworkInformation networkInformation;
+    private final TTask tTask = new TTask("get internet ip");
 
     public interface NetworkStatusListener {
         void onNetStatusChanged(NetworkInformation networkInformation);
@@ -71,6 +72,7 @@ public class TNetUtils {
         try {
             unRegisterNetReceiver();
             mContext = null;
+            tTask.freeFree();
         } catch (Exception e) {
             MMLog.e(TAG, e.toString());
         }
@@ -237,13 +239,13 @@ public class TNetUtils {
         return -1;
     }
 
-    private synchronized static final boolean checkInternet() {
+    private synchronized static boolean checkInternet() {
         try {
             String ip = "www.baidu.com";
             Process p = Runtime.getRuntime().exec("ping -c 3 -w 100 " + ip);// ping网址3次
             InputStream input = p.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(input));
-            StringBuffer stringBuffer = new StringBuffer();
+            StringBuilder stringBuffer = new StringBuilder();
             String content = "";
             while ((content = in.readLine()) != null) {
                 stringBuffer.append(content);
@@ -253,14 +255,10 @@ public class TNetUtils {
                 //result = "success";
                 //MMLog.log(TAG, "ping IP:" + ip + " success");
                 return true;
-            } else {
-                //result = "failed";
-            }
-        } catch (IOException e) {
+            }  //result = "failed";
+
+        } catch (IOException | InterruptedException e) {
             MMLog.e(TAG, e.toString());
-        } catch (InterruptedException e) {
-            MMLog.e(TAG, e.toString());
-        } finally {
         }
         //MMLog.log(TAG, "ping IP:" + ip + " " + result);
         return false;
@@ -314,12 +312,12 @@ public class TNetUtils {
         String sMac = null;
         try {
             sMac = loadFileAsString("/sys/class/net/eth0/address").toUpperCase().substring(0, 17);
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         if (EmptyString(sMac)) {
             try {
                 sMac = loadFileAsString("/sys/class/net/wlan0/address").toUpperCase().substring(0, 17);
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
         }
         return sMac;
@@ -327,7 +325,7 @@ public class TNetUtils {
 
     // 读取系统文件
     private static String loadFileAsString(String filePath) throws IOException {
-        StringBuffer fileData = new StringBuffer(1000);
+        StringBuilder fileData = new StringBuilder(1000);
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
         char[] buf = new char[1024];
         int numRead = 0;
@@ -385,10 +383,8 @@ public class TNetUtils {
                 }
                 mac = buffer.toString().toLowerCase(Locale.ENGLISH);
                 if (name.startsWith("wlan")) {
-                    if (!MatcherMAC(mac)) {
-                        mac = "00:00:00:00:00:00";
-                    }
-                    return mac;
+                    if (MatcherMAC(mac)) return mac;
+                    //mac = "00:00:00:00:00:00";
                 }
             }
         } catch (Exception e) {
@@ -397,11 +393,10 @@ public class TNetUtils {
         return "00:00:00:00:00:00";
     }
 
-
     public static String getLocalIpAddress() {
         try {
             Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
-            if (en == null) return null;
+            if (en == null) return "";
             while (en.hasMoreElements()) {
                 NetworkInterface networkInterface = en.nextElement();
                 for (Enumeration<InetAddress> enumeration = networkInterface
@@ -416,53 +411,44 @@ public class TNetUtils {
         } catch (SocketException ex) {
             MMLog.e(TAG, ex.toString());
         }
-        return null;
+        return "";
     }
 
     public void GetInternetIp() {
-
-        new Thread() {
+        if (tTask.isBusy()) return;
+        tTask.invoke(new InvokeInterface() {
             @Override
-            public void run() {
-                super.run();
+            public void CALLTODO(String tag) {
                 try {
-                    URL infoUrl = new URL("http://ip-api.com/json/");
-                    URLConnection connection = infoUrl.openConnection();
-                    HttpURLConnection httpConnection = (HttpURLConnection) connection;
-                    int responseCode = httpConnection.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK)
-                    {
-                        InputStream inStream = httpConnection.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(inStream, StandardCharsets.UTF_8));
-                        StringBuilder stringBuilder = new StringBuilder();
-                        String line = null;
-                        while ((line = reader.readLine()) != null)
-                            stringBuilder.append(line + "\n");
-                        inStream.close();
-                        //从反馈的结果中提取出IP地址
-                        line = stringBuilder.toString();
-                        //Gson gson = new GsonBuilder().serializeNulls().disableHtmlEscaping().create();
-                        final IPDataBean ipDataBean = fromJson(line, IPDataBean.class);
-                        if (ipDataBean != null) {
-                            networkInformation.internetIP = ipDataBean.getQuery();
-                            networkInformation.regionName = ipDataBean.getRegionName();
-                            networkInformation.country = ipDataBean.getCountry();
-                            networkInformation.region = ipDataBean.getRegion();
-                            networkInformation.city = ipDataBean.getCity();
-                            networkInformation.timezone = ipDataBean.getTimezone();
-                            networkInformation.organization = ipDataBean.getOrg();
-                            networkInformation.lon = ipDataBean.getLon();
-                            networkInformation.lat = ipDataBean.getLat();
-                            networkInformation.zip = ipDataBean.getZip();
-                            networkInformation.isp = ipDataBean.getIsp();
-                            CallBackStatus();
+                    HttpUtils.requestGet("GetIP", "http://ip-api.com/json", new HttpCallback() {
+                        @Override
+                        public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
+                            if (status == DataID.TASK_STATUS_SUCCESS) {
+                                final IPDataBean ipDataBean = fromJson(result, IPDataBean.class);
+                                if (ipDataBean != null) {
+                                    networkInformation.internetIP = ipDataBean.getQuery();
+                                    networkInformation.regionName = ipDataBean.getRegionName();
+                                    networkInformation.country = ipDataBean.getCountry();
+                                    networkInformation.region = ipDataBean.getRegion();
+                                    networkInformation.city = ipDataBean.getCity();
+                                    networkInformation.timezone = ipDataBean.getTimezone();
+                                    networkInformation.organization = ipDataBean.getOrg();
+                                    networkInformation.lon = ipDataBean.getLon();
+                                    networkInformation.lat = ipDataBean.getLat();
+                                    networkInformation.zip = ipDataBean.getZip();
+                                    networkInformation.isp = ipDataBean.getIsp();
+                                    MMLog.log(TAG, "External IP:" + networkInformation.internetIP);
+                                }
+                                tTask.free();
+                            }
                         }
-                    }
+                    });
                 } catch (Exception e) {
-                    MMLog.e(TAG, "GetInternetIp" + e.toString());
+                    MMLog.e(TAG, "GetInternetIp ->" + e.toString());
                 }
-            }
-        }.start();
+            }//CALLTODO
+        });
+        tTask.startAgain();
     }
 
     public static String getDeviceUUID() {
@@ -501,16 +487,16 @@ public class TNetUtils {
         String cmd = "cat /proc/cpuinfo";
         try {
             Process p = Runtime.getRuntime().exec(cmd);
-            String data = null;
+            StringBuilder data = new StringBuilder();
             BufferedReader ie = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String error = null;
             while ((error = ie.readLine()) != null && !error.equals("null")) {
-                data += error + "\n";
+                data.append(error).append("\n");
             }
             String line = null;
             while ((line = in.readLine()) != null && !line.equals("null")) {
-                data += line + "\n";
+                data.append(line).append("\n");
                 if (line.contains("Serial\t\t:")) {
                     String[] SerialStr = line.split(":");
                     if (SerialStr.length == 2) {
@@ -524,6 +510,36 @@ public class TNetUtils {
             MMLog.log(TAG, ioe.toString());
         }
         return cpuSerial;
+    }
+
+    public void runOnMainUiThread(final Runnable runnable) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            runnable.run();
+        } else {
+            MainLooperHandler.post(runnable);//发送到主线程执行
+        }
+    }
+
+    public void runThread(final Runnable runnable) {
+        runnable.run();//直接执行
+    }
+
+    public void runThreadNotOnMainUIThread(final Runnable runnable) {
+        runnable.run();
+    }
+
+    public static <T> T fromJson(String json, Class<T> classOfT) {
+        try {
+            return new Gson().fromJson(json, classOfT);
+        } catch (JsonSyntaxException e) {
+            //MMLog.e(TAG, "fromJson failed!");
+            return null;
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public NetworkInformation getNetworkInformation() {
+        return networkInformation;
     }
 
     //把拼音的省份改成中文
@@ -601,37 +617,5 @@ public class TNetUtils {
             region = "澳门特别行政区";
         }
         return region;
-    }
-
-    public void runOnMainUiThread(final Runnable runnable) {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            runnable.run();
-        } else {
-            MainLooperHandler.post(runnable);//发送到主线程执行
-        }
-    }
-
-    public void runThread(final Runnable runnable) {
-        runnable.run();//直接执行
-    }
-
-    public void runThreadNotOnMainUIThread(final Runnable runnable) {
-        runnable.run();
-    }
-
-    public static <T> T fromJson(String json, Class<T> classOfT) {
-        try {
-            Object object = new Gson().fromJson(json, classOfT);
-            return (T) object;
-        } catch (JsonSyntaxException e) {
-            //MMLog.e(TAG, "fromJson failed! e = " + e.toString() + "," + json);
-            //MMLog.e(TAG, "fromJson failed!");
-            return null;
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public NetworkInformation getNetworkInformation() {
-        return networkInformation;
     }
 }
