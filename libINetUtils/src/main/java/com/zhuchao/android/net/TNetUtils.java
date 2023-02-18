@@ -150,8 +150,9 @@ public class TNetUtils {
             networkInformation.localIP = getLocalIpAddress();
             networkInformation.MAC = getDeviceMAC();
             networkInformation.wifiMAC = getWiFiMacAddress();//this.getWifiMac();
-            if (isAvailable())
+            if (isAvailable()) {
                 GetInternetIp();
+            }
             CallBackStatus();
         } catch (Exception e) {
             MMLog.e(TAG, e.toString());//e.printStackTrace();
@@ -428,7 +429,8 @@ public class TNetUtils {
                     URLConnection connection = infoUrl.openConnection();
                     HttpURLConnection httpConnection = (HttpURLConnection) connection;
                     int responseCode = httpConnection.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                    if (responseCode == HttpURLConnection.HTTP_OK)
+                    {
                         InputStream inStream = httpConnection.getInputStream();
                         BufferedReader reader = new BufferedReader(new InputStreamReader(inStream, StandardCharsets.UTF_8));
                         StringBuilder stringBuilder = new StringBuilder();
@@ -453,8 +455,6 @@ public class TNetUtils {
                             networkInformation.zip = ipDataBean.getZip();
                             networkInformation.isp = ipDataBean.getIsp();
                             CallBackStatus();
-                        } else {
-                            // MMLog.e(TAG, "fromJson = null");
                         }
                     }
                 } catch (Exception e) {
@@ -624,7 +624,7 @@ public class TNetUtils {
             return (T) object;
         } catch (JsonSyntaxException e) {
             //MMLog.e(TAG, "fromJson failed! e = " + e.toString() + "," + json);
-            MMLog.e(TAG, "fromJson failed!");
+            //MMLog.e(TAG, "fromJson failed!");
             return null;
         }
     }

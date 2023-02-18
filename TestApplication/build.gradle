@@ -5,7 +5,8 @@ plugins {
 
 ext {
     //PUBLISH_PLATFORM = 'rk3288'
-    PUBLISH_PLATFORM = 'a40'
+    PUBLISH_PLATFORM = 'AW40'
+    //PUBLISH_PLATFORM = 'AW507'
     GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'wms'
