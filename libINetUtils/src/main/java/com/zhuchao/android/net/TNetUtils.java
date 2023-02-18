@@ -150,7 +150,7 @@ public class TNetUtils {
             networkInformation.localIP = getLocalIpAddress();
             networkInformation.MAC = getDeviceMAC();
             networkInformation.wifiMAC = getWiFiMacAddress();//this.getWifiMac();
-            if (isAvailable()) {
+            if (isAvailable() && EmptyString(networkInformation.internetIP)) {
                 GetInternetIp();
             }
             CallBackStatus();
@@ -420,6 +420,7 @@ public class TNetUtils {
     }
 
     public void GetInternetIp() {
+
         new Thread() {
             @Override
             public void run() {
