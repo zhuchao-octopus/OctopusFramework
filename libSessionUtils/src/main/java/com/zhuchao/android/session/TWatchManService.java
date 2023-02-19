@@ -680,7 +680,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         }
     }
 
-    private void onNetStatusChanged() {
+    private void doNetStatusChangedFunction() {
         if (tTaskManager != null && networkInformation != null) {
             //checkAndUpdateDevice(false);
             session_jhz_test_update_session(false);
@@ -693,7 +693,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                 NotEmptyString(networkInformation.getInternetIP()) &&
                 NotEmptyString(networkInformation.getLocalIP())) {
             this.networkInformation = networkInformation;
-            onNetStatusChanged();
+            doNetStatusChangedFunction();
         }
     }
 
