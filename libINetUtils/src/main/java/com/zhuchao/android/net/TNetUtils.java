@@ -268,7 +268,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
     }
 
     //判断是否有外网连接
-    public synchronized static final boolean isInternetOk() {
+    public synchronized static boolean isInternetOk() {
         return checkInternet();
     }
 
