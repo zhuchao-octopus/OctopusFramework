@@ -8,11 +8,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Looper;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -35,35 +40,57 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-public class TNetUtils {
+public class TNetUtils extends ConnectivityManager.NetworkCallback {
     public static final String TAG = "TNetUtils";
-    public static final int NETWORN_NONE = 0;
-    public static final int NETWORN_WIFI = 1;
-    public static final int UnCon_WIFI = 7;
-    public static final int NETWORN_2G = 2;
-    public static final int NETWORN_3G = 3;
-    public static final int NETWORN_4G = 4;
-    public static final int NETWORN_MOBILE = 5;
-    public static final int NETWORN_ETHERNET = 6;
     private Context mContext;
+    private final NetworkRequest networkRequest;
     private Handler MainLooperHandler = null;
     private NetworkStatusListener networkStatusListener;
-    //private WifiManager wifiManager;
-    //private ConnectivityManager connectivityManager;
     private final NetworkInformation networkInformation;
-    private final TTask tTask = new TTask("get internet ip");
+
+    private final TTask tTask_ParseExternalIP = new TTask("get internet ip");
+    private final TTask tTask_NetworkCallback = new TTask("NetworkCallback ");
 
     public interface NetworkStatusListener {
         void onNetStatusChanged(NetworkInformation networkInformation);
     }
 
+    @Override
+    public void onAvailable(@NonNull Network network) {
+        super.onAvailable(network);
+        MMLog.log(TAG, "onAvailable()");
+    }
+
+    @Override
+    public void onLosing(@NonNull Network network, int maxMsToLive) {
+        super.onLosing(network, maxMsToLive);
+        MMLog.log(TAG, "onLosing()");
+    }
+
+    @Override
+    public void onLost(@NonNull Network network) {
+        super.onLost(network);
+        MMLog.log(TAG, "onLost()");
+    }
+
+    @Override
+    public void onUnavailable() {
+        super.onUnavailable();
+        MMLog.log(TAG, "onUnavailable()");
+    }
+
     public TNetUtils(Context context) {
         mContext = context;//.getApplicationContext()
         MainLooperHandler = new Handler(Looper.getMainLooper());
-        //wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
-        //connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         networkInformation = new NetworkInformation();
         networkStatusListener = null;
+        networkRequest = new NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .build();
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        connectivityManager.registerNetworkCallback(networkRequest, this);
+
         updateNetStatus();
         registerNetStatusListener();
     }
@@ -72,7 +99,8 @@ public class TNetUtils {
         try {
             unRegisterNetReceiver();
             mContext = null;
-            tTask.freeFree();
+            tTask_ParseExternalIP.freeFree();
+            tTask_NetworkCallback.freeFree();
         } catch (Exception e) {
             MMLog.e(TAG, e.toString());
         }
@@ -130,8 +158,20 @@ public class TNetUtils {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            //MMLog.log(TAG, "NetworkChanged " + action.toString());
-            runThreadNotOnMainUIThread(new Runnable() {
+            //MMLog.log(TAG, "NetworkChangedReceiver action = " + action.toString());
+            if (tTask_NetworkCallback.isBusy()) return;
+            tTask_NetworkCallback.invoke(new InvokeInterface() {
+                @Override
+                public void CALLTODO(String tag) {
+                    if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                        GetNetStatusInformation();
+                    } else if (action.equals(WifiManager.RSSI_CHANGED_ACTION)) {
+                        UpdateWiFiStrength();
+                    }
+                }
+            }).startAgain();
+
+            /*runThreadNotOnMainUIThread(new Runnable() {
                 @Override
                 public void run() {
                     if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
@@ -140,7 +180,7 @@ public class TNetUtils {
                         UpdateWiFiStrength();
                     }
                 }
-            });
+            });*/
         }
     };
 
@@ -415,8 +455,8 @@ public class TNetUtils {
     }
 
     public void GetInternetIp() {
-        if (tTask.isBusy()) return;
-        tTask.invoke(new InvokeInterface() {
+        if (tTask_ParseExternalIP.isBusy()) return;
+        tTask_ParseExternalIP.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {
                 try {
@@ -439,7 +479,7 @@ public class TNetUtils {
                                     networkInformation.isp = ipDataBean.getIsp();
                                     MMLog.log(TAG, "External IP:" + networkInformation.internetIP);
                                 }
-                                tTask.free();
+                                tTask_ParseExternalIP.free();
                             }
                         }
                     });
@@ -448,7 +488,7 @@ public class TNetUtils {
                 }
             }//CALLTODO
         });
-        tTask.startAgain();
+        tTask_ParseExternalIP.startAgain();
     }
 
     public static String getDeviceUUID() {
