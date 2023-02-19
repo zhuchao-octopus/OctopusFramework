@@ -187,8 +187,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
     private synchronized void GetNetStatusInformation() {
         try {
             networkInformation.isAvailable = isAvailable();
-            if(networkInformation.isAvailable)
-            {
+            if (networkInformation.isAvailable) {
                 networkInformation.isConnected = isLocalNetConnected();
                 networkInformation.netType = getConnectType();
                 networkInformation.localIP = getLocalIpAddress();
@@ -216,6 +215,20 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         } catch (Exception e) {
             MMLog.e(TAG, e.toString());//e.printStackTrace();
         }
+    }
+
+    public boolean isAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) return false;
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo == null) return false;
+        return networkInfo.isAvailable();
+    }
+
+    //判断是否有外网连接
+    public synchronized static boolean isInternetReachable(String ip) {
+        if (EmptyString(ip)) ip = "www.baidu.com";
+        return pingInternet(ip);
     }
 
     public boolean isInternetAvailable() {
@@ -257,20 +270,6 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
             return mMobileNetworkInfo.isConnected();
         }
         return false;
-    }
-
-    public boolean isAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager == null) return false;
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo == null) return false;
-        return networkInfo.isAvailable();
-    }
-
-    //判断是否有外网连接
-    public synchronized static boolean isInternetReachable(String ip) {
-        if(EmptyString(ip)) ip = "www.baidu.com";
-        return pingInternet(ip);
     }
 
     public int getConnectType() {
