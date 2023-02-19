@@ -222,7 +222,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         return !EmptyString(networkInformation.internetIP) && !EmptyString(networkInformation.localIP) && !EmptyString(networkInformation.MAC);
     }
 
-    public boolean isNetCanConnect() {
+    public boolean isInternetCanConnect() {
         if (EmptyString(networkInformation.internetIP) || EmptyString(networkInformation.localIP) || EmptyString(networkInformation.MAC)) {
             return isInternetOk();
         }
