@@ -134,7 +134,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         }
     }
 
-    private void CallBackStatus() {
+    private void callBackNetworkStatus() {
         if (networkStatusListener == null) return;
         runOnMainUiThread(new Runnable() {
             @Override
@@ -187,15 +187,18 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
     private synchronized void GetNetStatusInformation() {
         try {
             networkInformation.isAvailable = isAvailable();
-            networkInformation.isConnected = isLocalNetConnected();
-            networkInformation.netType = getConnectType();
-            networkInformation.localIP = getLocalIpAddress();
-            networkInformation.MAC = getDeviceMAC();
-            networkInformation.wifiMAC = getWiFiMacAddress();//this.getWifiMac();
-            if (isAvailable() && EmptyString(networkInformation.internetIP)) {
-                GetInternetIp();
+            if(networkInformation.isAvailable)
+            {
+                networkInformation.isConnected = isLocalNetConnected();
+                networkInformation.netType = getConnectType();
+                networkInformation.localIP = getLocalIpAddress();
+                networkInformation.MAC = getDeviceMAC();
+                networkInformation.wifiMAC = getWiFiMacAddress();//this.getWifiMac();
+                if (EmptyString(networkInformation.internetIP)) {
+                    GetInternetIp();
+                }
             }
-            CallBackStatus();
+            callBackNetworkStatus();
         } catch (Exception e) {
             MMLog.e(TAG, e.toString());//e.printStackTrace();
         }
@@ -209,7 +212,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
             if (wifiInfo != null && wifiInfo.getBSSID() != null) {
                 networkInformation.wifiLevel = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), 4);
             }
-            CallBackStatus();
+            callBackNetworkStatus();
         } catch (Exception e) {
             MMLog.e(TAG, e.toString());//e.printStackTrace();
         }
