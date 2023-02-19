@@ -84,7 +84,7 @@ public class TSourceManager implements SessionCallback {
             public void run() {
                 try {
                     while (true) {
-                        if (TNetUtils.isInternetOk()) {
+                        if (TNetUtils.isInternetReachable(null)) {
                             updateCategorySession(); //  初始化线程
                             break;
                         }

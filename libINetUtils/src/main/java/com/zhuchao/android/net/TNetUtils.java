@@ -222,9 +222,9 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         return !EmptyString(networkInformation.internetIP) && !EmptyString(networkInformation.localIP) && !EmptyString(networkInformation.MAC);
     }
 
-    public boolean isInternetCanConnect() {
+    public boolean isInternetConnected() {
         if (EmptyString(networkInformation.internetIP) || EmptyString(networkInformation.localIP) || EmptyString(networkInformation.MAC)) {
-            return isInternetOk();
+            return isInternetReachable(null);
         }
         return true;
     }
@@ -268,8 +268,9 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
     }
 
     //判断是否有外网连接
-    public synchronized static boolean isInternetOk() {
-        return checkInternet();
+    public synchronized static boolean isInternetReachable(String ip) {
+        if(EmptyString(ip)) ip = "www.baidu.com";
+        return pingInternet(ip);
     }
 
     public int getConnectType() {
@@ -282,9 +283,9 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         return -1;
     }
 
-    private synchronized static boolean checkInternet() {
+    public synchronized static boolean pingInternet(String ip) {
         try {
-            String ip = "www.baidu.com";
+            //String ip = "www.baidu.com";
             Process p = Runtime.getRuntime().exec("ping -c 3 -w 100 " + ip);// ping网址3次
             InputStream input = p.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(input));
