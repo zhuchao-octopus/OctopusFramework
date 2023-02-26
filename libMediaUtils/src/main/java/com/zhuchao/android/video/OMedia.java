@@ -67,7 +67,7 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public OMedia setMagicNumber(int magicNum) {
-        if(this.magicNumber != magicNum) {
+        if (this.magicNumber != magicNum) {
             this.magicNumber = magicNum;
             free();
             getPlayer();
@@ -150,7 +150,7 @@ public class OMedia implements Serializable, PlayerCallback {
         return this;
     }
 
-    private void  _play() {
+    private void _play() {
         if (assetFileDescriptor != null)
             play(assetFileDescriptor);
         else if (fileDescriptor != null)
@@ -167,10 +167,13 @@ public class OMedia implements Serializable, PlayerCallback {
             MMLog.i(TAG, "call play(), but player is busy!!");
             return this;
         }
+
         tTask.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {
+                tTask.setKeeping(true);
                 _play();
+                tTask.resetAll();
             }
         }).startAgain();
         return this;
@@ -181,14 +184,17 @@ public class OMedia implements Serializable, PlayerCallback {
             MMLog.i(TAG, "call playOn(), but player is busy!!");
             return;
         }
-
         tTask.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {
+                tTask.setKeeping(true);
                 getPlayer().setSurfaceView(playView);
                 _play();
+                tTask.resetAll();
             }
-        }).startAgain();//.reset().start();
+        });
+
+        tTask.startAgain();//.reset().start();
     }
 
     public void playOn(TextureView playView) {
@@ -630,18 +636,15 @@ public class OMedia implements Serializable, PlayerCallback {
         return bf;
     }
 
-    public boolean isPlayingVideo()
-    {
-      return MediaFile.isVideoFile(movie.getSrcUrl());
+    public boolean isPlayingVideo() {
+        return MediaFile.isVideoFile(movie.getSrcUrl());
     }
 
-    public boolean isPlayingAudio()
-    {
+    public boolean isPlayingAudio() {
         return MediaFile.isAudioFile(movie.getSrcUrl());
     }
 
-    public boolean isPlayingImage()
-    {
+    public boolean isPlayingImage() {
         return MediaFile.isImageFile(movie.getSrcUrl());
     }
 

@@ -34,8 +34,12 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     private int playOrder = DataID.PLAY_MANAGER_PLAY_ORDER2;
     private int autoPlaySource = DataID.SESSION_SOURCE_NONE;
     private ObjectList allPlayLists = null;
-    private long lStartTick = 0;
+    private long lStartTick_Play = 0;
+    private long lStartTick_Next = 0;
+    private long lStartTick_Pre = 0;
     private int magicNumber = 0;
+    private int tryCountForError = 3;
+    private int tryPlayCount = 0;
 
 
     public TPlayManager(Context mContext, SurfaceView sfView) {
@@ -45,9 +49,16 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         setMagicNumber(0);
     }
 
+    public int getTryCountForError() {
+        return tryCountForError;
+    }
+
+    public void setTryCountForError(int tryCountForError) {
+        this.tryCountForError = tryCountForError;
+    }
+
     public TPlayManager callback(PlayerCallback mCallback) {
         this.callback = mCallback;
-        this.lStartTick = 0;
         return this;
     }
 
@@ -83,6 +94,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         {
             MMLog.log(TAG, "StartPlay--> " + oMedia.getMovie().getSrcUrl());
             //this.oMediaLoading = true;
+            if (tryPlayCount <= 0)
+                tryPlayCount = tryCountForError;
             this.oMediaPlaying = oMedia;
             this.oMediaPlaying.setMagicNumber(magicNumber);
             this.oMediaPlaying.with(context);
@@ -149,12 +162,13 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     }
 
     public void playPause() {//非阻塞模式
-        final int  ACTION_DELAY = 600;
-        if ((System.currentTimeMillis() - lStartTick) <= ACTION_DELAY) {
+        final int ACTION_DELAY = 600;
+        if ((System.currentTimeMillis() - lStartTick_Play) <= ACTION_DELAY) {
             MMLog.log(TAG, "playPause() not allowed to do this now");
             return;
         }
-        lStartTick = System.currentTimeMillis();
+        lStartTick_Play = System.currentTimeMillis();
+
         if (oMediaPlaying == null) {
             autoPlay();
             return;
@@ -188,6 +202,13 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     }
 
     public synchronized void playNext() {
+        final int ACTION_DELAY = 600;
+        if ((System.currentTimeMillis() - lStartTick_Next) <= ACTION_DELAY) {
+            MMLog.log(TAG, "playPause() not allowed to do this now");
+            return;
+        }
+        lStartTick_Next = System.currentTimeMillis();
+
         OMedia oo = getNextAvailable();//获取下一个有效的资源
         if (oo != null) {
             MMLog.log(TAG, "Go to next = " + oo.getPathName());
@@ -199,6 +220,13 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     }
 
     public synchronized void playPre() {
+        final int ACTION_DELAY = 600;
+        if ((System.currentTimeMillis() - lStartTick_Pre) <= ACTION_DELAY) {
+            MMLog.log(TAG, "playPause() not allowed to do this now");
+            return;
+        }
+        lStartTick_Pre = System.currentTimeMillis();
+
         OMedia oo = getPreAvailable();//获取上一个有效的资源
         if (oo != null) {
             MMLog.log(TAG, "Go Prev = " + oo.getPathName());
@@ -276,7 +304,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         int count = 0;
         Collection<Object> objects = allPlayLists.getAllObject();
         for (Object o : objects) {
-           count = count +  ((VideoList) o).getCount();
+            count = count + ((VideoList) o).getCount();
         }
         return count;
     }
@@ -527,8 +555,13 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                 playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                 break;
             case PlaybackEvent.Status_Error:
-                MMLog.log(TAG, "OnEventCallBack.EventType = Status_Error, stop play " + oMediaPlaying.getPathName());
-                playEventHandler(playOrder);//继续播放，跳到上一首或下一首
+                if (tryCountForError > 0 && tryPlayCount > 0) {
+                    playEventHandler(DataID.PLAY_MANAGER_PLAY_ORDER4);
+                    tryPlayCount--;
+                } else {
+                    MMLog.log(TAG, "OnEventCallBack.EventType = Status_Error, stop play " + oMediaPlaying.getPathName());
+                    playEventHandler(playOrder);//继续播放，跳到上一首或下一首
+                }
                 break;
         }
     }
@@ -556,7 +589,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                 if (!isPlaying())
                     playPre();
                 break;
-            case DataID.PLAY_MANAGER_PLAY_ORDER4://单曲循环
+            case DataID.PLAY_MANAGER_PLAY_ORDER4://单曲循环或者再次播放当前歌曲
                 if (!isPlaying())
                     startPlay(oMediaPlaying);
                 break;

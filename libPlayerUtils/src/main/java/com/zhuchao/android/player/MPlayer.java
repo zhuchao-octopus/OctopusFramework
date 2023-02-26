@@ -267,7 +267,8 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     @Override
     public Boolean isPlaying() {
-        if (mediaPlayer != null) {
+        if (mediaPlayer != null)
+        {
             if (playerStatusInfo.getEventType() == PlaybackEvent.Status_Playing)
                 return true;
             else
@@ -312,7 +313,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public Long getTime() {
         try {
-            if ((mediaPlayer != null) && (isPlaying())) {
+            if ((mediaPlayer != null) && mediaPlayer.isPlaying()) {
                 playerStatusInfo.setTimeChanged((long) mediaPlayer.getCurrentPosition());
                 playerStatusInfo.setPlayRate(mediaPlayer.getPlaybackParams().getSpeed());
             }

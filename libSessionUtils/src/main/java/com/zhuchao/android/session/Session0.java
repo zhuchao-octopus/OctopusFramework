@@ -183,6 +183,16 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
     }
 
     @Override
+    public void unPark() {
+
+    }
+
+    @Override
+    public void pack() {
+
+    }
+
+    @Override
     public void CALLTODO(String tag) {
         if (requestMethod.equals("PUT")) {
             HttpUtils.requestPut(tag, requestURL, requestParameter, new HttpCallback() {

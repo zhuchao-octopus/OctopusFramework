@@ -257,7 +257,7 @@ public class TTaskManager {
                     tTaskCopyFile.getProperties().putString("fromPath", tTask.getProperties().getString("fromPath"));
                     tTaskCopyFile.getProperties().putString("toPath", tTask.getProperties().getString("toPath"));
                     taskCount++;
-                    tTaskCopyFile.setPriority(MAX_PRIORITY);
+                    //tTaskCopyFile.setPriority(MAX_PRIORITY);
                     tTaskCopyFile.invoke(new InvokeInterface() {
                         @RequiresApi(api = Build.VERSION_CODES.O)
                         @Override
@@ -318,7 +318,7 @@ public class TTaskManager {
                             tto.free();
                             //////////////////////////////////////////////////////////////////////////
                             if (tTaskThreadPool.getCount() < maxTaskCount) {
-                                LockSupport.unpark(tTask);
+                                //LockSupport.unpark(tTask);
                             }
                             //////////////////////////////////////////////////////////////////////////
                         }

@@ -1,11 +1,14 @@
 package com.zhuchao.android.fbase;
 
 import static com.zhuchao.android.fbase.FileUtils.MD5;
+import static java.lang.Thread.MAX_PRIORITY;
 
 import com.zhuchao.android.eventinterface.InvokeInterface;
 import com.zhuchao.android.eventinterface.TaskCallback;
 
-public class TTask extends Thread implements TTaskInterface {
+import java.util.concurrent.locks.LockSupport;
+
+public class TTask implements TTaskInterface {
     private final String TAG = "TTask";
     protected String tName = null;
     protected String tTag = null;
@@ -15,6 +18,9 @@ public class TTask extends Thread implements TTaskInterface {
     protected boolean isKeeping = false;
     protected int invokedCount = 0;
     private long delayedMillis = 0;
+
+    private Thread ttThread = null;
+    private TaskCallback threadPoolCallback = null;
 
     public TTask(String tName) {
         this.tName = tName;
@@ -36,6 +42,14 @@ public class TTask extends Thread implements TTaskInterface {
         this.invokeInterface = invokeInterface;
         this.taskCallback = TaskCallback;
         this.properties = new ObjectList();
+    }
+
+    public TaskCallback getThreadPoolCallback() {
+        return this.threadPoolCallback;
+    }
+
+    public void setThreadPoolCallback(TaskCallback threadPoolCallback) {
+        this.threadPoolCallback = threadPoolCallback;
     }
 
     //任务主题
@@ -67,7 +81,7 @@ public class TTask extends Thread implements TTaskInterface {
     }
 
     public long getTaskID() {
-        return this.getId();
+        return 0;
     }
 
     public void setTTag(String tTag) {
@@ -107,7 +121,7 @@ public class TTask extends Thread implements TTaskInterface {
     }
 
     public boolean isBusy() {
-        return this.isAlive() || this.isKeeping;
+        return (this.ttThread != null) || this.isKeeping;
     }
 
     public void free() {
@@ -119,6 +133,7 @@ public class TTask extends Thread implements TTaskInterface {
         isKeeping = false;
         invokeInterface = null;
         taskCallback = null;
+        threadPoolCallback = null;
     }
 
     public TTask reset() {
@@ -152,14 +167,27 @@ public class TTask extends Thread implements TTaskInterface {
         startAgain();
     }
 
+    @Override
+    public void unPark() {
+        if (ttThread != null)
+            LockSupport.unpark(ttThread);
+    }
+
+    @Override
+    public void pack() {
+        if (ttThread != null)
+            LockSupport.park(ttThread);
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //任务只有在 !isAlive && !isKeeping &&
     // properties.getInt(DataID.TASK_STATUS_INTERNAL_) != DataID.TASK_STATUS_FINISHED_STOP
     //的情况下才能启动
     @Override
     public synchronized void start() {
-        if (this.isAlive() || this.isKeeping) {
-            //MMLog.log(TAG, "TTask already been started isAlive Keeping = " + isKeeping+",tag = "+tTag);
+        //if (ttThread != null || this.isKeeping) {
+        if (isBusy()){
+            MMLog.log(TAG, "TTask already been started isAlive Keeping = " + isKeeping + ",tag = " + tTag);
             return;
         }
         if (properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED_STOP) {
@@ -167,26 +195,40 @@ public class TTask extends Thread implements TTaskInterface {
             return;
         }
         try {
-            //isKeeping = true;有选择的keep
-            super.start();
+            //super.start();
+            ttThread = new MyThread();
+            ttThread.setPriority(MAX_PRIORITY);
+            //android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+            ttThread.start();
         } catch (Exception e) {
-            // e.printStackTrace();
-            isKeeping = false;
-            MMLog.log(TAG, "TTask start failed " + e.toString());
+            //e.printStackTrace();
+            MMLog.log(TAG, "TTask start failed this.isAlive=" + " isKeeping=" + isKeeping + " tName:" + tName);
+            MMLog.log(TAG, "TTask start failed " + e.toString() + " tTag:" + tTag);
         }
     }
 
-    @Override
-    public void run() {
-        super.run();
+    private class MyThread extends Thread {
+        @Override
+        public void run() {
+            super.run();
+            doRunFunction();
+            if(threadPoolCallback != null)
+            {
+                threadPoolCallback.onEventTask(this,DataID.TASK_STATUS_FINISHED_STOP);
+            }
+            //内部使用，当前任务已经完成，宿主任务终止
+            //（内部使用）任务结束、终止、停止不再需要运行，305
+            properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);
+            ttThread = null;
+        }
+    }
+
+    private void doRunFunction() {
         if (invokeInterface == null) {
             MMLog.log(TAG, "call TTask function null,nothing to do, break TTask,tTag = " + tTag);
             free();
             return;
         }
-        //android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-        setPriority(MAX_PRIORITY);
-
         if (delayedMillis > 0) {
             try {
                 Thread.sleep(delayedMillis);
@@ -198,10 +240,10 @@ public class TTask extends Thread implements TTaskInterface {
         invokedCount++;
         MMLog.log(TAG, "TTask invokes demon, tTag = " + tTag + ",invokedCount = " + invokedCount);
         invokeInterface.CALLTODO(this.tTag);//asynchronous 异步任务体
+
         //任务主题可以是个异步任务
         if (taskCallback != null)
             taskCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_WAITING);//异步等待标记
-
         //v1.8 去掉 宿主任务可以提前结束
         while (isKeeping) {//hold住线程，等待异步任务完成，调用者来结束。
             try {
@@ -210,8 +252,7 @@ public class TTask extends Thread implements TTaskInterface {
                 MMLog.e(TAG, "run() " + e.getMessage());
             }
         }
-        //内部使用，当前任务已经完成，宿主任务终止
-        //（内部使用）任务结束、终止、停止不再需要运行，305
-        properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);
+
     }
+
 }

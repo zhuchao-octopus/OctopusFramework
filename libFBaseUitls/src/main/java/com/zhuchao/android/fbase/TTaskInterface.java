@@ -29,4 +29,7 @@ public abstract interface TTaskInterface {
     public void startWait();
     public void startDelayed(long millis);
     public void startAgainDelayed(long millis);
+
+    public void unPark();
+    public void pack();
 }

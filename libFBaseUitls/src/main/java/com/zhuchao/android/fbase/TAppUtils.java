@@ -276,6 +276,7 @@ public class TAppUtils {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
             Uri contentUri = FileProvider.getUriForFile(mContext, mContext.getPackageName() + ".fileProvider", new File(filePath));
             intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
             MMLog.log(TAG,"fileProvider path = "+mContext.getPackageName() + ".fileProvider");

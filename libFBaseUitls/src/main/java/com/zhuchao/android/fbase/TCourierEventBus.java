@@ -90,7 +90,7 @@ public class TCourierEventBus implements InvokeInterface {
         else
             CourierEventsQueueMainA.add(eventCourier);
         try {
-            if (tTask != null && !tTask.isAlive()) {
+            if (tTask != null && !tTask.isBusy()) {
                 keepDoing = true;
                 tTask.start();
                 //MMLog.log(TAG, "CourierEventBus main start...");
@@ -100,7 +100,8 @@ public class TCourierEventBus implements InvokeInterface {
         }
         try {
             if (tTask != null) {
-                LockSupport.unpark(tTask);
+                //LockSupport.unpark(tTask);
+                tTask.unPark();
             }
         } catch (Exception e) {
             MMLog.log(TAG, "postMain event failed," + e.toString());
@@ -135,7 +136,7 @@ public class TCourierEventBus implements InvokeInterface {
     private void startBus()
     {
         try {
-            if (tTask != null && !tTask.isAlive()) {
+            if (tTask != null && !tTask.isBusy()) {
                 keepDoing = true;
                 tTask.start();
                 //MMLog.log(TAG, "CourierEventBus start...");
@@ -146,7 +147,8 @@ public class TCourierEventBus implements InvokeInterface {
         try {
             if (tTask != null) {
                 //tTask.notifyAll();
-                LockSupport.unpark(tTask);
+                //LockSupport.unpark(tTask);
+                tTask.unPark();
             }
         } catch (Exception e) {
             MMLog.log(TAG, "start event bus failed," + e.toString());

@@ -3,16 +3,18 @@ package com.zhuchao.android.fbase;
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.MD5;
 
-import java.util.Collection;
-import java.util.Random;
+import com.zhuchao.android.eventinterface.TaskCallback;
 
-public class TTaskThreadPool extends ObjectList {
+import java.util.Collection;
+
+public class TTaskThreadPool extends ObjectList implements TaskCallback {
     private final String TAG = "TaskThreadPool";
     private int maxThreadCount = 10000;
-    private int minThreadCount = 0;
+    private final int minThreadCount = 1;
     private int taskCounter = 0;
     //private List<PTask> pTaskList_Ok = null;
-    private final String ANONYMOUS_NAME ="anonymous-default";
+    private final String ANONYMOUS_NAME = "anonymous-default";
+
     public TTaskThreadPool() {
         super();
     }
@@ -23,19 +25,18 @@ public class TTaskThreadPool extends ObjectList {
     }
 
     public PTask createTask() {
-       return createTask("");
+        return createTask("");
     }
 
     public PTask createTask(String tName) {
         if (EmptyString(tName)) {
             //Random random = new Random();
-            tName = ANONYMOUS_NAME+System.currentTimeMillis();//匿名线程
+            tName = ANONYMOUS_NAME + System.currentTimeMillis();//匿名线程
             //MMLog.log(TAG, "only one default PTask name/tag ,name=" + tName);
         }
 
-        if(this.getCount() > maxThreadCount)
-        {
-            MMLog.i(TAG,"the current thread count is more than maxThreadCount " +maxThreadCount);
+        if (this.getCount() > maxThreadCount) {
+            MMLog.i(TAG, "the current thread count is more than maxThreadCount " + maxThreadCount);
             return null;
         }
 
@@ -43,7 +44,7 @@ public class TTaskThreadPool extends ObjectList {
         if (tTask != null)//存在直接返回
             return (PTask) tTask;
 
-        PTask pTask = new PTask(tName);
+        PTask pTask = new PTask(tName, this);
         addItem(pTask.getTTag(), pTask);
         MMLog.log(TAG, "create PTask name = " + pTask.getTName() + ",tag = " + pTask.getTTag());
         return pTask;
@@ -125,17 +126,43 @@ public class TTaskThreadPool extends ObjectList {
         this.clear();
     }
 
-    class PTask extends TTask {
-        private final String TAG = "PTask";
-        public PTask(String tName) {
+    @Override
+    public void onEventTask(Object obj, int status) {
+        TTask tTask = ((TTask) obj);
+        if (existObject(tTask.tTag)) {
+
+            setTaskCounter(getTaskCounter() + 1);
+            MMLog.log(TAG, "PTask was successfully completed,tTag = " + tTask.tTag + ",total:" + getCount() + ",completed:" + taskCounter);
+
+            if (getTaskCounter() == getCount()) {
+                if (tTask.getCallBackHandler() != null) {
+                    tTask.getCallBackHandler().onEventTask(this, DataID.TASK_STATUS_FINISHED_ALL);//池中所有任务完成
+                }
+            }
+            if (tTask.getTName().contains(ANONYMOUS_NAME)) {
+                MMLog.log(TAG, "free anonymous task name = " + tTask.getTName());
+                //free();//自动清除匿名线程
+                tTask.freeFree();
+                deleteTask(tTask);
+            }
+        } else {
+            MMLog.log(TAG, "not found PTask object in pool,break tag = " + tTask.tTag);
+        }
+    }
+
+    class PTask extends TTask implements TaskCallback{
+        //private final String TAG = "PTask";
+
+        public PTask(String tName, TaskCallback threadPoolCallback) {
             super(tName, null);
+            setThreadPoolCallback(this);
         }
 
-        @Override
-        public void run() {
-            if (existObject(tTag)) {
+        private void handlerThreadPool() {
+            if (existObject(tTag))
+            {
                 //MMLog.log(TAG, "invoke TTask demon tTag = " + tTag);
-                super.run(); //执行父类 TTask
+                //super.run(); //执行父类 TTask
                 /*//最终结束任务，从任务池中清除掉
                 //TTaskThreadPool.delete(this.tTag);结束不清除，等待
                 //MMLog.log(TAG, "PTask complete successfully,remove from task pool tag = " + tTag);
@@ -148,16 +175,21 @@ public class TTaskThreadPool extends ObjectList {
                         taskCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_ALL);//池中所有任务完成
                     }
                 }
-                if (this.getTName().contains(ANONYMOUS_NAME))
-                {
-                    MMLog.log(TAG,"free anonymous task name = "+this.getTName());
+                if (this.getTName().contains(ANONYMOUS_NAME)) {
+                    MMLog.log(TAG, "free anonymous task name = " + this.getTName());
                     //free();//自动清除匿名线程
                     freeFree();
                     deleteTask(this);
                 }
-            } else {
+            }
+            else {
                 MMLog.log(TAG, "not found PTask object in pool,break tag = " + tTag);
             }
+        }
+
+        @Override
+        public void onEventTask(Object obj, int status) {
+            handlerThreadPool();
         }
     }
 }

@@ -34,7 +34,7 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
                 tMainTask.getProperties().putLong("totalSize", filesFinder.getTotalSize());
             } else {
                 tMainTask.getProperties().putString("finderStatus", "finderEnd");
-                LockSupport.unpark(tMainTask);
+                //LockSupport.unpark(tMainTask);
             }
             if (tMainTask.getCallBackHandler() != null)
                 tMainTask.getCallBackHandler().onEventTask(tMainTask, Index);
@@ -200,6 +200,16 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
     }
 
     @Override
+    public void unPark() {
+
+    }
+
+    @Override
+    public void pack() {
+
+    }
+
+    @Override
     public void CALLTODO(String tag) {
         if (FileUtils.existFile(fromPath)) //文件复制
         {
@@ -269,7 +279,7 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
                             tMainTask.getCallBackHandler().onEventTask(obj, status);
                         tTaskThreadPool.deleteTask(fTask);
                     }
-                    LockSupport.unpark(tMainTask);
+                    //LockSupport.unpark(tMainTask);
                 }
             });
             fTask.start();
