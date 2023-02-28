@@ -25,8 +25,9 @@ public class PlaybackEvent {
     public static final int Status_Playing = 3;
     public static final int Status_Paused = 4;
     public static final int Status_Stopped = 5;
-    public static final int Status_Ended = 6;
-    public static final int Status_Error = 7;
+    public static final int Status_Error = 6;
+    public static final int Status_Ended = 7;
+
     public static final int Status_HasPrepared = 10;
     public static final int Status_FreeDoNothing = 11;
 

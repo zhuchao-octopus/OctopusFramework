@@ -51,14 +51,14 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     @Override
     public void setSource(String filePath) {
-        if(mediaPlayer == null) {
+        if (mediaPlayer == null) {
             MMLog.e(TAG, "Wrong!!!! player is missed!!!!!!!!!!");
             return;
         }
         try {
             PreparePlayerComponent();
             playerStatusInfo.setEventType(PlaybackEvent.Status_Opening);
-            CallbackProgress(0);
+            CallbackProgress();
             mediaPlayer.setDataSource(filePath);
         } catch (IllegalArgumentException e) {
             MMLog.e(TAG, "setSource() " + e.toString() + " filePath = " + filePath);
@@ -74,7 +74,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         try {
             PreparePlayerComponent();
             playerStatusInfo.setEventType(PlaybackEvent.Status_Opening);
-            CallbackProgress(0);
+            CallbackProgress();
             mediaPlayer.setDataSource(mContext, uri);
         } catch (IllegalArgumentException | IOException | IllegalStateException e) {
             MMLog.e(TAG, "setSource() " + e.toString());
@@ -87,7 +87,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         try {
             PreparePlayerComponent();
             playerStatusInfo.setEventType(PlaybackEvent.Status_Opening);
-            CallbackProgress(0);
+            CallbackProgress();
             mediaPlayer.setDataSource(afd);
         } catch (IllegalArgumentException | IOException | IllegalStateException e) {
             MMLog.e(TAG, "setSource() " + e.toString());
@@ -100,9 +100,9 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         try {
             PreparePlayerComponent();
             playerStatusInfo.setEventType(PlaybackEvent.Status_Opening);
-            CallbackProgress(0);
+            CallbackProgress();
             mediaPlayer.setDataSource(fd);
-        } catch (IllegalArgumentException |IllegalStateException | IOException e) {
+        } catch (IllegalArgumentException | IllegalStateException | IOException e) {
             MMLog.e(TAG, "setSource() " + e.toString());
             playerStatusInfo.setEventType(PlaybackEvent.Status_Error);
         } //catch (Exception e) {
@@ -267,8 +267,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     @Override
     public Boolean isPlaying() {
-        if (mediaPlayer != null)
-        {
+        if (mediaPlayer != null) {
             if (playerStatusInfo.getEventType() == PlaybackEvent.Status_Playing)
                 return true;
             else
@@ -504,6 +503,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         MMLog.e(TAG, "onError:" + i + "," + i1 + " playStatus = " + PlaybackEvent.Status_Error);
         playerStatusInfo.setLastError(PlaybackEvent.Status_Error);
         //return true;//
+        //CallbackProgress(PlaybackEvent.Status_Ended);//给前端处理错误的机会
         return false;//// to call OnCompletionListener.onCompletion()方法。/自身结束错误
     }
 
@@ -523,7 +523,8 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
         //MLog.log(TAG, "onBufferingUpdate:" + i);
-        CallbackProgress(i);
+        playerStatusInfo.setBuffering(i);
+        //CallbackProgress(i);
     }
 
     @Override
@@ -567,7 +568,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                 playerStatusInfo.setLastError(0);
             }
 
-            CallbackProgress(0);//通知doNothing
+            CallbackProgress();//通知doNothing
 
             if (progressThread != null)
                 progressThread.finish();
@@ -604,7 +605,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     private synchronized void PreparePlayerComponent() {
-        MMLog.d(TAG, "prepare player context ,playStatus = " + playerStatusInfo.getEventType());
+        MMLog.d(TAG, "prepare player context,playStatus = " + playerStatusInfo.getEventType());
         try {
             if (mediaPlayer == null)
                 mediaPlayer = new MediaPlayer();
@@ -645,7 +646,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                                 playerStatusInfo.setLengthChanged(mp.getDuration());
                                 playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
                                 playerStatusInfo.setSourcePrepared(true);
-                                CallbackProgress(0);//给前端seek to 的机会
+                                CallbackProgress();//给前端seek to 的机会
 
                                 if (!mp.isPlaying()) {
                                     mp.start();
@@ -695,7 +696,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         }
     }
 
-    private void CallbackProgress(int buffering) {
+    private void CallbackProgress() {
         switch (playerStatusInfo.getEventType()) {
             case PlaybackEvent.Status_Opening:
                 playerStatusInfo.setLengthChanged(0);
@@ -741,10 +742,10 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                 //内部状态不向外传递
                 if (playerStatusInfo.getEventType() >= PlaybackEvent.Status_INTERNAL) continue;
                 //缓冲状态已经在上面调用过了，不再常规调用
-                if (playerStatusInfo.getEventType() == PlaybackEvent.Status_Buffering) continue;
+                //if (playerStatusInfo.getEventType() == PlaybackEvent.Status_Buffering) continue;
 
                 try {
-                    CallbackProgress(0);
+                    CallbackProgress();
                 } catch (Exception e) {
                     MMLog.e(TAG, "Progress polling " + e.toString() + " playStatus = " + playerStatusInfo.getEventType());
                 }

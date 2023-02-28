@@ -550,17 +550,29 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             case PlaybackEvent.Status_Stopped:
             case PlaybackEvent.MediaChanged:
                 break;
-            case PlaybackEvent.Status_Ended:
-                MMLog.log(TAG, "OnEventCallBack.EventType = Status_Ended, " + oMediaPlaying.getPathName());
-                playEventHandler(playOrder);//继续播放，跳到上一首或下一首
-                break;
+
             case PlaybackEvent.Status_Error:
-                if (tryCountForError > 0 && tryPlayCount > 0) {
-                    playEventHandler(DataID.PLAY_MANAGER_PLAY_ORDER4);
-                    tryPlayCount--;
-                } else {
-                    MMLog.log(TAG, "OnEventCallBack.EventType = Status_Error, stop play " + oMediaPlaying.getPathName());
+                MMLog.log(TAG, "OnEventCallBack.EventType = Status_Error, stop play " + oMediaPlaying.getPathName());
+                break;
+            case PlaybackEvent.Status_Ended:
+                if (playerStatusInfo.getLastError() == PlaybackEvent.Status_Error)
+                {//处理错误
+                    playerStatusInfo.setLastError(PlaybackEvent.Status_Ended);
+                    if (tryCountForError > 0 && tryPlayCount > 0)
+                    {
+                        playEventHandler(DataID.PLAY_MANAGER_PLAY_ORDER4);
+                        tryPlayCount--;
+                    } else {
+
+                        playEventHandler(playOrder);//继续播放，跳到上一首或下一首
+                    }
+                }
+                else
+                {
+                    tryPlayCount = tryCountForError;
+                    MMLog.log(TAG, "OnEventCallBack.EventType = Status_Ended, " + oMediaPlaying.getPathName());
                     playEventHandler(playOrder);//继续播放，跳到上一首或下一首
+
                 }
                 break;
         }
