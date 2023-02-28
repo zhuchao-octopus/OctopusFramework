@@ -171,7 +171,7 @@ public class OMedia implements Serializable, PlayerCallback {
         tTask.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {
-                tTask.setKeeping(true);
+                tTask.setKeep(true);
                 _play();
                 tTask.resetAll();
             }
@@ -187,7 +187,7 @@ public class OMedia implements Serializable, PlayerCallback {
         tTask.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {
-                tTask.setKeeping(true);
+                tTask.setKeep(true);
                 getPlayer().setSurfaceView(playView);
                 _play();
                 tTask.resetAll();

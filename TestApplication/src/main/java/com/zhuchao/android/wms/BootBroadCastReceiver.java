@@ -21,10 +21,12 @@ public class BootBroadCastReceiver extends BroadcastReceiver {
             MMLog.d(TAG,intent.getAction().toString());
             if (intent.getAction().equals(ACTION)) {
                 Intent intent1 = new Intent(context, TWatchManService.class);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     //android8.0以上通过startForegroundService启动service
-                    context.startForegroundService(intent1);
-                } else {
+                //    context.startForegroundService(intent1);
+                //}
+                //else
+                {
                     context.startService(intent1);
                     //context.startActivityAsUser();
                 }

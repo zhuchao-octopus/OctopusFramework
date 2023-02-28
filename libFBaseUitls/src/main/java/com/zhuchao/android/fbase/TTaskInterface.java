@@ -5,31 +5,58 @@ import com.zhuchao.android.eventinterface.TaskCallback;
 
 public abstract interface TTaskInterface {
     public TTask invoke(InvokeInterface callFunction);
+
     public TTask callbackHandler(TaskCallback taskCallback);
+
     public InvokeInterface getInvokeInterface();
+
     public TaskCallback getCallBackHandler();
-    public String getTTag();
-    public long getTaskID();
-    public void setTTag(String tTag);
-    public String getTName();
-    public void setTName(String tName);
+
     public ObjectList getProperties();
-    public boolean isKeeping();
-    public void setKeeping(boolean keeping);
-    public void lock();
-    public void unLock();
+
+    public long getTaskID();
+
     public int getInvokedCount();
+
+    public String getTaskTag();
+
+    public void setTaskTag(String tTag);
+
+    public String getTaskName();
+
+    public void setTaskName(String tName);
+
+    public TTask setKeep(boolean keeping);
+
+    public boolean isKeeping();
+
     public boolean isBusy();
+
     public void free();
+
     public void freeFree();
+
     public TTask reset();
-    public void resetAll();
+
+    public TTask resetAll();
+
     public void start();
+
     public void startAgain();
+
     public void startWait();
+
     public void startDelayed(long millis);
+
     public void startAgainDelayed(long millis);
 
+    public void lock();
+
+    public void unLock();
+
     public void unPark();
+
     public void pack();
+
+    public TTask setPriority(int newPriority);
 }

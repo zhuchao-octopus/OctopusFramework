@@ -163,12 +163,10 @@ public class FilesFinger extends ObjectList {
         }
         if (!dirList.contains(dirPath)) {
             ScanThread scanThread = new ScanThread();
-            synchronized(dirList)
-            {
+            synchronized (dirList) {
                 dirList.add(dirPath);
             }
-            synchronized (threadPool)
-            {
+            synchronized (threadPool) {
                 threadPool.add(scanThread);
             }
             scanThread.tag = dirPath;

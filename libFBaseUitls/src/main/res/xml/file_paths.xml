@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
 
-    <root-path  name="root_files"   path="."  />
+    <root-path
+        name="root_files"
+        path="." />
 
     <external-path
         name="install_apk_files"
-        path="."/>
+        path="." />
     <external-files-path
         name="external_files"
         path="." />
@@ -18,6 +20,8 @@
     <files-path
         name="files"
         path="." />
-    <files-path path="." name="files_path" />
+    <files-path
+        path="."
+        name="files_path" />
 
 </paths>

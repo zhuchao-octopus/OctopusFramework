@@ -1,6 +1,7 @@
 package com.zhuchao.android.fbase;
 
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
+import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
 import android.app.ActivityManager;
 import android.app.PendingIntent;
@@ -279,7 +280,7 @@ public class TAppUtils {
 
             Uri contentUri = FileProvider.getUriForFile(mContext, mContext.getPackageName() + ".fileProvider", new File(filePath));
             intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
-            MMLog.log(TAG,"fileProvider path = "+mContext.getPackageName() + ".fileProvider");
+            MMLog.log(TAG, "fileProvider path = " + mContext.getPackageName() + ".fileProvider");
         } else {
             intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -294,7 +295,7 @@ public class TAppUtils {
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             Uri contentUri = FileProvider.getUriForFile(context, context.getPackageName() + ".fileProvider", new File(filePath));
             intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
-            MMLog.log(TAG,"fileProvider path = "+context.getPackageName() + ".fileProvider");
+            MMLog.log(TAG, "fileProvider path = " + context.getPackageName() + ".fileProvider");
         } else {
             intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -357,7 +358,7 @@ public class TAppUtils {
 
             Intent intent = new Intent();
             intent.setAction("android.intent.action.SILENT_INSTALL_PACKAGE_COMPLETE");
-            intent.putExtra("apkFilePath",apkPath);
+            intent.putExtra("apkFilePath", apkPath);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
             IntentSender intentSender = pendingIntent.getIntentSender();
             session.commit(intentSender);//提交启动安装
@@ -389,15 +390,15 @@ public class TAppUtils {
 
     public synchronized static boolean uninstallApk(String packageName) {
         try {
+            MMLog.i(TAG, "going to uninstall app packageName=" + packageName);
             String[] args = {"pm", "uninstall", "-k", "--user", "0", packageName};
             ProcessBuilder processBuilder = new ProcessBuilder(args);
-            Process process = null;
+            Process process = processBuilder.start();
             BufferedReader successResult = null;
             BufferedReader errorResult = null;
             StringBuilder successMsg = new StringBuilder();
             StringBuilder errorMsg = new StringBuilder();
             try {
-                process = processBuilder.start();
                 successResult = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream()));
                 String line;
@@ -407,16 +408,17 @@ public class TAppUtils {
                 while ((line = errorResult.readLine()) != null) {
                     errorMsg.append(line);
                 }
-                if(!EmptyString(errorMsg.toString()))
+                if (NotEmptyString(errorMsg.toString()))
                     MMLog.i(TAG, "uninstall " + errorMsg.toString());
-                if (!EmptyString(successMsg.toString()) && successMsg.toString().contains("Success")) {
+                if (NotEmptyString(successMsg.toString()) && successMsg.toString().contains("Success")) {
                     MMLog.i(TAG, "uninstall " + successMsg.toString());
                     return true;
                 } else {
                     return false;
                 }
             } catch (Exception e) {
-                MMLog.e(TAG, e.toString());
+                //MMLog.e(TAG, e.toString());
+                e.printStackTrace();
             } finally {
                 try {
                     if (successResult != null) {
@@ -424,6 +426,7 @@ public class TAppUtils {
                     }
                 } catch (IOException e) {
                     MMLog.e(TAG, e.toString());
+                    //e.printStackTrace();
                 }
                 try {
                     if (errorResult != null) {
@@ -431,6 +434,7 @@ public class TAppUtils {
                     }
                 } catch (IOException e) {
                     MMLog.e(TAG, e.toString());
+                    //e.printStackTrace();
                 }
                 try {
                     if (process != null) {
@@ -438,10 +442,12 @@ public class TAppUtils {
                     }
                 } catch (Exception e) {
                     MMLog.e(TAG, e.toString());
+                    //e.printStackTrace();
                 }
             }
         } catch (Exception e) {
-            MMLog.e(TAG, e.toString());
+            //MMLog.e(TAG, e.toString());
+            e.printStackTrace();
         }
         return false;
     }
@@ -452,9 +458,9 @@ public class TAppUtils {
         try {
             method = Class.forName("android.app.ActivityManager").getMethod("forceStopPackage", String.class);
             method.invoke(mActivityManager, packageName);
-            MMLog.i(TAG,"Kill application: "+packageName);
+            MMLog.i(TAG, "Kill application: " + packageName);
         } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
-            MMLog.log(TAG,e.toString());//e.printStackTrace();
+            MMLog.log(TAG, e.toString());//e.printStackTrace();
         }
     }
 
@@ -469,22 +475,22 @@ public class TAppUtils {
         return objectArray;
     }
 
-    public static boolean isProcessRunning(Context context,String PackageName) {
+    public static boolean isProcessRunning(Context context, String PackageName) {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> mList = activityManager.getRunningAppProcesses();
         for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : mList) {
-            if(runningAppProcessInfo.processName.equals(PackageName))
+            if (runningAppProcessInfo.processName.equals(PackageName))
                 return true;
         }
         return false;
     }
-    public static boolean isServiceRunning(Context context, String serviceName)
-    {
-        ActivityManager activityManager=(ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+
+    public static boolean isServiceRunning(Context context, String serviceName) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         ArrayList<ActivityManager.RunningServiceInfo> mList = (ArrayList<ActivityManager.RunningServiceInfo>) activityManager.getRunningServices(30);
 
         for (ActivityManager.RunningServiceInfo runningServiceInfo : mList) {
-            if(runningServiceInfo.service.getClassName().equals(serviceName))
+            if (runningServiceInfo.service.getClassName().equals(serviceName))
                 return true;
         }
         return false;
@@ -579,19 +585,18 @@ public class TAppUtils {
         return null;
     }
 
-    public static void startSystemSetting(Context context)
-    {
+    public static void startSystemSetting(Context context) {
         context.startActivity(
                 new Intent(Settings.ACTION_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         );
     }
 
-    public static void startWifiSetting(Context context)
-    {
+    public static void startWifiSetting(Context context) {
         context.startActivity(
                 new Intent(Settings.ACTION_WIFI_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         );
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public static class AppInfo {

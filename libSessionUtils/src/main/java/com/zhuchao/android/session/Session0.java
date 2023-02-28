@@ -20,7 +20,7 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
     private static final TTask tTask = new TTask(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
 
     public Session0() {
-        SessionName = tTask.getTTag();
+        SessionName = tTask.getTaskTag();
         tTask.invoke(this);
     }
 
@@ -77,8 +77,8 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
     }
 
     @Override
-    public String getTTag() {
-        return tTask.getTTag();
+    public String getTaskTag() {
+        return tTask.getTaskTag();
     }
 
     @Override
@@ -87,18 +87,18 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
     }
 
     @Override
-    public void setTTag(String tTag) {
-        tTask.setTTag(tTag);
+    public void setTaskTag(String tTag) {
+        tTask.setTaskTag(tTag);
     }
 
     @Override
-    public String getTName() {
-        return tTask.getTName();
+    public String getTaskName() {
+        return tTask.getTaskName();
     }
 
     @Override
-    public void setTName(String tName) {
-        tTask.setTName(tName);
+    public void setTaskName(String tName) {
+        tTask.setTaskName(tName);
     }
 
     @Override
@@ -112,8 +112,9 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
     }
 
     @Override
-    public void setKeeping(boolean keeping) {
-        tTask.setKeeping(keeping);
+    public TTask setKeep(boolean keeping) {
+        tTask.setKeep(keeping);
+        return tTask;
     }
 
     @Override
@@ -153,8 +154,9 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
     }
 
     @Override
-    public void resetAll() {
+    public TTask resetAll() {
         tTask.resetAll();
+        return tTask;
     }
 
     @Override
@@ -190,6 +192,12 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
     @Override
     public void pack() {
 
+    }
+
+    @Override
+    public TTask setPriority(int newPriority) {
+        tTask.setPriority(newPriority);
+        return tTask;
     }
 
     @Override

@@ -2,20 +2,21 @@ package com.zhuchao.android.fbase;
 
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
+
 import com.zhuchao.android.eventinterface.FileFingerCallback;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilesFinder extends ObjectArray{
+public class FilesFinder extends ObjectArray {
     private final String TAG = "FilesFinder";
     private FileFingerCallback fileFingerCallback = null;
     private int count = 0;
     private boolean stopScan = false;
     private int sleepTime = -1;
-    private final List<String> dirList  = new ArrayList<String>();
-    private final List<ScanThread> threadPool= new ArrayList<ScanThread>();
+    private final List<String> dirList = new ArrayList<String>();
+    private final List<ScanThread> threadPool = new ArrayList<ScanThread>();
     //private long lStart = 0;
     private boolean bNeedProgress = true;
     private boolean bMultiThread = true;
@@ -40,7 +41,7 @@ public class FilesFinder extends ObjectArray{
 
     public FilesFinder callBack(FileFingerCallback fileFingerCallback) {
         this.fileFingerCallback = fileFingerCallback;
-        return this ;
+        return this;
     }
 
     public void setNeedProgress(boolean bNeedProgress) {
@@ -133,7 +134,7 @@ public class FilesFinder extends ObjectArray{
                     if (bNeedProgress) {
                         fileCounter();
                         if (fileFingerCallback != null) {
-                            fileFingerCallback.onFileCallback(filePathName,file.length(),count);
+                            fileFingerCallback.onFileCallback(filePathName, file.length(), count);
                         }
 
                     }
@@ -148,6 +149,7 @@ public class FilesFinder extends ObjectArray{
 
     private class ScanThread extends Thread {
         String tag = null;
+
         @Override
         public void run() {
             super.run();
@@ -163,7 +165,7 @@ public class FilesFinder extends ObjectArray{
                 }
             }
             if (fileFingerCallback != null && threadPool.isEmpty()) {
-                fileFingerCallback.onFileCallback(null, totalSize,size());
+                fileFingerCallback.onFileCallback(null, totalSize, size());
             }
         }
     }

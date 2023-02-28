@@ -172,7 +172,7 @@ public class TTaskManager {
 
     public void deleteTask(TTask tTask) {
         tTask.freeFree();
-        tTaskThreadPool.deleteTask(tTask.getTTag());
+        tTaskThreadPool.deleteTask(tTask.getTaskTag());
     }
 
     public List<TTask> getAllTask() {
@@ -314,7 +314,7 @@ public class TTaskManager {
                             taskMainLooperHandler.sendMessage(msg);
                             //////////////////////////////////////////////////////////////////////////
                             TTask tto = tTaskThreadPool.getTaskByTag(tag);
-                            tTaskThreadPool.deleteTask(tto.getTTag());
+                            tTaskThreadPool.deleteTask(tto.getTaskTag());
                             tto.free();
                             //////////////////////////////////////////////////////////////////////////
                             if (tTaskThreadPool.getCount() < maxTaskCount) {
@@ -366,7 +366,7 @@ public class TTaskManager {
                 int lCounter = 0;
                 while (tTask.getCallBackHandler() != null) {
                     if ((System.currentTimeMillis() - lStartTick) >= period) {
-                        Message msg = taskMainLooperHandler.obtainMessage();
+                        Message msg = TimerTaskHandler.obtainMessage();
                         lCounter++;
                         msg.obj = tTask;
                         tTask.getProperties().putInt("status", lCounter);

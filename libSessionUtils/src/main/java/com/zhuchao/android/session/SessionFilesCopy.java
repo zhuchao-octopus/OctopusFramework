@@ -94,8 +94,8 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
     }
 
     @Override
-    public String getTTag() {
-        return tMainTask.getTTag();
+    public String getTaskTag() {
+        return tMainTask.getTaskTag();
     }
 
     @Override
@@ -104,18 +104,18 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
     }
 
     @Override
-    public void setTTag(String tTag) {
-        tMainTask.setTTag(tTag);
+    public void setTaskTag(String tTag) {
+        tMainTask.setTaskTag(tTag);
     }
 
     @Override
-    public String getTName() {
-        return tMainTask.getTName();
+    public String getTaskName() {
+        return tMainTask.getTaskName();
     }
 
     @Override
-    public void setTName(String tName) {
-        tMainTask.setTName(tName);
+    public void setTaskName(String tName) {
+        tMainTask.setTaskName(tName);
     }
 
     @Override
@@ -129,8 +129,9 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
     }
 
     @Override
-    public void setKeeping(boolean keeping) {
-        tMainTask.setKeeping(keeping);
+    public TTask setKeep(boolean keeping) {
+        tMainTask.setKeep(keeping);
+        return tMainTask;
     }
 
     @Override
@@ -170,8 +171,9 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
     }
 
     @Override
-    public void resetAll() {
+    public TTask resetAll() {
         tMainTask.resetAll();
+        return tMainTask;
     }
 
     @Override
@@ -207,6 +209,12 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
     @Override
     public void pack() {
 
+    }
+
+    @Override
+    public TTask setPriority(int newPriority) {
+        tMainTask.setPriority(newPriority);
+        return tMainTask;
     }
 
     @Override

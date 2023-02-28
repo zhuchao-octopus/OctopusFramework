@@ -424,8 +424,8 @@ public class FileUtils {
 
     public static String getDirBaseExternalStorageDirectory(String myDir) {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-        if(NotEmptyString(myDir))
-            path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"+myDir;
+        if (NotEmptyString(myDir))
+            path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + myDir;
         if (existDirectory(path)) {
             return path;
         }
@@ -795,7 +795,7 @@ public class FileUtils {
             }
         } catch (Exception e) {
             //e.printStackTrace();
-            MMLog.e(TAG,e.toString());
+            MMLog.e(TAG, e.toString());
         }
     }
 

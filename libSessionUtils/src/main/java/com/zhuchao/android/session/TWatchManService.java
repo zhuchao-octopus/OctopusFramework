@@ -4,6 +4,9 @@ import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
 import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -91,6 +94,10 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     private boolean watchManSwitchOnOff = true;
     private String VERSION_NAME = "0.01";
 
+    private NotificationManager notificationManager;
+    private static final String NOTIFICATION_ID = "channedId";
+    private static final String NOTIFICATION_NAME = "channedId";
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -145,10 +152,29 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         //MMLog.i(TAG, "TWatchManService construct with no parameters.");//1 first call
     }
 
+    private Notification getNotification() {
+        Notification.Builder builder = new Notification.Builder(this);
+        //.setSmallIcon(R.drawable.ic_launcher)
+        //.setContentTitle("测试服务")
+        //.setContentText("我正在运行");
+        //设置Notification的ChannelID,否则不能正常显示
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setChannelId(NOTIFICATION_ID);
+        }
+        return builder.build();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         //MMLog.d(TAG, "onCreate()");//2 second call
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        //创建NotificationChannel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_ID, NOTIFICATION_NAME, NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(channel);
+        }
+        //startForeground(1, getNotification());
         start();
     }
 
@@ -170,7 +196,12 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     public void onDestroy() {
         super.onDestroy();
         //MMLog.d(TAG, "onDestroy()");
-        unRegisterUserEventReceiver();
+        try {
+            unRegisterUserEventReceiver();
+            tNetUtils.free();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void registerUserEventReceiver() {
@@ -224,7 +255,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             MMLog.i(TAG, "User event intent.Action = " + action);
             switch (action) {
                 case Action_HELLO:
-                    MMLog.log(TAG, "Hello it is ready! version:" + VERSION_NAME+ " " + getFWVersionName());
+                    MMLog.log(TAG, "Hello it is ready! version:" + VERSION_NAME + " " + getFWVersionName());
                     if (networkInformation != null)
                         MMLog.d(TAG, "HOST:" + networkInformation.toString());
                     if (intent.getExtras() != null) {
@@ -277,7 +308,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
 
                         TTask tTask = tTaskManager.getSingleTaskFor("Silent to install " + apkFilePath);
                         if (tTask.isBusy()) {
-                            MMLog.d(TAG, "The tTask is on working! " + tTask.getTName());
+                            MMLog.d(TAG, "The tTask is on working! " + tTask.getTaskName());
                             break;
                         }
                         tTask.invoke(new InvokeInterface() {
@@ -286,7 +317,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                                 Action_SilentInstallAction(apkFilePath, autostart || installedAutoStart);
                             }
                         });
-                        tTask.start();
+                        tTask.startAgain();
                     }
                     break;
                 case Action_SilentInstall1:
@@ -313,8 +344,14 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                     break;
                 case Action_SilentUninstall:
                     if (intent.getExtras() != null) {
-                        String packageName = intent.getExtras().getString("uninstall_pkg");
-                        Action_SilentUnInstallAction(packageName);
+                        String packageName = intent.getExtras().getString("packageName");
+                        String packageName2 = intent.getExtras().getString("uninstall_pkg");
+                        if (NotEmptyString(packageName))
+                            Action_SilentUnInstallAction(packageName);
+                        else if (NotEmptyString(packageName2))
+                            Action_SilentUnInstallAction(packageName2);
+                        else
+                            MMLog.log(TAG, "uninstall package name = null");
                     }
                     break;
                 case Action_SilentClose:
@@ -371,7 +408,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     }
 
     private void Action_SilentUnInstallAction(String packageName) {
-        //Uninstall(packageName);
+        //uninstall(packageName);
         TAppUtils.uninstallApk(packageName);
     }
 
@@ -621,7 +658,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         return successMsg.toString().equalsIgnoreCase("success");
     }
 
-    private  String getFWVersionName() {
+    private String getFWVersionName() {
         return Build.MODEL + ","
                 + Build.VERSION.SDK_INT + ","
                 + Build.VERSION.RELEASE + ","
@@ -664,7 +701,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         }
     }
 
-    private  void session_jhz_test_update_session(boolean startAgainFlag) {
+    private void session_jhz_test_update_session(boolean startAgainFlag) {
         TTaskInterface tTask = tTaskManager.getObjectByName(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
         if (tTask == null) {
             MMLog.i(TAG, "NOT FOUND TASK SESSION_UPDATE_JHZ_TEST_UPDATE_NAME!!");

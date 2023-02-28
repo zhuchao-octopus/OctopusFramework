@@ -1,6 +1,6 @@
 package com.zhuchao.android.fbase;
 
-public class EC extends EventCourier{
+public class EC extends EventCourier {
     public EC(String tag, int id) {
         super(tag, id);
     }

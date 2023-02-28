@@ -29,7 +29,7 @@ public class DateTimeUtils {
 
     public static String getCurrentDateStr(String formatType) {
         Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat(formatType,Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat(formatType, Locale.getDefault());
         return sdf.format(date);
     }
 
@@ -68,7 +68,7 @@ public class DateTimeUtils {
     }
 
     public static Date string2Date(String strTime, String formatType) {
-        SimpleDateFormat format = new SimpleDateFormat(formatType,Locale.getDefault());
+        SimpleDateFormat format = new SimpleDateFormat(formatType, Locale.getDefault());
         Date date = null;
         try {
             date = format.parse(strTime);
@@ -88,7 +88,7 @@ public class DateTimeUtils {
     }
 
     public static int compare_date(String DATE1, String DATE2, String formatType) {
-        DateFormat df = new SimpleDateFormat(formatType,Locale.getDefault());
+        DateFormat df = new SimpleDateFormat(formatType, Locale.getDefault());
         try {
             Date dt1 = df.parse(DATE1);
             Date dt2 = df.parse(DATE2);
@@ -106,7 +106,7 @@ public class DateTimeUtils {
 
     public long dateDiff(String startTime, String endTime, String format) {
         // 按照传入的格式生成一个simpledateformate对象
-        SimpleDateFormat sd = new SimpleDateFormat(format,Locale.getDefault());
+        SimpleDateFormat sd = new SimpleDateFormat(format, Locale.getDefault());
         long nd = 1000 * 24 * 60 * 60;// 一天的毫秒数
         long nh = 1000 * 60 * 60;// 一小时的毫秒数
         long nm = 1000 * 60;// 一分钟的毫秒数
@@ -166,14 +166,14 @@ public class DateTimeUtils {
     public static String getCurrentTime() {
         long currentTime = System.currentTimeMillis();
         Date date = new Date(currentTime);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss",Locale.getDefault());
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         return formatter.format(date);
     }
 
     public static String getCurrentTime2() {
         long currentTime = System.currentTimeMillis();
         Date date = new Date(currentTime);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss",Locale.getDefault());
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
         return formatter.format(date);
     }
 

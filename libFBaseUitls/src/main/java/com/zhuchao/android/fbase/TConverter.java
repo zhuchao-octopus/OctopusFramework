@@ -1,16 +1,15 @@
 package com.zhuchao.android.fbase;
 
-import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.Map;
+
 public class TConverter {
     private final static String TAG = "TConverter";
+
     public static <T> T fromJson(String json, Class<T> classOfT) {
         try {
             return new Gson().fromJson(json,

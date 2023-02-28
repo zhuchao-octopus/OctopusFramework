@@ -1,7 +1,7 @@
 package com.zhuchao.android.fbase;
 
 import static com.zhuchao.android.fbase.FileUtils.MD5;
-import static java.lang.Thread.MAX_PRIORITY;
+import static java.lang.Thread.NORM_PRIORITY;
 
 import com.zhuchao.android.eventinterface.InvokeInterface;
 import com.zhuchao.android.eventinterface.TaskCallback;
@@ -21,6 +21,7 @@ public class TTask implements TTaskInterface {
 
     private Thread ttThread = null;
     private TaskCallback threadPoolCallback = null;
+    private int newPriority = NORM_PRIORITY;
 
     public TTask(String tName) {
         this.tName = tName;
@@ -44,6 +45,18 @@ public class TTask implements TTaskInterface {
         this.properties = new ObjectList();
     }
 
+    public ObjectList getProperties() {
+        return properties;
+    }
+
+    public long getTaskID() {
+        return 0;
+    }
+
+    public int getInvokedCount() {
+        return invokedCount;
+    }
+
     public TaskCallback getThreadPoolCallback() {
         return this.threadPoolCallback;
     }
@@ -62,62 +75,43 @@ public class TTask implements TTaskInterface {
         return this;
     }
 
+    public InvokeInterface getInvokeInterface() {
+        return invokeInterface;
+    }
+
     //任务完成后的回调
     public TTask callbackHandler(TaskCallback taskCallback) {
         this.taskCallback = taskCallback;
         return this;
     }
 
-    public InvokeInterface getInvokeInterface() {
-        return invokeInterface;
-    }
-
     public TaskCallback getCallBackHandler() {
         return taskCallback;
     }
 
-    public String getTTag() {
+    public String getTaskTag() {
         return tTag;
     }
 
-    public long getTaskID() {
-        return 0;
-    }
-
-    public void setTTag(String tTag) {
+    public void setTaskTag(String tTag) {
         this.tTag = tTag;
     }
 
-    public String getTName() {
+    public String getTaskName() {
         return tName;
     }
 
-    public void setTName(String tName) {
+    public void setTaskName(String tName) {
         this.tName = tName;
-    }
-
-    public ObjectList getProperties() {
-        return properties;
     }
 
     public boolean isKeeping() {
         return isKeeping;
     }
 
-    public void setKeeping(boolean keeping) {
+    public TTask setKeep(boolean keeping) {
         isKeeping = keeping;
-    }
-
-    public void lock() {
-        isKeeping = true;
-    }
-
-    public void unLock() {
-        isKeeping = false;
-    }
-
-    public int getInvokedCount() {
-        return invokedCount;
+        return this;
     }
 
     public boolean isBusy() {
@@ -142,9 +136,10 @@ public class TTask implements TTaskInterface {
         return this;
     }
 
-    public void resetAll() {
+    public TTask resetAll() {
         properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_CAN_RESTART);
         freeFree();
+        return this;
     }
 
     public synchronized void startAgain() {
@@ -167,6 +162,14 @@ public class TTask implements TTaskInterface {
         startAgain();
     }
 
+    public void lock() {
+        isKeeping = true;
+    }
+
+    public void unLock() {
+        isKeeping = false;
+    }
+
     @Override
     public void unPark() {
         if (ttThread != null)
@@ -179,6 +182,12 @@ public class TTask implements TTaskInterface {
             LockSupport.park(ttThread);
     }
 
+    @Override
+    public TTask setPriority(int newPriority) {
+        this.newPriority = newPriority;
+        return this;
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //任务只有在 !isAlive && !isKeeping &&
     // properties.getInt(DataID.TASK_STATUS_INTERNAL_) != DataID.TASK_STATUS_FINISHED_STOP
@@ -186,18 +195,18 @@ public class TTask implements TTaskInterface {
     @Override
     public synchronized void start() {
         //if (ttThread != null || this.isKeeping) {
-        if (isBusy()){
+        if (isBusy()) {
             MMLog.log(TAG, "TTask already been started isAlive Keeping = " + isKeeping + ",tag = " + tTag);
             return;
         }
         if (properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED_STOP) {
-            MMLog.log(TAG, "TTask already finished, no need to run again! tag = " + getTTag());
+            MMLog.log(TAG, "TTask already finished, no need to run again! tag = " + getTaskTag());
             return;
         }
         try {
             //super.start();
             ttThread = new MyThread();
-            ttThread.setPriority(MAX_PRIORITY);
+            ttThread.setPriority(newPriority);
             //android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
             ttThread.start();
         } catch (Exception e) {
@@ -212,13 +221,13 @@ public class TTask implements TTaskInterface {
         public void run() {
             super.run();
             doRunFunction();
-            if(threadPoolCallback != null)
-            {
-                threadPoolCallback.onEventTask(this,DataID.TASK_STATUS_FINISHED_STOP);
-            }
-            //内部使用，当前任务已经完成，宿主任务终止
-            //（内部使用）任务结束、终止、停止不再需要运行，305
+
             properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);
+            if (threadPoolCallback != null) {
+                //内部使用，当前任务已经完成，宿主任务终止
+                //（内部使用）任务结束、终止、停止不再需要运行，305
+                threadPoolCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_STOP);
+            }
             ttThread = null;
         }
     }

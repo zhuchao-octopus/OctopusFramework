@@ -45,8 +45,8 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
             return (PTask) tTask;
 
         PTask pTask = new PTask(tName, this);
-        addItem(pTask.getTTag(), pTask);
-        MMLog.log(TAG, "create PTask name = " + pTask.getTName() + ",tag = " + pTask.getTTag());
+        addItem(pTask.getTaskTag(), pTask);
+        MMLog.log(TAG, "create PTask name = " + pTask.getTaskName() + ",tag = " + pTask.getTaskTag());
         return pTask;
     }
 
@@ -85,7 +85,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
     }
 
     public boolean addTaskInterface(TTaskInterface tTask) {
-        String tTag = tTask.getTTag();
+        String tTag = tTask.getTaskTag();
         if (!existObject(tTag)) {
             addItem(tTag, tTask);
             return true;
@@ -94,7 +94,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
     }
 
     public void deleteTaskInterface(TTaskInterface tTask) {
-        String tTag = tTask.getTTag();
+        String tTag = tTask.getTaskTag();
         delete(tTag);
         TTaskInterface tTaskInterface = getTaskByTag(tTag);
         if (tTaskInterface != null)
@@ -114,8 +114,8 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
 
     public void deleteTask(TTask tTask) {
         if (tTask == null) return;
-        delete(tTask.getTTag());
-        MMLog.log(TAG, "delete task tag = " + tTask.getTTag() + ",invokedCount = " + tTask.invokedCount);
+        delete(tTask.getTaskTag());
+        MMLog.log(TAG, "delete task tag = " + tTask.getTaskTag() + ",invokedCount = " + tTask.invokedCount);
     }
 
     public void free() {
@@ -139,8 +139,8 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
                     tTask.getCallBackHandler().onEventTask(this, DataID.TASK_STATUS_FINISHED_ALL);//池中所有任务完成
                 }
             }
-            if (tTask.getTName().contains(ANONYMOUS_NAME)) {
-                MMLog.log(TAG, "free anonymous task name = " + tTask.getTName());
+            if (tTask.getTaskName().contains(ANONYMOUS_NAME)) {
+                MMLog.log(TAG, "free anonymous task name = " + tTask.getTaskName());
                 //free();//自动清除匿名线程
                 tTask.freeFree();
                 deleteTask(tTask);
@@ -150,7 +150,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
         }
     }
 
-    class PTask extends TTask implements TaskCallback{
+    class PTask extends TTask implements TaskCallback {
         //private final String TAG = "PTask";
 
         public PTask(String tName, TaskCallback threadPoolCallback) {
@@ -159,8 +159,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
         }
 
         private void handlerThreadPool() {
-            if (existObject(tTag))
-            {
+            if (existObject(tTag)) {
                 //MMLog.log(TAG, "invoke TTask demon tTag = " + tTag);
                 //super.run(); //执行父类 TTask
                 /*//最终结束任务，从任务池中清除掉
@@ -175,14 +174,13 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
                         taskCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_ALL);//池中所有任务完成
                     }
                 }
-                if (this.getTName().contains(ANONYMOUS_NAME)) {
-                    MMLog.log(TAG, "free anonymous task name = " + this.getTName());
+                if (this.getTaskName().contains(ANONYMOUS_NAME)) {
+                    MMLog.log(TAG, "free anonymous task name = " + this.getTaskName());
                     //free();//自动清除匿名线程
                     freeFree();
                     deleteTask(this);
                 }
-            }
-            else {
+            } else {
                 MMLog.log(TAG, "not found PTask object in pool,break tag = " + tTag);
             }
         }
