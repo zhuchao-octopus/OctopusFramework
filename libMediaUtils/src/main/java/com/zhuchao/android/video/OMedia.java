@@ -59,8 +59,8 @@ public class OMedia implements Serializable, PlayerCallback {
     private final AssetFileDescriptor assetFileDescriptor;
     private final Uri uri;
     private boolean restorePlay = false;
-    private final TTask tTask = new TTask("OMedia.default", null);
-
+    private final TTask tTask_play = new TTask("OMedia.play", null);
+    private final TTask tTask_stop = new TTask("OMedia.stop", null);
 
     public void callback(PlayerCallback mCallback) {
         setCallback(mCallback);
@@ -163,38 +163,34 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public OMedia play() {
-        if (tTask.isBusy()) {
-            MMLog.i(TAG, "call play(), but player is busy!!");
-            return this;
-        }
-
-        tTask.invoke(new InvokeInterface() {
-            @Override
-            public void CALLTODO(String tag) {
-                tTask.setKeep(true);
-                _play();
-                tTask.resetAll();
-            }
-        }).startAgain();
+        playOn((SurfaceView) null);
         return this;
     }
 
     public void playOn(SurfaceView playView) {
-        if (tTask.isBusy()) {
-            MMLog.i(TAG, "call playOn(), but player is busy!!");
+        if (tTask_play.isBusy())
+        {
+            MMLog.i(TAG, "playOn(),player is busy!isKeeping=" +
+                    tTask_play.isKeeping() + "," +
+                    tTask_play.getProperties().getString("title"));
+
+            if(tTask_play.isTimeOut(10000)) {
+                MMLog.i(TAG, "task is timeout free ");
+                //tTask_play.freeFree();
+            }
             return;
         }
-        tTask.invoke(new InvokeInterface() {
+        tTask_play.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {
-                tTask.setKeep(true);
-                getPlayer().setSurfaceView(playView);
+                if (playView != null)
+                    getPlayer().setSurfaceView(playView);
                 _play();
-                tTask.resetAll();
+                tTask_play.resetAll();
             }
         });
-
-        tTask.startAgain();//.reset().start();
+        tTask_play.getProperties().putString("title", getName());
+        tTask_play.startAgain();//.reset().start();
     }
 
     public void playOn(TextureView playView) {
@@ -288,15 +284,17 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public void playPause() {
-        if (tTask.isBusy()) {
-            MMLog.i(TAG, "call playPause(), but player is busy!!");
+        if (tTask_play.isBusy()) {
+            MMLog.i(TAG, "playPause(),player is busy!isKeeping=" +
+                    tTask_play.isKeeping() + "," +
+                    tTask_play.getProperties().getString("title"));
             return;
         }
-        tTask.invoke(new InvokeInterface() {
+        tTask_play.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {
                 if (isPlayerReady()) {
-                    MMLog.i(TAG, "call playPause() on " + getPlayer().getTAG());
+                    MMLog.i(TAG, "playPause() on " + getPlayer().getTAG());
                     getPlayer().playPause();
                 }
             }
@@ -325,11 +323,12 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public void stopFree() {
-        if (tTask.isBusy()) {
+        if (tTask_stop.isBusy()) {
             MMLog.i(TAG, "call stopFree(), but player is busy!!");
             return;
         }
-        tTask.invoke(new InvokeInterface() {
+        tTask_play.freeFree();
+        tTask_stop.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {
                 if (isPlayerReady()) {

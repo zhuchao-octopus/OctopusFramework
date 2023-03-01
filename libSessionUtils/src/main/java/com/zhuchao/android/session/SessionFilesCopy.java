@@ -218,6 +218,16 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
     }
 
     @Override
+    public long getStartTick() {
+        return tMainTask.getStartTick();
+    }
+
+    @Override
+    public boolean isTimeOut(long timeOutMillis) {
+        return tMainTask.isTimeOut(timeOutMillis);
+    }
+
+    @Override
     public void CALLTODO(String tag) {
         if (FileUtils.existFile(fromPath)) //文件复制
         {

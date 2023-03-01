@@ -59,4 +59,6 @@ public abstract interface TTaskInterface {
     public void pack();
 
     public TTask setPriority(int newPriority);
+    public long getStartTick();
+    public boolean isTimeOut(long timeOutMillis);
 }

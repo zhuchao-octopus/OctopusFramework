@@ -201,6 +201,16 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
     }
 
     @Override
+    public long getStartTick() {
+        return tTask.getStartTick();
+    }
+
+    @Override
+    public boolean isTimeOut(long timeOutMillis) {
+        return tTask.isTimeOut(timeOutMillis);
+    }
+
+    @Override
     public void CALLTODO(String tag) {
         if (requestMethod.equals("PUT")) {
             HttpUtils.requestPut(tag, requestURL, requestParameter, new HttpCallback() {

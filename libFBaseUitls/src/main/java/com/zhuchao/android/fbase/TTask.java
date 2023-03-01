@@ -18,6 +18,8 @@ public class TTask implements TTaskInterface {
     protected boolean isKeeping = false;
     protected int invokedCount = 0;
     private long delayedMillis = 0;
+    //private long taskTimeOut = 0;
+    private long startTimeStamp  = 0;
 
     private Thread ttThread = null;
     private TaskCallback threadPoolCallback = null;
@@ -120,14 +122,17 @@ public class TTask implements TTaskInterface {
 
     public void free() {
         isKeeping = false;
+        delayedMillis = 0;
+        startTimeStamp = 0;
     }
 
     public void freeFree() {
+        free();
         properties.clear();
-        isKeeping = false;
         invokeInterface = null;
         taskCallback = null;
         threadPoolCallback = null;
+        ttThread=null;
     }
 
     public TTask reset() {
@@ -162,6 +167,14 @@ public class TTask implements TTaskInterface {
         startAgain();
     }
 
+    //public long getTaskTimeOut() {
+    //    return taskTimeOut;
+    //}
+
+    //public void setTaskTimeOut(long taskTimeOut) {
+    //    this.taskTimeOut = taskTimeOut;
+    //}
+
     public void lock() {
         isKeeping = true;
     }
@@ -186,6 +199,16 @@ public class TTask implements TTaskInterface {
     public TTask setPriority(int newPriority) {
         this.newPriority = newPriority;
         return this;
+    }
+
+    @Override
+    public long getStartTick() {
+        return this.startTimeStamp;
+    }
+
+    @Override
+    public boolean isTimeOut(long timeOutMillis) {
+        return (System.currentTimeMillis() - startTimeStamp) > timeOutMillis;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,6 +243,8 @@ public class TTask implements TTaskInterface {
         @Override
         public void run() {
             super.run();
+            //MMLog.log("MyThread","start ............ ");
+            startTimeStamp = System.currentTimeMillis();
             doRunFunction();
 
             properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);
@@ -229,6 +254,7 @@ public class TTask implements TTaskInterface {
                 threadPoolCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_STOP);
             }
             ttThread = null;
+            //MMLog.log("MyThread","stop ............ ");
         }
     }
 
