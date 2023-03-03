@@ -413,6 +413,9 @@ public class TTaskManager {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    public TTask requestGet(final String fromUrl){
+       return request(fromUrl);
+    }
     //net request task
     public TTask request(final String fromUrl) {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
@@ -432,7 +435,7 @@ public class TTaskManager {
                     @Override
                     public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
                         if (status == DataID.TASK_STATUS_ERROR) {
-                            MMLog.e(TAG, "requestGet " + fromUrl + "," + result);
+                            MMLog.e(TAG, "requestGet " + result);
                         }
 
                         if (tTask.getCallBackHandler() != null) {//回调传递给task

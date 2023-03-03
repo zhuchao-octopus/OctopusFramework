@@ -161,7 +161,7 @@ public class HttpUtils {
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_SUCCESS, RequestCallBack);
                     } else {
                         //MMLog.log(TAG, "Request failed from " + fromUrl);
-                        ResultCallBack(tag, fromUrl, "", 0, 0, "response is null", DataID.TASK_STATUS_ERROR, RequestCallBack);
+                        ResultCallBack(tag, fromUrl, "", 0, 0, "fromUrl = " + fromUrl +",response is null", DataID.TASK_STATUS_ERROR, RequestCallBack);
                     }
                 } catch (IOException e) {
                     //MMLog.e(TAG, "request().onResponse " + e.getMessage());
