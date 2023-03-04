@@ -17,6 +17,10 @@ public class MultiPointController implements IController {
 
     @Override
     public boolean play(Device device, String path) {
+        if (device == null) {
+            MMLog.log(TAG, "failed device = null");
+            return false;
+        }
         Service service = device.getService(AVTransport1);
 
         if (service == null) {
@@ -56,7 +60,10 @@ public class MultiPointController implements IController {
 
     @Override
     public boolean goon(Device device, String pausePosition) {
-
+        if (device == null) {
+            MMLog.log(TAG, "failed device = null");
+            return false;
+        }
         Service localService = device.getService(AVTransport1);
         if (localService == null)
             return false;
@@ -87,6 +94,10 @@ public class MultiPointController implements IController {
 
     @Override
     public String getTransportState(Device device) {
+        if (device == null) {
+            MMLog.log(TAG, "failed device = null");
+            return null;
+        }
         Service localService = device.getService(AVTransport1);
         if (localService == null) {
             return null;
@@ -107,6 +118,10 @@ public class MultiPointController implements IController {
     }
 
     public String getVolumeDbRange(Device device, String argument) {
+        if (device == null) {
+            MMLog.log(TAG, "failed device = null");
+            return null;
+        }
         Service localService = device.getService(RenderingControl);
         if (localService == null) {
             return null;
@@ -126,6 +141,10 @@ public class MultiPointController implements IController {
 
     @Override
     public int getMinVolumeValue(Device device) {
+        if (device == null) {
+            MMLog.log(TAG, "failed device = null");
+            return 0;
+        }
         String minValue = getVolumeDbRange(device, "MinValue");
         if (TextUtils.isEmpty(minValue)) {
             return 0;
@@ -135,6 +154,10 @@ public class MultiPointController implements IController {
 
     @Override
     public int getMaxVolumeValue(Device device) {
+        if (device == null) {
+            MMLog.log(TAG, "failed device = null");
+            return 0;
+        }
         String maxValue = getVolumeDbRange(device, "MaxValue");
         if (TextUtils.isEmpty(maxValue)) {
             return 100;
@@ -144,6 +167,10 @@ public class MultiPointController implements IController {
 
     @Override
     public boolean seek(Device device, String targetPosition) {
+        if (device == null) {
+            MMLog.log(TAG, "failed device = null");
+            return false;
+        }
         Service localService = device.getService(AVTransport1);
         if (localService == null)
             return false;
@@ -171,6 +198,10 @@ public class MultiPointController implements IController {
 
     @Override
     public String getPositionInfo(Device device) {
+        if (device == null) {
+            MMLog.log(TAG, "failed device = null");
+            return null;
+        }
         Service localService = device.getService(AVTransport1);
 
         if (localService == null)
@@ -192,6 +223,10 @@ public class MultiPointController implements IController {
 
     @Override
     public String getMediaDuration(Device device) {
+        if (device == null) {
+            MMLog.log(TAG, "failed device = null");
+            return null;
+        }
         Service localService = device.getService(AVTransport1);
         if (localService == null) {
             return null;
@@ -212,6 +247,10 @@ public class MultiPointController implements IController {
 
     @Override
     public boolean setMute(Device mediaRenderDevice, String targetValue) {
+        if (mediaRenderDevice == null) {
+            MMLog.log(TAG, "failed device = null");
+            return false;
+        }
         Service service = mediaRenderDevice.getService(RenderingControl);
         if (service == null) {
             return false;
@@ -229,6 +268,10 @@ public class MultiPointController implements IController {
 
     @Override
     public String getMute(Device device) {
+        if (device == null) {
+            MMLog.log(TAG, "failed device = null");
+            return null;
+        }
         Service service = device.getService(RenderingControl);
         if (service == null) {
             return null;
@@ -246,6 +289,10 @@ public class MultiPointController implements IController {
 
     @Override
     public boolean setVoice(Device device, int value) {
+        if (device == null) {
+            MMLog.log(TAG, "failed device = null");
+            return false;
+        }
         Service service = device.getService(RenderingControl);
         if (service == null) {
             return false;
@@ -264,6 +311,10 @@ public class MultiPointController implements IController {
 
     @Override
     public int getVoice(Device device) {
+        if (device == null) {
+            MMLog.log(TAG, "failed device = null");
+            return -1;
+        }
         Service service = device.getService(RenderingControl);
         if (service == null) {
             return -1;
@@ -284,6 +335,10 @@ public class MultiPointController implements IController {
 
     @Override
     public boolean stop(Device device) {
+        if (device == null) {
+            MMLog.log(TAG, "failed device = null");
+            return false;
+        }
         Service service = device.getService(AVTransport1);
 
         if (service == null) {
@@ -300,6 +355,10 @@ public class MultiPointController implements IController {
 
     @Override
     public boolean pause(Device mediaRenderDevice) {
+        if (mediaRenderDevice == null) {
+            MMLog.log(TAG, "failed device = null");
+            return false;
+        }
         Service service = mediaRenderDevice.getService(AVTransport1);
         if (service == null) {
             return false;

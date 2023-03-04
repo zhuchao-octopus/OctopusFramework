@@ -4,7 +4,6 @@ package com.zhuchao.android.video;
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 import static com.zhuchao.android.player.PlayerManager.MPLAYER;
-
 import static java.lang.Thread.MAX_PRIORITY;
 
 import android.content.Context;
@@ -171,25 +170,24 @@ public class OMedia implements Serializable, PlayerCallback {
         return this;
     }
 
-    public void playOn(SurfaceView playView)
-    {
+    public void playOn(SurfaceView playView) {
         if (playView != null)
             getPlayer().setSurfaceView(playView);
         _play();
     }
+
     public void playOn_t(SurfaceView playView) {
-        if (tTask_play.isBusy())
-        {
+        if (tTask_play.isBusy()) {
             MMLog.i(TAG, "playOn_t(),is busy! Keeping=" +
                     tTask_play.isKeeping() + "," +
                     tTask_play.getProperties().getString("title"));
 
-            if(tTask_play.isTimeOut(15000)) {
+            if (tTask_play.isTimeOut(15000)) {
                 MMLog.i(TAG, "task is timeout free ");
                 tTask_play.freeFree();
                 stopFree();
             }
-              return;
+            return;
         }
         tTask_play.invoke(new InvokeInterface() {
             @Override
@@ -254,7 +252,10 @@ public class OMedia implements Serializable, PlayerCallback {
 
     public void pushTo(String fromHost, Device toDevice, boolean duplicated) {
         boolean isExternalLinks = FileUtils.isExternalLinks(getPathName());
-
+        if (toDevice == null) {
+            MMLog.log(TAG, "toDevices = null");
+            return;
+        }
         if (!isExternalLinks) {
             getPlayer().pushTo(movie.getSrcUrl(), duplicated);
             getPlayer().play();
@@ -275,6 +276,14 @@ public class OMedia implements Serializable, PlayerCallback {
 
     public void pushToDevices(String fromHost, ArrayList<Device> toDevices, boolean duplicated) {
         boolean isExternalLinks = FileUtils.isExternalLinks(getPathName());
+        if (toDevices == null) {
+            MMLog.log(TAG, "toDevices = null");
+            return;
+        }
+        if (toDevices.isEmpty()) {
+            MMLog.log(TAG, "toDevices isEmpty");
+            return;
+        }
 
         if (!isExternalLinks) {
             getPlayer().pushTo(movie.getSrcUrl(), duplicated);
