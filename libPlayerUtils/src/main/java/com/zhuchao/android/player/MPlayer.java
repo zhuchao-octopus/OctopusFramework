@@ -58,8 +58,11 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         try {
             PreparePlayerComponent();
             playerStatusInfo.setEventType(PlaybackEvent.Status_Opening);
+            //MMLog.i(TAG, "CallbackProgress()");
             CallbackProgress();
+            MMLog.i(TAG, "setSource source="+filePath);
             mediaPlayer.setDataSource(filePath);
+            MMLog.i(TAG, "setSource end");
         } catch (IllegalArgumentException e) {
             MMLog.e(TAG, "setSource() " + e.toString() + " filePath = " + filePath);
             playerStatusInfo.setEventType(PlaybackEvent.Status_Error);
@@ -67,6 +70,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             MMLog.e(TAG, "setSource() " + e.toString());
             playerStatusInfo.setEventType(PlaybackEvent.Status_Error);
         }
+
     }
 
     @Override
@@ -604,14 +608,17 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    private synchronized void PreparePlayerComponent() {
-        MMLog.d(TAG, "prepare player context,playStatus = " + playerStatusInfo.getEventType());
-        try {
+    private  void PreparePlayerComponent() {
+        //MMLog.d(TAG, "prepare player context,playStatus = " + playerStatusInfo.getEventType());
+        try
+        {
             if (mediaPlayer == null)
                 mediaPlayer = new MediaPlayer();
+
+            MMLog.d(TAG, "prepare player component,playStatus = " + playerStatusInfo.getEventType());
             mediaPlayer.reset();//必须调用mediaPlayer.prepareAsync();
         } catch (Exception e) {
-            MMLog.e(TAG, "PreparePlayerComponent create failed " + e.toString());
+            MMLog.e(TAG, "prepare player failed " + e.toString());
             mediaPlayer = null;
             playerStatusInfo.setEventType(PlaybackEvent.Status_Error);
             return;
@@ -722,10 +729,12 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     private void StartPlayProgressThread() {   //创建进度状态线程
         if (progressThread == null) {
+            MMLog.log(TAG, "Create and start progress task");
             progressThread = new ProgressThread();
             progressThread.start();
         } else {
             if (!progressThread.isActive()) {
+                MMLog.log(TAG, "Recreate and start progress task");
                 progressThread = new ProgressThread();
                 progressThread.start();
             }

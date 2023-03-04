@@ -105,6 +105,8 @@ public class OPlayer extends PlayControl {
     }
 
     public void setSource(@NonNull String filePath) {
+        MMLog.log(TAG,"setSource source = "+filePath);
+
         if (EmptyString(filePath)) return;
         if (filePath.startsWith("http") ||
                 filePath.startsWith("rtsp") ||
@@ -129,6 +131,7 @@ public class OPlayer extends PlayControl {
         //mMediaPlayer.setAspectRatio(null);
         //mMediaPlayer.setScale(0);
         mMediaPlayer.setVolume(DefaultVolumeValue);
+        MMLog.log(TAG,"setSource end ");
     }
 
     public void setSource(@NonNull Uri uri) {

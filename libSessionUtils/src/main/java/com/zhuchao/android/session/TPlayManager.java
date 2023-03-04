@@ -40,7 +40,9 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     private int magicNumber = 0;
     private int tryCountForError = 3;
     private int tryPlayCount = 0;
-
+    private long playTimeOut = 20000;
+    private int playMethod = 2;
+    private boolean playingLock = true;
 
     public TPlayManager(Context mContext, SurfaceView sfView) {
         this.context = mContext;
@@ -57,6 +59,22 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         this.tryCountForError = tryCountForError;
     }
 
+    public void setPlayTimeOut(long playTimeOut) {
+        this.playTimeOut = playTimeOut;
+    }
+
+    public void setPlayMethod(int playMethod) {
+        this.playMethod = playMethod;
+    }
+
+    public boolean isPlayingLock() {
+        return playingLock;
+    }
+
+    public void setPlayingLock(boolean playingLock) {
+        this.playingLock = playingLock;
+    }
+
     public TPlayManager callback(PlayerCallback mCallback) {
         this.callback = mCallback;
         return this;
@@ -67,10 +85,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             return false;
         }
         int sta = oMediaPlaying.getPlayStatus();
-        if (sta >= PlaybackEvent.Status_Opening && sta <= PlaybackEvent.Status_Playing)
-            return true;
-        else
-            return false;
+        return sta >= PlaybackEvent.Status_Opening && sta <= PlaybackEvent.Status_Playing;
     }
 
     public synchronized void startPlay(OMedia oMedia) {
@@ -78,6 +93,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         //    MMLog.log(TAG, "oMedia is loading! status = " + getPlayerStatus());
         //    return;
         //}
+
         if (surfaceView == null) {
             MMLog.log(TAG, "surfaceView  is not ready! return");
             return;
@@ -86,9 +102,19 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         if (oMedia == null) {
             MMLog.log(TAG, "There is no media to play!");
             return;
-        } else if (!oMedia.isAvailable(null)) {
+        }
+
+        if (!oMedia.isAvailable(null)) {
             MMLog.log(TAG, "The oMedia is not available! ---> " + oMedia.getMovie().getSrcUrl());
             return;
+        }
+
+        if(playingLock && oMediaPlaying != null)
+        {
+            if(oMedia.equals(oMediaPlaying) && oMediaPlaying.isPlaying()) {
+                MMLog.log(TAG, "oMedia is playing lock for "+oMedia.getPathName());
+                return;//同一个曲目不允许反复调用，播放锁定该调用
+            }
         }
 
         {
@@ -100,7 +126,10 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             this.oMediaPlaying.setMagicNumber(magicNumber);
             this.oMediaPlaying.with(context);
             this.oMediaPlaying.callback(this);
-            this.oMediaPlaying.playOn(surfaceView);
+            if(playMethod > 0)
+               this.oMediaPlaying.playOn_t(surfaceView);
+            else
+               this.oMediaPlaying.playOn(surfaceView);
 
             //this.oMediaPlaying.onView(surfaceView);//set surface view
             //this.oMedia.playCache(downloadPath);//set source path
@@ -176,10 +205,16 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         MMLog.log(TAG, "playPause() playStatus = " + oMediaPlaying.getPlayStatus());
         switch (oMediaPlaying.getPlayStatus()) {
             //case PlaybackEvent.Status_NothingIdle:
-            //MMLog.log(TAG, "PlaybackEvent.Status_NothingIdle go next");
+            //     MMLog.log(TAG, "PlaybackEvent.Status_NothingIdle go next");
             //     playNext();//play next
             //     break;
             case PlaybackEvent.Status_Opening:
+                if(oMediaPlaying.tTask_play.isTimeOut(playTimeOut))
+                { //playTimeOut秒没有打开文件，结束播放
+                    MMLog.log(TAG, "playPause() timeout = "+playTimeOut);
+                    oMediaPlaying.stopFree();
+                }
+                break;
             case PlaybackEvent.Status_Buffering:
                 break;
             case PlaybackEvent.Status_Playing:
@@ -309,70 +344,6 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         return count;
     }
 
-    //public synchronized void setPlayingPath(String CachedPath) {
-    //    this.playingPath = CachedPath;
-    //    defaultPlayingList.loadFromDir(playingPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
-    //}
-
-    //public String getDownloadPath() {
-    //    return downloadPath;
-    //}
-
-    /*public synchronized void setDownloadPath(String downloadDirectory) {
-        this.downloadPath = FileUtils.getDownloadDir(downloadDirectory);//播放目录和，下载缓存目录不一样;
-        if (EmptyString(downloadPath)) {
-            MMLog.log(TAG, "get getDownloadDir() failed downloadPath = " + this.downloadPath);
-            return;
-        }
-        this.favoriteList.loadFromDir(this.downloadPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
-    }
-
-    public void updatePlayingList() {
-        if (FileUtils.existDirectory(playingPath)) {
-            defaultPlayingList.loadFromDir(playingPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
-        }
-        MMLog.log(TAG, "updatePlayingList() = " + playingPath);
-        if (FileUtils.existDirectory(downloadPath)) {
-            this.favoriteList.loadFromDir(downloadPath, DataID.MEDIA_TYPE_ID_AllMEDIA);
-        }
-        MMLog.log(TAG, "updatePlayingList() = " + downloadPath);
-    }
-
-    public void addSource(String Url) {
-        Movie movie = new Movie(Url);
-        String fileName = FileUtils.getFileName(movie.getsUrl());
-        if (NotEmptyString(fileName))
-            movie.setName(fileName);
-        defaultPlayingList.add(new OMedia(movie));
-    }
-
-    public void addSource(FileDescriptor FD) {
-        if (FD != null)
-            defaultPlayingList.add(new OMedia(FD));
-    }
-
-
-    public void addSource(AssetFileDescriptor AFD) {
-        if (AFD != null)
-            defaultPlayingList.add(new OMedia(AFD));
-    }
-
-    public void addSource(Uri uri) {
-        if (uri != null)
-            defaultPlayingList.add(new OMedia(uri));
-    }
-
-    public OMedia getMedia(String url) {
-        OMedia oo = defaultPlayingList.findByPath(oMedia.getMovie().getsUrl());
-        return oo;
-    }
-
-    public OMedia getMedia(int Index) {
-        if (defaultPlayingList.getCount() <= 0)
-            return null;
-        return defaultPlayingList.findByIndex(Index);
-    }
-*/
     public void setMagicNumber(int magicNumber) {
         this.magicNumber = magicNumber;
         if (oMediaPlaying != null)
@@ -540,7 +511,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                 if (autoPlaySource >= DataID.SESSION_SOURCE_ALL) //立即跳转到收藏列表
                 {
                     MMLog.log(TAG, "OnEventCallBack.EventType = " + playerStatusInfo.getEventType() + ", " + oMediaPlaying.getPathName());
-                    playEventHandler(playOrder);//继续播放，跳到上一首或下一首
+                    //playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                 }
                 break;
             case PlaybackEvent.Status_Opening:
@@ -550,7 +521,6 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             case PlaybackEvent.Status_Stopped:
             case PlaybackEvent.MediaChanged:
                 break;
-
             case PlaybackEvent.Status_Error:
                 MMLog.log(TAG, "OnEventCallBack.EventType = Status_Error, stop play " + oMediaPlaying.getPathName());
                 break;

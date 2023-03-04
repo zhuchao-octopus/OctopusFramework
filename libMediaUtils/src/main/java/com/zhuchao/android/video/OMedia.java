@@ -5,6 +5,8 @@ import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 import static com.zhuchao.android.player.PlayerManager.MPLAYER;
 
+import static java.lang.Thread.MAX_PRIORITY;
+
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
@@ -59,7 +61,7 @@ public class OMedia implements Serializable, PlayerCallback {
     private final AssetFileDescriptor assetFileDescriptor;
     private final Uri uri;
     private boolean restorePlay = false;
-    private final TTask tTask_play = new TTask("OMedia.play", null);
+    public final TTask tTask_play = new TTask("OMedia.play", null);
     private final TTask tTask_stop = new TTask("OMedia.stop", null);
 
     public void callback(PlayerCallback mCallback) {
@@ -72,6 +74,8 @@ public class OMedia implements Serializable, PlayerCallback {
             free();
             getPlayer();
         }
+        tTask_play.setPriority(MAX_PRIORITY);
+        tTask_stop.setPriority(MAX_PRIORITY);
         return this;
     }
 
@@ -167,24 +171,34 @@ public class OMedia implements Serializable, PlayerCallback {
         return this;
     }
 
-    public void playOn(SurfaceView playView) {
+    public void playOn(SurfaceView playView)
+    {
+        if (playView != null)
+            getPlayer().setSurfaceView(playView);
+        _play();
+    }
+    public void playOn_t(SurfaceView playView) {
         if (tTask_play.isBusy())
         {
-            MMLog.i(TAG, "playOn(),player is busy!isKeeping=" +
+            MMLog.i(TAG, "playOn_t(),is busy! Keeping=" +
                     tTask_play.isKeeping() + "," +
                     tTask_play.getProperties().getString("title"));
 
-            if(tTask_play.isTimeOut(10000)) {
+            if(tTask_play.isTimeOut(15000)) {
                 MMLog.i(TAG, "task is timeout free ");
-                //tTask_play.freeFree();
+                tTask_play.freeFree();
+                stopFree();
             }
-            return;
+              return;
         }
         tTask_play.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {
-                if (playView != null)
+                if (playView != null) {
+                    //MMLog.i(TAG, "setSurfaceView begin ");
                     getPlayer().setSurfaceView(playView);
+                    //MMLog.i(TAG, "setSurfaceView end ");
+                }
                 _play();
                 tTask_play.resetAll();
             }
@@ -462,7 +476,7 @@ public class OMedia implements Serializable, PlayerCallback {
         if (isPlayerReady())
             return getPlayer().getPlayerStatus();
         else
-            return 0;
+            return PlaybackEvent.Status_NothingIdle;
     }
 
     public void setTime(long time) {
@@ -569,6 +583,8 @@ public class OMedia implements Serializable, PlayerCallback {
                     restorePlay(playerStatusInfo.getTimeChanged(), playerStatusInfo.getLengthChanged());
                 break;
             case PlaybackEvent.Status_Opening:
+                //此时正在打开文件，设置源，调用 setSource()
+                break;
             case PlaybackEvent.Status_Buffering:
             case PlaybackEvent.Status_Playing:
                 if (playRate != playerStatusInfo.getPlayRate())
