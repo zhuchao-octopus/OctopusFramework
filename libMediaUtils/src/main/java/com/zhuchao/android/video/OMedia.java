@@ -130,6 +130,7 @@ public class OMedia implements Serializable, PlayerCallback {
             MMLog.log(TAG, "oMedia play failed no player found, check your context");
             return null;
         }
+
         getPlayer().setSource(url);
         getPlayer().play();
         return this;

@@ -105,33 +105,38 @@ public class OPlayer extends PlayControl {
     }
 
     public void setSource(@NonNull String filePath) {
-        MMLog.log(TAG,"setSource source = "+filePath);
+        try {
+            MMLog.log(TAG,"setSource source = "+filePath);
 
-        if (EmptyString(filePath)) return;
-        if (filePath.startsWith("http") ||
-                filePath.startsWith("rtsp") ||
-                filePath.startsWith("ftp") ||
-                filePath.startsWith("file")) {
-            Uri uri = Uri.parse(filePath);
-            setSource(uri);
-            return;
+            if (EmptyString(filePath)) return;
+            if (filePath.startsWith("http") ||
+                    filePath.startsWith("rtsp") ||
+                    filePath.startsWith("ftp") ||
+                    filePath.startsWith("file")) {
+                Uri uri = Uri.parse(filePath);
+                setSource(uri);
+                return;
+            }
+            freeMedia();
+            media = new Media(FLibVLC, filePath);
+            //media.addOption(":no-audio");
+            media.addOption(":fullscreen");
+            //media.addOption(":no-autoscale");
+            //media.addOption(":file-caching=10000");//文件缓存
+            //media.addOption(":network-caching=10000");//网络缓存
+            //media.addOption(":live-caching=10000");//直播缓存
+            //media.addOption(":sout-mux-caching=10000");//输出缓存
+            setHWDecoderEnabled(true);
+            mMediaPlayer.setMedia(media);
+            playerStatusInfo.setSourcePrepared(true);
+            //mMediaPlayer.setAspectRatio(null);
+            //mMediaPlayer.setScale(0);
+            mMediaPlayer.setVolume(DefaultVolumeValue);
+            MMLog.log(TAG,"setSource end ");
+        } catch (Exception e) {
+            //e.printStackTrace();
+            MMLog.log(TAG,e.toString());
         }
-        freeMedia();
-        media = new Media(FLibVLC, filePath);
-        //media.addOption(":no-audio");
-        media.addOption(":fullscreen");
-        //media.addOption(":no-autoscale");
-        //media.addOption(":file-caching=10000");//文件缓存
-        //media.addOption(":network-caching=10000");//网络缓存
-        //media.addOption(":live-caching=10000");//直播缓存
-        //media.addOption(":sout-mux-caching=10000");//输出缓存
-        setHWDecoderEnabled(true);
-        mMediaPlayer.setMedia(media);
-        playerStatusInfo.setSourcePrepared(true);
-        //mMediaPlayer.setAspectRatio(null);
-        //mMediaPlayer.setScale(0);
-        mMediaPlayer.setVolume(DefaultVolumeValue);
-        MMLog.log(TAG,"setSource end ");
     }
 
     public void setSource(@NonNull Uri uri) {
