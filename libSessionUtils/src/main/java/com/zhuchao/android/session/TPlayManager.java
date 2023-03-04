@@ -109,65 +109,64 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             return;
         }
 
-        if(playingLock && oMediaPlaying != null)
-        {
-            if(oMedia.equals(oMediaPlaying) && oMediaPlaying.isPlaying()) {
-                MMLog.log(TAG, "oMedia is playing lock for "+oMedia.getPathName());
+        if (playingLock && oMediaPlaying != null) {
+            if (oMedia.equals(oMediaPlaying) && oMediaPlaying.isPlaying()) {
+                MMLog.log(TAG, "oMedia is playing lock for " + oMediaPlaying.getPathName());
                 return;//同一个曲目不允许反复调用，播放锁定该调用
             }
         }
 
-        {
-            MMLog.log(TAG, "StartPlay--> " + oMedia.getMovie().getSrcUrl());
-            //this.oMediaLoading = true;
-            if (tryPlayCount <= 0)
-                tryPlayCount = tryCountForError;
-            this.oMediaPlaying = oMedia;
-            this.oMediaPlaying.setMagicNumber(magicNumber);
-            this.oMediaPlaying.with(context);
-            this.oMediaPlaying.callback(this);
-            if(playMethod > 0)
-               this.oMediaPlaying.playOn_t(surfaceView);
-            else
-               this.oMediaPlaying.playOn(surfaceView);
+        //{
+        MMLog.log(TAG, "StartPlay--> " + oMedia.getMovie().getSrcUrl());
+        //this.oMediaLoading = true;
+        if (tryPlayCount <= 0)
+            tryPlayCount = tryCountForError;
+        this.oMediaPlaying = oMedia;
+        this.oMediaPlaying.setMagicNumber(magicNumber);
+        this.oMediaPlaying.with(context);
+        this.oMediaPlaying.callback(this);
+        if (playMethod > 0)
+            this.oMediaPlaying.playOn_t(surfaceView);
+        else
+            this.oMediaPlaying.playOn(surfaceView);
 
-            //this.oMediaPlaying.onView(surfaceView);//set surface view
-            //this.oMedia.playCache(downloadPath);//set source path
-            //this.oMediaPlaying.play();
-            //this.oMediaLoading = false;
-        }
+        //this.oMediaPlaying.onView(surfaceView);//set surface view
+        //this.oMedia.playCache(downloadPath);//set source path
+        //this.oMediaPlaying.play();
+        //this.oMediaLoading = false;
+        //}
     }
 
     public synchronized void startPlay(String url) {
-        oMediaPlaying = getOMediaFromPlayLists(url);// defaultPlayingList.findByPath(url);
-        if (oMediaPlaying == null) {
-            oMediaPlaying = new OMedia(url);
+        OMedia oMedia = getOMediaFromPlayLists(url);// defaultPlayingList.findByPath(url);
+        if (oMedia == null) {
+            oMedia = new OMedia(url);
         }
-        startPlay(oMediaPlaying);
+        startPlay(oMedia);
     }
 
     public synchronized void startPlay(FileDescriptor FD) {
-        oMediaPlaying = getOMediaFromPlayLists(FD.toString());// defaultPlayingList.findByPath(FD.toString());
-        if (oMediaPlaying == null) {
-            oMediaPlaying = new OMedia(FD);
+        OMedia oMedia = getOMediaFromPlayLists(FD.toString());// defaultPlayingList.findByPath(FD.toString());
+        if (oMedia == null) {
+            oMedia = new OMedia(FD);
         }
-        startPlay(oMediaPlaying);
+        startPlay(oMedia);
     }
 
     public synchronized void startPlay(AssetFileDescriptor AFD) {
-        oMediaPlaying = getOMediaFromPlayLists(AFD.toString());//defaultPlayingList.findByPath(AFD.toString());
-        if (oMediaPlaying == null) {
-            oMediaPlaying = new OMedia(AFD);
+        OMedia oMedia = getOMediaFromPlayLists(AFD.toString());//defaultPlayingList.findByPath(AFD.toString());
+        if (oMedia == null) {
+            oMedia = new OMedia(AFD);
         }
-        startPlay(oMediaPlaying);
+        startPlay(oMedia);
     }
 
     public synchronized void startPlay(Uri uri) {
-        oMediaPlaying = getOMediaFromPlayLists(uri.getPath());//defaultPlayingList.findByPath(uri.getPath());
-        if (oMediaPlaying == null) {
-            oMediaPlaying = new OMedia(uri);
+        OMedia oMedia = getOMediaFromPlayLists(uri.getPath());//defaultPlayingList.findByPath(uri.getPath());
+        if (oMedia == null) {
+            oMedia = new OMedia(uri);
         }
-        startPlay(oMediaPlaying);
+        startPlay(oMedia);
     }
 
     public synchronized void stopPlay() {
@@ -209,9 +208,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             //     playNext();//play next
             //     break;
             case PlaybackEvent.Status_Opening:
-                if(oMediaPlaying.tTask_play.isTimeOut(playTimeOut))
-                { //playTimeOut秒没有打开文件，结束播放
-                    MMLog.log(TAG, "playPause() timeout = "+playTimeOut);
+                if (oMediaPlaying.tTask_play.isTimeOut(playTimeOut)) { //playTimeOut秒没有打开文件，结束播放
+                    MMLog.log(TAG, "playPause() timeout = " + playTimeOut);
                     oMediaPlaying.stopFree();
                 }
                 break;
@@ -525,20 +523,16 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                 MMLog.log(TAG, "OnEventCallBack.EventType = Status_Error, stop play " + oMediaPlaying.getPathName());
                 break;
             case PlaybackEvent.Status_Ended:
-                if (playerStatusInfo.getLastError() == PlaybackEvent.Status_Error)
-                {//处理错误
+                if (playerStatusInfo.getLastError() == PlaybackEvent.Status_Error) {//处理错误
                     playerStatusInfo.setLastError(PlaybackEvent.Status_Ended);
-                    if (tryCountForError > 0 && tryPlayCount > 0)
-                    {
+                    if (tryCountForError > 0 && tryPlayCount > 0) {
                         playEventHandler(DataID.PLAY_MANAGER_PLAY_ORDER4);
                         tryPlayCount--;
                     } else {
 
                         playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                     }
-                }
-                else
-                {
+                } else {
                     tryPlayCount = tryCountForError;
                     MMLog.log(TAG, "OnEventCallBack.EventType = Status_Ended, " + oMediaPlaying.getPathName());
                     playEventHandler(playOrder);//继续播放，跳到上一首或下一首
