@@ -265,6 +265,11 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     }
 
     @Override
+    public void stopFree() {
+        stop();
+    }
+
+    @Override
     public void resume() {
 
     }

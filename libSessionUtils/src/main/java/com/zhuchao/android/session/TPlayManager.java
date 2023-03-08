@@ -122,9 +122,14 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         if (tryPlayCount <= 0)
             tryPlayCount = tryCountForError;
         this.oMediaPlaying = oMedia;
-        this.oMediaPlaying.setMagicNumber(magicNumber);
         this.oMediaPlaying.with(context);
+        this.oMediaPlaying.setMagicNumber(magicNumber);
         this.oMediaPlaying.callback(this);
+        if (surfaceView == null)
+            MMLog.log(TAG, "surfaceView = null");
+        else
+            MMLog.log(TAG, "surfaceView = " + surfaceView.toString());
+
         if (playMethod > 0)
             this.oMediaPlaying.playOn_t(surfaceView);
         else
@@ -134,7 +139,6 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         //this.oMedia.playCache(downloadPath);//set source path
         //this.oMediaPlaying.play();
         //this.oMediaLoading = false;
-        //}
     }
 
     public synchronized void startPlay(String url) {
@@ -177,7 +181,25 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     public synchronized void stopFree() {
         if (oMediaPlaying != null) {
+            MMLog.log(TAG, "call stopFree()");
             oMediaPlaying.stopFree();
+            oMediaPlaying = null;
+        }
+    }
+
+    public synchronized void stopFreeFree() {
+        if (oMediaPlaying != null) {
+            MMLog.log(TAG, "call stopFree()");
+            oMediaPlaying.stopFreeFree();
+            oMediaPlaying = null;
+        }
+    }
+
+    public synchronized void stopFree_t() {
+        if (oMediaPlaying != null) {
+            MMLog.log(TAG, "call stopFree_t()");
+            oMediaPlaying.stopFree_t();
+            oMediaPlaying = null;
         }
     }
 
@@ -346,6 +368,10 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         this.magicNumber = magicNumber;
         if (oMediaPlaying != null)
             oMediaPlaying.setMagicNumber(this.magicNumber);
+    }
+
+    public int getMagicNumber() {
+        return magicNumber;
     }
 
     public void setAutoPlaySource(int autoPlaySource) {
@@ -536,7 +562,6 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                     tryPlayCount = tryCountForError;
                     MMLog.log(TAG, "OnEventCallBack.EventType = Status_Ended, " + oMediaPlaying.getPathName());
                     playEventHandler(playOrder);//继续播放，跳到上一首或下一首
-
                 }
                 break;
         }

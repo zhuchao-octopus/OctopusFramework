@@ -78,6 +78,7 @@ public abstract class PlayControl {
     public abstract void playPause();
 
     public abstract void stop();
+    public abstract void stopFree();
 
     public abstract void resume();
 

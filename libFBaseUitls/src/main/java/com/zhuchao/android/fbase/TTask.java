@@ -254,7 +254,7 @@ public class TTask implements TTaskInterface {
                 threadPoolCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_STOP);
             }
             ttThread = null;
-            //MMLog.log("MyThread","stop ............ ");
+            MMLog.log("TTask","task finished "+ ",tName = " + tName);
         }
     }
 
@@ -273,7 +273,7 @@ public class TTask implements TTaskInterface {
         delayedMillis = 0;
         //召唤主题。。。
         invokedCount++;
-        MMLog.log(TAG, "TTask invokes demon, tTag = " + tTag + ",invokedCount = " + invokedCount);
+        //MMLog.log(TAG, "TTask invokes demon, tTag = " + tTag + ",invokedCount = " + invokedCount);
         invokeInterface.CALLTODO(this.tTag);//asynchronous 异步任务体
 
         //任务主题可以是个异步任务

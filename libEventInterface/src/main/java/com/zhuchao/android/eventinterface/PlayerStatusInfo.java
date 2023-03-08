@@ -1,14 +1,14 @@
 package com.zhuchao.android.eventinterface;
 
 public class PlayerStatusInfo {
-    private int EventType;
-    private long TimeChanged;
-    private long LengthChanged;
-    private float PositionChanged;
+    private int eventType;
+    private long timeChanged;
+    private long lengthChanged;
+    private float positionChanged;
     private float buffering;
-    private int OutCount;
-    private int ChangedType;
-    private int ChangedID;
+    private int outCount;
+    private int changedType;
+    private int changedID;
     private boolean surfacePrepared;
     private boolean sourcePrepared;
     private int surfaceW;
@@ -17,40 +17,40 @@ public class PlayerStatusInfo {
     private int videoH;
     private int volume;
     private float playRate;
-
+    private long length;
 
     private int lastError;
 
     public int getEventType() {
-        return EventType;
+        return eventType;
     }
 
     public void setEventType(int eventType) {
-        EventType = eventType;
+        this.eventType = eventType;
     }
 
     public long getTimeChanged() {
-        return TimeChanged;
+        return timeChanged;
     }
 
     public void setTimeChanged(long timeChanged) {
-        TimeChanged = timeChanged;
+        this.timeChanged = timeChanged;
     }
 
     public long getLengthChanged() {
-        return LengthChanged;
+        return lengthChanged;
     }
 
     public void setLengthChanged(long lengthChanged) {
-        LengthChanged = lengthChanged;
+        this.lengthChanged = lengthChanged;
     }
 
     public float getPositionChanged() {
-        return PositionChanged;
+        return positionChanged;
     }
 
     public void setPositionChanged(float positionChanged) {
-        PositionChanged = positionChanged;
+        this.positionChanged = positionChanged;
     }
 
     public float getBuffering() {
@@ -62,27 +62,27 @@ public class PlayerStatusInfo {
     }
 
     public int getOutCount() {
-        return OutCount;
+        return outCount;
     }
 
     public void setOutCount(int outCount) {
-        OutCount = outCount;
+        this.outCount = outCount;
     }
 
     public int getChangedType() {
-        return ChangedType;
+        return changedType;
     }
 
     public void setChangedType(int changedType) {
-        ChangedType = changedType;
+        this.changedType = changedType;
     }
 
     public int getChangedID() {
-        return ChangedID;
+        return changedID;
     }
 
     public void setChangedID(int changedID) {
-        ChangedID = changedID;
+        this.changedID = changedID;
     }
 
     public boolean isSurfacePrepared() {
@@ -157,16 +157,25 @@ public class PlayerStatusInfo {
         this.lastError = lastError;
     }
 
-    public String toString() {
-        String str = "EventType = " + EventType;
-        str += " TimeChanged = " + TimeChanged;
-        str += " PositionChanged = " + PositionChanged;
-        str += " buffering = " + buffering;
-        str += " LengthChanged = " + LengthChanged;
+    public long getLength() {
+        return length;
+    }
 
-        str += " OutCount = " + OutCount;
-        str += " ChangedID = " + ChangedID;
-        str += " ChangedType = " + ChangedType;
+    public void setLength(long length) {
+        this.length = length;
+    }
+
+    public String toString() {
+        String str = "EventType = " + eventType;
+        str += " TimeChanged = " + timeChanged;
+        str += " PositionChanged = " + positionChanged;
+        str += " buffering = " + buffering;
+        str += " LengthChanged = " + lengthChanged;
+        str += " Length = " + length;
+
+        str += " OutCount = " + outCount;
+        str += " ChangedID = " + changedID;
+        str += " ChangedType = " + changedType;
 
         str += " surfaceStatus = " + surfacePrepared;
         str += " sourceStatus = " + sourcePrepared;
