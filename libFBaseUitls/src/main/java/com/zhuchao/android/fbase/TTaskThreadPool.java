@@ -132,7 +132,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
         if (existObject(tTask.tTag)) {
 
             setTaskCounter(getTaskCounter() + 1);
-            MMLog.log(TAG, "PTask was successfully completed,tTag = " + tTask.tTag + ",total:" + getCount() + ",completed:" + taskCounter);
+            MMLog.log(TAG, "pTask finished,tTag = " + tTask.tTag + ",total:" + getCount() + ",completed:" + taskCounter);
 
             if (getTaskCounter() == getCount()) {
                 if (tTask.getCallBackHandler() != null) {
@@ -155,7 +155,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
 
         public PTask(String tName, TaskCallback threadPoolCallback) {
             super(tName, null);
-            setThreadPoolCallback(this);
+            setThreadPoolCallback(this);//这里没有调用线程池的call back
         }
 
         private void handlerThreadPool() {
@@ -168,7 +168,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
                 */
                 //isKeeping == false 后到这里
                 setTaskCounter(getTaskCounter() + 1);
-                MMLog.log(TAG, "PTask was successfully completed,tTag = " + tTag + ",total:" + getCount() + ",completed:" + taskCounter);
+                MMLog.log(TAG, "pTask finished,tTag  = " + tTag + ",total:" + getCount() + ",completed:" + taskCounter);
                 if (getTaskCounter() == getCount()) {
                     if (taskCallback != null) {
                         taskCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_ALL);//池中所有任务完成

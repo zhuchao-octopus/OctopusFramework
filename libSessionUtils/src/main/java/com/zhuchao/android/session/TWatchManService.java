@@ -123,8 +123,8 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             }
         });
     }
-    /*
-    public void start(Context context) {
+
+    /*public void start(Context context) {
         ThreadUtils.runThread(new Runnable() {
             @Override
             public void run() {

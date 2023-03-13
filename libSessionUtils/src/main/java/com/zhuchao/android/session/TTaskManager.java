@@ -627,7 +627,7 @@ public class TTaskManager {
     //关联线程池中的某个线程
     private void download(String tag, String fromUrl, String toPath, boolean reDownload, boolean stopContinue) {
         MMLog.log(TAG, "download tTask.tag = " + tag);
-        TTask tTask = tTaskThreadPool.getTaskByTag(tag);
+        TTask tTask = tTaskThreadPool.getTaskByTag(tag);//此时获取到的是调用者创建的任务
         if (tTask == null) {
             MMLog.log(TAG, "download stop,get tTask failed  interrupted!!!");
             tTask.free();
@@ -662,7 +662,19 @@ public class TTaskManager {
         if (!reDownload) {
             if (FileUtils.existFile(localPathFileName)) {
                 MMLog.log(TAG, "download stop,file already exist --> " + localPathFileName);
-                tTask.free();
+                //tTask.free();
+                if (tTask.getCallBackHandler() != null) {
+                    Message msg = taskMainLooperHandler.obtainMessage();
+                    msg.obj = tTask;
+                    tTask.getProperties().putString("tag", tag);
+                    tTask.getProperties().putString("fromUrl", fromUrl);
+                    tTask.getProperties().putString("toUrl", toPath);
+                    tTask.getProperties().putLong("progress", 100L);
+                    tTask.getProperties().putLong("total", FileUtils.getFileSize(localPathFileName));
+                    tTask.getProperties().putString("result", "ok");
+                    tTask.getProperties().putInt("status", DataID.TASK_STATUS_SUCCESS);
+                    taskMainLooperHandler.sendMessage(msg);
+                }
                 return;//已经完成下载，不再重复下载
             }
         } else {//重新下载
@@ -683,7 +695,7 @@ public class TTaskManager {
                 return;
             }
         }
-        MMLog.log(TAG, "download file from " + fromUrl + " to " + downloadingPathFileName);
+        MMLog.log(TAG, "downloading file from " + fromUrl + " to " + downloadingPathFileName);
         try {
             HttpUtils.download(tag, fromUrl, downloadingPathFileName, new HttpCallback() {
 
@@ -705,7 +717,7 @@ public class TTaskManager {
                                     MMLog.log(TAG, "download complete save file to " + f2 + ", total size = " + total);
                                 else
                                     MMLog.log(TAG, "download save file failed " + f2 + ", total size = " + total);
-                                tTask.free();//下载完成，释放任务等待模式
+                                //tTask.free();//下载完成，释放任务等待模式
                             }
 
                             if (tTask.getCallBackHandler() != null) {

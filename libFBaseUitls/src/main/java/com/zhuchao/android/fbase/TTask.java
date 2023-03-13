@@ -246,7 +246,7 @@ public class TTask implements TTaskInterface {
             //MMLog.log("MyThread","start ............ ");
             startTimeStamp = System.currentTimeMillis();
             doRunFunction();
-
+            MMLog.log("TTask","task finished, "+ "tName = " + tName);
             properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);
             if (threadPoolCallback != null) {
                 //内部使用，当前任务已经完成，宿主任务终止
@@ -254,7 +254,6 @@ public class TTask implements TTaskInterface {
                 threadPoolCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_STOP);
             }
             ttThread = null;
-            MMLog.log("TTask","task finished "+ ",tName = " + tName);
         }
     }
 
@@ -286,8 +285,8 @@ public class TTask implements TTaskInterface {
             } catch (InterruptedException e) {
                 MMLog.e(TAG, "run() " + e.getMessage());
             }
-        }
+        }//while
 
-    }
+    }//doRunFunction()
 
 }
