@@ -178,25 +178,11 @@ public class TAppUtils {
         AllAppInfo.clear();
     }
 
-    public AppInfo getAppInfo(String packageName) {
-        if (packageName == null) return null;
-        for (AppInfo Info : AllAppInfo) {
-            //if (Info == null) continue;
-            if (packageName.equals(Info.getPackageName())) return Info;
-        }
-        return null;
-    }
-
     public AppInfo getAppInfoByName(String Name) {
         for (AppInfo Info : AllAppInfo) {
             if (Info.getName().equals(Name)) return Info;
         }
         return null;
-    }
-
-    public boolean existApp(String packageName) {
-        if (getAppInfo(packageName) != null) return true;
-        else return false;
     }
 
     public static String getAppVersionName(Context context, String packageName) {
@@ -207,6 +193,17 @@ public class TAppUtils {
             return packageInfo == null ? "" : packageInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             return "";
+        }
+    }
+
+    public static int getAppVersionCode(Context context, String packageName) {
+        if (EmptyString(packageName)) return 0;
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+            return (packageInfo == null) ? 0 : packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            return 0;
         }
     }
 
@@ -221,6 +218,33 @@ public class TAppUtils {
         }
     }
 
+    public static String getPackageName(Context context, String apkPath) {
+        PackageManager packageManager = context.getPackageManager();
+        PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
+        if (packageInfo != null)
+            return packageInfo.packageName;
+        else
+            return null;
+    }
+
+    public AppInfo getAppInfo(String packageName) {
+        if (packageName == null) return null;
+        for (AppInfo Info : AllAppInfo) {
+            //if (Info == null) continue;
+            if (packageName.equals(Info.getPackageName())) return Info;
+        }
+        return null;
+    }
+
+    public static PackageInfo getPackageInfo(Context context, String apkPath) {
+        PackageManager packageManager = context.getPackageManager();
+        return packageManager.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
+    }
+
+    public boolean existApp(String packageName) {
+        return getAppInfo(packageName) != null;
+    }
+    
     public boolean isAppInstalled(String packageName) {
         if (EmptyString(packageName)) return false;
         try {
@@ -313,20 +337,6 @@ public class TAppUtils {
         Uri uri = Uri.parse("package:" + packageName);
         Intent intent = new Intent(Intent.ACTION_DELETE, uri);
         context.startActivity(intent);
-    }
-
-    public static PackageInfo getPackageInfo(Context context, String apkPath) {
-        PackageManager packageManager = context.getPackageManager();
-        return packageManager.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
-    }
-
-    public static String getPackageName(Context context, String apkPath) {
-        PackageManager packageManager = context.getPackageManager();
-        PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
-        if (packageInfo != null)
-            return packageInfo.packageName;
-        else
-            return null;
     }
 
     public synchronized static boolean installSilent(Context context, String apkPath) {
