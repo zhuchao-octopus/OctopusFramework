@@ -185,6 +185,17 @@ public class TAppUtils {
         return null;
     }
 
+    public String getAppVersionName(String packageName) {
+        if (EmptyString(packageName)) return "";
+        try {
+            PackageManager packageManager = mContext.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+            return packageInfo == null ? "" : packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return "";
+        }
+    }
+
     public static String getAppVersionName(Context context, String packageName) {
         if (EmptyString(packageName)) return "";
         try {
@@ -193,6 +204,17 @@ public class TAppUtils {
             return packageInfo == null ? "" : packageInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             return "";
+        }
+    }
+
+    public int getAppVersionCode(String packageName) {
+        if (EmptyString(packageName)) return 0;
+        try {
+            PackageManager packageManager = mContext.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+            return (packageInfo == null) ? 0 : packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            return 0;
         }
     }
 
@@ -216,6 +238,26 @@ public class TAppUtils {
         } catch (PackageManager.NameNotFoundException e) {
             return "";
         }
+    }
+
+    public String getAppName(String packageName) {
+        if (EmptyString(packageName)) return "";
+        try {
+            PackageManager packageManager = mContext.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+            return packageInfo == null ? "" : packageInfo.applicationInfo.loadLabel(packageManager).toString();
+        } catch (PackageManager.NameNotFoundException e) {
+            return "";
+        }
+    }
+
+    public String getPackageName(String apkPath) {
+        PackageManager packageManager = mContext.getPackageManager();
+        PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
+        if (packageInfo != null)
+            return packageInfo.packageName;
+        else
+            return null;
     }
 
     public static String getPackageName(Context context, String apkPath) {
@@ -244,7 +286,7 @@ public class TAppUtils {
     public boolean existApp(String packageName) {
         return getAppInfo(packageName) != null;
     }
-    
+
     public boolean isAppInstalled(String packageName) {
         if (EmptyString(packageName)) return false;
         try {
