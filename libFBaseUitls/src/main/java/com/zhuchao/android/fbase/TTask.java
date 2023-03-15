@@ -253,13 +253,13 @@ public class TTask implements TTaskInterface {
 
             doRunFunction();
 
-            //任务主题可以是个异步任务
-            if (taskCallback != null)
-                taskCallback.onEventTask(TTask.this, DataID.TASK_STATUS_FINISHED_WAITING);//异步等待标记
-
             while (isKeeping) {//hold住线程，等待异步任务完成，调用者来结束。
                 try {  //v1.8 去掉 宿主任务可以提前结束
                     Thread.sleep(1000);
+                    //任务主题可以是个异步任务
+                    if (taskCallback != null)
+                        taskCallback.onEventTask(TTask.this, DataID.TASK_STATUS_FINISHED_WAITING);//异步等待标记
+
                 } catch (InterruptedException e) {
                     MMLog.e(TAG, "run() " + e.getMessage());
                 }
@@ -267,7 +267,9 @@ public class TTask implements TTaskInterface {
 
             MMLog.log("TTask", "task finished, " + "tName = " + tName);
             properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);
+
             if (taskCallback != null) {//任务完成回调
+                //任务完成回调必须放到线程池回调前面，线程池自动释放掉匿名线程导致安全隐患
                 taskCallback.onEventTask(TTask.this, DataID.TASK_STATUS_FINISHED_STOP);//异步等待标记
             }
             if (threadPoolCallback != null) {

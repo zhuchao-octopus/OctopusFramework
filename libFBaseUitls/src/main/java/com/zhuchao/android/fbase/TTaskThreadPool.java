@@ -152,10 +152,14 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
 
     class PTask extends TTask implements TaskCallback {
         //private final String TAG = "PTask";
-
         public PTask(String tName, TaskCallback threadPoolCallback) {
             super(tName, null);
             setThreadPoolCallback(this);//这里没有调用线程池的call back
+        }
+
+        @Override
+        public void onEventTask(Object obj, int status) {
+            handlerThreadPool();
         }
 
         private void handlerThreadPool() {
@@ -177,7 +181,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
                 if (this.getTaskName().contains(ANONYMOUS_NAME)) {
                     MMLog.log(TAG, "free anonymous task name = " + this.getTaskName());
                     //free();//自动清除匿名线程
-                    freeFree();
+                    freeFree();//释放线程资源
                     deleteTask(this);
                 }
             } else {
@@ -185,10 +189,6 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
             }
         }
 
-        @Override
-        public void onEventTask(Object obj, int status) {
-            handlerThreadPool();
-        }
     }
 }
 
