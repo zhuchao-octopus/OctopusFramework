@@ -230,13 +230,14 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             //     playNext();//play next
             //     break;
             case PlaybackEvent.Status_Opening:
+            case PlaybackEvent.Status_Buffering:
                 if (oMediaPlaying.tTask_play.isTimeOut(playTimeOut)) { //playTimeOut秒没有打开文件，结束播放
                     MMLog.log(TAG, "playPause() timeout = " + playTimeOut);
                     oMediaPlaying.stopFree();
                 }
                 break;
-            case PlaybackEvent.Status_Buffering:
-                break;
+            //case PlaybackEvent.Status_Buffering:
+            //    break;
             case PlaybackEvent.Status_Playing:
             case PlaybackEvent.Status_Paused:
                 if (oMediaPlaying.getFPlayer() != null && oMediaPlaying.getFPlayer().getPlayerStatusInfo().isSourcePrepared())
@@ -513,9 +514,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             //MMLog.log(TAG, "Auto play    " + ooMedia.getPathName() + str);
             ooMedia.setRestorePlay(true);
             startPlay(ooMedia);
-        } else {
-            //MMLog.log(TAG, "No oMedia found in playing list");
-        }
+        }  //MMLog.log(TAG, "No oMedia found in playing list");
+
     }
 
     @Override

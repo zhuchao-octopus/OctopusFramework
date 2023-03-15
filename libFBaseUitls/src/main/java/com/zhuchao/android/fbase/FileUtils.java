@@ -100,10 +100,7 @@ public class FileUtils {
 
         try {
             File file = new File(filePath);
-            if (file.exists() && file.isFile())
-                return true;
-            else
-                return false;
+            return file.exists() && file.isFile();
         } catch (Exception e) {
             MMLog.log(TAG, e.toString());//e.printStackTrace();
         }
@@ -338,9 +335,6 @@ public class FileUtils {
                 buffer.clear();
             }
 
-        } catch (FileNotFoundException e) {
-            MMLog.e("CopyPasteUtil", "CopyPasteUtil copyFile error:" + e.getMessage());
-            return false;
         } catch (IOException e) {
             MMLog.e("CopyPasteUtil", "CopyPasteUtil copyFile error:" + e.getMessage());
             return false;
@@ -364,10 +358,12 @@ public class FileUtils {
     public static List<File> getFiles(String filePath) {
         File file = new File(filePath);
         List<File> list = new ArrayList<>();
-        File[] fileArray = file.listFiles();
-        if (fileArray == null) {
-            return null;
-        } else {
+        File[] fileArray = null;
+        if(file.exists() && file.isDirectory())
+           fileArray = file.listFiles();
+
+        if (fileArray != null)
+        {
             for (File f : fileArray) {
                 if (f.isFile()) {
                     list.add(0, f);

@@ -637,6 +637,7 @@ public class OPlayer extends PlayControl {
             try {
                 if (mSurfaceView != null) {
                     vlcVout.setWindowSize(mSurfaceView.getWidth(), mSurfaceView.getHeight());
+                    MMLog.log(TAG, "iv Vout getWidth() = "+ mSurfaceView.getWidth()+",getHeight() = "+mSurfaceView.getHeight());
                 } else if (mTextureView != null) {
                     vlcVout.setWindowSize(mTextureView.getWidth(), mTextureView.getHeight());
                 }

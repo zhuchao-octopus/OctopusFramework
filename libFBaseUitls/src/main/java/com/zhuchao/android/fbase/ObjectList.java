@@ -297,6 +297,17 @@ public class ObjectList {
         }
     }
 
+    public void saveAsPersistent()
+    {
+        Set<Map.Entry<String, Object>> set = FHashMap.entrySet();
+        for (Map.Entry<String, Object> stringObjectEntry : set) {
+            //stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
+            //jsonObject.put(((Map.Entry<?, ?>) stringObjectEntry).getKey().toString(),
+            //        ((Map.Entry<?, ?>) stringObjectEntry).getValue());
+
+        }
+    }
+
     public void saveToFile(String filePathName) {
         try {
             String parentDir = FileUtils.getFilePathFromPathName(filePathName);

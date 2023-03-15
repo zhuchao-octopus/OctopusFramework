@@ -1,7 +1,6 @@
 package com.zhuchao.android.session;
 
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
-import static java.lang.Thread.MAX_PRIORITY;
 
 import android.content.Context;
 import android.os.Build;
@@ -13,7 +12,6 @@ import androidx.annotation.RequiresApi;
 
 import com.zhuchao.android.eventinterface.HttpCallback;
 import com.zhuchao.android.eventinterface.InvokeInterface;
-import com.zhuchao.android.eventinterface.NormalCallback;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.FilesFinger;
@@ -199,7 +197,7 @@ public class TTaskManager {
         tTask.getProperties().putString("toPath", toPath);
         tTask.getProperties().putLong("startTime", System.currentTimeMillis());
         tTask.getProperties().putInt("status", DataID.TASK_STATUS_PROGRESSING);
-        ConcurrentLinkedQueue concurrentLinkedQueue = new ConcurrentLinkedQueue();
+        ConcurrentLinkedQueue<String> concurrentLinkedQueue = new ConcurrentLinkedQueue<String>();
         FilesFinger filesFinger = new FilesFinger();
         if (!FileUtils.existDirectory(fromPath)) {
             MMLog.log(TAG, "do not exists fromPath " + fromPath);

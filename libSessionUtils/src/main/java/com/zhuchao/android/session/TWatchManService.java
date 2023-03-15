@@ -83,7 +83,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     private TNetUtils tNetUtils = null;
     private TTaskManager tTaskManager = null;
     private NetworkInformation networkInformation = null;
-
+    private final TTaskQueue tTaskQueue = new TTaskQueue();
     private String pName = null;//"A40I";
     private String pModel = null;//"A40I";
     private String pBrand = null;//"TianPu";
@@ -305,8 +305,9 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
 
                         installedDeleteFile = intent.getExtras().getBoolean("installedDeleteFile", false);
                         installedReboot = intent.getExtras().getBoolean("installedReboot", false);
+                        if(EmptyString(apkFilePath)) return;
 
-                        TTask tTask = tTaskManager.getSingleTaskFor("Silent to install " + apkFilePath);
+                        TTask tTask = tTaskManager.getSingleTaskFor("Silent install " + apkFilePath);
                         if (tTask.isBusy()) {
                             MMLog.d(TAG, "The tTask is on working! " + tTask.getTaskName());
                             break;
@@ -317,7 +318,10 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                                 Action_SilentInstallAction(apkFilePath, autostart || installedAutoStart);
                             }
                         });
-                        tTask.startAgain();
+                        tTaskQueue.addTTask(tTask).startWork();
+                        //if(!tTaskQueue.isEmpty())
+                        //tTaskQueue.startWork();
+                        //tTask.startAgain();
                     }
                     break;
                 case Action_SilentInstall1:
@@ -448,14 +452,15 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         if (EmptyString(filePath)) {
             return;
         }
-        if (!FileUtils.existFile(filePath)) {
-            MMLog.log(TAG, "file does not exists! --->" + filePath);
-            return;
-        }
         if (!filePath.toLowerCase().endsWith(".apk")) {
             MMLog.log(TAG, "file is not a valid apk file! --->" + filePath);
             return;
         }
+        if (!FileUtils.existFile(filePath)) {
+            MMLog.log(TAG, "file does not exists! --->" + filePath);
+            return;
+        }
+
         boolean b = TAppUtils.installSilent(this, filePath);
         if (b)
             MMLog.log(TAG, "installSilent successfully! ->" + filePath);

@@ -3,17 +3,18 @@ package com.zhuchao.android.persist;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class TPersistent implements SharedPreferences, SharedPreferences.Editor {
-    private Context context = null;
+    private Context mContext = null;
     private android.content.SharedPreferences sharedPreferences = null;
     private android.content.SharedPreferences.Editor editor = null;
 
-    public TPersistent(Context context, String name) {
-        this.context = context;
-        sharedPreferences = this.context.getSharedPreferences(name, Context.MODE_PRIVATE);
+    public TPersistent(Context mContext, String name) {
+        this.mContext = mContext;
+        sharedPreferences = this.mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
     }
 
@@ -120,5 +121,19 @@ public class TPersistent implements SharedPreferences, SharedPreferences.Editor 
     @Override
     public void apply() {
         editor.apply();
+    }
+
+    public void loadFromMap(HashMap<String, Object> HashMap)
+    {
+        Set<Map.Entry<String, Object>> set = HashMap.entrySet();
+        for (Map.Entry<String, Object> stringObjectEntry : set) {
+          //((Map.Entry<?, ?>) stringObjectEntry).getKey().toString(),
+          //((Map.Entry<?, ?>) stringObjectEntry).getValue()
+            try {
+                putString(((Map.Entry<?, ?>) stringObjectEntry).getKey().toString(), (String) ((Map.Entry<?, ?>) stringObjectEntry).getValue());
+            } catch (Exception e) {
+                //e.printStackTrace();
+            }
+        }
     }
 }

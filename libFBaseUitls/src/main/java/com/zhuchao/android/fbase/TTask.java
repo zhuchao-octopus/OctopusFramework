@@ -19,7 +19,7 @@ public class TTask implements TTaskInterface {
     protected int invokedCount = 0;
     private long delayedMillis = 0;
     //private long taskTimeOut = 0;
-    private long startTimeStamp  = 0;
+    private long startTimeStamp = 0;
 
     private Thread ttThread = null;
     private TaskCallback threadPoolCallback = null;
@@ -120,6 +120,11 @@ public class TTask implements TTaskInterface {
         return (this.ttThread != null) || this.isKeeping;
     }
 
+    public boolean isWorking()
+    {
+        return isBusy();
+    }
+
     public void free() {
         isKeeping = false;
         delayedMillis = 0;
@@ -132,7 +137,7 @@ public class TTask implements TTaskInterface {
         invokeInterface = null;
         taskCallback = null;
         threadPoolCallback = null;
-        ttThread=null;
+        ttThread = null;
     }
 
     public TTask reset() {
@@ -245,13 +250,30 @@ public class TTask implements TTaskInterface {
             super.run();
             //MMLog.log("MyThread","start ............ ");
             startTimeStamp = System.currentTimeMillis();
+
             doRunFunction();
-            MMLog.log("TTask","task finished, "+ "tName = " + tName);
+
+            //任务主题可以是个异步任务
+            if (taskCallback != null)
+                taskCallback.onEventTask(TTask.this, DataID.TASK_STATUS_FINISHED_WAITING);//异步等待标记
+
+            while (isKeeping) {//hold住线程，等待异步任务完成，调用者来结束。
+                try {  //v1.8 去掉 宿主任务可以提前结束
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    MMLog.e(TAG, "run() " + e.getMessage());
+                }
+            }//while
+
+            MMLog.log("TTask", "task finished, " + "tName = " + tName);
             properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);
+            if (taskCallback != null) {//任务完成回调
+                taskCallback.onEventTask(TTask.this, DataID.TASK_STATUS_FINISHED_STOP);//异步等待标记
+            }
             if (threadPoolCallback != null) {
                 //内部使用，当前任务已经完成，宿主任务终止
                 //（内部使用）任务结束、终止、停止不再需要运行，305
-                threadPoolCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_STOP);
+                threadPoolCallback.onEventTask(TTask.this, DataID.TASK_STATUS_FINISHED_STOP);
             }
             ttThread = null;
         }
@@ -274,19 +296,6 @@ public class TTask implements TTaskInterface {
         invokedCount++;
         //MMLog.log(TAG, "TTask invokes demon, tTag = " + tTag + ",invokedCount = " + invokedCount);
         invokeInterface.CALLTODO(this.tTag);//asynchronous 异步任务体
-
-        //任务主题可以是个异步任务
-        if (taskCallback != null)
-            taskCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_WAITING);//异步等待标记
-        //v1.8 去掉 宿主任务可以提前结束
-        while (isKeeping) {//hold住线程，等待异步任务完成，调用者来结束。
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                MMLog.e(TAG, "run() " + e.getMessage());
-            }
-        }//while
-
     }//doRunFunction()
 
 }
