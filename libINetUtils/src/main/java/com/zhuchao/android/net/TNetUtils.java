@@ -48,7 +48,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
     private NetworkStatusListener networkStatusListener;
     private final NetworkInformation networkInformation;
 
-    private final TTask tTask_ParseExternalIP = new TTask("get internet ip");
+    private final TTask tTask_ParseExternalIP = new TTask("getInternetStatus");
     private final TTask tTask_NetworkCallback = new TTask("NetworkCallback ");
 
     public interface NetworkStatusListener {

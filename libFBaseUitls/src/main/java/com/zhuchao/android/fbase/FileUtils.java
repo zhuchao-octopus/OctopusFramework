@@ -32,7 +32,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -78,14 +77,12 @@ public class FileUtils {
 
     public static boolean isExternalLinks(String filePath) {
         if (EmptyString(filePath)) return false;
-        if (filePath.startsWith("http:") ||
+        return filePath.startsWith("http:") ||
                 filePath.startsWith("https:") ||
                 filePath.startsWith("ftp:") ||
                 filePath.startsWith("rtp:") ||
                 filePath.startsWith("rtsp:") ||
-                filePath.startsWith("mms:"))
-            return true;
-        return false;
+                filePath.startsWith("mms:");
     }
 
     public static boolean existFile(String filePath) {
@@ -110,17 +107,54 @@ public class FileUtils {
     public static boolean existDirectory(String filePath) {
         if (EmptyString(filePath)) return false;
         File file = new File(filePath);
-        if (file.exists() && file.isDirectory())
-            return true;
-        else
-            return false;
+        return file.exists() && file.isDirectory();
     }
 
-    public static void CheckDirsExists(@NonNull String pathDir) {
-        if (EmptyString(pathDir)) return;
+    public static boolean existFileInDirectory(String fileName, String filePath) {
+        if (EmptyString(fileName)) return false;
+        List<File> files = getFiles(filePath);
+        if (files.size() != 0) {
+            for (int i = 0; i < files.size(); i++) {
+                File file = files.get(i);
+                if (file.getName().contains(fileName)) return true;
+                if (fileName.contains(file.getName())) return true;
+            }
+        }
+        return false;
+    }
+
+    public static String getFileInDirectory(String fileName, String filePath) {
+        if (EmptyString(fileName)) return null;
+        List<File> files = getFiles(filePath);
+        if (files.size() != 0) {
+            for (int i = 0; i < files.size(); i++) {
+                File file = files.get(i);
+                if (file.getName().equals(fileName)) return file.getAbsolutePath();
+            }
+        }
+        return null;
+    }
+
+    public static String getFileInDirectory2(String fileName, String filePath) {
+        if (EmptyString(fileName)) return null;
+        List<File> files = getFiles(filePath);
+        if (files.size() != 0) {
+            for (int i = 0; i < files.size(); i++) {
+                File file = files.get(i);
+                if (file.getName().contains(fileName)) return file.getAbsolutePath();
+                if (fileName.contains(file.getName())) return file.getAbsolutePath();
+            }
+        }
+        return null;
+    }
+
+    public static boolean MakeDirsExists(@NonNull String pathDir) {
+        if (EmptyString(pathDir)) return false;
         File dirs = new File(pathDir);
-        if (!dirs.exists())
-            dirs.mkdirs();
+        if (!dirs.exists()) {
+            return dirs.mkdirs();
+        }
+        return true;
     }
 
     //无法获得不存在资源的文件名
@@ -196,19 +230,14 @@ public class FileUtils {
     }
 
     public static boolean deleteFile(String filePath) {
-        try {
-            File file = new File(filePath);
-            if (file.exists()) file.delete();
-            return true;
-        } catch (Exception e) {
-            //e.printStackTrace();
-            return false;
-        }
+        File file = new File(filePath);
+        if (file.exists())
+            return file.delete();
+        return false;
     }
 
     public static boolean deleteFiles(String filePath) {
         List<File> files = getFiles(filePath);
-        if (files == null) return true;
         if (files.size() != 0) {
             for (int i = 0; i < files.size(); i++) {
                 File file = files.get(i);
@@ -334,24 +363,17 @@ public class FileUtils {
                 fileChannelOutput.write(buffer);
                 buffer.clear();
             }
-
+            outbuff.flush();
+            inbuff.close();
+            outbuff.close();
+            fileOutputStream.close();
+            fileInputStream.close();
+            fileChannelOutput.close();
+            fileChannelInput.close();
+            return true;
         } catch (IOException e) {
             MMLog.e("CopyPasteUtil", "CopyPasteUtil copyFile error:" + e.getMessage());
             return false;
-        } finally {
-            try {
-                outbuff.flush();
-                inbuff.close();
-                outbuff.close();
-                fileOutputStream.close();
-                fileInputStream.close();
-                fileChannelOutput.close();
-                fileChannelInput.close();
-                return true;
-            } catch (IOException e) {
-                //e.printStackTrace();
-                return false;
-            }
         }
     }
 
@@ -359,11 +381,10 @@ public class FileUtils {
         File file = new File(filePath);
         List<File> list = new ArrayList<>();
         File[] fileArray = null;
-        if(file.exists() && file.isDirectory())
-           fileArray = file.listFiles();
+        if (file.exists() && file.isDirectory())
+            fileArray = file.listFiles();
 
-        if (fileArray != null)
-        {
+        if (fileArray != null) {
             for (File f : fileArray) {
                 if (f.isFile()) {
                     list.add(0, f);
@@ -392,22 +413,28 @@ public class FileUtils {
     //获取目录，没有就创建
     public static String getDownloadDir(String downloadDir) {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/";
+        String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Downloads/";
+
         if (existDirectory(downloadDir))
             return downloadDir;
-        if (NotEmptyString(downloadDir))
-            path = downloadDir;
+
         if (existDirectory(path)) {
             return path;
         }
+
+        if (existDirectory(path1)) {
+            return path1;
+        }
+
+        if (EmptyString(downloadDir)) {
+            downloadDir = path1;
+        }
+        //不存在，创建新目录
         File file = null;
         try {
-            file = new File(path);
-            if (file.exists() && file.isFile()) {
-                return null;//是一个已经存在的文件，返回
-            } else {
-                file.mkdirs();//创建目录
-                //MMLog.log(TAG,"make dir = " + path);
-            }
+            file = new File(downloadDir);
+            file.mkdirs();//创建目录
+            //MMLog.log(TAG,"make dir = " + path);
         } catch (Exception e) {
             //e.printStackTrace();
             MMLog.e(TAG, e.toString());
@@ -418,10 +445,10 @@ public class FileUtils {
             return null;
     }
 
-    public static String getDirBaseExternalStorageDirectory(String myDir) {
+    public static String getDirBaseExternalStorageDirectory(String myDirName) {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-        if (NotEmptyString(myDir))
-            path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + myDir;
+        if (NotEmptyString(myDirName))
+            path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + myDirName;
         if (existDirectory(path)) {
             return path;
         }

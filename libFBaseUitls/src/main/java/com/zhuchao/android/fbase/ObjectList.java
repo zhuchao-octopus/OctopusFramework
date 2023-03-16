@@ -311,7 +311,7 @@ public class ObjectList {
     public void saveToFile(String filePathName) {
         try {
             String parentDir = FileUtils.getFilePathFromPathName(filePathName);
-            FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
+            FileUtils.MakeDirsExists(Objects.requireNonNull(parentDir));
             String line = System.getProperty("line.separator");
             StringBuilder stringBuffer = new StringBuilder();
             FileWriter fw = new FileWriter(filePathName);
@@ -330,7 +330,7 @@ public class ObjectList {
     public void saveToDir(String dir) {
         if (FileUtils.EmptyString(dir)) return;
         try {
-            FileUtils.CheckDirsExists(Objects.requireNonNull(dir));
+            FileUtils.MakeDirsExists(Objects.requireNonNull(dir));
             String filePathName = dir + "/properties";
             String line = System.getProperty("line.separator");
             StringBuilder stringBuffer = new StringBuilder();
@@ -351,7 +351,7 @@ public class ObjectList {
         if (FileUtils.EmptyString(dir)) return;
         try {
             JSONObject jsonObject = new JSONObject();
-            FileUtils.CheckDirsExists(Objects.requireNonNull(dir));
+            FileUtils.MakeDirsExists(Objects.requireNonNull(dir));
             String filePathName = dir + "/properties";
             //String line = System.getProperty("line.separator");
             StringBuilder stringBuffer = new StringBuilder();
@@ -378,7 +378,7 @@ public class ObjectList {
             String line = System.getProperty("line.separator");
             String filePathName = FileUtils.getDirBaseExternalStorageDirectory(".com.zhuchao") + "/properties";
             String parentDir = FileUtils.getFilePathFromPathName(filePathName);
-            FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
+            FileUtils.MakeDirsExists(Objects.requireNonNull(parentDir));
 
             StringBuilder stringBuffer = new StringBuilder();
             FileWriter fw = new FileWriter(filePathName);

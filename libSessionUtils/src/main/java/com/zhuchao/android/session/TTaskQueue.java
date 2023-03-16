@@ -109,8 +109,16 @@ public class TTaskQueue {
         }
         if(tTaskQueue.getInvokeInterface() == null)
           tTaskQueue.invoke(invokeInterface);
-        tTaskQueue.callbackHandler(tTaskQueueCompleteCallback);
+        tTaskQueue.callbackHandler(new TaskCallback() {
+            @Override
+            public void onEventTask(Object obj, int status) {
+                tTaskQueue.reset();
+                if(tTaskQueueCompleteCallback != null)
+                    tTaskQueueCompleteCallback.onEventTask(obj,status);
+            }
+        });
         tTaskQueue.setKeep(false);
+        tTaskQueue.reset();//需要反复启动的任务,必须在启动之前调用reset
         tTaskQueue.startDelayed(delayedMillis);
     }
 

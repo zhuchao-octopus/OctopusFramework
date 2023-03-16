@@ -242,7 +242,7 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
 
     private void startCopyDirectory() {
         String fromFile = null;
-        FileUtils.CheckDirsExists(toPath);//目录不存在创建新的目录
+        FileUtils.MakeDirsExists(toPath);//目录不存在创建新的目录
         //FileUtils.setFilePermissions(toFilePath);//设置目录权限
         for (int i = 0; i < filesFinder.size() - 1; i++) {
             fromFile = filesFinder.get(i).toString();
@@ -254,7 +254,7 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
             if (FileUtils.existFile(tf)) continue;
 
             String parentDir = FileUtils.getFilePathFromPathName(tf);
-            FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
+            FileUtils.MakeDirsExists(Objects.requireNonNull(parentDir));
             FileUtils.setFilePermissions(parentDir);
 
             while ((tTaskThreadPool.getCount() > 20)) {

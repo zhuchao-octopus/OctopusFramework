@@ -203,7 +203,7 @@ public class TTaskManager {
             MMLog.log(TAG, "do not exists fromPath " + fromPath);
             return tTask;
         }
-        FileUtils.CheckDirsExists(toPath);
+        FileUtils.MakeDirsExists(toPath);
         FileUtils.setFilePermissions2(toPath);
         tTask.invoke(new InvokeInterface() {
             @Override
@@ -275,7 +275,7 @@ public class TTaskManager {
                             if (!FileUtils.existFile(tf) && FileUtils.existFile(ff)) {
                                 //校验目录 中间存在目录 创建多级目录
                                 String parentDir = FileUtils.getFilePathFromPathName(tf);
-                                FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
+                                FileUtils.MakeDirsExists(Objects.requireNonNull(parentDir));
                                 FileUtils.setFilePermissions2(parentDir);
                                 //MMLog.log(TAG,"copy file from "+ff +" to "+tf);
 

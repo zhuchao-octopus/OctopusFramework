@@ -114,7 +114,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                     tNetUtils = new TNetUtils(TWatchManService.this);
                     tNetUtils.registerNetStatusCallback(TWatchManService.this);
                     registerUserEventReceiver();
-                    MMLog.i(TAG, "WatchManService version:" + VERSION_NAME + " " + getFWVersionName() + " starting...");//2 first call
+                    MMLog.i(TAG, "WatchManService version:" + VERSION_NAME + ", " + getFWVersionName() + " starting...");//2 first call
                     //TPlatform.SetSystemProperty("WatchMan.Service","true");//导致错误
                 } catch (Exception e) {
                     //e.printStackTrace();
@@ -255,9 +255,12 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             MMLog.i(TAG, "User event intent.Action = " + action);
             switch (action) {
                 case Action_HELLO:
-                    MMLog.log(TAG, "Hello it is ready! version:" + VERSION_NAME + " " + getFWVersionName());
+                    MMLog.log(TAG, "Hello it is ready! version:" + VERSION_NAME + ", " + getFWVersionName());
                     if (networkInformation != null)
                         MMLog.d(TAG, "HOST:" + networkInformation.toString());
+                    else
+                        MMLog.d(TAG, "sorry!! networkInformation = null");
+
                     if (intent.getExtras() != null) {
                         pName = intent.getExtras().getString("pName", null);
                         pModel = intent.getExtras().getString("pModel", null);
@@ -267,6 +270,10 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                     break;
                 case Action_UPDATE_NET_STATUS://
                     //checkAndUpdateDevice(true);
+                    if (networkInformation != null)
+                        MMLog.d(TAG, "HOST:" + networkInformation.toString());
+                    else
+                        MMLog.d(TAG, "sorry!! networkInformation = null");
                     session_jhz_test_update_session(true);
                     break;
                 case Action_GET_RUNNING_TASK:
@@ -305,7 +312,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
 
                         installedDeleteFile = intent.getExtras().getBoolean("installedDeleteFile", false);
                         installedReboot = intent.getExtras().getBoolean("installedReboot", false);
-                        if(EmptyString(apkFilePath)) return;
+                        if (EmptyString(apkFilePath)) return;
 
                         TTask tTask = tTaskManager.getSingleTaskFor("Silent install " + apkFilePath);
                         if (tTask.isBusy()) {
@@ -664,7 +671,11 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     }
 
     private String getFWVersionName() {
+        //读取固件的MODEL 那么getString("ro.product.model");
         return Build.MODEL + ","
+                + Build.MANUFACTURER + ","
+                + Build.BRAND + ","
+                + Build.DEVICE + ","
                 + Build.VERSION.SDK_INT + ","
                 + Build.VERSION.RELEASE + ","
                 + VERSION_NAME; //wms version
@@ -731,9 +742,11 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
 
     @Override
     public void onNetStatusChanged(NetworkInformation networkInformation) {
-        if (networkInformation.isConnected() &&
+        /*if (networkInformation.isConnected() &&
                 NotEmptyString(networkInformation.getInternetIP()) &&
-                NotEmptyString(networkInformation.getLocalIP())) {
+                NotEmptyString(networkInformation.getLocalIP()))
+        */
+        if (tNetUtils != null && tNetUtils.isAvailable()) {
             this.networkInformation = networkInformation;
             doNetStatusChangedFunction();
         }

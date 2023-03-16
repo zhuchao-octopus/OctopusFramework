@@ -265,7 +265,7 @@ public class TTask implements TTaskInterface {
                 }
             }//while
 
-            MMLog.log("TTask", "task finished, " + "tName = " + tName);
+            MMLog.log("TTask", "task finished, count = " + invokedCount + ", tName = " + tName);
             properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);
 
             if (taskCallback != null) {//任务完成回调
@@ -296,7 +296,7 @@ public class TTask implements TTaskInterface {
         delayedMillis = 0;
         //召唤主题。。。
         invokedCount++;
-        //MMLog.log(TAG, "TTask invokes demon, tTag = " + tTag + ",invokedCount = " + invokedCount);
+        //MMLog.log(TAG, "TTask invokes Interface, tTag = " + tTag + ",invokedCount = " + invokedCount);
         invokeInterface.CALLTODO(this.tTag);//asynchronous 异步任务体
     }//doRunFunction()
 
