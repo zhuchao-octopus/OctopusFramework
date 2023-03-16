@@ -10,7 +10,7 @@ public class DataID {
     public static final String SESSION_SESSION_ROOT_JHZ = "http://test.jhzdesign.cn:8005/";
     public static final String SESSION_SOURCE_TEST_URL = "http://47.106.172.94:8090/zhuchao/devices/test";
     public static final String SESSION_UPDATE_TEST_INIT = SESSION_SOURCE_TEST_URL;
-    public static final String SESSION_UPDATE_JHZ_TEST_UPDATE_NAME = "SESSION_JHZ_UPDATE_MODUlE_";//modules
+    public static final String SESSION_UPDATE_JHZ_TEST_UPDATE_NAME = "SESSION_JHZ_UPDATE_MODUlE_TEST";//modules
     public static final String TASK_STATUS_INTERNAL_ = "_status_";
     //////////////////////////////////////////////////////////////////////
     public static final int SESSION_SOURCE_NONE = -1; //
