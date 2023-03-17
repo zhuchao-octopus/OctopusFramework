@@ -224,11 +224,11 @@ public class TTask implements TTaskInterface {
     public synchronized void start() {
         //if (ttThread != null || this.isKeeping) {
         if (isBusy()) {
-            MMLog.log(TAG, "TTask already been started isAlive Keeping = " + isKeeping + ",tag = " + tTag);
+            MMLog.log(TAG, "TTask already started Keeping " + isKeeping + " tName:" + tName);
             return;
         }
         if (properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED_STOP) {
-            MMLog.log(TAG, "TTask already finished, no need to run again! tag = " + getTaskTag());
+            MMLog.log(TAG, "TTask already finished, no need to run again! tName:" + tName);
             return;
         }
         try {
@@ -239,8 +239,8 @@ public class TTask implements TTaskInterface {
             ttThread.start();
         } catch (Exception e) {
             //e.printStackTrace();
-            MMLog.log(TAG, "TTask start failed this.isAlive=" + " isKeeping=" + isKeeping + " tName:" + tName);
-            MMLog.log(TAG, "TTask start failed " + e.toString() + " tTag:" + tTag);
+            MMLog.log(TAG, "TTask start failed Keeping " + isKeeping + " tName:" + tName);
+            //MMLog.log(TAG, "TTask start failed " + e.toString() + " tTag:" + tTag);
         }
     }
 
@@ -265,7 +265,7 @@ public class TTask implements TTaskInterface {
                 }
             }//while
 
-            MMLog.log("TTask", "task finished, count = " + invokedCount + ", tName = " + tName);
+            MMLog.log(TTask.this.TAG, "task finished, count = " + invokedCount + ",tName = " + tName);
             properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);
 
             if (taskCallback != null) {//任务完成回调
