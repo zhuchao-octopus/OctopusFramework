@@ -155,6 +155,11 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
     }
 
     @Override
+    public boolean isWorking() {
+        return isBusy();
+    }
+
+    @Override
     public void free() {
         tMainTask.free();
     }

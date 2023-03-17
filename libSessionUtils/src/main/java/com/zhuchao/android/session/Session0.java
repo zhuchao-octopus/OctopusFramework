@@ -138,6 +138,11 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
     }
 
     @Override
+    public boolean isWorking() {
+        return isBusy();
+    }
+
+    @Override
     public void free() {
         tTask.free();
     }

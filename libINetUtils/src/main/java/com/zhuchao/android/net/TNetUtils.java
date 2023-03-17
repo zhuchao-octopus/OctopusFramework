@@ -193,9 +193,9 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
                 networkInformation.localIP = getLocalIpAddress();
                 networkInformation.MAC = getDeviceMAC();
                 networkInformation.wifiMAC = getWiFiMacAddress();//this.getWifiMac();
-                if (EmptyString(networkInformation.internetIP)) {
-                    GetInternetIp();
-                }
+                //if (EmptyString(networkInformation.internetIP)) {
+                //    GetInternetIp();
+                //}
             }
             callBackNetworkStatus();
         } catch (Exception e) {
@@ -469,7 +469,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
                             if (status == DataID.TASK_STATUS_SUCCESS) {
                                 final IPDataBean ipDataBean = fromJson(result, IPDataBean.class);
                                 if (ipDataBean != null) {
-                                    networkInformation.internetIP = ipDataBean.getQuery();
+                                    networkInformation.internetIP = ipDataBean.getQuery().trim();
                                     networkInformation.regionName = ipDataBean.getRegionName();
                                     networkInformation.country = ipDataBean.getCountry();
                                     networkInformation.region = ipDataBean.getRegion();
@@ -481,6 +481,8 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
                                     networkInformation.zip = ipDataBean.getZip();
                                     networkInformation.isp = ipDataBean.getIsp();
                                     MMLog.log(TAG, "External IP:" + networkInformation.internetIP);
+                                    if (networkStatusListener != null && networkInformation.internetIP.length() > 4)
+                                        networkStatusListener.onNetStatusChanged(networkInformation);
                                 }
                                 tTask_ParseExternalIP.free();
                             }

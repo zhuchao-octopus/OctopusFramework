@@ -50,6 +50,7 @@ dependencies {
 
     api('com.squareup.okhttp3:okhttp:5.0.0-alpha.8')
     api('com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11')
+    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.8.1'
 }
 
 

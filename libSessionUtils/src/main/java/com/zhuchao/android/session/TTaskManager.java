@@ -68,7 +68,7 @@ public class TTaskManager {
         mContext = context;
         tTaskThreadPool = new TTaskThreadPool();
         //TTaskThreadPool_SESSION_UPDATE_TEST_INIT();
-        TTaskThreadPool_SESSION_INIT();
+        tTaskManagerTTaskPoolInit();
     }
 
     public <T> T getTask(String tName) {
@@ -162,10 +162,7 @@ public class TTaskManager {
     }
 
     public boolean existsTask(String tName) {
-        if (getTaskByName(tName) != null)
-            return true;
-        else
-            return false;
+        return getTaskByName(tName) != null;
     }
 
     public void deleteTask(TTask tTask) {
@@ -411,9 +408,10 @@ public class TTaskManager {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public TTask requestGet(final String fromUrl){
-       return request(fromUrl);
+    public TTask requestGet(final String fromUrl) {
+        return request(fromUrl);
     }
+
     //net request task
     public TTask request(final String fromUrl) {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
@@ -544,6 +542,7 @@ public class TTaskManager {
         return tTask;
     }
 
+    @Deprecated
     private void TTaskThreadPool_SESSION_UPDATE_TEST_INIT() {
         //TTask tTask = getSingleTaskFor(DataID.SESSION_UPDATE_TEST_NAME);
         TNetTask tNetTask = new TNetTask(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
@@ -556,12 +555,10 @@ public class TTaskManager {
         }
     }
 
-    private void TTaskThreadPool_SESSION_INIT() {
+    private void tTaskManagerTTaskPoolInit() {
         TTaskInterface updateSession = new Session0();
         boolean b = tTaskThreadPool.addTaskInterface(updateSession);
-        if (b) {
-            ;//MMLog.i(TAG, "INIT SESSION_UPDATE_JHZ_TEST_UPDATE_NAME SUCCESS!");
-        } else {
+        if (!b) {
             //updateSession.freeFree();
             MMLog.i(TAG, "INIT SESSION_UPDATE_JHZ_TEST_UPDATE_NAME FAILED!");
         }

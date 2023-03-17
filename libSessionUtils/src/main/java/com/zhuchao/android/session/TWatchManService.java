@@ -701,13 +701,13 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         return jsonObj.toString();
     }
 
+    @Deprecated
     private void checkAndUpdateDevice(boolean startAgainFlag) {
         TTask tTask = tTaskManager.getTaskByName(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
         if (tTask == null) {
             MMLog.i(TAG, "NOT FOUND TASK SESSION_UPDATE_JHZ_TEST_UPDATE_NAME!!");
             return;
         }
-
         if (!tTask.isBusy()) {
             ((TNetTask) (tTask)).setRequestParameter(getRequestJSON());
             if (startAgainFlag)
@@ -726,7 +726,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         //if (EmptyString(properties.getString("product_name", null))) return;
         if (!tTask.isBusy()) {
             ((TRequestEventInterface) (tTask)).setRequestParameter(getRequestJSON());
-            if (startAgainFlag)
+            if (startAgainFlag || tTask.isTimeOut(24 * 60 * 60 * 1000))
                 ((TTaskInterface) (tTask)).startAgain();
             else
                 ((TTaskInterface) (tTask)).start();
