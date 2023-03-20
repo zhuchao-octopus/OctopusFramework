@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.zhuchao.android.eventinterface.HttpCallback;
 import com.zhuchao.android.eventinterface.InvokeInterface;
+import com.zhuchao.android.eventinterface.TaskCallback;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
@@ -469,29 +470,39 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
                             if (status == DataID.TASK_STATUS_SUCCESS) {
                                 final IPDataBean ipDataBean = fromJson(result, IPDataBean.class);
                                 if (ipDataBean != null) {
-                                    networkInformation.internetIP = ipDataBean.getQuery().trim();
-                                    networkInformation.regionName = ipDataBean.getRegionName();
-                                    networkInformation.country = ipDataBean.getCountry();
-                                    networkInformation.region = ipDataBean.getRegion();
-                                    networkInformation.city = ipDataBean.getCity();
-                                    networkInformation.timezone = ipDataBean.getTimezone();
-                                    networkInformation.organization = ipDataBean.getOrg();
+                                    networkInformation.internetIP = (ipDataBean.getQuery() == null) ? null : ipDataBean.getQuery().trim();
+                                    networkInformation.regionName = (ipDataBean.getRegionName() == null) ? null : ipDataBean.getRegionName().trim();
+                                    networkInformation.country = (ipDataBean.getCountry() == null) ? null : ipDataBean.getCountry().trim();
+                                    networkInformation.region = (ipDataBean.getRegion() == null) ? null : ipDataBean.getRegion().trim();
+                                    networkInformation.city = (ipDataBean.getCity() == null) ? null : ipDataBean.getCity().trim();
+                                    networkInformation.timezone = (ipDataBean.getTimezone() == null) ? null : ipDataBean.getTimezone().trim();
+                                    networkInformation.organization = (ipDataBean.getOrg() == null) ? null : ipDataBean.getOrg().trim();
                                     networkInformation.lon = ipDataBean.getLon();
                                     networkInformation.lat = ipDataBean.getLat();
-                                    networkInformation.zip = ipDataBean.getZip();
-                                    networkInformation.isp = ipDataBean.getIsp();
+                                    networkInformation.zip = (ipDataBean.getZip() == null) ? null : ipDataBean.getZip().trim();
+                                    if (ipDataBean.getIsp() == null)
+                                        networkInformation.isp = null;
+                                    else
+                                        networkInformation.isp = ipDataBean.getIsp().trim();
+
                                     MMLog.log(TAG, "External IP:" + networkInformation.internetIP);
-                                    if (networkStatusListener != null && networkInformation.internetIP.length() > 4)
-                                        networkStatusListener.onNetStatusChanged(networkInformation);
                                 }
-                                tTask_ParseExternalIP.free();
                             }
                         }
-                    });
+                    });//HttpUtils.requestGet
                 } catch (Exception e) {
-                    MMLog.e(TAG, "GetInternetIp ->" + e.toString());
+                    MMLog.e(TAG, "GetInternetIp() ->" + e.toString());
                 }
             }//CALLTODO
+        });
+
+        tTask_ParseExternalIP.callbackHandler(new TaskCallback() {
+            @Override
+            public void onEventTask(Object obj, int status) {
+                if (networkInformation.internetIP.length() > 4)
+                    callBackNetworkStatus();
+                tTask_ParseExternalIP.freeFree();
+            }
         });
         tTask_ParseExternalIP.startAgain();
     }

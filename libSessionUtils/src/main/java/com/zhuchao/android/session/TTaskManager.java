@@ -701,7 +701,7 @@ public class TTaskManager {
                     //String f2 = toUrl.substring(0, toUrl.length() - D_EXT_NAME.length());
                     switch (status) {
                         case DataID.TASK_STATUS_ERROR:
-                            MMLog.log(TAG, "download file failed, from " + fromUrl);
+                            MMLog.log(TAG, "download file failed, from " + fromUrl +",result = "+result);
                             tTask.free();//下载出错，释放任务
                             //break;下载错误也执行下面代码
                         case DataID.TASK_STATUS_PROGRESSING:

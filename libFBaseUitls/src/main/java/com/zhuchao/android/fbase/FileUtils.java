@@ -75,6 +75,100 @@ public class FileUtils {
         return !TextUtils.isEmpty(str);
     }
 
+    public static ObjectList getPartitions() {
+        return getPartitions(null);
+    }
+
+    public static ObjectList getPartitions(ObjectList Result) {
+        ObjectList Partitions = null;
+        long totalSize = 0;
+        if (Result == null)
+            Partitions = new ObjectList();
+        else
+            Partitions = Result;
+
+        String cmd = "cat /proc/partitions";
+        try {
+            Process p = Runtime.getRuntime().exec(cmd);
+            //StringBuilder data = new StringBuilder();
+            //BufferedReader ie = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String error = null;
+            //while ((error = ie.readLine()) != null && !error.equals("null")) {
+            //    data.append(error).append("\n");
+            //}
+            String line = null;
+            while ((line = in.readLine()) != null && !line.equals("null")) {
+                line = line.trim();
+                if (EmptyString(line)) continue;
+                line = line.replaceAll(" +", ",");
+                String[] partition = line.split(",");
+                //MMLog.log(TAG, "partition = " + line + " length = " + partition.length);
+                if (partition[2].equals("#blocks") || partition[3].equals("name")) continue;
+                if (partition.length == 4) {
+                    try {
+                        if(partition[0].trim() !="179")
+                           totalSize = totalSize + Long.parseLong(partition[2].trim());
+                        Partitions.putLong(partition[3].trim(), Long.valueOf(partition[2].trim()));
+                    } catch (NumberFormatException e) {
+                        //e.printStackTrace();
+                        MMLog.e(TAG, line + "," + e.getMessage());
+                    }
+                }
+            }
+            Partitions.putLong("totalSize",totalSize);
+            //ie.close();
+            in.close();
+        } catch (IOException ioe) {
+            MMLog.e(TAG, ioe.toString());
+        }
+        return Partitions;
+    }
+
+    public static ObjectList getFileSystemPartitions(ObjectList Result) {
+        ObjectList Partitions = null;
+        //long totalSize = 0;
+        if (Result == null)
+            Partitions = new ObjectList();
+        else
+            Partitions = Result;
+
+        String cmd = "df";
+        try {
+            Process p = Runtime.getRuntime().exec(cmd);
+            //StringBuilder data = new StringBuilder();
+            //BufferedReader ie = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String error = null;
+            //while ((error = ie.readLine()) != null && !error.equals("null")) {
+            //    data.append(error).append("\n");
+            //}
+            String line = null;
+            while ((line = in.readLine()) != null && !line.equals("null")) {
+                line = line.trim();
+                if (EmptyString(line)) continue;
+                line = line.replaceAll(" +", ",");
+                String[] partition = line.split(",");
+                //MMLog.log(TAG, "partition = " + line + " length = " + partition.length);
+                if (partition[0].equals("Filesystem") || partition[2].equals("#blocks") || partition[3].equals("name")) continue;
+                if (partition.length == 6) {
+                    try {
+                        Partitions.putLong(partition[0].trim(), Long.valueOf(partition[1].trim()));
+                    } catch (NumberFormatException e) {
+                        //e.printStackTrace();
+                        MMLog.e(TAG, line + "," + e.getMessage());
+                    }
+                }
+            }
+            //Partitions.putLong("totalSize",totalSize);
+            //ie.close();
+            in.close();
+        } catch (IOException ioe) {
+            MMLog.e(TAG, ioe.toString());
+        }
+        return Partitions;
+    }
+
     public static boolean isExternalLinks(String filePath) {
         if (EmptyString(filePath)) return false;
         return filePath.startsWith("http:") ||

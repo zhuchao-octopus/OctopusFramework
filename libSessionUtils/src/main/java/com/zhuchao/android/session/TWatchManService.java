@@ -167,6 +167,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     @Override
     public void onCreate() {
         super.onCreate();
+        MMLog.setLogOnOff(false);
         //MMLog.d(TAG, "onCreate()");//2 second call
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         //创建NotificationChannel
@@ -255,6 +256,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             MMLog.i(TAG, "User event intent.Action = " + action);
             switch (action) {
                 case Action_HELLO:
+                    MMLog.setLogOnOff(true);
                     MMLog.log(TAG, "Hello it is ready! version:" + VERSION_NAME + ", " + getFWVersionName());
                     if (networkInformation != null)
                         MMLog.d(TAG, "HOST:" + networkInformation.toString());
@@ -690,8 +692,15 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             jsonObj.put("customer", pCustomer);
             if (networkInformation != null) {
                 jsonObj.put("mac", networkInformation.getMAC());
-                jsonObj.put("ip", networkInformation.getInternetIP());
-                jsonObj.put("region", networkInformation.regionToJson());
+                if(NotEmptyString(networkInformation.getInternetIP())) {
+                    jsonObj.put("ip", networkInformation.getInternetIP());
+                    jsonObj.put("region", networkInformation.regionToJson());
+                }
+                else
+                {
+                    jsonObj.put("ip", null);
+                    jsonObj.put("region", null);
+                }
             }
             jsonObj.put("appVersion", VERSION_NAME);//VERSION_NAME
             jsonObj.put("fwVersion", getFWVersionName());
@@ -724,7 +733,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             return;
         }
         //if (EmptyString(properties.getString("product_name", null))) return;
-        if (!tTask.isBusy()) {
+        if (!tTask.isWorking()) {
             ((TRequestEventInterface) (tTask)).setRequestParameter(getRequestJSON());
             if (startAgainFlag || tTask.isTimeOut(24 * 60 * 60 * 1000))
                 ((TTaskInterface) (tTask)).startAgain();

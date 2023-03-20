@@ -11,6 +11,9 @@ public class MMLog {
     public static void setDebugOnOff(boolean debugOnOff) {
         MMLog.debugLogOnOff = debugOnOff;
     }
+    public static void setLogOnOff(boolean debugOnOff) {
+        MMLog.debugLogOnOff = debugOnOff;
+    }
 
     public static void v(String TAG, String logMsg) {
         if (debugLogOnOff)
