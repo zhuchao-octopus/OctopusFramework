@@ -60,7 +60,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             playerStatusInfo.setEventType(PlaybackEvent.Status_Opening);
             //MMLog.i(TAG, "CallbackProgress()");
             CallbackProgress();
-            MMLog.i(TAG, "setSource source="+filePath);
+            MMLog.i(TAG, "setSource source = "+filePath);
             mediaPlayer.setDataSource(filePath);
             MMLog.i(TAG, "setSource end");
         } catch (IllegalArgumentException e) {
