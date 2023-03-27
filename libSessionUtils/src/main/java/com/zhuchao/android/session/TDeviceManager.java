@@ -16,7 +16,7 @@ public class TDeviceManager {
 
     public TDeviceManager() {
         this.deviceList = new ObjectList();
-        ;
+
         this.uartFinder = new SerialPortFinder();
     }
 
@@ -46,15 +46,14 @@ public class TDeviceManager {
         }
         TUartFile tUartFile = getDevice(devicePath, baudrate);
         if (tUartFile != null) {
-            tUartFile.startPoolingRead();
+            tUartFile.startPollingRead();
         } else
             MMLog.log(TAG, "get device failed " + devicePath);
         return tUartFile;
     }
 
     public String[] getAllDevices() {
-        String[] devices = uartFinder.getAllDevicesPath();
-        return devices;
+        return uartFinder.getAllDevicesPath();
     }
 
     public void printAllDevice() {

@@ -88,6 +88,10 @@ public class DataID {
     public static final int DEVICE_EVENT_CLOSE = DEVICE_EVENT_UART_WRITE + 1;
     public static final int DEVICE_EVENT_ERROR = DEVICE_EVENT_CLOSE + 1;
 
+    public static final int DEVICE_EVENT_I2C = 10100;
+    public static final int DEVICE_EVENT_I2C_READ = DEVICE_EVENT_I2C + 1;
+    public static final int DEVICE_EVENT_I2C_WRITE = DEVICE_EVENT_I2C_READ + 1;
+
 
     public static String getRequestUrl(String fromUrl, ObjectList requestParams) {
         StringBuilder builder = new StringBuilder();

@@ -57,7 +57,7 @@ public class TUartFile extends TDevice implements TCourierEventListener {
         setDeviceType("UART");
     }
 
-    public void startPoolingRead() {
+    public void startPollingRead() {
         if (!isReadyPooling()) {
             MMLog.log(TAG, "device can not start pooling,is not ready");
             return;

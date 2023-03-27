@@ -24,7 +24,17 @@ public class TDevice {
     }
 
     public void closeDevice() {
-
     }
 
+    public void openDevice(String FileName) {
+    }
+
+    public void openDevice(String FileName, int Address) {
+    }
+
+    public void writeFile(String str) {
+    }
+
+    public void writeFile(int Address, int Data) {
+    }
 }

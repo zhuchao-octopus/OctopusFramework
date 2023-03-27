@@ -60,5 +60,6 @@ dependencies {
     implementation files('libs/javalib.jar')
     implementation project(path: ':libEventInterface')
     implementation project(path: ':libFBaseUitls')
+    implementation 'com.google.android.things:androidthings:1.0'
 }
 

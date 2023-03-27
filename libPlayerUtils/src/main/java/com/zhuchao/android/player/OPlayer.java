@@ -623,8 +623,8 @@ public class OPlayer extends PlayControl {
     class IVLCVoutCallBack implements IVLCVout.Callback, IVLCVout.OnNewVideoLayoutListener {
         @Override
         public void onNewVideoLayout(IVLCVout vlcVout, int width, int height, int visibleWidth, int visibleHeight, int sarNum, int sarDen) {
-            //MMLog.log(TAG, "IVLCVoutCallBack ---> width=" + width + ",height=" + height + ",visibleWidth=" + visibleWidth + ",visibleHeight=" + visibleHeight
-            //        + ",sarNum=" + sarNum + ",sarDen=" + sarDen);
+            MMLog.log(TAG, "IVLCVout.width=" + width + ",height=" + height + ",visibleWidth=" + visibleWidth + ",visibleHeight=" + visibleHeight
+                    + ",sarNum=" + sarNum + ",sarDen=" + sarDen);
             playerStatusInfo.setVideoH(height);
             playerStatusInfo.setVideoW(width);
             playerStatusInfo.setSurfaceH(visibleHeight);
@@ -633,11 +633,12 @@ public class OPlayer extends PlayControl {
 
         @Override
         public void onSurfacesCreated(IVLCVout ivlcVout) {
-            MMLog.log(TAG, "iv Vout ---> onSurfacesCreated");
+            MMLog.log(TAG, "iv Vout -----------> onSurfacesCreated");
+            //MMLog.log(TAG, "iv Vout getWidth() = "+ ivlcVout.getWidth()+",getHeight() = "+ivlcVout.getHeight());
             try {
                 if (mSurfaceView != null) {
+                    MMLog.log(TAG, "mSurfaceView.getWidth() = "+ mSurfaceView.getWidth()+",getHeight() = "+mSurfaceView.getHeight());
                     vlcVout.setWindowSize(mSurfaceView.getWidth(), mSurfaceView.getHeight());
-                    MMLog.log(TAG, "iv Vout getWidth() = "+ mSurfaceView.getWidth()+",getHeight() = "+mSurfaceView.getHeight());
                 } else if (mTextureView != null) {
                     vlcVout.setWindowSize(mTextureView.getWidth(), mTextureView.getHeight());
                 }
