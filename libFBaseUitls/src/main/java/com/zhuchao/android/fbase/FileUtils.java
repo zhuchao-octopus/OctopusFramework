@@ -341,6 +341,13 @@ public class FileUtils {
         return true;
     }
 
+    public static boolean deleteDir(String dirPath) {
+        File file = new File(dirPath);
+        if (file.exists())
+            return file.delete();
+        return false;
+    }
+
     public static boolean renameFile(String fromFilePathName, String newFilePathName) {
         boolean bRet = false;
         try {
@@ -587,12 +594,29 @@ public class FileUtils {
         return null;
     }
 
-    public static String getFileNameFromPathName(String fileName) {
-        File file = new File(fileName);
+    public static String extractFileName(String filePathName)
+    {
+        if(EmptyString(filePathName)) return null;
+        if(filePathName.endsWith("\\"))
+            return null;
+        if(filePathName.endsWith("/"))
+            return null;
+        //filePathName = filePathName.replace("\\\\","\\");
+        filePathName = filePathName.replace("//","/");
+        String[] split = filePathName.split("/");
+        return split[split.length - 1];
+    }
+
+    public static String getFileNameFromPathName(String filePathName) {
+        if(EmptyString(filePathName)) return null;
+        File file = new File(filePathName);
         if (file.exists()) {
             return file.getName();
         }
-        return null;
+        else
+        {
+          return extractFileName(filePathName);
+        }
     }
 
     public static String getFilePathFromPathName(String filePathName) {

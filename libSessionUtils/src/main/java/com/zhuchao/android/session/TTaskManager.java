@@ -625,27 +625,39 @@ public class TTaskManager {
         TTask tTask = tTaskThreadPool.getTaskByTag(tag);//此时获取到的是调用者创建的任务
         if (tTask == null) {
             MMLog.log(TAG, "download stop,get tTask failed  interrupted!!!");
-            tTask.free();
+            //tTask.free();
             return;
         }
         String fileName = null;
         String downloadingPathFileName = null;
         String localPathFileName = null;
         if (EmptyString(toPath)) {
-            fileName = FileUtils.getFileName(fromUrl);
+            //从原来的路径截取文件名
+            fileName = FileUtils.getFileNameFromPathName(fromUrl);
             if (EmptyString(fileName))
                 fileName = tag;
+            //没有指定下载目录 获取默认的下载目录
             downloadingPathFileName = FileUtils.getDownloadDir(null) + fileName + D_EXT_NAME;
             localPathFileName = FileUtils.getDownloadDir(null) + fileName;
         } else {
-            String toToPath = FileUtils.getDownloadDir(toPath);//确保目录被创建
+            String toToPath = toPath;
+            fileName = FileUtils.getFileNameFromPathName(toPath);
+            if (fileName != null) {
+                toToPath = FileUtils.getFilePathFromPathName(toPath);
+            }
+            assert toToPath != null;
+            FileUtils.MakeDirsExists(toToPath);//确保目录被创建
+            //toToPath = FileUtils.getDownloadDir(toPath);//确保目录被创建
+
             if (!FileUtils.existDirectory(toToPath))//不存在目录
             {
                 MMLog.log(TAG, "download stop,create directory failed,toPath = " + toPath);
                 tTask.free();
                 return;
             }
-            fileName = FileUtils.getFileName(fromUrl);
+            if (fileName == null)
+                fileName = FileUtils.getFileNameFromPathName(fromUrl);
+
             if (EmptyString(fileName))
                 fileName = tag;
             downloadingPathFileName = toToPath + "/" + fileName + D_EXT_NAME;
@@ -701,7 +713,7 @@ public class TTaskManager {
                     //String f2 = toUrl.substring(0, toUrl.length() - D_EXT_NAME.length());
                     switch (status) {
                         case DataID.TASK_STATUS_ERROR:
-                            MMLog.log(TAG, "download file failed, from " + fromUrl +",result = "+result);
+                            MMLog.log(TAG, "download file failed, from " + fromUrl + ",result = " + result);
                             tTask.free();//下载出错，释放任务
                             //break;下载错误也执行下面代码
                         case DataID.TASK_STATUS_PROGRESSING:
