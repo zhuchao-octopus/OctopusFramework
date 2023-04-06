@@ -9,11 +9,12 @@ import java.util.Collection;
 
 public class TTaskThreadPool extends ObjectList implements TaskCallback {
     private final String TAG = "TaskThreadPool";
-    private int maxThreadCount = 10000;
+    private int maxThreadCount = 20000;
     private final int minThreadCount = 1;
     private int taskCounter = 0;
     //private List<PTask> pTaskList_Ok = null;
     private final String ANONYMOUS_NAME = "anonymous-default";
+    //private boolean autoFreeRemove = false;
 
     public TTaskThreadPool() {
         super();
@@ -23,6 +24,14 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
         super();
         this.maxThreadCount = maxThreadCount;
     }
+
+    //public boolean isAutoFreeRemove() {
+    //    return autoFreeRemove;
+    //}
+
+    //public void setAutoRemove(boolean autoRemove) {
+    //    this.autoFreeRemove = autoRemove;
+    //}
 
     public PTask createTask() {
         return createTask("");
@@ -97,25 +106,25 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
         String tTag = tTask.getTaskTag();
         delete(tTag);
         TTaskInterface tTaskInterface = getTaskByTag(tTag);
-        if (tTaskInterface != null)
-            MMLog.log(TAG, "delete task tag = " + tTag + ",invokedCount = " + tTaskInterface.getInvokedCount());
-        else
-            MMLog.log(TAG, "delete task tag = " + tTag);
+        //if (tTaskInterface != null)
+        //    MMLog.log(TAG, "delete task tag = " + tTag + ",invokedCount = " + tTaskInterface.getInvokedCount());
+        //else
+        //    MMLog.log(TAG, "delete task tag = " + tTag);
     }
 
     public void deleteTask(String tag) {
         delete(tag);
         TTask tTask = getTaskByTag(tag);
-        if (tTask != null)
-            MMLog.log(TAG, "delete task tag = " + tag + ",invokedCount = " + tTask.invokedCount);
-        else
-            MMLog.log(TAG, "delete task tag = " + tag);
+        //if (tTask != null)
+        //    MMLog.log(TAG, "delete task tag = " + tag + ",invokedCount = " + tTask.invokedCount);
+        //else
+        //    MMLog.log(TAG, "delete task tag = " + tag);
     }
 
     public void deleteTask(TTask tTask) {
         if (tTask == null) return;
         delete(tTask.getTaskTag());
-        MMLog.log(TAG, "delete task tag = " + tTask.getTaskTag() + ",invokedCount = " + tTask.invokedCount);
+        //MMLog.log(TAG, "delete task tag = " + tTask.getTaskTag() + ",invokedCount = " + tTask.invokedCount);
     }
 
     public void free() {
@@ -172,16 +181,22 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
                 */
                 //isKeeping == false 后到这里
                 setTaskCounter(getTaskCounter() + 1);
-                MMLog.log(TAG, "pTask finished,tTag  = " + tTag + ",total:" + getCount() + ",completed:" + taskCounter);
+                //MMLog.log(TAG, "pTask finished,tTag  = " + tTag + ",total:" + getCount() + ",completed:" + taskCounter);
                 if (getTaskCounter() == getCount()) {
-                    if (taskCallback != null) {
-                        taskCallback.onEventTask(this, DataID.TASK_STATUS_FINISHED_ALL);//池中所有任务完成
-                    }
+                    doCallBackHandle(DataID.TASK_STATUS_FINISHED_ALL);////池中所有任务完成
                 }
                 if (this.getTaskName().contains(ANONYMOUS_NAME)) {
                     MMLog.log(TAG, "free anonymous task name = " + this.getTaskName());
-                    //free();//自动清除匿名线程
                     freeFree();//释放线程资源
+                    deleteTask(this);
+                } else if(this.isAutoFreeRemove())
+                {
+                    MMLog.log(TAG, "auto Free " + this.getTaskName());
+                    freeFree();//释放线程资源，释放资源导致前端无法获得异步任务的数据
+                    deleteTask(this);
+                } else if (this.isAutoRemove())
+                {
+                    MMLog.log(TAG, "auto remove " + this.getTaskName());
                     deleteTask(this);
                 }
             } else {

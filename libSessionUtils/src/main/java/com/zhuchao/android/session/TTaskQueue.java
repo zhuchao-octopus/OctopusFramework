@@ -12,7 +12,7 @@ import com.zhuchao.android.fbase.TTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
-public class TTaskQueue  {
+public class TTaskQueue {
     private final String TAG = "TTaskQueue";
     private final ConcurrentLinkedQueue<TTask> concurrentLinkedQueue = new ConcurrentLinkedQueue<TTask>();
     private final TTask tTaskQueue = new TTask("TTaskQueue");
@@ -22,7 +22,6 @@ public class TTaskQueue  {
     private int maxConcurrencyCount = 1;//并发任务后，1表示一个一个执行
     private final ObjectArray<TTask> concurrencyObjectArray = new ObjectArray<TTask>();
     private int priority = MAX_PRIORITY;
-
 
 
     public TTaskQueue() {
@@ -89,10 +88,12 @@ public class TTaskQueue  {
     public boolean isEmpty() {
         return concurrentLinkedQueue.isEmpty();
     }
-    public boolean isWorking()
-    {
+
+    public boolean isWorking() {
         return tTaskQueue.isWorking();
     }
+
+
     public TTaskQueue addTTask(TTask task) {
         if (!concurrentLinkedQueue.contains(task))
             concurrentLinkedQueue.add(task);
@@ -120,9 +121,11 @@ public class TTaskQueue  {
                 doTTask.callbackHandler(new TaskCallback() {
                     @Override
                     public void onEventTask(Object obj, int status) {
-                        if (status == DataID.TASK_STATUS_FINISHED_STOP) {
+                        if (status == DataID.TASK_STATUS_SUCCESS) {
+                            //主题任务完成了
                             //tTaskQueue.unPark();
-                            doTTask.freeFree();
+                            //doTTask.freeFree();
+                            doTTask.free();//去除等待标记
                             concurrencyObjectArray.remove(doTTask);
                         }
                     }
@@ -138,7 +141,7 @@ public class TTaskQueue  {
                 //tTaskQueue.pack();//等待任务完成
                 while (true) {//hold住线程，等待异步任务完成
                     try {
-                        if (concurrencyObjectArray.size() >= maxConcurrencyCount) {
+                        if (concurrencyObjectArray.size() > maxConcurrencyCount) {
                             Thread.sleep(dotTaskMillis);//等待任务完成
                         } else {
                             break;
@@ -163,16 +166,17 @@ public class TTaskQueue  {
         if (tTaskQueue.getInvokeInterface() == null)
             tTaskQueue.invoke(invokeInterface);//指派队列管理接口
 
+        //队列工作完毕的回调
         tTaskQueue.callbackHandler(new TaskCallback() {
             @Override
             public void onEventTask(Object obj, int status) {
-                tTaskQueue.reset();
                 if (status == DataID.TASK_STATUS_FINISHED_STOP) {
                     if (tTaskQueueCallback != null)
                         tTaskQueueCallback.onEventTask(obj, status);
                 }
             }
         });
+
         tTaskQueue.setKeep(false);
         tTaskQueue.reset();//需要反复启动的任务,必须在启动之前调用reset
         tTaskQueue.startDelayed(delayedMillis);

@@ -55,10 +55,11 @@ public class TTaskManager {
         TTask tTask = (TTask) (obj);
         if ((tTask != null) && tTask.getCallBackHandler() != null) {
             //在UI主线程中回调单个线程任务完成后处理方法
-            tTask.getCallBackHandler().onEventTask(//在主线程中调用前端回调函数更新UI
-                    tTask,
-                    tTask.getProperties().getInt("status")
-            );
+            tTask.doCallBackHandle(tTask.getProperties().getInt("status"));
+            //tTask.getCallBackHandler().onEventTask(//在主线程中调用前端回调函数更新UI
+            //        tTask,
+            //        tTask.getProperties().getInt("status")
+            //);
         }
     }
 
@@ -621,7 +622,7 @@ public class TTaskManager {
 
     //关联线程池中的某个线程
     private void download(String tag, String fromUrl, String toPath, boolean reDownload, boolean stopContinue) {
-        MMLog.log(TAG, "download tTask.tag = " + tag);
+        //MMLog.log(TAG, "download tTask.tag = " + tag);
         TTask tTask = tTaskThreadPool.getTaskByTag(tag);//此时获取到的是调用者创建的任务
         if (tTask == null) {
             MMLog.log(TAG, "download stop,get tTask failed  interrupted!!!");
@@ -645,16 +646,17 @@ public class TTaskManager {
             if (fileName != null) {
                 toToPath = FileUtils.getFilePathFromPathName(toPath);
             }
-            assert toToPath != null;
-            FileUtils.MakeDirsExists(toToPath);//确保目录被创建
+            //assert toToPath != null;
+            boolean isExistDirectory = FileUtils.MakeDirsExists(toToPath);//确保目录被创建
             //toToPath = FileUtils.getDownloadDir(toPath);//确保目录被创建
-
-            if (!FileUtils.existDirectory(toToPath))//不存在目录
+            //if (!FileUtils.existDirectory(toToPath))//不存在目录
+            if(!isExistDirectory)
             {
-                MMLog.log(TAG, "download stop,create directory failed,toPath = " + toPath);
+                MMLog.log(TAG, "download stop,create directory failed or can not access,toToPath = " + toToPath);
                 tTask.free();
                 return;
             }
+
             if (fileName == null)
                 fileName = FileUtils.getFileNameFromPathName(fromUrl);
 
@@ -724,7 +726,7 @@ public class TTaskManager {
                                     MMLog.log(TAG, "download complete save file to " + f2 + ", total size = " + total);
                                 else
                                     MMLog.log(TAG, "download save file failed " + f2 + ", total size = " + total);
-                                //tTask.free();//下载完成，释放任务等待模式
+                                tTask.free();//下载完成，释放任务等待模式,主题任务完成，解除同步
                             }
 
                             if (tTask.getCallBackHandler() != null) {

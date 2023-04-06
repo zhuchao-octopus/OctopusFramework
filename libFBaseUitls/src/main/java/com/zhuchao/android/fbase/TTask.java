@@ -10,20 +10,22 @@ import java.util.concurrent.locks.LockSupport;
 
 public class TTask implements TTaskInterface {
     private final String TAG = "TTask";
+    protected final String TASK_CALLBACK = "TTask.taskCallbackInterfaceName_";
     protected String tName = null;
     protected String tTag = null;
     protected InvokeInterface invokeInterface = null;
-    protected TaskCallback taskCallback = null;
+    //protected TaskCallback taskCallback = null;
     protected ObjectList properties = null;
     protected boolean isKeeping = false;
     protected int invokedCount = 0;
-    private long delayedMillis = 0;
-    //private long taskTimeOut = 0;
-    private long startTimeStamp = 0;
-
-    private Thread ttThread = null;
-    private TaskCallback threadPoolCallback = null;
-    private int newPriority = NORM_PRIORITY;
+    protected long delayedMillis = 0;
+    protected int taskCallbackCount = 0;
+    protected long startTimeStamp = 0;
+    private boolean autoFreeRemove = false;
+    private boolean autoRemove = false;
+    protected Thread ttThread = null;
+    protected TaskCallback threadPoolCallback = null;
+    protected int newPriority = NORM_PRIORITY;
 
     public TTask(String tName) {
         this.tName = tName;
@@ -39,12 +41,30 @@ public class TTask implements TTaskInterface {
         this.properties = new ObjectList();
     }
 
-    public TTask(String tName, InvokeInterface invokeInterface, TaskCallback TaskCallback) {
+    public TTask(String tName, InvokeInterface invokeInterface, TaskCallback taskCallback) {
         this.tName = tName;
         this.tTag = MD5(tName);
         this.invokeInterface = invokeInterface;
-        this.taskCallback = TaskCallback;
         this.properties = new ObjectList();
+        //this.taskCallback = TaskCallback;
+        this.properties.putObject(TASK_CALLBACK + taskCallbackCount, taskCallback);
+        taskCallbackCount++;
+    }
+
+    public boolean isAutoFreeRemove() {
+        return autoFreeRemove;
+    }
+
+    public void setAutoFreeRemove(boolean autoFreeRemove) {
+        this.autoFreeRemove = autoFreeRemove;
+    }
+
+    public boolean isAutoRemove() {
+        return autoRemove;
+    }
+
+    public void setAutoRemove(boolean autoRemove) {
+        this.autoRemove = autoRemove;
     }
 
     public ObjectList getProperties() {
@@ -81,14 +101,27 @@ public class TTask implements TTaskInterface {
         return invokeInterface;
     }
 
+    public int getTaskCallbackCount() {
+        return taskCallbackCount;
+    }
+
     //任务完成后的回调
     public TTask callbackHandler(TaskCallback taskCallback) {
-        this.taskCallback = taskCallback;
+        //this.taskCallback = taskCallback;
+        this.properties.putObject(TASK_CALLBACK + taskCallbackCount, taskCallback);
+        taskCallbackCount++;
         return this;
     }
 
+    public void deleteTaskCallback(TaskCallback taskCallback) {
+        //this.properties
+    }
+
     public TaskCallback getCallBackHandler() {
-        return taskCallback;
+        if (properties.get(TASK_CALLBACK + 0) != null)
+            return (TaskCallback) properties.get(TASK_CALLBACK + 0);
+        else
+            return null;
     }
 
     public String getTaskTag() {
@@ -120,8 +153,7 @@ public class TTask implements TTaskInterface {
         return (this.ttThread != null) || this.isKeeping;
     }
 
-    public boolean isWorking()
-    {
+    public boolean isWorking() {
         return isBusy();
     }
 
@@ -134,8 +166,9 @@ public class TTask implements TTaskInterface {
     public void freeFree() {
         free();
         properties.clear();
+        taskCallbackCount = 0;
         invokeInterface = null;
-        taskCallback = null;
+        //taskCallback = null;
         threadPoolCallback = null;
         ttThread = null;
     }
@@ -182,7 +215,7 @@ public class TTask implements TTaskInterface {
 
     public void lock() {
         isKeeping = true;
-    }
+    }//与主题任务同步
 
     public void unLock() {
         isKeeping = false;
@@ -251,33 +284,37 @@ public class TTask implements TTaskInterface {
             //MMLog.log("MyThread","start ............ ");
             startTimeStamp = System.currentTimeMillis();
 
-            doRunFunction();
+            doRunFunction();//主题任务
 
-            while (isKeeping) {//hold住线程，等待异步任务完成，调用者来结束。
-                try {  //v1.8 去掉 宿主任务可以提前结束
-                    Thread.sleep(1000);
-                    //任务主题可以是个异步任务
-                    if (taskCallback != null)
-                        taskCallback.onEventTask(TTask.this, DataID.TASK_STATUS_FINISHED_WAITING);//异步等待标记
-
-                } catch (InterruptedException e) {
-                    MMLog.e(TAG, "run() " + e.getMessage());
-                }
-            }//while
+            sleepWaiting();
 
             MMLog.log(TTask.this.TAG, "task finished, count = " + invokedCount + ",tName = " + tName);
             properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);
 
-            if (taskCallback != null) {//任务完成回调
-                //任务完成回调必须放到线程池回调前面，线程池自动释放掉匿名线程导致安全隐患
-                taskCallback.onEventTask(TTask.this, DataID.TASK_STATUS_FINISHED_STOP);//异步等待标记
-            }
+            //任务完成回调必须放到线程池回调前面，线程池自动释放掉匿名线程导致安全隐患
+            doCallBackHandle(DataID.TASK_STATUS_FINISHED_STOP);//异步等待标记
             if (threadPoolCallback != null) {
                 //内部使用，当前任务已经完成，宿主任务终止
                 //（内部使用）任务结束、终止、停止不再需要运行，305
                 threadPoolCallback.onEventTask(TTask.this, DataID.TASK_STATUS_FINISHED_STOP);
             }
+            else if(isAutoFreeRemove())//没有threadPool
+            {
+                freeFree();
+            }
             ttThread = null;
+        }
+
+        private void sleepWaiting() {
+            while (isKeeping) {//hold住线程，等待异步任务完成，调用者来结束。
+                try {  //v1.8 去掉 宿主任务可以提前结束
+                    Thread.sleep(1000);
+                    //任务主题可以是个异步任务
+                    doCallBackHandle(DataID.TASK_STATUS_FINISHED_WAITING);//异步等待标记
+                } catch (InterruptedException e) {
+                    MMLog.e(TAG, "run() " + e.getMessage());
+                }
+            }//while
         }
     }
 
@@ -299,5 +336,20 @@ public class TTask implements TTaskInterface {
         //MMLog.log(TAG, "TTask invokes Interface, tTag = " + tTag + ",invokedCount = " + invokedCount);
         invokeInterface.CALLTODO(this.tTag);//asynchronous 异步任务体
     }//doRunFunction()
+
+    public void doCallBackHandle(int status) {
+        for (int i = 0; i < taskCallbackCount; i++) {
+            TaskCallback taskCallback = null;
+            try {
+                taskCallback = (TaskCallback) this.properties.getObject(TASK_CALLBACK + i);
+            } catch (Exception e) {
+                //e.printStackTrace();
+            }
+            if (taskCallback != null) {
+                taskCallback.onEventTask(this, status);
+            }
+        }
+    }
+
 
 }

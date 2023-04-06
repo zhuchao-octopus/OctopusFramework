@@ -146,6 +146,7 @@ public class MediaFile {
         addFileType("OTA", FILE_TYPE_MID, "audio/midi");
         addFileType("MXMF", FILE_TYPE_MID, "audio/midi");
 
+        addFileType("MPG", FILE_TYPE_MP4, "video/mpg");
         addFileType("MPEG", FILE_TYPE_MP4, "video/mpeg");
         addFileType("MPG", FILE_TYPE_MP4, "video/mpeg");
         addFileType("MP4", FILE_TYPE_MP4, "video/mp4");
