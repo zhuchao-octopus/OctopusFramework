@@ -642,6 +642,7 @@ public class TTaskManager {
             localPathFileName = FileUtils.getDownloadDir(null) + fileName;
         } else {
             String toToPath = toPath;
+            //分解完整的文件路径，路劲+文件名
             fileName = FileUtils.getFileNameFromPathName(toPath);
             if (fileName != null) {
                 toToPath = FileUtils.getFilePathFromPathName(toPath);
@@ -657,7 +658,7 @@ public class TTaskManager {
                 return;
             }
 
-            if (fileName == null)
+            if (fileName == null)//没有指定文件名，从原URL中提取文件名
                 fileName = FileUtils.getFileNameFromPathName(fromUrl);
 
             if (EmptyString(fileName))

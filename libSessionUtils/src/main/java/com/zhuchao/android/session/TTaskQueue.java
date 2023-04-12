@@ -26,6 +26,7 @@ public class TTaskQueue {
 
     public TTaskQueue() {
         concurrencyObjectArray.clear();
+        //tTaskQueue.lock();
     }
 
     public TTaskQueue(long delayedMillis, long dotTaskMillis, int maxConcurrencyCount) {
@@ -33,6 +34,7 @@ public class TTaskQueue {
         this.dotTaskMillis = dotTaskMillis;
         this.maxConcurrencyCount = maxConcurrencyCount;
         concurrencyObjectArray.clear();
+        //tTaskQueue.lock();
     }
 
     public int getPriority() {
@@ -106,10 +108,10 @@ public class TTaskQueue {
 
     private final InvokeInterface invokeInterface = new InvokeInterface() {
         TTask doTTask = null;
-
         @Override
         public void CALLTODO(String tag) {
-            while (!concurrentLinkedQueue.isEmpty()) {
+            while (!concurrentLinkedQueue.isEmpty())
+            {
                 doTTask = concurrentLinkedQueue.poll();
                 if (doTTask == null) {
                     continue;
@@ -122,10 +124,10 @@ public class TTaskQueue {
                     @Override
                     public void onEventTask(Object obj, int status) {
                         if (status == DataID.TASK_STATUS_SUCCESS) {
-                            //主题任务完成了
+                            //主题任务完成了，队列不干预任务的生命周期
                             //tTaskQueue.unPark();
                             //doTTask.freeFree();
-                            doTTask.free();//去除等待标记
+                            //doTTask.free();//去除同步等待标记，队列不干预任务的生命周期
                             concurrencyObjectArray.remove(doTTask);
                         }
                     }
@@ -138,7 +140,6 @@ public class TTaskQueue {
                     //continue;
                 }
 
-                //tTaskQueue.pack();//等待任务完成
                 while (true) {//hold住线程，等待异步任务完成
                     try {
                         if (concurrencyObjectArray.size() > maxConcurrencyCount) {
@@ -151,6 +152,13 @@ public class TTaskQueue {
                     }
                 }//while
             }//while
+            while (!concurrencyObjectArray.isEmpty()) {//等待并发任务完成
+                try {
+                    Thread.sleep(dotTaskMillis);//等待任务完成
+                } catch (InterruptedException e) {
+                    //e.printStackTrace();
+                }
+            }
         }
     };
 
@@ -163,6 +171,7 @@ public class TTaskQueue {
         if (tTaskQueue.isWorking()) {
             return;//列队已经在工作
         }
+
         if (tTaskQueue.getInvokeInterface() == null)
             tTaskQueue.invoke(invokeInterface);//指派队列管理接口
 
@@ -188,4 +197,9 @@ public class TTaskQueue {
         concurrencyObjectArray.clear();
     }
 
+    public void clear() {
+        concurrentLinkedQueue.clear();
+        tTaskQueue.freeFree();
+        concurrencyObjectArray.clear();
+    }
 }

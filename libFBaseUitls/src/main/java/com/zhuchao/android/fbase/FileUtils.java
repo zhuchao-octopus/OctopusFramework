@@ -107,8 +107,8 @@ public class FileUtils {
                 if (partition[2].equals("#blocks") || partition[3].equals("name")) continue;
                 if (partition.length == 4) {
                     try {
-                        if(partition[0].trim() !="179")
-                           totalSize = totalSize + Long.parseLong(partition[2].trim());
+                        if (partition[0].trim() != "179")
+                            totalSize = totalSize + Long.parseLong(partition[2].trim());
                         Partitions.putLong(partition[3].trim(), Long.valueOf(partition[2].trim()));
                     } catch (NumberFormatException e) {
                         //e.printStackTrace();
@@ -116,7 +116,7 @@ public class FileUtils {
                     }
                 }
             }
-            Partitions.putLong("totalSize",totalSize);
+            Partitions.putLong("totalSize", totalSize);
             //ie.close();
             in.close();
         } catch (IOException ioe) {
@@ -150,7 +150,8 @@ public class FileUtils {
                 line = line.replaceAll(" +", ",");
                 String[] partition = line.split(",");
                 //MMLog.log(TAG, "partition = " + line + " length = " + partition.length);
-                if (partition[0].equals("Filesystem") || partition[2].equals("#blocks") || partition[3].equals("name")) continue;
+                if (partition[0].equals("Filesystem") || partition[2].equals("#blocks") || partition[3].equals("name"))
+                    continue;
                 if (partition.length == 6) {
                     try {
                         Partitions.putLong(partition[0].trim(), Long.valueOf(partition[1].trim()));
@@ -478,6 +479,25 @@ public class FileUtils {
         }
     }
 
+    public static List<File> listFilesByExtName(String filePath, String extName) {
+        File file = new File(filePath);
+        List<File> list = new ArrayList<>();
+        File[] fileArray = null;
+        if (file.exists() && file.isDirectory())
+            fileArray = file.listFiles();
+
+        if (fileArray != null) {
+            for (File f : fileArray) {
+                if (f.isFile() && f.getAbsolutePath().endsWith(extName)) {
+                    list.add(0, f);
+                } else {
+                    getFiles(f.getAbsolutePath());
+                }
+            }
+        }
+        return list;
+    }
+
     public static List<File> getFiles(String filePath) {
         File file = new File(filePath);
         List<File> list = new ArrayList<>();
@@ -495,6 +515,28 @@ public class FileUtils {
             }
         }
         return list;
+    }
+
+    public static void getFiles(String FilePath, List<String> FileList) {
+        //List<String> FileList = new ArrayList<String>();
+        File path = new File(FilePath);
+        File[] files = path.listFiles();
+        getFileList(files, FileList);
+        //return FileList;
+    }
+
+    private static void getFileList(File[] files, List<String> FileList) {
+        if (files != null) {// 先判断目录是否为空，否则会报空指针
+            String filePathName = null;
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    getFileList(file.listFiles(), FileList);
+                } else {
+                    filePathName = file.getPath();// +"  "+ file.getName() ;
+                    FileList.add(filePathName);
+                }
+            }
+        }
     }
 
     public static int getFileType(String path) {
@@ -594,28 +636,29 @@ public class FileUtils {
         return null;
     }
 
-    public static String extractFileName(String filePathName)
-    {
-        if(EmptyString(filePathName)) return null;
-        if(filePathName.endsWith("\\"))
+    public static String extractFileName(String filePathName) {
+        if (EmptyString(filePathName)) return null;
+        if (filePathName.endsWith("\\"))
             return null;
-        if(filePathName.endsWith("/"))
+        if (filePathName.endsWith("/"))
             return null;
         //filePathName = filePathName.replace("\\\\","\\");
-        filePathName = filePathName.replace("//","/");
+        filePathName = filePathName.replace("//", "/");
         String[] split = filePathName.split("/");
         return split[split.length - 1];
     }
 
     public static String getFileNameFromPathName(String filePathName) {
-        if(EmptyString(filePathName)) return null;
+        if (EmptyString(filePathName)) return null;
         File file = new File(filePathName);
-        if (file.exists()) {
+        if (file.exists() && file.isFile()) {
             return file.getName();
         }
-        else
-        {
-          return extractFileName(filePathName);
+        else if (file.exists() && file.isDirectory()) {
+            return null;
+        }
+        else {//从字符串中截取文件名
+            return extractFileName(filePathName);
         }
     }
 
@@ -1085,28 +1128,6 @@ public class FileUtils {
             return bi.toString(16);
         else
             return "";
-    }
-
-    public static void getFiles(String FilePath, List<String> FileList) {
-        //List<String> FileList = new ArrayList<String>();
-        File path = new File(FilePath);
-        File[] files = path.listFiles();
-        getFileList(files, FileList);
-        //return FileList;
-    }
-
-    private static void getFileList(File[] files, List<String> FileList) {
-        if (files != null) {// 先判断目录是否为空，否则会报空指针
-            String filePathName = null;
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    getFileList(file.listFiles(), FileList);
-                } else {
-                    filePathName = file.getPath();// +"  "+ file.getName() ;
-                    FileList.add(filePathName);
-                }
-            }
-        }
     }
 
     public static Object file2Object(FileInputStream fis) {
