@@ -92,7 +92,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         connectivityManager.registerNetworkCallback(networkRequest, this);
 
-        updateNetStatus();
+        InitUpdateNetStatus();
         registerNetStatusListener();
     }
 
@@ -109,12 +109,12 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
 
     public void NetStatusChangedCallBack(NetworkStatusListener networkStatusListener) {
         this.networkStatusListener = networkStatusListener;
-        updateNetStatus();
+        InitUpdateNetStatus();
     }
 
     public void registerNetStatusCallback(NetworkStatusListener networkStatusListener) {
         this.networkStatusListener = networkStatusListener;
-        updateNetStatus();
+        InitUpdateNetStatus();
     }
 
     private void registerNetStatusListener() {
@@ -145,7 +145,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         });
     }
 
-    private synchronized void updateNetStatus() {
+    private synchronized void InitUpdateNetStatus() {
         runThreadNotOnMainUIThread(new Runnable() {
             @Override
             public void run() {
@@ -159,8 +159,11 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            //MMLog.log(TAG, "NetworkChangedReceiver action = " + action.toString());
-            if (tTask_NetworkCallback.isBusy()) return;
+            MMLog.log(TAG, "NetworkChangedReceiver action = " + action.toString());
+            if (tTask_NetworkCallback.isBusy()) {
+                MMLog.log(TAG, "NetworkChangedReceiver is working");
+                return;
+            }
             tTask_NetworkCallback.invoke(new InvokeInterface() {
                 @Override
                 public void CALLTODO(String tag) {

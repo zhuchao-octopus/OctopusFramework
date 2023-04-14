@@ -118,8 +118,9 @@ public class TTask implements TTaskInterface {
     }
 
     public TaskCallback getCallBackHandler() {
-        if (properties.get(TASK_CALLBACK + 0) != null)
-            return (TaskCallback) properties.get(TASK_CALLBACK + 0);
+        Object obj = properties.get(TASK_CALLBACK + 0);
+        if (obj != null)
+            return (TaskCallback) obj;
         else
             return null;
     }

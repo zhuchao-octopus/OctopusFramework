@@ -52,8 +52,9 @@ public class TTaskManager {
     };
 
     private synchronized void TransactionProcessing(Object obj) {
+        if (obj == null) return;
         TTask tTask = (TTask) (obj);
-        if ((tTask != null) && tTask.getCallBackHandler() != null) {
+        if (tTask.getCallBackHandler() != null) {
             //在UI主线程中回调单个线程任务完成后处理方法
             tTask.doCallBackHandle(tTask.getProperties().getInt("status"));
             //tTask.getCallBackHandler().onEventTask(//在主线程中调用前端回调函数更新UI
@@ -651,8 +652,7 @@ public class TTaskManager {
             boolean isExistDirectory = FileUtils.MakeDirsExists(toToPath);//确保目录被创建
             //toToPath = FileUtils.getDownloadDir(toPath);//确保目录被创建
             //if (!FileUtils.existDirectory(toToPath))//不存在目录
-            if(!isExistDirectory)
-            {
+            if (!isExistDirectory) {
                 MMLog.log(TAG, "download stop,create directory failed or can not access,toToPath = " + toToPath);
                 tTask.free();
                 return;
