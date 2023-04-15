@@ -636,6 +636,7 @@ public class FileUtils {
         return null;
     }
 
+    //合法的文件按名字必须带扩展名，否则被认为是目录
     public static String extractFileName(String filePathName) {
         if (EmptyString(filePathName)) return null;
         if (filePathName.endsWith("\\"))
@@ -645,7 +646,11 @@ public class FileUtils {
         //filePathName = filePathName.replace("\\\\","\\");
         filePathName = filePathName.replace("//", "/");
         String[] split = filePathName.split("/");
-        return split[split.length - 1];
+        String fileName = split[split.length - 1];
+        if (getExtNameFromPathName(fileName) == null)
+            return null;//没有扩展名，则当作目录处理
+        else
+            return fileName;//合法的文件按名字必须带扩展名
     }
 
     public static String getFileNameFromPathName(String filePathName) {
@@ -653,11 +658,9 @@ public class FileUtils {
         File file = new File(filePathName);
         if (file.exists() && file.isFile()) {
             return file.getName();
-        }
-        else if (file.exists() && file.isDirectory()) {
+        } else if (file.exists() && file.isDirectory()) {
             return null;
-        }
-        else {//从字符串中截取文件名
+        } else {//从字符串中截取文件名
             return extractFileName(filePathName);
         }
     }
