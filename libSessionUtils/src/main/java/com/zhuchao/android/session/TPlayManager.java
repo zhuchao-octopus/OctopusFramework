@@ -347,11 +347,11 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         return (VideoList) allPlayLists.getObject(name);
     }
 
-    public void DeletePlayList(String name) {
+    public void deletePlayList(String name) {
         allPlayLists.delete(name);
     }
 
-    public void DeleteALLPlayList() {
+    public void deleteALLPlayList() {
         allPlayLists.clear();
     }
 

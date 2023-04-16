@@ -728,6 +728,18 @@ public class TTaskManager {
                                 else
                                     MMLog.log(TAG, "download save file failed " + f2 + ", total size = " + total);
                                 tTask.free();//下载完成，释放任务等待模式,主题任务完成，解除同步
+                                String expected_md5 = tTask.getProperties().getString("EXPECTED_MD5");
+                                if (expected_md5 != null) {
+                                    String md5 = FileUtils.getFileMD5(f2);
+                                    MMLog.log(TAG, "check file " + f2 + ", MD5 = " + md5 + ", expected " + expected_md5);
+                                    if (!Objects.equals(md5, expected_md5)) {
+                                        MMLog.log(TAG, "file md5 mismatching delete the file "+f2);
+                                        FileUtils.deleteFile(f2);
+                                        tTask.getProperties().putString("MD5", md5);
+                                        status = DataID.TASK_STATUS_ERROR;
+                                    }
+                                } //else
+                                  //  MMLog.log(TAG, "skip md5 checking");
                             }
 
                             if (tTask.getCallBackHandler() != null) {

@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.codec.binary.Hex;
 import com.zhuchao.android.fbase.bean.FileBean;
 import com.zhuchao.android.fbase.bean.ImgFolderBean;
 import com.zhuchao.android.fbase.bean.LMusic;
@@ -1112,6 +1113,7 @@ public class FileUtils {
     }
 
     public static String getMD5(File f) {
+        if(!f.exists() || !f.isFile()) return null;
         BigInteger bi = null;
         try {
             byte[] buffer = new byte[8192];
@@ -1133,6 +1135,30 @@ public class FileUtils {
             return "";
     }
 
+    public static String getFileMD5(File file) {
+        if(!file.exists() || !file.isFile()) return null;
+
+        FileInputStream fileInputStream = null;
+        try {
+            MessageDigest MD5 = MessageDigest.getInstance("MD5");
+            fileInputStream = new FileInputStream(file);
+            byte[] buffer = new byte[8192];
+            int length;
+            while ((length = fileInputStream.read(buffer)) != -1) {
+                MD5.update(buffer, 0, length);
+            }
+            fileInputStream.close();
+            return new String(Hex.encodeHex(MD5.digest()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static String getFileMD5(String filePathName) {
+        if(EmptyString(filePathName)) return null;
+        File file = new File(filePathName);
+        return getFileMD5(file);
+    }
     public static Object file2Object(FileInputStream fis) {
 
         //FileInputStream fis = null;
