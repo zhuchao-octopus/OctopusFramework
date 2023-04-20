@@ -16,13 +16,13 @@ import com.zhuchao.android.fbase.TTaskThreadPool;
 import java.util.Objects;
 import java.util.concurrent.locks.LockSupport;
 
-public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
-    private final String TAG = "SessionFilesCopy";
+public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
+    private final String TAG = "SessionDirectoryCopy";
     //private String SessionName;
     private int copyMethod = 0;
     private String fromPath = null;
     private String toPath = null;
-    private TTask tMainTask;//new TTask(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
+    private TTask tMainTask = null;//new TTask("SessionDirectoryCopy");
     private final TTaskThreadPool tTaskThreadPool = new TTaskThreadPool(20);
 
     private final FilesFinder filesFinder = new FilesFinder().callBack(new FileFingerCallback() {
@@ -34,21 +34,21 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
                 tMainTask.getProperties().putLong("totalSize", filesFinder.getTotalSize());
             } else {
                 tMainTask.getProperties().putString("finderStatus", "finderEnd");
-                //LockSupport.unpark(tMainTask);
+                tMainTask.unPark();
             }
             if (tMainTask.getCallBackHandler() != null)
                 tMainTask.getCallBackHandler().onEventTask(tMainTask, Index);
         }
     });
 
-    public SessionFilesCopy() {
-        TTask tTask = new TTask(TAG);
-        tTask.invoke(this);
+    public SessionDirectoryCopy() {
+        tMainTask = new TTask("SessionDirectoryCopy");
+        tMainTask.invoke(this);
     }
 
-    public SessionFilesCopy(String fromFilePath, String toFilePath) {
-        TTask tTask = new TTask(fromFilePath + toFilePath);
-        tTask.invoke(this);
+    public SessionDirectoryCopy(String fromFilePath, String toFilePath) {
+        tMainTask = new TTask(fromFilePath + toFilePath);
+        tMainTask.invoke(this);
     }
 
     public String getFromPath() {
@@ -240,7 +240,8 @@ public class SessionFilesCopy implements TTaskInterface, InvokeInterface {
         } else {//目录复制
             filesFinder.fingerFromDir(fromPath);//搜索目录
         }
-        LockSupport.park(tMainTask);
+        tMainTask.pack();
+        //LockSupport.park(tMainTask);
         MMLog.i(TAG, "start to copy files ...");
         startCopyDirectory();
     }
