@@ -303,6 +303,23 @@ public class TPlatform {
         return result;
     }
 
+    public static void ExecShell(String command) {
+        final String sSuPath = "/system/bin/su";
+        try {
+            /* Missing read/write permission, trying to chmod the file */
+            Process su;
+            su = Runtime.getRuntime().exec(sSuPath);
+            String cmd = command + "\n" + "exit\n";
+            su.getOutputStream().write(cmd.getBytes());
+            if (su.waitFor() != 0) {
+                //throw new SecurityException();
+                MMLog.e(TAG, "ExecShell native open fail,not allow to read and write ");
+            }
+        } catch (Exception e) {
+            MMLog.e(TAG, "native open returns null " + e.toString());
+        }
+    }
+
     public static String GetCPUSerialCode() {
         String cpuSerial = "0000000000000000";
         String cmd = "cat /proc/cpuinfo";

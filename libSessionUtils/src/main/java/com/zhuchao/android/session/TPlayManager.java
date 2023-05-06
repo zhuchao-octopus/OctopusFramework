@@ -1,5 +1,7 @@
 package com.zhuchao.android.session;
 
+import static com.zhuchao.android.eventinterface.PlaybackEvent.Status_NothingIdle;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -233,7 +235,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             case PlaybackEvent.Status_Buffering:
                 if (oMediaPlaying.tTask_play.isTimeOut(playTimeOut)) { //playTimeOut秒没有打开文件，结束播放
                     MMLog.log(TAG, "playPause() timeout = " + playTimeOut);
-                    oMediaPlaying.stopFree();
+                    //oMediaPlaying.stopFree();
+                    stopFree();
                 }
                 break;
             //case PlaybackEvent.Status_Buffering:
@@ -250,7 +253,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                 break;
             case PlaybackEvent.Status_Ended:
             case PlaybackEvent.Status_Error:
-            case PlaybackEvent.Status_NothingIdle:
+            case Status_NothingIdle:
             default:
                 playNext();//play next
                 break;
@@ -260,17 +263,17 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     public synchronized void playNext() {
         final int ACTION_DELAY = 600;
         if ((System.currentTimeMillis() - lStartTick_Next) <= ACTION_DELAY) {
-            MMLog.log(TAG, "playPause() not allowed to do this now");
+            MMLog.log(TAG, "playNext() not allowed to do this now");
             return;
         }
         lStartTick_Next = System.currentTimeMillis();
 
         OMedia oo = getNextAvailable();//获取下一个有效的资源
         if (oo != null) {
-            MMLog.log(TAG, "Go to next = " + oo.getPathName());
+            MMLog.log(TAG, "Go to next OMedia = " + oo.getPathName());
             startPlay(oo);
         } else {
-            MMLog.log(TAG, "Next = null,go to auto play");
+            MMLog.log(TAG, "Next OMedia= null,go to auto play");
             autoPlay();
         }
     }
@@ -395,7 +398,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         if (oMediaPlaying != null)
             return oMediaPlaying.getPlayStatus();
         else
-            return PlaybackEvent.Status_NothingIdle;
+            return Status_NothingIdle;
     }
 
     public void free() {
@@ -531,7 +534,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         }
 
         switch (playerStatusInfo.getEventType()) {
-            case PlaybackEvent.Status_NothingIdle:
+            case Status_NothingIdle:
                 if (autoPlaySource >= DataID.SESSION_SOURCE_ALL) //立即跳转到收藏列表
                 {
                     MMLog.log(TAG, "OnEventCallBack.EventType = " + playerStatusInfo.getEventType() + ", " + oMediaPlaying.getPathName());
@@ -612,7 +615,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             PlayerStatusInfo playerStatusInfo = (PlayerStatusInfo) msg.obj;
             if (oMediaPlaying == null || oMediaPlaying.getFPlayer() == null) return;
             switch (playerStatusInfo.getEventType()) {
-                case PlaybackEvent.Status_NothingIdle:
+                case Status_NothingIdle:
                 case PlaybackEvent.Status_Opening:
                 case PlaybackEvent.Status_Buffering:
                 case PlaybackEvent.Status_Playing:

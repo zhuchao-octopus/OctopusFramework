@@ -140,8 +140,10 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                     if (mSurfaceView.getHolder().getSurface().isValid()) {
                         mediaPlayer.setDisplay(mSurfaceView.getHolder());
                         MMLog.d(TAG, "setSurfaceView().setDisplay  to " + surfaceView.toString());
-                    } else
-                        MMLog.d(TAG, "setSurfaceView().setDisplay failed ,is invalid");
+                    }
+                    else {
+                        MMLog.d(TAG, "setSurfaceView().setDisplay failed,is invalid");
+                    }
                 } else
                     MMLog.d(TAG, "setSurfaceView().getHolder is not created ,is invalid");
             } catch (Exception e) {
