@@ -132,6 +132,9 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         else
             MMLog.log(TAG, "surfaceView = " + surfaceView.toString());
 
+        oMediaPlaying.setScale(0);
+        oMediaPlaying.setAspectRatio(null);
+
         if (playMethod > 0)
             this.oMediaPlaying.playOn_t(surfaceView);
         else
