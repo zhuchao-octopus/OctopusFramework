@@ -118,7 +118,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             }
         }
 
-        //{
+
         MMLog.log(TAG, "StartPlay--> " + oMedia.getMovie().getSrcUrl());
         //this.oMediaLoading = true;
         if (tryPlayCount <= 0)

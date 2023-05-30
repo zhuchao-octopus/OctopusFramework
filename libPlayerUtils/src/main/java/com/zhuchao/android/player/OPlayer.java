@@ -95,6 +95,8 @@ public class OPlayer extends PlayControl {
             vlcVout = mMediaPlayer.getVLCVout();
             vlcVout.addCallback(mIVLCVoutCallBack);
             mMediaPlayer.setVolume(DefaultVolumeValue);
+            mMediaPlayer.setScale(0);
+            mMediaPlayer.setAspectRatio(null);
             //MLog.log(TAG,"OPlayer=========>");
         } catch (Exception e) {
             //e.printStackTrace();
@@ -118,6 +120,8 @@ public class OPlayer extends PlayControl {
             vlcVout = mMediaPlayer.getVLCVout();
             vlcVout.addCallback(mIVLCVoutCallBack);
             mMediaPlayer.setVolume(DefaultVolumeValue);
+            mMediaPlayer.setScale(0);
+            mMediaPlayer.setAspectRatio(null);
             //MLog.log(TAG, "OPlayer=========>");
         } catch (IllegalStateException e) {
             MMLog.e(TAG, e.toString());

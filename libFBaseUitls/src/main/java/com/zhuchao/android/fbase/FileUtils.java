@@ -343,11 +343,32 @@ public class FileUtils {
         return true;
     }
 
-    public static boolean deleteDir(String dirPath) {
-        File file = new File(dirPath);
-        if (file.exists())
-            return file.delete();
-        return false;
+    public static boolean deleteDirectory(String directoryPath) {
+        File directory = new File(directoryPath);
+        if(!directory.canWrite())
+        {
+            MMLog.log(TAG,"Dir is not permit writing!");
+            return false;
+        }
+        if(!directory.exists())
+        {
+            MMLog.log(TAG,"Dir is not exit!");
+            return false;
+        }
+        if (directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if (files != null && files.length > 0) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        deleteDirectory(file.getAbsolutePath());
+                    } else {
+                        file.delete();
+                    }
+                }
+            }
+        }
+        return directory.delete();
+
     }
 
     public static boolean renameFile(String fromFilePathName, String newFilePathName) {
@@ -1113,7 +1134,7 @@ public class FileUtils {
     }
 
     public static String getMD5(File f) {
-        if(!f.exists() || !f.isFile()) return null;
+        if (!f.exists() || !f.isFile()) return null;
         BigInteger bi = null;
         try {
             byte[] buffer = new byte[8192];
@@ -1136,7 +1157,7 @@ public class FileUtils {
     }
 
     public static String getFileMD5(File file) {
-        if(!file.exists() || !file.isFile()) return null;
+        if (!file.exists() || !file.isFile()) return null;
 
         FileInputStream fileInputStream = null;
         try {
@@ -1154,11 +1175,13 @@ public class FileUtils {
             return null;
         }
     }
+
     public static String getFileMD5(String filePathName) {
-        if(EmptyString(filePathName)) return null;
+        if (EmptyString(filePathName)) return null;
         File file = new File(filePathName);
         return getFileMD5(file);
     }
+
     public static Object file2Object(FileInputStream fis) {
 
         //FileInputStream fis = null;

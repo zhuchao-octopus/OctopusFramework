@@ -369,7 +369,9 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                     break;
                 case Action_SilentClose:
                     if (intent.getExtras() != null) {
-                        String packageName = intent.getExtras().getString("close_pkg");
+                        String packageName = intent.getExtras().getString("packageName");
+                        if(EmptyString(packageName))
+                           packageName = intent.getExtras().getString("close_pkg");
                         Action_SilentCLOSEAction(packageName);
                     }
                     break;
