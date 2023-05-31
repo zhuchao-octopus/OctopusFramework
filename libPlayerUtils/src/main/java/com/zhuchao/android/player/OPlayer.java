@@ -576,6 +576,8 @@ public class OPlayer extends PlayControl {
         if (mMediaPlayer == null) return mtd;
 
         MediaPlayer.TrackDescription[] TrackDescriptions = mMediaPlayer.getAudioTracks();
+        if(TrackDescriptions == null) return mtd;
+
         for (MediaPlayer.TrackDescription td : TrackDescriptions) {
             mtd.put(td.id, td.name);
         }
@@ -643,9 +645,12 @@ public class OPlayer extends PlayControl {
                 if (mSurfaceView != null) {
                     MMLog.log(TAG, "mSurfaceView.getWidth() = "+ mSurfaceView.getWidth()+",getHeight() = "+mSurfaceView.getHeight());
                     vlcVout.setWindowSize(mSurfaceView.getWidth(), mSurfaceView.getHeight());
+                    playerStatusInfo.setSurfaceH(mSurfaceView.getHeight());
+                    playerStatusInfo.setSurfaceW(mSurfaceView.getWidth());
                 } else if (mTextureView != null) {
                     vlcVout.setWindowSize(mTextureView.getWidth(), mTextureView.getHeight());
                 }
+
                 mMediaPlayer.setAspectRatio(null);
                 mMediaPlayer.setScale(0);
                 playerStatusInfo.setSurfacePrepared(true);

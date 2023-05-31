@@ -90,11 +90,21 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         return sta >= PlaybackEvent.Status_Opening && sta <= PlaybackEvent.Status_Playing;
     }
 
+    public synchronized void reStartPlay()
+    {
+       boolean playingLock_old = playingLock;
+        if (oMediaPlaying == null) {
+            MMLog.log(TAG, "There is no media to reStartPlay!");
+            return;
+        }
+        //stopPlay();
+        playingLock = false;
+        MMLog.log(TAG, "reStartPlay "+oMediaPlaying.getPathName());
+        startPlay(oMediaPlaying);
+        playingLock = playingLock_old;
+    }
+
     public synchronized void startPlay(OMedia oMedia) {
-        //if (oMediaLoading) {
-        //    MMLog.log(TAG, "oMedia is loading! status = " + getPlayerStatus());
-        //    return;
-        //}
 
         if (surfaceView == null) {
             MMLog.log(TAG, "surfaceView  is not ready! return");
