@@ -5,14 +5,14 @@ ext {
     GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libFBaseUtils'
-    PUBLISH_VERSION = '1.9'
+    PUBLISH_VERSION = '2.0'
 }
 
 afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                components.getByName('release')
+                from components.release
                 groupId PUBLISH_GROUP_ID
                 artifactId PUBLISH_ARTIFACT_ID
                 version PUBLISH_VERSION
