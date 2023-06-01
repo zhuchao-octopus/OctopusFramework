@@ -4,7 +4,7 @@ import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
 import android.content.Context;
 
-import com.zhuchao.android.eventinterface.SessionCallback;
+import com.zhuchao.android.fbase.eventinterface.SessionCallback;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;

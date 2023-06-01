@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':libEventInterface')
+    //implementation project(path: ':libEventInterface')
     implementation project(path: ':libFBaseUitls')
 
     api('com.squareup.okhttp3:okhttp:5.0.0-alpha.8')

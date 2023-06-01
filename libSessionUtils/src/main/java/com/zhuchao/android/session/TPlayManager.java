@@ -1,6 +1,6 @@
 package com.zhuchao.android.session;
 
-import static com.zhuchao.android.eventinterface.PlaybackEvent.Status_NothingIdle;
+import static com.zhuchao.android.fbase.eventinterface.PlaybackEvent.Status_NothingIdle;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -13,10 +13,10 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
-import com.zhuchao.android.eventinterface.NormalCallback;
-import com.zhuchao.android.eventinterface.PlaybackEvent;
-import com.zhuchao.android.eventinterface.PlayerCallback;
-import com.zhuchao.android.eventinterface.PlayerStatusInfo;
+import com.zhuchao.android.fbase.eventinterface.NormalCallback;
+import com.zhuchao.android.fbase.eventinterface.PlaybackEvent;
+import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
+import com.zhuchao.android.fbase.eventinterface.PlayerStatusInfo;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.ObjectList;

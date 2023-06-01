@@ -14,10 +14,9 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 
 import androidx.annotation.NonNull;
-
-import com.zhuchao.android.eventinterface.PlaybackEvent;
-import com.zhuchao.android.eventinterface.PlayerCallback;
 import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.eventinterface.PlaybackEvent;
+import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
 
 import org.jetbrains.annotations.NotNull;
 

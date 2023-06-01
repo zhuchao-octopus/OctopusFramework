@@ -13,15 +13,14 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 
 import androidx.annotation.NonNull;
-
-import com.zhuchao.android.eventinterface.InvokeInterface;
-import com.zhuchao.android.eventinterface.PlaybackEvent;
-import com.zhuchao.android.eventinterface.PlayerCallback;
-import com.zhuchao.android.eventinterface.PlayerStatusInfo;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MediaFile;
 import com.zhuchao.android.fbase.TTask;
+import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
+import com.zhuchao.android.fbase.eventinterface.PlaybackEvent;
+import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
+import com.zhuchao.android.fbase.eventinterface.PlayerStatusInfo;
 import com.zhuchao.android.persist.SPreference;
 import com.zhuchao.android.player.PlayControl;
 import com.zhuchao.android.player.PlayerManager;

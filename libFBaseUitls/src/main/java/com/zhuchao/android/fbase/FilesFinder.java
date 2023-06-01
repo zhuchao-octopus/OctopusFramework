@@ -3,7 +3,8 @@ package com.zhuchao.android.fbase;
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
-import com.zhuchao.android.eventinterface.FileFingerCallback;
+
+import com.zhuchao.android.fbase.eventinterface.FileFingerCallback;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -2,8 +2,8 @@ package com.zhuchao.android.session;
 
 import static java.lang.Thread.MAX_PRIORITY;
 
-import com.zhuchao.android.eventinterface.InvokeInterface;
-import com.zhuchao.android.eventinterface.TaskCallback;
+import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
+import com.zhuchao.android.fbase.eventinterface.TaskCallback;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.ObjectArray;

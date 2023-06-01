@@ -61,7 +61,7 @@ dependencies {
     //implementation group: 'org.videolan.android', name: 'libvlc-all', version: '3.5.1'
     //implementation project(path: ':libDecodeCore')
 
-    implementation project(path: ':libEventInterface')
+    //implementation project(path: ':libEventInterface')
     implementation project(path: ':libFBaseUitls')
     implementation project(path: ':libINetUtils')
     implementation project(path: ':libJOSUtils')

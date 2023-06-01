@@ -1,7 +1,7 @@
 package com.zhuchao.android.fbase;
 
 
-import com.zhuchao.android.eventinterface.InvokeInterface;
+import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
 
 import org.jetbrains.annotations.NotNull;
 

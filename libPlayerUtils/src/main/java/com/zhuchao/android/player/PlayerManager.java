@@ -2,7 +2,7 @@ package com.zhuchao.android.player;
 
 import android.content.Context;
 
-import com.zhuchao.android.eventinterface.PlayerCallback;
+import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
 
 import java.util.ArrayList;
 

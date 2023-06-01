@@ -18,8 +18,8 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.zhuchao.android.TPlatform;
-import com.zhuchao.android.eventinterface.InvokeInterface;
-import com.zhuchao.android.eventinterface.TRequestEventInterface;
+import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
+import com.zhuchao.android.fbase.eventinterface.TRequestEventInterface;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;

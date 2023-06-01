@@ -2,13 +2,14 @@ package com.zhuchao.android.serialport;
 
 import com.google.android.things.pio.I2cDevice;
 import com.google.android.things.pio.PeripheralManager;
-import com.zhuchao.android.eventinterface.InvokeInterface;
+
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.EventCourierInterface;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.TCourierEventListener;
 import com.zhuchao.android.fbase.TTask;
+import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
 
 import java.io.IOException;
 

@@ -10,8 +10,8 @@ import android.os.Message;
 
 import androidx.annotation.RequiresApi;
 
-import com.zhuchao.android.eventinterface.HttpCallback;
-import com.zhuchao.android.eventinterface.InvokeInterface;
+import com.zhuchao.android.fbase.eventinterface.HttpCallback;
+import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.FilesFinger;

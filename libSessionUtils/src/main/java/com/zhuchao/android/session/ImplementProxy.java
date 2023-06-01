@@ -7,9 +7,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.zhuchao.android.eventinterface.HttpCallback;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.eventinterface.HttpCallback;
 import com.zhuchao.android.net.HttpUtils;
 import com.zhuchao.android.session.PaserBean.IdNameBean;
 import com.zhuchao.android.session.PaserBean.MovieListBean;
@@ -22,14 +22,14 @@ import java.util.Map;
 
 public class ImplementProxy implements HttpCallback {
     public final String TAG = "ImplementProxy";
-    private com.zhuchao.android.eventinterface.SessionCallback SessionCallback = null;
+    private com.zhuchao.android.fbase.eventinterface.SessionCallback FSessionCallback = null;
 
     private Map<Integer, String> mVideoCategory = null;// = new HashMap<Integer, String>();
     private Map<Integer, String> mVideoType = null;// = new HashMap<Integer, String>();
     private MovieListBean mMovieListBean = null;
 
-    public ImplementProxy(com.zhuchao.android.eventinterface.SessionCallback sessionCallback) {
-        SessionCallback = sessionCallback;
+    public ImplementProxy(com.zhuchao.android.fbase.eventinterface.SessionCallback sessionCallback) {
+        FSessionCallback = sessionCallback;
     }
 
     public Map<Integer, String> getVideoCategory() {
@@ -140,8 +140,8 @@ public class ImplementProxy implements HttpCallback {
                 break;
         }
 
-        if (SessionCallback != null)
-            SessionCallback.OnSessionComplete((int) progress, result);
+        if (FSessionCallback != null)
+            FSessionCallback.OnSessionComplete((int) progress, result);
     }
 }
 

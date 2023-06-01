@@ -3,7 +3,8 @@ package com.zhuchao.android.fbase;
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.MD5;
 
-import com.zhuchao.android.eventinterface.TaskCallback;
+
+import com.zhuchao.android.fbase.eventinterface.TaskCallback;
 
 import java.util.Collection;
 

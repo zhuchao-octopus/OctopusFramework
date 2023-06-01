@@ -15,12 +15,11 @@
 package com.zhuchao.android.video;
 
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
-
-import com.zhuchao.android.eventinterface.NormalCallback;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MediaFile;
+import com.zhuchao.android.fbase.eventinterface.NormalCallback;
 
 import java.io.File;
 import java.util.ArrayList;

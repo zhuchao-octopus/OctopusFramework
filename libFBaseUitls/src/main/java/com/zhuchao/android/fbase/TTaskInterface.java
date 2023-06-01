@@ -1,7 +1,8 @@
 package com.zhuchao.android.fbase;
 
-import com.zhuchao.android.eventinterface.InvokeInterface;
-import com.zhuchao.android.eventinterface.TaskCallback;
+
+import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
+import com.zhuchao.android.fbase.eventinterface.TaskCallback;
 
 public abstract interface TTaskInterface {
     public TTask invoke(InvokeInterface callFunction);

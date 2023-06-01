@@ -2,9 +2,9 @@ package com.zhuchao.android.session;
 
 import android.os.Build;
 
-import com.zhuchao.android.eventinterface.FileFingerCallback;
-import com.zhuchao.android.eventinterface.InvokeInterface;
-import com.zhuchao.android.eventinterface.TaskCallback;
+import com.zhuchao.android.fbase.eventinterface.FileFingerCallback;
+import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
+import com.zhuchao.android.fbase.eventinterface.TaskCallback;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.FilesFinder;
 import com.zhuchao.android.fbase.MMLog;

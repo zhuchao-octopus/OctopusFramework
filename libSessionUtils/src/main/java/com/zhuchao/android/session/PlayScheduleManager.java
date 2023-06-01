@@ -6,7 +6,7 @@ import android.os.Environment;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.zhuchao.android.eventinterface.SessionCallback;
+import com.zhuchao.android.fbase.eventinterface.SessionCallback;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.session.PaserBean.ScheduleVideoBean;

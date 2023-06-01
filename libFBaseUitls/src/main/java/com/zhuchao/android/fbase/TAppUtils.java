@@ -24,7 +24,7 @@ import android.text.TextUtils;
 
 import androidx.core.content.FileProvider;
 
-import com.zhuchao.android.eventinterface.AppChangedListener;
+import com.zhuchao.android.fbase.eventinterface.AppChangedListener;
 
 import java.io.BufferedReader;
 import java.io.File;
