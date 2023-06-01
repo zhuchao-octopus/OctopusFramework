@@ -1,5 +1,7 @@
 package com.zhuchao.android.fbase;
 
+import static com.zhuchao.android.fbase.ByteUtils.BuffToHexStr;
+import static com.zhuchao.android.fbase.ByteUtils.BytesToHexStr;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 
 import android.annotation.SuppressLint;
@@ -21,7 +23,6 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.codec.binary.Hex;
 import com.zhuchao.android.fbase.bean.FileBean;
 import com.zhuchao.android.fbase.bean.ImgFolderBean;
 import com.zhuchao.android.fbase.bean.LMusic;
@@ -1169,7 +1170,8 @@ public class FileUtils {
                 MD5.update(buffer, 0, length);
             }
             fileInputStream.close();
-            return new String(Hex.encodeHex(MD5.digest()));
+            //return new String(Hex.encodeHex(MD5.digest()));
+            return BytesToHexStr(MD5.digest());
         } catch (Exception e) {
             e.printStackTrace();
             return null;

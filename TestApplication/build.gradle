@@ -13,36 +13,16 @@ ext {
     //PUBLISH_VERSION = '1.04'
 }
 
-/*afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                groupId PUBLISH_GROUP_ID
-                artifactId PUBLISH_ARTIFACT_ID
-                version PUBLISH_VERSION
-            }
-        }
-        repositories {
-            maven {
-                allowInsecureProtocol true
-                url GITHUB_REPO_PATH
-            }
-        }
-    }
-}*/
-
 android {
     namespace 'com.zhuchao.android.wms'
     compileSdk 33
 
     defaultConfig {
         applicationId "com.zhuchao.android.wms"
-        minSdk 25
+        minSdk 24
         targetSdk 33
         versionCode 103
         versionName "1.04"
-
-        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -51,16 +31,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        //sourceCompatibility JavaVersion.VERSION_17
-        //targetCompatibility JavaVersion.VERSION_17
-    }
+
 
     flavorDimensions 'ZHUCHAO_ANDROID'
     productFlavors {
         WMS {
             manifestPlaceholders = [APP_NAME: "WatchManService"]
-            buildConfigField 'String', 'platform', '"rk3288"'
+            //buildConfigField 'String', 'platform', '"rk3288"'
         }
     }
 

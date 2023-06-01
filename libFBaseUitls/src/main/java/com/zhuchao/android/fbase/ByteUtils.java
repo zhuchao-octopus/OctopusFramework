@@ -89,7 +89,14 @@ public class ByteUtils {
         }
         return strBuilder.toString();
     }
-
+    public static String BytesToHexStr(byte[] bytes) {
+        StringBuilder strBuilder = new StringBuilder();
+        for (byte valueOf : bytes) {
+            strBuilder.append(Byte2Hex(valueOf));
+            strBuilder.append(" ");
+        }
+        return strBuilder.toString();
+    }
     //-------------------------------------------------------
     //字节数组转转hex字符串，可选长度
     public static String ByteArrToHexStr(byte[] inBytArr, int offset, int byteCount) {

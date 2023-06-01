@@ -38,7 +38,7 @@ afterEvaluate {
 android {
     compileSdkVersion 33
     defaultConfig {
-        minSdkVersion 25
+        minSdkVersion 24
         targetSdkVersion 33
     }
 

@@ -12,7 +12,7 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                from components.release
+                components.getByName('release')
                 groupId PUBLISH_GROUP_ID
                 artifactId PUBLISH_ARTIFACT_ID
                 version PUBLISH_VERSION
@@ -34,6 +34,19 @@ android {
         targetSdkVersion 33
         // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+    publishing {
+        multipleVariants {
+            withSourcesJar()
+            withJavadocJar()
+            allVariants()
+        }
+    }
 
     buildTypes {
         release {
@@ -41,7 +54,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    namespace 'com.zhuchao.android.LVideo'
+    namespace 'com.zhuchao.android.video'
 }
 
 dependencies {

@@ -6,7 +6,8 @@ include ':libSessionUtils'
 include ':libINetUtils'
 include ':libGPersistUtils'
 include ':libMediaUtils'
-include ':libEventInterface'
+
+//include ':libEventInterface'
 
 //include ':libICameraController'
 //include ':libOpenComputerVision'

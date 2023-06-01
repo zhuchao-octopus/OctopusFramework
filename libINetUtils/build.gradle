@@ -12,7 +12,7 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                from components.release
+                components.getByName('release')
                 groupId PUBLISH_GROUP_ID
                 artifactId PUBLISH_ARTIFACT_ID
                 version PUBLISH_VERSION
@@ -34,6 +34,20 @@ android {
         targetSdkVersion 33
     }
 
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+    publishing {
+        multipleVariants {
+            withSourcesJar()
+            withJavadocJar()
+            allVariants()
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -41,16 +55,12 @@ android {
         }
     }
 
-    namespace 'com.zhuchao.android.netutil'
+    namespace 'com.zhuchao.android.net'
 }
 
 dependencies {
     //implementation project(path: ':libEventInterface')
     implementation project(path: ':libFBaseUitls')
-
-    api('com.squareup.okhttp3:okhttp:5.0.0-alpha.8')
-    api('com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11')
-    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.8.1'
 }
 
 

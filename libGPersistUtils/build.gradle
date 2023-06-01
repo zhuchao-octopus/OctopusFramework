@@ -13,7 +13,7 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                from components.release
+                components.getByName('release')
                 groupId PUBLISH_GROUP_ID
                 artifactId PUBLISH_ARTIFACT_ID
                 version PUBLISH_VERSION
@@ -33,8 +33,6 @@ android {
     defaultConfig {
         minSdkVersion 24
         targetSdkVersion 33
-        //versionCode 20
-        //versionName "2.0"
     }
 
     buildTypes {
@@ -43,16 +41,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    namespace 'com.zhuchao.android.storageutils'
+    namespace 'com.zhuchao.android.persist'
 }
 
 dependencies {
     implementation project(path: ':libFBaseUitls')
-    implementation "androidx.core:core-ktx:1.7.0"
-    implementation 'androidx.exifinterface:exifinterface:1.3.3'
-    //implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
-repositories {
-    mavenCentral()
 }
 

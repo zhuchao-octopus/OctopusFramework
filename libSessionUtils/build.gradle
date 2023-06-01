@@ -34,6 +34,20 @@ android {
         targetSdkVersion 33
     }
 
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+    publishing {
+        multipleVariants {
+            withSourcesJar()
+            withJavadocJar()
+            allVariants()
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -50,4 +64,5 @@ dependencies {
     implementation project(path: ':libINetUtils')
     implementation project(path: ':libMediaUtils')
     implementation project(path: ':libPlayerUtils')
+
 }

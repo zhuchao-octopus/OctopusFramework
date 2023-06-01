@@ -37,8 +37,22 @@ afterEvaluate {
 android {
     compileSdkVersion 33
     defaultConfig {
-        minSdkVersion 25
+        minSdkVersion 24
         targetSdkVersion 33
+    }
+
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+    publishing {
+        multipleVariants {
+            withSourcesJar()
+            withJavadocJar()
+            allVariants()
+        }
     }
 
     buildTypes {
@@ -47,7 +61,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    namespace 'com.zhuchao.android.playerutil'
+    namespace 'com.zhuchao.android.player'
 
 }
 
@@ -61,7 +75,6 @@ dependencies {
     //implementation group: 'org.videolan.android', name: 'libvlc-all', version: '3.5.1'
     //implementation project(path: ':libDecodeCore')
 
-    //implementation project(path: ':libEventInterface')
     implementation project(path: ':libFBaseUitls')
     implementation project(path: ':libINetUtils')
     implementation project(path: ':libJOSUtils')

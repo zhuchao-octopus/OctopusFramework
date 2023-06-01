@@ -41,6 +41,20 @@ android {
         }
     }
 
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+    publishing {
+        multipleVariants {
+            withSourcesJar()
+            withJavadocJar()
+            allVariants()
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -59,8 +73,7 @@ android {
 dependencies {
     //implementation files('libs\\javalib.jar')
     implementation files('libs/javalib.jar')
-    //implementation project(path: ':libEventInterface')
     implementation project(path: ':libFBaseUitls')
-    implementation 'com.google.android.things:androidthings:1.0'
+
 }
 
