@@ -6,10 +6,12 @@ import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.EventCourierInterface;
 import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.ObjectList;
 import com.zhuchao.android.fbase.TCourierEventListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
@@ -25,7 +27,8 @@ public class TUartFile extends TDevice implements TCourierEventListener {
     private int frame_size = 9;//当前串口协议一个数据包至少9个字节
     private String frame_end_hex = "7E";
     private String f_separator = " ";
-    private TCourierEventListener deviceReadingEventListener = null;
+    //private TCourierEventListener deviceReadingEventListener = null;
+    protected ObjectList deviceOnReceiveEventListenerList = new ObjectList();
     private long writeDelayTime_millis = 0;
 
     public long getWriteDelayTime() {
@@ -77,42 +80,51 @@ public class TUartFile extends TDevice implements TCourierEventListener {
         }
     }
 
-    @Override
-    public void closeDevice() {
-        if (serialPort != null) {
-            serialPort.tryClose();
-            serialPort = null;
-        }
-    }
-
     private void dispatchCourier(EventCourier eventCourier) {
-        if (deviceReadingEventListener != null) {//处理一帧数据
+        if (deviceOnReceiveEventListenerList.getCount() > 0) {//处理一帧数据
             TProtocol_Package tProtocol_package = new TProtocol_Package();
             tProtocol_package.parse(eventCourier.getDatas());
-            if(tProtocol_package.getMsgHead() == tProtocol_package.DEFAULT_HEAD &&
+            if (tProtocol_package.getMsgHead() == tProtocol_package.DEFAULT_HEAD &&
                     tProtocol_package.getMsg_End() == tProtocol_package.DEFAULT_END) {
                 eventCourier.setObj(tProtocol_package);
             }
 
-            deviceReadingEventListener.onCourierEvent(eventCourier);
-            //MMLog.log(TAG, "deviceReadingEventListener = "+deviceReadingEventListener.toString()+", eventCourier = "+eventCourier.toString());
-        }
-        else
-        {
-            MMLog.log(TAG, "deviceReadingEventListener = null, eventCourier = "+eventCourier.toString());
+            Collection<Object> objects = deviceOnReceiveEventListenerList.getAllObject();
+            for (Object o : objects) {
+                TCourierEventListener CourierEventListener = ((TCourierEventListener) o);
+                CourierEventListener.onCourierEvent(eventCourier);
+                //MMLog.log(TAG, "deviceReadingEventListener = "+deviceReadingEventListener.toString()+", eventCourier = "+eventCourier.toString());
+            }
+        } else {
+            MMLog.log(TAG, "deviceEventListener=null, eventCourier=" + eventCourier.toString());
         }
     }
 
     public void callback(TCourierEventListener deviceEventListener) {
-        this.deviceReadingEventListener = deviceEventListener;
+        //this.deviceReadingEventListener = deviceEventListener;
+        deviceOnReceiveEventListenerList.putObject(deviceEventListener.toString(), deviceEventListener);
     }
 
     public void registerReadingCallback(TCourierEventListener deviceEventListener) {
-        this.deviceReadingEventListener = deviceEventListener;
+        //this.deviceReadingEventListener = deviceEventListener;
+        callback(deviceEventListener);
     }
 
-    public void registerReceivedCallback(TCourierEventListener deviceEventListener) {
-        this.deviceReadingEventListener = deviceEventListener;
+    public void registerOnReceivedCallback(TCourierEventListener deviceEventListener) {
+        //this.deviceReadingEventListener = deviceEventListener;
+        callback(deviceEventListener);
+    }
+
+    public void removeCallback(TCourierEventListener deviceEventListener) {
+        deviceOnReceiveEventListenerList.delete(deviceEventListener.toString(), deviceEventListener);
+    }
+
+    public void unRegisterOnReceivedCallback(TCourierEventListener deviceEventListener) {
+        removeCallback(deviceEventListener);
+    }
+
+    public void removeAllCallback() {
+        deviceOnReceiveEventListenerList.clear();
     }
 
     public boolean isReadyPooling() {
@@ -126,6 +138,7 @@ public class TUartFile extends TDevice implements TCourierEventListener {
         if (readThread == null || parserThread == null || serialPort == null) {
             return false;
         }
+
         if (serialPort.isDeviceReady() && readThread.isAlive() && parserThread.isAlive())
             return true;
         else
@@ -313,5 +326,14 @@ public class TUartFile extends TDevice implements TCourierEventListener {
     //1字节转2个Hex字符
     public String ByteToHexStr(Byte inByte) {
         return String.format("%02x", inByte).toUpperCase();
+    }
+
+
+    @Override
+    public void closeDevice() {
+        if (serialPort != null) {
+            serialPort.tryClose();
+            serialPort = null;
+        }
     }
 }

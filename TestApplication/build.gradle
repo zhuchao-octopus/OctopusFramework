@@ -42,7 +42,7 @@ android {
         versionCode 103
         versionName "1.04"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {

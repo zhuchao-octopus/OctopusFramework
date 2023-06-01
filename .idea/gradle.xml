@@ -7,8 +7,7 @@
         <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleHome" value="E:/gradle-7.5.1" />
-        <option name="gradleJvm" value="20" />
+        <option name="gradleJvm" value="corretto-17" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -17,12 +16,9 @@
             <option value="$PROJECT_DIR$/libEventInterface" />
             <option value="$PROJECT_DIR$/libFBaseUitls" />
             <option value="$PROJECT_DIR$/libGPersistUtils" />
-            <option value="$PROJECT_DIR$/libICameraController" />
             <option value="$PROJECT_DIR$/libINetUtils" />
             <option value="$PROJECT_DIR$/libJOSUtils" />
             <option value="$PROJECT_DIR$/libMediaUtils" />
-            <option value="$PROJECT_DIR$/libOpenComputerVision" />
-            <option value="$PROJECT_DIR$/libOpenDetection" />
             <option value="$PROJECT_DIR$/libPlayerUtils" />
             <option value="$PROJECT_DIR$/libSessionUtils" />
           </set>

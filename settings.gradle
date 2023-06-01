@@ -8,8 +8,8 @@ include ':libGPersistUtils'
 include ':libMediaUtils'
 include ':libEventInterface'
 
-include ':libICameraController'
-include ':libOpenComputerVision'
-include ':libOpenDetection'
+//include ':libICameraController'
+//include ':libOpenComputerVision'
+//include ':libOpenDetection'
 
 include ':TestApplication'
