@@ -25,11 +25,14 @@ public class TUartFile extends TDevice implements TCourierEventListener {
     private ParserThread parserThread = null;
     private final Queue<Byte> queueDatas = new LinkedBlockingQueue<>();
     private int frame_size = 9;//当前串口协议一个数据包至少9个字节
+
+    private String frame_start_hex = "";
     private String frame_end_hex = "7E";
     private String f_separator = " ";
     //private TCourierEventListener deviceReadingEventListener = null;
     protected ObjectList deviceOnReceiveEventListenerList = new ObjectList();
     private long writeDelayTime_millis = 0;
+    private long readTimeout_millis = 20;
 
     public long getWriteDelayTime() {
         return writeDelayTime_millis;
@@ -153,6 +156,14 @@ public class TUartFile extends TDevice implements TCourierEventListener {
         this.frame_size = frame_size;
     }
 
+    public String getFrame_start_hex() {
+        return frame_start_hex;
+    }
+
+    public void setFrame_start_hex(String frame_start_hex) {
+        this.frame_start_hex = frame_start_hex;
+    }
+
     public String getFrame_end_hex() {
         return frame_end_hex;
     }
@@ -167,6 +178,14 @@ public class TUartFile extends TDevice implements TCourierEventListener {
 
     public void setF_separator(String f_separator) {
         this.f_separator = f_separator;
+    }
+
+    public long getReadTimeout_millis() {
+        return readTimeout_millis;
+    }
+
+    public void setReadTimeout_millis(long readTimeout_millis) {
+        this.readTimeout_millis = readTimeout_millis;
     }
 
     public String toDeviceString() {
@@ -254,9 +273,11 @@ public class TUartFile extends TDevice implements TCourierEventListener {
         @Override
         public void run() {
             super.run();
-            try {
-                while (serialPort.isDeviceReady()) {
-                    if (serialPort.getInputStream().available() >= frame_size) {
+            while (serialPort.isDeviceReady())
+            {
+                try {
+                    if (serialPort.getInputStream().available() >= frame_size)
+                    {
                         byte[] readData = new byte[serialPort.getInputStream().available()];
                         int size = serialPort.getInputStream().read(readData);
                         if (size <= 0) continue;
@@ -264,32 +285,59 @@ public class TUartFile extends TDevice implements TCourierEventListener {
                             byte bitData = readData[i];
                             queueDatas.offer(bitData);
                         }
-                    } else {
-                        Thread.sleep(50);
                     }
+                    else
+                    {
+                        Thread.sleep(readTimeout_millis);
+                    }
+                } catch (Exception e) {
+                    //e.printStackTrace();
                 }
-            } catch (Exception e) {
-                //e.printStackTrace();
-            }
+            }// while (serialPort.isDeviceReady())
         }
     }
 
     //queueDatas --> byteArrayList --> List<Byte> newData --> Byte[] byteData --> bytes
     private class ParserThread extends Thread {
+        final int WAITING_TIME_MS = 10;
+        List<Byte> byteArrayList = new ArrayList<>();
+        String strEndFrame = "";
+        int timeout = 0;
+
+        private void appendByte(Byte aByte) {
+            if (aByte != null) {
+                byteArrayList.add(aByte);
+                strEndFrame = ByteToHexStr(aByte);
+            }
+        }
+
+        private void reset_clear() {
+            byteArrayList.clear();
+            strEndFrame = "";
+            timeout = 0;
+        }
+
         @Override
         public void run() {
             super.run();
-            List<Byte> byteArrayList = new ArrayList<>();
+
             while (serialPort.isDeviceReady())
+            {
                 try {
                     Byte aByte = queueDatas.poll();
                     if (aByte == null) {
-                        Thread.sleep(20);
+                        Thread.sleep(WAITING_TIME_MS);
+
+                        timeout = timeout + WAITING_TIME_MS;
+                        if (timeout >= readTimeout_millis)
+                            break;
+
                         continue;
                     }
-                    byteArrayList.add(aByte);
-                    String strEndFrame = ByteToHexStr(aByte);
-                    if (frame_end_hex.equals(strEndFrame) && byteArrayList.size() >= frame_size) {
+
+                    appendByte(aByte);
+
+                    if ((frame_end_hex.equals(strEndFrame) || (timeout >= readTimeout_millis)) && byteArrayList.size() >= frame_size) {
                         List<Byte> newByteListData = new ArrayList<>();
                         Collections.addAll(newByteListData, new Byte[byteArrayList.size()]);//复制容量
                         Collections.copy(newByteListData, byteArrayList);//复制内容
@@ -300,16 +348,19 @@ public class TUartFile extends TDevice implements TCourierEventListener {
                         for (int i = 0; i < byteData.length; i++) {
                             bytes[i] = byteData[i];
                         }
-                        byteArrayList.clear();
-                        //处理一帧数据
+                        //一帧数据接收完毕
+                        reset_clear();
+                        //分发一帧数据出去
                         //MMLog.log(TAG,"DEBUG READ UART:"+BufferToHexStr(bytes,f_separator));
                         dispatchCourier(new EventCourier(serialPort.getDevice().getAbsolutePath(), DataID.DEVICE_EVENT_UART_READ, bytes));
                     } else if (frame_end_hex.equals("FF")) {
                         MMLog.log(TAG, "RT READ UART:" + strEndFrame);
                     }
                 } catch (Exception e) {
+                    reset_clear();
                     //e.printStackTrace();
                 }
+            }//while (serialPort.isDeviceReady())
         }
     }
 
