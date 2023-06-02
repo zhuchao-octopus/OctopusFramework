@@ -86,16 +86,23 @@ public class HttpUtils {
                 }
                 try {
                     String result = response.body().string();
-                    if (response.isSuccessful()) {
+                    if (response.isSuccessful())
+                    {
+                        response.close();
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_SUCCESS, RequestCallBack);
-                    } else {
+                    }
+                    else
+                    {
+                        response.close();
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_ERROR, RequestCallBack);
                     }
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
+                    response.close();
                     //MMLog.e(TAG, "request().onResponse " + e.getMessage());
                     ResultCallBack(tag, fromUrl, "", 0, 0, e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
                 }
-                response.close();
             }
         });
     }
@@ -121,22 +128,29 @@ public class HttpUtils {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 //String result = null;
-                if (response != null) {
+                if (response == null) {
                     ResultCallBack(tag, fromUrl, "", 0, 0, "response is null", DataID.TASK_STATUS_ERROR, RequestCallBack);
                     return;
                 }
                 try {
                     String result = response.body().string();
-                    if (response.isSuccessful()) {
+                    if (response.isSuccessful())
+                    {
+                        response.close();
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_SUCCESS, RequestCallBack);
-                    } else {
+                    }
+                    else
+                    {
+                        response.close();
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_ERROR, RequestCallBack);
                     }
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
+                    response.close();
                     //MMLog.e(TAG, "request().onResponse " + e.getMessage());
                     ResultCallBack(tag, fromUrl, "", 0, 0, e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
                 }
-                response.close();
             }
         });
     }
@@ -164,17 +178,24 @@ public class HttpUtils {
                 try {
                     String result = response.body().string();
                     if (response.isSuccessful()) {
+                        response.close();
                         //MMLog.log(TAG, "Request ok result " + result);
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_SUCCESS, RequestCallBack);
-                    } else {
+                    }
+                    else
+                    {
+                        response.close();
                         //MMLog.log(TAG, "Request failed from " + fromUrl);
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_ERROR, RequestCallBack);
                     }
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
+                    response.close();
                     //MMLog.e(TAG, "request().onResponse " + e.getMessage());
                     ResultCallBack(tag, fromUrl, "", 0, 0, "fromUrl = " + fromUrl + "," + e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
                 }
-                response.close();
+
             }
         });
     }
@@ -239,7 +260,6 @@ public class HttpUtils {
                             //.e(TAG, "download() response " + e.getMessage());
                             ResultCallBack(tag, fromUrl, toUrl, 0, 0, e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
                         }
-
                         response.close();
                     }
                 });//{//asynchronous

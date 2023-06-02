@@ -67,7 +67,7 @@ dependencies {
     api('com.google.android.things:androidthings:1.0')
     api('com.google.code.gson:gson:2.10.1')
     
-    api('com.squareup.okhttp3:okhttp:5.0.0-alpha.8')
+    api('com.squareup.okhttp3:okhttp:5.0.0-alpha.11')
     api('com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11')
     //api 'com.google.firebase:firebase-crashlytics-buildtools:2.8.1'
 }
