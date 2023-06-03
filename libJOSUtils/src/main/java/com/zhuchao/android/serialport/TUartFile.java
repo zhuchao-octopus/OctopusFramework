@@ -359,7 +359,7 @@ public class TUartFile extends TDevice implements TCourierEventListener {
 
                     if(frameHeadCodeList.contains(startHeadCode))
                     {
-                        if(startHeadCodeIndex > 0 ) {
+                        if(startHeadCodeIndex > 0 && startHeadCodeIndex < byteArrayList.size()-1) {
                             for (int i = 0; i < startHeadCodeIndex; i++)
                                 byteArrayList.remove(i);
                             startHeadCodeIndex = 0;

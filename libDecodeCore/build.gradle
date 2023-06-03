@@ -21,7 +21,7 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 artifact LIBVLC_AAR
-                from components.release
+                //from components.release
                 groupId PUBLISH_GROUP_ID
                 artifactId PUBLISH_ARTIFACT_ID
                 version PUBLISH_VERSION
