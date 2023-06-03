@@ -4,7 +4,7 @@ import com.zhuchao.android.fbase.ByteUtils;
 import com.zhuchao.android.fbase.MMLog;
 
 public class TProtocol_Package {
-    private final String TAG = "TProtocol_Package";
+    private static final String TAG = "TProtocol_Package";
     public final int DEFAULT_HEAD = 0x0101;
     public final int DEFAULT_END = 0x7E;
     private final int DEFAULT_MSGID_LENGTH = 2;
@@ -97,7 +97,7 @@ public class TProtocol_Package {
         this.msgEnd = msg_End;
     }
 
-    private int getIntVale(int start, int count, byte[] buffer) {
+    public static int getIntVale(int start, int count, byte[] buffer) {
         if (start < 0 || start >= buffer.length)
             return -1;
         switch (count) {
