@@ -343,52 +343,59 @@ public class TUartFile extends TDevice implements TCourierEventListener {
                         Thread.sleep(WAITING_TIME_MS);
                         timeout = timeout + WAITING_TIME_MS;
                         if (timeout < readTimeout_millis)
-                           continue;
+                            continue;
                     }
 
                     ok_going = false;
                     appendByte(aByte);
                     endFrame = byteArrayList.get(byteArrayList.size() - 1);
 
-                    if(startHeadCode <= 0) {
+                    if (startHeadCode <= 0 && frameHeadCodeList.size() > 0) {
                         starFrame0 = starFrame1;
                         starFrame1 = byteArrayList.get(byteArrayList.size() - 1);
                         startHeadCode = ByteUtils.DoubleBytesToInt(starFrame0, starFrame1);
                         startHeadCodeIndex = byteArrayList.size() - 2;
                     }
 
-                    if(frameHeadCodeList.contains(startHeadCode))
-                    {
-                        if(startHeadCodeIndex > 0 && startHeadCodeIndex < byteArrayList.size()-1) {
+                    if (frameHeadCodeList.contains(startHeadCode)) {
+                        if (startHeadCodeIndex > 0 && startHeadCodeIndex < byteArrayList.size() - 1) {
                             for (int i = 0; i < startHeadCodeIndex; i++)
                                 byteArrayList.remove(i);
                             startHeadCodeIndex = 0;
                         }
-                        if(startHeadCode == defaultStartCode0){
-                            if(byteArrayList.size() < 7)
+                        if (startHeadCode == defaultStartCode0) {
+                            if (byteArrayList.size() < 7)
                                 continue;
-                            frameLength =  ByteUtils.DoubleBytesToInt(byteArrayList.get(6), byteArrayList.get(5));
-                            if(byteArrayList.size() < 7 + frameLength + 2)
+                            frameLength = ByteUtils.DoubleBytesToInt(byteArrayList.get(6), byteArrayList.get(5));
+                            if (byteArrayList.size() < 7 + frameLength + 2)
+                                continue;
+                            ok_going = true;
+                        } else if (startHeadCode == defaultStartCode1 || startHeadCode == defaultStartCode2) {
+                            if (byteArrayList.size() < 3)
+                                continue;
+                            frameLength = byteArrayList.get(3);
+                            if (byteArrayList.size() < frameLength + 2)
                                 continue;
                             ok_going = true;
                         }
-                        else if(startHeadCode == defaultStartCode1 || startHeadCode == defaultStartCode2){
-                            if(byteArrayList.size() < 3)
-                                continue;
-                            frameLength =  byteArrayList.get(3);
-                            if(byteArrayList.size() < frameLength + 2)
-                                continue;
+                    }
+                    else if (frameEndCodeList.contains(endFrame))
+                    {
+                        ok_going = true;
+                    }
+                    else if (timeout >= readTimeout_millis && frameHeadCodeList.contains(startHeadCode))
+                    {
+                        ok_going = true;
+                    }
+                    else if(frameHeadCodeList.size() == 0 && frameEndCodeList.size() == 0)
+                    {
+                        if(byteArrayList.size() >=10 || timeout >= readTimeout_millis)
                             ok_going = true;
-                        }
-                    }else {
+                    }
+                    else
+                    {
                         startHeadCode = 0;
                     }
-
-                    if(frameEndCodeList.contains(endFrame))
-                        ok_going = true;
-
-                    if (timeout >= readTimeout_millis && frameHeadCodeList.contains(startHeadCode))
-                        ok_going = true;
 
                     timeout = 0;
                     if (ok_going) //&& (byteArrayList.size() >= frame_size)
