@@ -21,6 +21,7 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 artifact LIBVLC_AAR
+                from components.release
                 groupId PUBLISH_GROUP_ID
                 artifactId PUBLISH_ARTIFACT_ID
                 version PUBLISH_VERSION
@@ -40,6 +41,19 @@ android {
     defaultConfig {
         minSdkVersion 24
         targetSdkVersion 33
+    }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+    publishing {
+        multipleVariants {
+            withSourcesJar()
+            withJavadocJar()
+            allVariants()
+        }
     }
 
     buildTypes {
