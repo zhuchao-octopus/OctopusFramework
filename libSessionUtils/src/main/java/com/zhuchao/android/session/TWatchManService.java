@@ -370,8 +370,8 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                 case Action_SilentClose:
                     if (intent.getExtras() != null) {
                         String packageName = intent.getExtras().getString("packageName");
-                        if(EmptyString(packageName))
-                           packageName = intent.getExtras().getString("close_pkg");
+                        if (EmptyString(packageName))
+                            packageName = intent.getExtras().getString("close_pkg");
                         Action_SilentCLOSEAction(packageName);
                     }
                     break;
@@ -439,7 +439,8 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         try {
             method = Class.forName("android.app.ActivityManager").getMethod("forceStopPackage", String.class);
             method.invoke(mActivityManager, packageName);
-        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException |
+                 InvocationTargetException e) {
             //e.printStackTrace();
             MMLog.e(TAG, e.toString());
         }
@@ -694,12 +695,10 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             jsonObj.put("customer", pCustomer);
             if (networkInformation != null) {
                 jsonObj.put("mac", networkInformation.getMAC());
-                if(NotEmptyString(networkInformation.getInternetIP())) {
+                if (NotEmptyString(networkInformation.getInternetIP())) {
                     jsonObj.put("ip", networkInformation.getInternetIP());
                     jsonObj.put("region", networkInformation.regionToJson());
-                }
-                else
-                {
+                } else {
                     jsonObj.put("ip", null);
                     jsonObj.put("region", null);
                 }
@@ -759,7 +758,8 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         */
         if (tNetUtils != null && tNetUtils.isAvailable()) {
             this.networkInformation = networkInformation;
-            doNetStatusChangedFunction();
+            if (networkInformation.getAction() == NetworkInformation.NetworkInformation_onCONNECTIVITY)
+                doNetStatusChangedFunction();
         }
     }
 
