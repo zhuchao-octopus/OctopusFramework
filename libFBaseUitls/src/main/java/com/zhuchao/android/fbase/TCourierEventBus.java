@@ -1,6 +1,5 @@
 package com.zhuchao.android.fbase;
 
-
 import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
 
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.LockSupport;
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public class TCourierEventBus implements InvokeInterface {
     private final String TAG = "TCourierEventBus";
     //private final String DEFAULT_EVENT_METHOD_NAME = "onCourierEvent";
@@ -39,7 +40,7 @@ public class TCourierEventBus implements InvokeInterface {
         keepDoing = true;
         tTask = new TTask(TAG, this);
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //注册默认接口
     //@Deprecated
     public void registerEventObserver(@NotNull String tag, @NotNull TCourierEventListener courierEventListener) {
@@ -53,6 +54,7 @@ public class TCourierEventBus implements InvokeInterface {
         //printAllEventListener();
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //观察订阅
     public void registerEventObserver(@NotNull Object context) {
         //if (InvokerList.containsTag(tag)) return;
@@ -87,11 +89,12 @@ public class TCourierEventBus implements InvokeInterface {
             e.printStackTrace();
         }
     }
-
     public ObjectList getInvokerList() {
         return InvokerList;
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void postMain(EventCourierInterface eventCourier) {
         if (couriersLockQueueMA)
             CourierEventsQueueMainB.add(eventCourier);
@@ -162,6 +165,8 @@ public class TCourierEventBus implements InvokeInterface {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void CALLTODO(String tag) {
         //MMLog.log(TAG,"CALLTODO "+ keepDoing);
@@ -215,7 +220,6 @@ public class TCourierEventBus implements InvokeInterface {
     }
 
     private void poolingEventInvokerList_ab(ArrayList<Object> couriers) {
-        //try {
         for (int i = 0; i < couriers.size(); i++) {
             String postToTag = null;
             Object eventCourier = couriers.get(i);
@@ -236,14 +240,9 @@ public class TCourierEventBus implements InvokeInterface {
             }
         }
         couriers.clear();
-        //} catch (Exception e) {
-        //couriers.clear();
-        //     MMLog.e(TAG, "poolingEventInvokerList_ab FAILED " + e.toString());
-        // }
     }
 
     private void poolingEventInvokerList_abm(ArrayList<Object> couriers) {
-        //try {
         for (int i = 0; i < couriers.size(); i++) {
             String postToTag = null;
             Object eventCourier = couriers.get(i);
@@ -273,16 +272,13 @@ public class TCourierEventBus implements InvokeInterface {
             }
         }
         couriers.clear();
-        //} catch (Exception e) {
-        //couriers.clear();
-        //     MMLog.e(TAG, "poolingEventInvokerList_abm FAILED " + e.toString());
-        // }
     }
 
     private List<Object> getDefaultCourierEventListeners(String tag) {
         return InvokerList.getObjectsLike(tag);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //查找订阅的方法
     private void findCourierEventTypeSubscriber(String tag, Object courierEventListener) {
         Method[] methods = courierEventListener.getClass().getMethods();
@@ -449,6 +445,7 @@ public class TCourierEventBus implements InvokeInterface {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @SuppressWarnings("ClassExplicitlyAnnotation")
     static class defaultSubscriber implements TCourierSubscribe {
 

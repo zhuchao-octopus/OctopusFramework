@@ -11,6 +11,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class NetworkInformation {
+    public final static int NetworkInformation_onUnknow = 0;
+    public final static int NetworkInformation_onAvailable = 1;
+    public final static int NetworkInformation_onLosing = 2;
+    public final static int NetworkInformation_onLost = 3;
+    public final static int NetworkInformation_onUnavailable = 4;
+    public final static int NetworkInformation_onRSSI = 5;
+    public final static int NetworkInformation_onCONNECTIVITY = 6;
+    int action;
     boolean isAvailable;
     boolean isConnected;
     int netType;
@@ -33,6 +41,7 @@ public class NetworkInformation {
 
 
     public NetworkInformation() {
+        this.action = NetworkInformation_onUnknow;
         this.isAvailable = false;
         this.isConnected = false;
         this.netType = -1;
@@ -52,6 +61,14 @@ public class NetworkInformation {
         organization = "";
         isp = "";
         zip = "";
+    }
+
+    public int getAction() {
+        return action;
+    }
+
+    public void setAction(int action) {
+        this.action = action;
     }
 
     public boolean isAvailable() {
@@ -131,7 +148,8 @@ public class NetworkInformation {
     }
 
     public String toString() {
-        String str = "" + isAvailable;
+        String str = "" + action;
+        str += "," + isAvailable;
         str += "," + isConnected;
         str += "," + MAC;
         str += "," + wifiMAC;

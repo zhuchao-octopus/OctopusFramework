@@ -23,14 +23,20 @@ public class TPlatform {
     private static final String TAG = "TPlatform";
     private static Method methodGetProperty = null;
     private static Method methodSetProperty = null;
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
     public static final String OUTPUT_HDMI = "hdmi";
     public static final String OUTPUT_I2S = "i2s";
     public static final String OUTPUT_USB = "usb";
     public static final String OUTPUT_BT = "bt";
+    public static final String OUTPUT_SPDIF = "spdif";
     public static final String OUTPUT_CODEC = "codec";
     public static final String OUTPUT_HDMI_CODEC = "hdmicodec";
     public static final String OUTPUT_ALL = "all";
 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
     public static final String INPUT_HDMI = "hdmi";
     public static final String INPUT_I2S = "i2s";
     public static final String INPUT_USB = "usb";
@@ -47,7 +53,8 @@ public class TPlatform {
             Method get = c.getMethod("get", String.class);
             result = (String) get.invoke(c, key);
 
-        } catch (ClassNotFoundException | InvocationTargetException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException e) {
+        } catch (ClassNotFoundException | InvocationTargetException | IllegalArgumentException |
+                 IllegalAccessException | NoSuchMethodException e) {
             e.printStackTrace();
         }
         return result;
@@ -58,7 +65,8 @@ public class TPlatform {
             @SuppressLint("PrivateApi") Class<?> c = Class.forName("android.os.SystemProperties");
             Method set = c.getMethod("set", String.class, String.class);
             set.invoke(c, key, val);
-        } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException |
+                 InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
     }
@@ -119,10 +127,7 @@ public class TPlatform {
     public static boolean t507IsI2SMicAudioInput() {
         String str = GetAudioInputPolicy();
         if (EmptyString(str)) return false;
-        if (str.startsWith(INPUT_I2S) || str.startsWith(INPUT_BUILD_IN_MIC))
-            return true;
-        else
-            return false;
+        return str.startsWith(INPUT_I2S) || str.startsWith(INPUT_BUILD_IN_MIC);
     }
 
     public static boolean t507IsUSBMicAudioInput() {
@@ -137,10 +142,7 @@ public class TPlatform {
     public static boolean t507IsCodecMicAudioInput() {
         String str = GetAudioInputPolicy();
         if (EmptyString(str)) return false;
-        if (str.startsWith(INPUT_CODEC))
-            return true;
-        else
-            return false;
+        return str.startsWith(INPUT_CODEC);
     }
 
     public static void t507SetUSBMiCAudioInput() {
@@ -173,28 +175,19 @@ public class TPlatform {
     public static boolean IsI2SMicAudioInput() {
         String str = GetAudioInputPolicy();
         if (EmptyString(str)) return false;
-        if (str.startsWith(INPUT_I2S) || str.startsWith(INPUT_BUILD_IN_MIC))
-            return true;
-        else
-            return false;
+        return str.startsWith(INPUT_I2S) || str.startsWith(INPUT_BUILD_IN_MIC);
     }
 
     public static boolean IsUSBMicAudioInput() {
         String str = GetAudioInputPolicy();
         if (EmptyString(str)) return false;
-        if (str.startsWith(INPUT_USB))
-            return true;
-        else
-            return false;
+        return str.startsWith(INPUT_USB);
     }
 
     public static boolean IsCodecMicAudioInput() {
         String str = GetAudioInputPolicy();
         if (EmptyString(str)) return false;
-        if (str.startsWith(INPUT_CODEC))
-            return true;
-        else
-            return false;
+        return str.startsWith(INPUT_CODEC);
     }
 
     public static void SetUSBMiCAudioInput() {
@@ -232,11 +225,7 @@ public class TPlatform {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public static void resetDebugLogOnOffByProperty() {
         String sOnOff = GetSystemProperty(MMLog.LOG_SYSTEM_PROPERTY);
-        if (NotEmptyString(sOnOff) && sOnOff.toLowerCase().contains("false")) {
-            MMLog.setDebugOnOff(false);
-        } else {
-            MMLog.setDebugOnOff(true);
-        }
+        MMLog.setDebugOnOff(!NotEmptyString(sOnOff) || !sOnOff.toLowerCase().contains("false"));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -291,11 +280,9 @@ public class TPlatform {
             while ((read = inIs.read()) != -1) {
                 byteArrayOutputStream.write(read);
             }
-            result = new String(byteArrayOutputStream.toByteArray());
-            if (inIs != null)
-                inIs.close();
-            if (errIs != null)
-                errIs.close();
+            result = byteArrayOutputStream.toString();
+            inIs.close();
+            errIs.close();
             process.destroy();
         } catch (IOException e) {
             result = e.getMessage();
@@ -325,16 +312,18 @@ public class TPlatform {
         String cmd = "cat /proc/cpuinfo";
         try {
             Process p = Runtime.getRuntime().exec(cmd);
-            String data = null;
+            StringBuilder data = null;
             BufferedReader ie = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String error = null;
             while ((error = ie.readLine()) != null && !error.equals("null")) {
-                data += error + "\n";
+                assert false;
+                data.append(error).append("\n");
             }
             String line = null;
             while ((line = in.readLine()) != null && !line.equals("null")) {
-                data += line + "\n";
+                assert false;
+                data.append(line).append("\n");
                 if (line.contains("Serial\t\t:")) {
                     String[] SerialStr = line.split(":");
                     if (SerialStr.length == 2) {

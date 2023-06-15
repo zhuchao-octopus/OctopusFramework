@@ -10,7 +10,6 @@ ext {
     GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'wms'
-    //PUBLISH_VERSION = '1.04'
 }
 
 android {
@@ -22,7 +21,7 @@ android {
         minSdk 24
         targetSdk 33
         versionCode 103
-        versionName "1.04"
+        versionName "1.05"
     }
 
     buildTypes {

@@ -3,6 +3,7 @@ package com.zhuchao.android.fbase;
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.app.usage.UsageStats;
@@ -66,10 +67,18 @@ public class TAppUtils {
         return AllAppInfo;
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
     private synchronized void getAllAppsInfor() {
         AllAppInfo.clear();
         //获得所有的安装包
-        List<PackageInfo> installedPackages = mPackageManager.getInstalledPackages(0);
+        List<PackageInfo> installedPackages = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            PackageManager.PackageInfoFlags packageInfoFlags = PackageManager.PackageInfoFlags.of(0);
+            installedPackages = mPackageManager.getInstalledPackages(packageInfoFlags);
+        } else {
+            installedPackages = mPackageManager.getInstalledPackages(0);
+        }
+
         //遍历每个安装包，获取对应的信息
         for (PackageInfo packageInfo : installedPackages) {
             final AppInfo appInfo = new AppInfo();
@@ -341,31 +350,20 @@ public class TAppUtils {
 
     public void install(String filePath) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            Uri contentUri = FileProvider.getUriForFile(mContext, mContext.getPackageName() + ".fileProvider", new File(filePath));
-            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
-            MMLog.log(TAG, "fileProvider path = " + mContext.getPackageName() + ".fileProvider");
-        } else {
-            intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        }
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Uri contentUri = FileProvider.getUriForFile(mContext, mContext.getPackageName() + ".fileProvider", new File(filePath));
+        intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+        MMLog.log(TAG, "fileProvider path = " + mContext.getPackageName() + ".fileProvider");
         mContext.startActivity(intent);
     }
 
     public static void install(Context context, String filePath) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         //BuildConfig.LIBRARY_PACKAGE_NAME
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Uri contentUri = FileProvider.getUriForFile(context, context.getPackageName() + ".fileProvider", new File(filePath));
-            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
-            MMLog.log(TAG, "fileProvider path = " + context.getPackageName() + ".fileProvider");
-        } else {
-            intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        }
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Uri contentUri = FileProvider.getUriForFile(context, context.getPackageName() + ".fileProvider", new File(filePath));
+        intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+        MMLog.log(TAG, "fileProvider path = " + context.getPackageName() + ".fileProvider");
         context.startActivity(intent);
     }
 
@@ -440,7 +438,7 @@ public class TAppUtils {
         return false;
     }
 
-    public synchronized static boolean uninstallApk(String packageName) {
+    public synchronized static void uninstallApk(String packageName) {
         try {
             MMLog.i(TAG, "going to uninstall app packageName=" + packageName);
             String[] args = {"pm", "uninstall", "-k", "--user", "0", packageName};
@@ -464,9 +462,6 @@ public class TAppUtils {
                     MMLog.i(TAG, "uninstall " + errorMsg.toString());
                 if (NotEmptyString(successMsg.toString()) && successMsg.toString().contains("Success")) {
                     MMLog.i(TAG, "uninstall " + successMsg.toString());
-                    return true;
-                } else {
-                    return false;
                 }
             } catch (Exception e) {
                 //MMLog.e(TAG, e.toString());
@@ -501,7 +496,6 @@ public class TAppUtils {
             //MMLog.e(TAG, e.toString());
             e.printStackTrace();
         }
-        return false;
     }
 
     public synchronized static void killApplication(Context context, String packageName) {
@@ -511,7 +505,8 @@ public class TAppUtils {
             method = Class.forName("android.app.ActivityManager").getMethod("forceStopPackage", String.class);
             method.invoke(mActivityManager, packageName);
             MMLog.i(TAG, "Kill application: " + packageName);
-        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException |
+                 InvocationTargetException e) {
             MMLog.log(TAG, e.toString());//e.printStackTrace();
         }
     }
@@ -558,24 +553,19 @@ public class TAppUtils {
     public static long getAppTotalForegroundTime(Context context) {
         long END_TIME = System.currentTimeMillis();
         UsageStats usageStats = getPackageUsageStats(context, END_TIME - 60000, END_TIME);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return usageStats != null ? usageStats.getTotalTimeInForeground() : 0;
-        }
-        return 0;
+        return usageStats != null ? usageStats.getTotalTimeInForeground() : 0;
     }
 
     /**
      * 获取记录当前应用的UsageStats对象
      */
     public static UsageStats getPackageUsageStats(Context context, long startTime, long endTime) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            List<UsageStats> UsageStatsList = getUsageStatsList(context, startTime, endTime);
-            if (UsageStatsList == null || UsageStatsList.isEmpty()) return null;
+        List<UsageStats> UsageStatsList = getUsageStatsList(context, startTime, endTime);
+        if (UsageStatsList == null || UsageStatsList.isEmpty()) return null;
 
-            for (UsageStats usageStats : UsageStatsList) {
-                if (TextUtils.equals(usageStats.getPackageName(), context.getPackageName())) {
-                    return usageStats;
-                }
+        for (UsageStats usageStats : UsageStatsList) {
+            if (TextUtils.equals(usageStats.getPackageName(), context.getPackageName())) {
+                return usageStats;
             }
         }
         return null;
@@ -585,14 +575,10 @@ public class TAppUtils {
         String topClassName = null;
         long END_TIME = System.currentTimeMillis();
         ActivityManager activityManager = (ActivityManager) context.getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            topClassName = activityManager.getRunningTasks(1).get(0).topActivity.getPackageName();
-        } else {
-            UsageStats initStat = getForegroundUsageStats(context, END_TIME - 60000 * 60, END_TIME);
-            if (initStat != null) {
-                topClassName = initStat.getPackageName();
-                MMLog.log(TAG, "getForegroundActivityName topClassName=" + topClassName);
-            }
+        UsageStats initStat = getForegroundUsageStats(context, END_TIME - 60000 * 60, END_TIME);
+        if (initStat != null) {
+            topClassName = initStat.getPackageName();
+            MMLog.log(TAG, "getForegroundActivityName topClassName=" + topClassName);
         }
         return topClassName;
     }
@@ -603,13 +589,11 @@ public class TAppUtils {
      */
     private static UsageStats getForegroundUsageStats(Context context, long startTime, long endTime) {
         UsageStats usageStatsResult = null;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            List<UsageStats> UsageStatsList = getUsageStatsList(context, startTime, endTime);
-            if (UsageStatsList == null || UsageStatsList.isEmpty()) return null;
-            for (UsageStats usageStats : UsageStatsList) {
-                if (usageStatsResult == null || usageStatsResult.getLastTimeUsed() < usageStats.getLastTimeUsed()) {
-                    usageStatsResult = usageStats;//找出最最近使用过的APP
-                }
+        List<UsageStats> UsageStatsList = getUsageStatsList(context, startTime, endTime);
+        if (UsageStatsList == null || UsageStatsList.isEmpty()) return null;
+        for (UsageStats usageStats : UsageStatsList) {
+            if (usageStatsResult == null || usageStatsResult.getLastTimeUsed() < usageStats.getLastTimeUsed()) {
+                usageStatsResult = usageStats;//找出最最近使用过的APP
             }
         }
         return usageStatsResult;
@@ -619,22 +603,19 @@ public class TAppUtils {
      * 通过UsageStatsManager获取List<UsageStats>集合
      */
     public static List<UsageStats> getUsageStatsList(Context context, long startTime, long endTime) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            UsageStatsManager manager = (UsageStatsManager) context.getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
-            //UsageStatsManager.INTERVAL_WEEKLY，UsageStatsManager的参数定义了5个，具体查阅源码
-            List<UsageStats> UsageStatsList = manager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, startTime, endTime);
-            if (UsageStatsList == null || UsageStatsList.size() == 0) {// 没有权限，获取不到数据
-                //Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-                //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                //context.getApplicationContext().startActivity(intent);
-                //Toast t = Toast.makeText(context,"need permmition to access settings .", Toast.LENGTH_LONG);
-                //t.show();
-                //MMLog.log(TAG, "getUsageStatsList fail,need Settings.ACTION_USAGE_ACCESS_SETTINGS permission");
-                return null;
-            }
-            return UsageStatsList;
+        UsageStatsManager manager = (UsageStatsManager) context.getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
+        //UsageStatsManager.INTERVAL_WEEKLY，UsageStatsManager的参数定义了5个，具体查阅源码
+        List<UsageStats> UsageStatsList = manager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, startTime, endTime);
+        if (UsageStatsList == null || UsageStatsList.size() == 0) {// 没有权限，获取不到数据
+            ///Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            ///intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ///context.getApplicationContext().startActivity(intent);
+            ///Toast t = Toast.makeText(context,"need permmition to access settings .", Toast.LENGTH_LONG);
+            ///t.show();
+            ///MMLog.log(TAG, "getUsageStatsList fail,need Settings.ACTION_USAGE_ACCESS_SETTINGS permission");
+            return null;
         }
-        return null;
+        return UsageStatsList;
     }
 
     public static void startSystemSetting(Context context) {
@@ -751,10 +732,8 @@ public class TAppUtils {
             this.versionCodeName = versionCodeName;
         }
 
-        @Override
-        public String toString() {
-            String str = "Name=" + name + ",Version=" + versionCode + ",PackageName=" + packageName + ",Ico=" + icon + ",Size=" + size + ",User=" + isUserApp + ",Rom=" + isRom + ",Path=" + filePath;
-            return str;
+        public String totoString() {
+            return "Name=" + name + ",Version=" + versionCode + ",PackageName=" + packageName + ",Ico=" + icon + ",Size=" + size + ",User=" + isUserApp + ",Rom=" + isRom + ",Path=" + filePath;
         }
     }
 }

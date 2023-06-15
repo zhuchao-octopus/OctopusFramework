@@ -9,14 +9,15 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 
 import androidx.annotation.NonNull;
+
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.eventinterface.PlaybackEvent;
 import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
 
-import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.interfaces.IVLCVout;
 
 import java.io.FileDescriptor;
 import java.util.ArrayList;
@@ -575,7 +576,7 @@ public class OPlayer extends PlayControl {
         if (mMediaPlayer == null) return mtd;
 
         MediaPlayer.TrackDescription[] TrackDescriptions = mMediaPlayer.getAudioTracks();
-        if(TrackDescriptions == null) return mtd;
+        if (TrackDescriptions == null) return mtd;
 
         for (MediaPlayer.TrackDescription td : TrackDescriptions) {
             mtd.put(td.id, td.name);
@@ -639,10 +640,9 @@ public class OPlayer extends PlayControl {
         @Override
         public void onSurfacesCreated(IVLCVout ivlcVout) {
             MMLog.log(TAG, "iv Vout -----------> onSurfacesCreated");
-            //MMLog.log(TAG, "iv Vout getWidth() = "+ ivlcVout.getWidth()+",getHeight() = "+ivlcVout.getHeight());
             try {
                 if (mSurfaceView != null) {
-                    MMLog.log(TAG, "mSurfaceView.getWidth() = "+ mSurfaceView.getWidth()+",getHeight() = "+mSurfaceView.getHeight());
+                    MMLog.log(TAG, "mSurfaceView.getWidth() = " + mSurfaceView.getWidth() + ",getHeight() = " + mSurfaceView.getHeight());
                     vlcVout.setWindowSize(mSurfaceView.getWidth(), mSurfaceView.getHeight());
                     playerStatusInfo.setSurfaceH(mSurfaceView.getHeight());
                     playerStatusInfo.setSurfaceW(mSurfaceView.getWidth());

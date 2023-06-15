@@ -56,7 +56,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
 
         PTask pTask = new PTask(tName, this);
         addItem(pTask.getTaskTag(), pTask);
-        MMLog.log(TAG, "create PTask name = " + pTask.getTaskName() + ",tag = " + pTask.getTaskTag());
+        MMLog.log(TAG, "Create PTask tName = " + pTask.getTaskName());// + ",tag = " + pTask.getTaskTag());
         return pTask;
     }
 
@@ -142,7 +142,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
         if (existObject(tTask.tTag)) {
 
             setTaskCounter(getTaskCounter() + 1);
-            MMLog.log(TAG, "pTask finished,tTag = " + tTask.tTag + ",total:" + getCount() + ",completed:" + taskCounter);
+            MMLog.log(TAG, "pTask finished tTag = " + tTask.tTag + ",total:" + getCount() + ",completed:" + taskCounter);
 
             if (getTaskCounter() == getCount()) {
                 if (tTask.getCallBackHandler() != null) {

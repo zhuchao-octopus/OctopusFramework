@@ -23,6 +23,8 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.zhuchao.android.fbase.bean.FileBean;
 import com.zhuchao.android.fbase.bean.ImgFolderBean;
 import com.zhuchao.android.fbase.bean.LMusic;
@@ -68,6 +70,23 @@ public class FileUtils {
     public static final int TYPE_DOC = 0;
     public static final int TYPE_APK = 1;
     public static final int TYPE_ZIP = 2;
+
+    @SuppressWarnings("unchecked")
+    public static <T> T toType(Object obj) {
+        return (T) obj;
+    }
+    @SuppressWarnings("unchecked")
+    public static <T> T toType(Object obj, Class<T> classOfT) {
+        return (T) obj;
+    }
+    public static <T> T fromJson(String json, Class<T> classOfT) {
+        try {
+            return new Gson().fromJson(json, classOfT);
+        } catch (JsonSyntaxException e) {
+            //MMLog.e(TAG, "fromJson failed!");
+            return null;
+        }
+    }
 
     public static boolean EmptyString(String str) {
         return TextUtils.isEmpty(str);
@@ -1191,8 +1210,7 @@ public class FileUtils {
         try {
             //fis = new FileInputStream(fileName);
             ois = new ObjectInputStream(fis);
-            Object object = ois.readObject();
-            return object;
+            return ois.readObject();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

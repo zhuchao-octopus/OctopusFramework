@@ -6,9 +6,11 @@
       <w>datas</w>
       <w>destory</w>
       <w>facedetect</w>
+      <w>hdmicodec</w>
       <w>hmmss</w>
       <w>infor</w>
       <w>infos</w>
+      <w>keyevent</w>
       <w>libvlc</w>
       <w>mediarender</w>
       <w>mediastore</w>
@@ -18,6 +20,8 @@
       <w>reconfig</w>
       <w>sout</w>
       <w>tian</w>
+      <w>ttask</w>
+      <w>unknow</w>
       <w>vout</w>
       <w>zhuchao</w>
     </words>

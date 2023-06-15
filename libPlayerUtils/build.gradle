@@ -12,7 +12,7 @@ ext {
     //def LIBVLC_AAR = 'libvlc-all-3.5.0-eap8.aar' //PUBLISH_VERSION = '>=1.2'
     //PUBLISH_VERSION = '2.6' //v2.6 stable
 
-    PUBLISH_VERSION = '2.7' //v2.6 stable
+    PUBLISH_VERSION = '2.8' //libvlc-3.5.4-armeabi-v7a-release.aar
 }
 
 afterEvaluate {
@@ -67,16 +67,13 @@ android {
 
 dependencies {
     api files('libs/clink210.jar')
-    compileOnly files('libs/libvlc-armv7-3.1.0.aar')
-
-    //compileOnly files('libs/libvlc-all-3.5.0-eap8.aar')
-    //compileOnly 'org.videolan.android:libvlc-all:3.5.0-eap8'
-    //implementation group: 'org.videolan.android', name: 'libvlc-all', version: '4.0.0-eap8'
-    //implementation group: 'org.videolan.android', name: 'libvlc-all', version: '3.5.1'
-    //implementation project(path: ':libDecodeCore')
-
+    compileOnly files('libs/libvlc-3.5.4-armeabi-v7a-release.aar')
     implementation project(path: ':libFBaseUitls')
     implementation project(path: ':libINetUtils')
     implementation project(path: ':libJOSUtils')
 
+    //compileOnly 'org.videolan.android:libvlc-all:3.5.0-eap8'
+    //implementation group: 'org.videolan.android', name: 'libvlc-all', version: '4.0.0-eap8'
+    //implementation group: 'org.videolan.android', name: 'libvlc-all', version: '3.5.1'
+    //implementation project(path: ':libDecodeCore')
 }

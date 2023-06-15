@@ -3,6 +3,7 @@ package com.zhuchao.android.net;
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -44,48 +45,48 @@ import java.util.regex.Pattern;
 public class TNetUtils extends ConnectivityManager.NetworkCallback {
     public static final String TAG = "TNetUtils";
     private Context mContext;
-    private final NetworkRequest networkRequest;
     private Handler MainLooperHandler = null;
     private NetworkStatusListener networkStatusListener;
     private final NetworkInformation networkInformation;
-
     private final TTask tTask_ParseExternalIP = new TTask("getInternetStatus");
     private final TTask tTask_NetworkCallback = new TTask("NetworkCallback ");
-
     public interface NetworkStatusListener {
         void onNetStatusChanged(NetworkInformation networkInformation);
     }
-
     @Override
     public void onAvailable(@NonNull Network network) {
         super.onAvailable(network);
         MMLog.log(TAG, "onAvailable()");
+        networkInformation.setAction(NetworkInformation.NetworkInformation_onAvailable);
     }
 
     @Override
     public void onLosing(@NonNull Network network, int maxMsToLive) {
         super.onLosing(network, maxMsToLive);
         MMLog.log(TAG, "onLosing()");
+        networkInformation.setAction(NetworkInformation.NetworkInformation_onLosing);
     }
 
     @Override
     public void onLost(@NonNull Network network) {
         super.onLost(network);
         MMLog.log(TAG, "onLost()");
+        networkInformation.setAction(NetworkInformation.NetworkInformation_onLost);
     }
 
     @Override
     public void onUnavailable() {
         super.onUnavailable();
         MMLog.log(TAG, "onUnavailable()");
+        networkInformation.setAction(NetworkInformation.NetworkInformation_onUnavailable);
     }
 
     public TNetUtils(Context context) {
+        networkStatusListener = null;//前端监听接口
         mContext = context;//.getApplicationContext()
         MainLooperHandler = new Handler(Looper.getMainLooper());
         networkInformation = new NetworkInformation();
-        networkStatusListener = null;
-        networkRequest = new NetworkRequest.Builder()
+        NetworkRequest networkRequest = new NetworkRequest.Builder()
                 .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
                 .build();
@@ -159,7 +160,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            MMLog.log(TAG, "NetworkChangedReceiver action = " + action.toString());
+            MMLog.log(TAG, "NetworkChangedReceiver action=" + action.toString());
             if (tTask_NetworkCallback.isBusy()) {
                 MMLog.log(TAG, "NetworkChangedReceiver is working");
                 return;
@@ -168,23 +169,14 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
                 @Override
                 public void CALLTODO(String tag) {
                     if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                        networkInformation.setAction(NetworkInformation.NetworkInformation_onCONNECTIVITY);
                         GetNetStatusInformation();
                     } else if (action.equals(WifiManager.RSSI_CHANGED_ACTION)) {
+                        networkInformation.setAction(NetworkInformation.NetworkInformation_onRSSI);
                         UpdateWiFiStrength();
                     }
                 }
             }).startAgain();
-
-            /*runThreadNotOnMainUIThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                        GetNetStatusInformation();
-                    } else if (action.equals(WifiManager.RSSI_CHANGED_ACTION)) {
-                        UpdateWiFiStrength();
-                    }
-                }
-            });*/
         }
     };
 
@@ -192,14 +184,11 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         try {
             networkInformation.isAvailable = isAvailable();
             if (networkInformation.isAvailable) {
-                networkInformation.isConnected = isLocalNetConnected();
+                networkInformation.isConnected = isNetAvailable();
                 networkInformation.netType = getConnectType();
                 networkInformation.localIP = getLocalIpAddress();
                 networkInformation.MAC = getDeviceMAC();
                 networkInformation.wifiMAC = getWiFiMacAddress();//this.getWifiMac();
-                //if (EmptyString(networkInformation.internetIP)) {
-                //    GetInternetIp();
-                //}
             }
             callBackNetworkStatus();
         } catch (Exception e) {
@@ -246,6 +235,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         return true;
     }
 
+    @Deprecated
     public boolean isLocalNetConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager == null) return false;
@@ -256,6 +246,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         return false;
     }
 
+    @Deprecated
     public boolean isWifiConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager == null) return false;
@@ -266,6 +257,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         return false;
     }
 
+    @Deprecated
     public boolean isMobileConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager == null) return false;
@@ -284,6 +276,45 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
             return mNetworkInfo.getType();
         }
         return -1;
+    }
+
+    public boolean isNetAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        Network network = connectivityManager.getActiveNetwork();
+        if (null == network) {
+            return false;
+        }
+        NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
+        if (null == capabilities) {
+            return false;
+        }
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+    }
+
+    public boolean isWifiAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        Network network = connectivityManager.getActiveNetwork();
+        if (null == network) {
+            return false;
+        }
+        NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
+        if (null == capabilities) {
+            return false;
+        }
+        return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI);
+    }
+
+    public boolean isMobileAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        Network network = connectivityManager.getActiveNetwork();
+        if (null == network) {
+            return false;
+        }
+        NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
+        if (null == capabilities) {
+            return false;
+        }
+        return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR);
     }
 
     public synchronized static boolean pingInternet(String ip) {
@@ -385,12 +416,13 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
     }
 
     // 从系统文件中获取WIFI MAC地址
-    //@SuppressLint("MissingPermission")
+
+    @SuppressLint("HardwareIds")
     public String getWiFiMacAddress() {
         WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         if (wifiManager == null) return "";
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        String wifiMac = wifiInfo.getMacAddress();
+        @SuppressLint("HardwareIds") String wifiMac = wifiInfo.getMacAddress();
         if (NotEmptyString(wifiMac))
             return wifiMac.toUpperCase();
         return wifiInfo.getMacAddress();

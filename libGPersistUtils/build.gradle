@@ -13,7 +13,8 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                components.getByName('release')
+                from components.release
+                //components.getByName('release')
                 groupId PUBLISH_GROUP_ID
                 artifactId PUBLISH_ARTIFACT_ID
                 version PUBLISH_VERSION
