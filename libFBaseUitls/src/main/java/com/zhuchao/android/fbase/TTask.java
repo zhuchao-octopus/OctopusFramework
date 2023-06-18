@@ -94,12 +94,17 @@ public class TTask implements TTaskInterface {
             MMLog.i(TAG, "this task is busy! not allow invoking another method tag = " + this.tTag);
             return this;
         }
-        invokeInterface = callFunction;
+        if(invokeInterface != null)
+           invokeInterface = callFunction;
         return this;
     }
 
     public InvokeInterface getInvokeInterface() {
         return invokeInterface;
+    }
+
+    public void setInvokeInterface(InvokeInterface invokeInterface) {
+        this.invokeInterface = invokeInterface;
     }
 
     public int getTaskCallbackCount() {

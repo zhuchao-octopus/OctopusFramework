@@ -380,6 +380,7 @@ public class TAppUtils {
     }
 
     public synchronized static boolean installSilent(Context context, String apkPath) {
+        boolean ret = false;
         File file = new File(apkPath);
         String apkName = apkPath.substring(apkPath.lastIndexOf(File.separator) + 1, apkPath.lastIndexOf(".apk"));
         PackageManager packageManager = context.getPackageManager();
@@ -413,7 +414,7 @@ public class TAppUtils {
             IntentSender intentSender = pendingIntent.getIntentSender();
             session.commit(intentSender);//提交启动安装
             //MMLog.log(TAG, "installed: "+apkPath);
-            return true;
+            ret = true;
         } catch (Exception e) {
             MMLog.log(TAG, e.toString());
             if (session != null) {
@@ -435,7 +436,7 @@ public class TAppUtils {
                 }
             }
         }
-        return false;
+        return ret;
     }
 
     public synchronized static void uninstallApk(String packageName) {

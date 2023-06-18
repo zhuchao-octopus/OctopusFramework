@@ -97,8 +97,10 @@ public class TTaskQueue {
 
 
     public TTaskQueue addTTask(TTask task) {
-        if (!concurrentLinkedQueue.contains(task))
+        if (!concurrentLinkedQueue.contains(task)) {
             concurrentLinkedQueue.add(task);
+            //MMLog.log(TAG,"TaskQueue added "+task.getTaskName());
+        }
         return this;
     }
 

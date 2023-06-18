@@ -462,6 +462,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
 
     private synchronized void Action_SilentInstallAction(String filePath, boolean autostart) {
         if (EmptyString(filePath)) {
+            MMLog.log(TAG, "file is not exists! --->" + filePath);
             return;
         }
         if (!filePath.toLowerCase().endsWith(".apk")) {

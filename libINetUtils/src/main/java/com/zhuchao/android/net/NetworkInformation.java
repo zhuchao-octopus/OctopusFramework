@@ -18,6 +18,8 @@ public class NetworkInformation {
     public final static int NetworkInformation_onUnavailable = 4;
     public final static int NetworkInformation_onRSSI = 5;
     public final static int NetworkInformation_onCONNECTIVITY = 6;
+
+    public final static int NetworkInformation_onOther = 7;
     int action;
     boolean isAvailable;
     boolean isConnected;

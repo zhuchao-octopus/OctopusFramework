@@ -534,8 +534,10 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         tTask_ParseExternalIP.callbackHandler(new TaskCallback() {
             @Override
             public void onEventTask(Object obj, int status) {
-                if (networkInformation.internetIP.length() > 4)
+                if (networkInformation.internetIP.length() > 4) {
+                    networkInformation.setAction(NetworkInformation.NetworkInformation_onOther);
                     callBackNetworkStatus();
+                }
                 tTask_ParseExternalIP.freeFree();
             }
         });
