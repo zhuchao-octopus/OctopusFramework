@@ -345,9 +345,16 @@ public class OPlayer extends PlayControl {
     }
 
     public void play() {
-        if (media == null) return;
+        if (media == null) {
+            MMLog.log(TAG, "call play() media = null");
+            return;
+        }
+        if (mMediaPlayer == null) {
+            MMLog.log(TAG, "call play() mMediaPlayer = null");
+            return;
+        }
+        MMLog.log(TAG, "call native play()");
         mMediaPlayer.play();
-        //MMLog.log(TAG,"play------>");
     }
 
     public void pause() {
@@ -639,7 +646,7 @@ public class OPlayer extends PlayControl {
 
         @Override
         public void onSurfacesCreated(IVLCVout ivlcVout) {
-            MMLog.log(TAG, "iv Vout -----------> onSurfacesCreated");
+            MMLog.log(TAG, "onSurfacesCreated.IVLCVout");
             try {
                 if (mSurfaceView != null) {
                     MMLog.log(TAG, "mSurfaceView.getWidth() = " + mSurfaceView.getWidth() + ",getHeight() = " + mSurfaceView.getHeight());
@@ -649,19 +656,20 @@ public class OPlayer extends PlayControl {
                 } else if (mTextureView != null) {
                     vlcVout.setWindowSize(mTextureView.getWidth(), mTextureView.getHeight());
                 }
-
-                mMediaPlayer.setAspectRatio(null);
-                mMediaPlayer.setScale(0);
-                playerStatusInfo.setSurfacePrepared(true);
+                if (mMediaPlayer != null) {
+                    mMediaPlayer.setAspectRatio(null);
+                    mMediaPlayer.setScale(0);
+                    playerStatusInfo.setSurfacePrepared(true);
+                }
             } catch (Exception e) {
                 //e.printStackTrace();
-                MMLog.log(TAG, "iv Vout --->" + e.toString());
+                MMLog.e(TAG, "onSurfacesCreated.IVLCVout, " + e.toString());
             }
         }
 
         @Override
         public void onSurfacesDestroyed(IVLCVout ivlcVout) {
-            //MLog.log(TAG, "IVLCVoutCallBack ---> onSurfacesDestroyed");
+            MMLog.log(TAG, "IVLCVoutCallBack onSurfacesDestroyed");
             playerStatusInfo.setSurfacePrepared(false);
         }
     }

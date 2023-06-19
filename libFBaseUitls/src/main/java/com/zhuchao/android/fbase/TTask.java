@@ -106,7 +106,9 @@ public class TTask implements TTaskInterface {
     public void setInvokeInterface(InvokeInterface invokeInterface) {
         this.invokeInterface = invokeInterface;
     }
-
+    public void clearInvokeInterface() {
+        this.invokeInterface = null;
+    }
     public int getTaskCallbackCount() {
         return taskCallbackCount;
     }

@@ -128,8 +128,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             }
         }
 
-
-        MMLog.log(TAG, "StartPlay--> " + oMedia.getMovie().getSrcUrl());
+        MMLog.log(TAG, "StartPlay--> " + oMedia.getMovie().getSrcUrl() + ",playMethod = "+playMethod);
         //this.oMediaLoading = true;
         if (tryPlayCount <= 0)
             tryPlayCount = tryCountForError;
@@ -137,10 +136,10 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         this.oMediaPlaying.with(context);
         this.oMediaPlaying.setMagicNumber(magicNumber);
         this.oMediaPlaying.callback(this);
-        if (surfaceView == null)
-            MMLog.log(TAG, "surfaceView = null");
-        else
-            MMLog.log(TAG, "surfaceView = " + surfaceView.toString());
+        //if (surfaceView == null)
+        //    MMLog.log(TAG, "surfaceView = null");
+        //else
+        //    MMLog.log(TAG, "surfaceView = " + surfaceView.toString());
 
         oMediaPlaying.setScale(0);
         oMediaPlaying.setAspectRatio(null);
@@ -258,8 +257,9 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             //    break;
             case PlaybackEvent.Status_Playing:
             case PlaybackEvent.Status_Paused:
+                MMLog.log(TAG, "playPause() timeout = " + playTimeOut);
                 if (oMediaPlaying.getFPlayer() != null && oMediaPlaying.getFPlayer().getPlayerStatusInfo().isSourcePrepared())
-                    oMediaPlaying.playPause();
+                    oMediaPlaying.playPause_t();
                 else
                     autoPlay();
                 break;

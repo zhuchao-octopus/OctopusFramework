@@ -190,7 +190,6 @@ public class OMedia implements Serializable, PlayerCallback {
         }
         if (tTask_play.isBusy()) {
             MMLog.i(TAG, "playOn_t(),is busy! Keeping=" + tTask_play.isKeeping() + "," + tTask_play.getProperties().getString("title"));
-
             if (tTask_play.isTimeOut(15000)) {
                 MMLog.i(TAG, "task is timeout free ");
                 tTask_play.freeFree();
@@ -198,6 +197,7 @@ public class OMedia implements Serializable, PlayerCallback {
             }
             return;
         }
+        tTask_play.clearInvokeInterface();
         tTask_play.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {
@@ -218,8 +218,6 @@ public class OMedia implements Serializable, PlayerCallback {
                     //e.printStackTrace();
                     MMLog.log(TAG, e.toString());
                 }
-
-                tTask_play.resetAll();
             }
         });
         tTask_play.getProperties().putString("title", getName());
@@ -327,16 +325,17 @@ public class OMedia implements Serializable, PlayerCallback {
         }
     }
 
-    public void playPause() {
+    public void playPause_t() {
         if (tTask_play.isBusy()) {
             MMLog.i(TAG, "playPause(),player is busy!isKeeping=" + tTask_play.isKeeping() + "," + tTask_play.getProperties().getString("title"));
             return;
         }
+        tTask_play.clearInvokeInterface();
         tTask_play.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {
                 if (isPlayerReady()) {
-                    MMLog.i(TAG, "playPause() on " + FPlayer.getTAG());
+                    MMLog.i(TAG, "playPause_t() on " + FPlayer.getTAG());
                     FPlayer.playPause();
                 }
             }
