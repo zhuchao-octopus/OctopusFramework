@@ -94,7 +94,7 @@ public class TTask implements TTaskInterface {
             MMLog.i(TAG, "this task is busy! not allow invoking another method tag = " + this.tTag);
             return this;
         }
-        if(invokeInterface != null)
+        if(invokeInterface == null)
            invokeInterface = callFunction;
         return this;
     }
@@ -326,7 +326,7 @@ public class TTask implements TTaskInterface {
 
     private void doRunFunction() {
         if (invokeInterface == null) {
-            MMLog.log(TAG, "call TTask function null,nothing to do, break TTask,tTag = " + tTag);
+            MMLog.log(TAG, "invokeInterface = null break TTask tName = " + tName);
             free();
             return;
         }

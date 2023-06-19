@@ -220,7 +220,9 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     public synchronized void resumePlay() {
         if (oMediaPlaying != null) {
+            MMLog.log(TAG, "resume to play ");
             oMediaPlaying.resume();
+            //startPlay(oMediaPlaying);
         } else {
             autoPlay();
         }
