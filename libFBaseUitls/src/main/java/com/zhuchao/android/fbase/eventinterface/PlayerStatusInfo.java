@@ -1,6 +1,7 @@
 package com.zhuchao.android.fbase.eventinterface;
 
 public class PlayerStatusInfo {
+    private Object obj;
     private int eventType;
     private long timeChanged;
     private long lengthChanged;
@@ -20,6 +21,14 @@ public class PlayerStatusInfo {
     private long length;
 
     private int lastError;
+
+    public Object getObj() {
+        return obj;
+    }
+
+    public void setObj(Object obj) {
+        this.obj = obj;
+    }
 
     public int getEventType() {
         return eventType;

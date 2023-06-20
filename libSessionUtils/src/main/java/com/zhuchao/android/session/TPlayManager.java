@@ -538,9 +538,10 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
     @Override
     public void onEventPlayerStatus(PlayerStatusInfo playerStatusInfo) {
-        if (this.callback != null) {
+        if (this.callback != null && oMediaPlaying != null) {
             //this.callback.OnEventCallBack(EventType, TimeChanged, LengthChanged, PositionChanged, OutCount, ChangedType, ChangedID, Buffering, Length);
             Message msg = playHandler.obtainMessage();
+            playerStatusInfo.setObj(oMediaPlaying);
             msg.obj = playerStatusInfo;
             msg.what = playerStatusInfo.getEventType();
             msg.arg1 = (int) playerStatusInfo.getPositionChanged();

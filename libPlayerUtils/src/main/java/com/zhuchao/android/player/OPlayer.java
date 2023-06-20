@@ -54,7 +54,7 @@ public class OPlayer extends PlayControl {
         return TAG;
     }
 
-    private MediaPlayer.EventListener mEventListener = new MediaPlayer.EventListener() {
+    private final MediaPlayer.EventListener mEventListener = new MediaPlayer.EventListener() {
         @Override
         public void onEvent(MediaPlayer.Event event) {
             if ((System.currentTimeMillis() - progressTick < 1000) && (event.type == MediaPlayer.Event.Playing))
