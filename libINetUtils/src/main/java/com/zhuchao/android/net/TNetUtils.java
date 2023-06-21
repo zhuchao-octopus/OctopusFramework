@@ -162,7 +162,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
             final String action = intent.getAction();
             MMLog.log(TAG, "NetworkChangedReceiver action=" + action.toString());
             if (tTask_NetworkCallback.isBusy()) {
-                MMLog.log(TAG, "NetworkChangedReceiver is working");
+                MMLog.log(TAG, "NetworkChangedReceiver NetworkCallback is working");
                 return;
             }
             tTask_NetworkCallback.invoke(new InvokeInterface() {
@@ -495,6 +495,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
 
     public void GetInternetIp() {
         if (tTask_ParseExternalIP.isBusy()) return;
+        tTask_ParseExternalIP.clearInvokeInterface();
         tTask_ParseExternalIP.invoke(new InvokeInterface() {
             @Override
             public void CALLTODO(String tag) {

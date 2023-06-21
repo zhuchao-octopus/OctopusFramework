@@ -321,6 +321,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                             MMLog.d(TAG, "The tTask is on working! " + tTask.getTaskName());
                             break;
                         }
+                        tTask.clearInvokeInterface();
                         tTask.invoke(new InvokeInterface() {
                             @Override
                             public void CALLTODO(String tag) {

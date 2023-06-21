@@ -38,13 +38,13 @@ android {
     publishing {
         singleVariant('release') {
             withSourcesJar()
-            withJavadocJar()
+            //withJavadocJar()
         }
     }
     publishing {
         multipleVariants {
             withSourcesJar()
-            withJavadocJar()
+            //withJavadocJar()
             allVariants()
         }
     }

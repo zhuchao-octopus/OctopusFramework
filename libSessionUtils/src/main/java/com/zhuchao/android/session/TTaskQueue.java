@@ -14,13 +14,16 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TTaskQueue {
     private final String TAG = "TTaskQueue";
+    //用户任务列表
     private final ConcurrentLinkedQueue<TTask> concurrentLinkedQueue = new ConcurrentLinkedQueue<TTask>();
+    //工作任务列表
+    private final ObjectArray<TTask> concurrencyObjectArray = new ObjectArray<TTask>();
+
     private final TTask tTaskQueue = new TTask("TTaskQueue");
     private TaskCallback tTaskQueueCallback = null;
     private long delayedMillis = 0;
     private long dotTaskMillis = 1000;
     private int maxConcurrencyCount = 1;//并发任务后，1表示一个一个执行
-    private final ObjectArray<TTask> concurrencyObjectArray = new ObjectArray<TTask>();
     private int priority = MAX_PRIORITY;
 
 
@@ -110,10 +113,10 @@ public class TTaskQueue {
 
     private final InvokeInterface invokeInterface = new InvokeInterface() {
         TTask doTTask = null;
+
         @Override
         public void CALLTODO(String tag) {
-            while (!concurrentLinkedQueue.isEmpty())
-            {
+            while (!concurrentLinkedQueue.isEmpty()) {
                 doTTask = concurrentLinkedQueue.poll();
                 if (doTTask == null) {
                     continue;
@@ -203,5 +206,9 @@ public class TTaskQueue {
         concurrentLinkedQueue.clear();
         tTaskQueue.freeFree();
         concurrencyObjectArray.clear();
+    }
+
+    public void printQueue() {
+
     }
 }

@@ -151,6 +151,7 @@ public class NetworkInformation {
 
     public String toString() {
         String str = "" + action;
+        str += "," + netType;
         str += "," + isAvailable;
         str += "," + isConnected;
         str += "," + MAC;

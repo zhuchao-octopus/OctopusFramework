@@ -94,8 +94,8 @@ public class TTask implements TTaskInterface {
             MMLog.i(TAG, "this task is busy! not allow invoking another method tag = " + this.tTag);
             return this;
         }
-        if(invokeInterface == null)
-           invokeInterface = callFunction;
+        //if(invokeInterface == null)
+        invokeInterface = callFunction;
         return this;
     }
 
@@ -106,9 +106,11 @@ public class TTask implements TTaskInterface {
     public void setInvokeInterface(InvokeInterface invokeInterface) {
         this.invokeInterface = invokeInterface;
     }
+
     public void clearInvokeInterface() {
         this.invokeInterface = null;
     }
+
     public int getTaskCallbackCount() {
         return taskCallbackCount;
     }
@@ -119,10 +121,6 @@ public class TTask implements TTaskInterface {
         this.properties.putObject(TASK_CALLBACK + taskCallbackCount, taskCallback);
         taskCallbackCount++;
         return this;
-    }
-
-    public void deleteTaskCallback(TaskCallback taskCallback) {
-        //this.properties
     }
 
     public TaskCallback getCallBackHandler() {
