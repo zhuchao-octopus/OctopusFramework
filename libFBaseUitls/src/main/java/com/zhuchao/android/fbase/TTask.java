@@ -164,6 +164,10 @@ public class TTask implements TTaskInterface {
         return isBusy();
     }
 
+    public boolean isFinishedStop() {
+        return properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED_STOP;
+    }
+
     public void free() {
         isKeeping = false;
         delayedMillis = 0;
@@ -268,7 +272,7 @@ public class TTask implements TTaskInterface {
             return;
         }
         if (properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED_STOP) {
-            MMLog.log(TAG, "TTask can not start again tName:" + tName);
+            MMLog.log(TAG, "TTask stopped can not start again tName:" + tName);
             return;
         }
         try {
@@ -299,7 +303,8 @@ public class TTask implements TTaskInterface {
             properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);
 
             //任务完成回调必须放到线程池回调前面，线程池自动释放掉匿名线程导致安全隐患
-            doCallBackHandle(DataID.TASK_STATUS_FINISHED_STOP);//异步等待标记
+            int result_status = properties.getInt("result_status", DataID.TASK_STATUS_FINISHED_STOP);
+            doCallBackHandle(result_status);//异步等待标记
             if (threadPoolCallback != null) {
                 //内部使用，当前任务已经完成，宿主任务终止
                 //（内部使用）任务结束、终止、停止不再需要运行，305

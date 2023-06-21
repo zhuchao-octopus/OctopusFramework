@@ -257,11 +257,13 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             switch (action) {
                 case Action_HELLO:
                     MMLog.setLogOnOff(true);
-                    MMLog.log(TAG, "Hello it is ready! version:" + VERSION_NAME + ", " + getFWVersionName());
+                    MMLog.log(TAG, "Hello it is ready! version:" + VERSION_NAME + ", " + getFWVersionName()+" SwitchOnOff="+watchManSwitchOnOff);
                     if (networkInformation != null)
                         MMLog.d(TAG, "HOST:" + networkInformation.toString());
                     else
                         MMLog.d(TAG, "sorry!! networkInformation = null");
+
+                    tTaskQueue.printQueue();
 
                     if (intent.getExtras() != null) {
                         pName = intent.getExtras().getString("pName", null);
@@ -287,7 +289,10 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                     MMLog.i(TAG, "watchManSwitchOnOff = " + watchManSwitchOnOff);
                     break;
             }
-            if (!watchManSwitchOnOff) return;
+            if (!watchManSwitchOnOff) {
+                MMLog.i(TAG, "watchManSwitchOnOff = false");
+                return;
+            }
             ////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
@@ -311,23 +316,20 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                         String apkFilePath = intent.getExtras().getString("apkFilePath");
                         boolean autostart = intent.getExtras().getBoolean("autostart", false);
                         boolean installedAutoStart = intent.getExtras().getBoolean("installedAutoStart", false);
-
+                        //MMLog.i(TAG, "Silent to install " + apkFilePath);
                         installedDeleteFile = intent.getExtras().getBoolean("installedDeleteFile", false);
                         installedReboot = intent.getExtras().getBoolean("installedReboot", false);
                         if (EmptyString(apkFilePath)) return;
-
+                        tTaskQueue.setMaxConcurrencyCount(1);
                         TTask tTask = tTaskManager.getSingleTaskFor("Silent install " + apkFilePath);
-                        if (tTask.isBusy()) {
-                            MMLog.d(TAG, "The tTask is on working! " + tTask.getTaskName());
-                            break;
-                        }
-                        tTask.clearInvokeInterface();
+                        tTask.reset();
                         tTask.invoke(new InvokeInterface() {
                             @Override
                             public void CALLTODO(String tag) {
                                 Action_SilentInstallAction(apkFilePath, autostart || installedAutoStart);
                             }
                         });
+
                         tTaskQueue.addTTask(tTask).startWork();
                         //if(!tTaskQueue.isEmpty())
                         //tTaskQueue.startWork();
@@ -400,6 +402,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     }
 
     private void Action_SilentInstallComplete(String apkFilePath) {
+
         if (installedDeleteFile) {
             boolean b = FileUtils.deleteFile(apkFilePath);
             if (b)
@@ -407,10 +410,14 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             else
                 MMLog.i(TAG, "delete file failed! ---> " + apkFilePath);
         }
-        MMLog.i(TAG, "installedReboot == " + installedReboot);
+
+        MMLog.i(TAG, "Silent install installedReboot=" + installedReboot);
+        //MMLog.i(TAG, "Silent install successfully  ->" + apkFilePath);
+
         if (installedReboot) {
             Action_SystemReboot();
         }
+
     }
 
     private void Action_SetAudioOutputChannel(String channel) {
@@ -476,10 +483,11 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         }
 
         boolean b = TAppUtils.installSilent(this, filePath);
-        if (b)
-            MMLog.log(TAG, "installSilent successfully! ->" + filePath);
+        if (!b)
+            MMLog.log(TAG, "Silent install failed! ->" + filePath);
         else
-            MMLog.log(TAG, "installSilent failed! ->" + filePath);
+            MMLog.log(TAG, "Silent install successfully! ->" + filePath);
+
         if (autostart) {
             PackageInfo packageInfo = TAppUtils.getPackageInfo(this, filePath);
             if (packageInfo != null)

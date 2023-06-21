@@ -88,6 +88,14 @@ public class FileUtils {
         }
     }
 
+    public static void WaitingFor(long Millis)
+    {
+        try {
+            Thread.sleep(Millis);//等待任务完成
+        } catch (InterruptedException e) {
+            //throw new RuntimeException(e);
+        }
+    }
     public static boolean EmptyString(String str) {
         return TextUtils.isEmpty(str);
     }

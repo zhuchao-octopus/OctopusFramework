@@ -2,6 +2,7 @@ package com.zhuchao.android.session;
 
 import static java.lang.Thread.MAX_PRIORITY;
 
+import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
 import com.zhuchao.android.fbase.eventinterface.TaskCallback;
 import com.zhuchao.android.fbase.DataID;
@@ -15,9 +16,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class TTaskQueue {
     private final String TAG = "TTaskQueue";
     //用户任务列表
-    private final ConcurrentLinkedQueue<TTask> concurrentLinkedQueue = new ConcurrentLinkedQueue<TTask>();
+    private final ConcurrentLinkedQueue<TTask> userLinkedQueue = new ConcurrentLinkedQueue<TTask>();
     //工作任务列表
-    private final ObjectArray<TTask> concurrencyObjectArray = new ObjectArray<TTask>();
+    private final ObjectArray<TTask> workingObjectArray = new ObjectArray<TTask>();
 
     private final TTask tTaskQueue = new TTask("TTaskQueue");
     private TaskCallback tTaskQueueCallback = null;
@@ -28,7 +29,7 @@ public class TTaskQueue {
 
 
     public TTaskQueue() {
-        concurrencyObjectArray.clear();
+        workingObjectArray.clear();
         //tTaskQueue.lock();
     }
 
@@ -36,7 +37,7 @@ public class TTaskQueue {
         this.delayedMillis = delayedMillis;
         this.dotTaskMillis = dotTaskMillis;
         this.maxConcurrencyCount = maxConcurrencyCount;
-        concurrencyObjectArray.clear();
+        workingObjectArray.clear();
         //tTaskQueue.lock();
     }
 
@@ -60,7 +61,7 @@ public class TTaskQueue {
         return maxConcurrencyCount;
     }
 
-    public void setConcurrencyCount(int concurrencyCount) {
+    public void setMaxConcurrencyCount(int concurrencyCount) {
         if (concurrencyCount <= 0)
             this.maxConcurrencyCount = 1;
         else
@@ -87,88 +88,76 @@ public class TTaskQueue {
     }
 
     public int getQueueCount() {
-        return concurrentLinkedQueue.size();
+        return userLinkedQueue.size();
     }
 
     public boolean isEmpty() {
-        return concurrentLinkedQueue.isEmpty();
+        return userLinkedQueue.isEmpty();
     }
 
     public boolean isWorking() {
         return tTaskQueue.isWorking();
     }
 
-
     public TTaskQueue addTTask(TTask task) {
-        if (!concurrentLinkedQueue.contains(task)) {
-            concurrentLinkedQueue.add(task);
+        if (!userLinkedQueue.contains(task)) {
+            userLinkedQueue.add(task);
             //MMLog.log(TAG,"TaskQueue added "+task.getTaskName());
         }
         return this;
     }
-
-    //public TTask getTTask() {
-    //    return concurrentLinkedQueue.poll();
-    //}
 
     private final InvokeInterface invokeInterface = new InvokeInterface() {
         TTask doTTask = null;
 
         @Override
         public void CALLTODO(String tag) {
-            while (!concurrentLinkedQueue.isEmpty()) {
-                doTTask = concurrentLinkedQueue.poll();
+            while (!userLinkedQueue.isEmpty()) {
+                doTTask = userLinkedQueue.poll();
                 if (doTTask == null) {
                     continue;
-                    //break;
                 }
-                concurrencyObjectArray.add(doTTask);
+                /////////////////////////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////////////////////////
+                workingObjectArray.add(doTTask);
                 doTTask.setPriority(priority);
                 doTTask.setKeep(false);
+                doTTask.getProperties().putInt("result_status", DataID.TASK_STATUS_SUCCESS);
                 doTTask.callbackHandler(new TaskCallback() {
                     @Override
                     public void onEventTask(Object obj, int status) {
-                        if (status == DataID.TASK_STATUS_SUCCESS) {
-                            //主题任务完成了，队列不干预任务的生命周期
-                            //tTaskQueue.unPark();
-                            //doTTask.freeFree();
-                            //doTTask.free();//去除同步等待标记，队列不干预任务的生命周期
-                            concurrencyObjectArray.remove(doTTask);
+                        if (status == DataID.TASK_STATUS_SUCCESS || status == DataID.TASK_STATUS_FINISHED_STOP) {
+                            ///主题任务完成了，队列不干预任务的生命周期
+                            ///tTaskQueue.unPark();
+                            ///doTTask.freeFree();
+                            ///doTTask.free();//去除同步等待标记，队列不干预任务的生命周期
+                            workingObjectArray.remove(obj);
                         }
                     }
                 });
-
-                if (!doTTask.isWorking()) {
-                    doTTask.start();
-                } else {
-                    MMLog.e(TAG, "startQueueTTask() wrong!!!!!!!!");
-                    //continue;
+                /////////////////////////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////////////////////////
+                if (doTTask.isFinishedStop()) {
+                    MMLog.log(TAG, "Ttask isFinishedStop" + doTTask.getTaskName());
                 }
-
-                while (true) {//hold住线程，等待异步任务完成
-                    try {
-                        if (concurrencyObjectArray.size() > maxConcurrencyCount) {
-                            Thread.sleep(dotTaskMillis);//等待任务完成
-                        } else {
-                            break;
-                        }
-                    } catch (InterruptedException e) {
-                        MMLog.e(TAG, "startQueueTTask() " + e.getMessage());
-                    }
+                if (!doTTask.isWorking())
+                    doTTask.start();
+                /////////////////////////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////////////////////////
+                while (workingObjectArray.size() >= maxConcurrencyCount) {//hold住线程，等待异步任务完成
+                    FileUtils.WaitingFor(dotTaskMillis);//等待任务完成
                 }//while
             }//while
-            while (!concurrencyObjectArray.isEmpty()) {//等待并发任务完成
-                try {
-                    Thread.sleep(dotTaskMillis);//等待任务完成
-                } catch (InterruptedException e) {
-                    //e.printStackTrace();
-                }
+            /////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////
+            while (!workingObjectArray.isEmpty()) {//等待并发任务完成
+                FileUtils.WaitingFor(dotTaskMillis);//等待并发任务完成
             }
         }
     };
 
     public void startWork() {
-        if (!concurrentLinkedQueue.isEmpty())
+        if (!userLinkedQueue.isEmpty())
             startQueueTTask();
     }
 
@@ -197,18 +186,25 @@ public class TTaskQueue {
     }
 
     public void free() {
-        concurrentLinkedQueue.clear();
+        userLinkedQueue.clear();
         tTaskQueue.freeFree();
-        concurrencyObjectArray.clear();
+        workingObjectArray.clear();
     }
 
     public void clear() {
-        concurrentLinkedQueue.clear();
+        userLinkedQueue.clear();
         tTaskQueue.freeFree();
-        concurrencyObjectArray.clear();
+        workingObjectArray.clear();
     }
 
     public void printQueue() {
 
+        for (TTask task0 : userLinkedQueue) {
+            MMLog.log(TAG, "Queue 0:" + task0.getTaskName());
+        }
+
+        for (TTask task1 : workingObjectArray) {
+            MMLog.log(TAG, "Queue 1:" + task1.getTaskName());
+        }
     }
 }

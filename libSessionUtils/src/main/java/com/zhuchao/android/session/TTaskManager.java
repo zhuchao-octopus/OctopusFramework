@@ -418,8 +418,8 @@ public class TTaskManager {
     public TTask request(final String fromUrl) {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if (EmptyString(fromUrl)) {
-            //tTask.free();//释放无效的任务
-            //deleteTask(tTask);
+            ///tTask.free();//释放无效的任务
+            ///deleteTask(tTask);
             MMLog.d(TAG, "requestGet fromUrl = " + fromUrl);
             return tTask;
         }
@@ -733,13 +733,13 @@ public class TTaskManager {
                                     String md5 = FileUtils.getFileMD5(f2);
                                     MMLog.log(TAG, "check file " + f2 + ", MD5 = " + md5 + ", expected " + expected_md5);
                                     if (!Objects.equals(md5, expected_md5)) {
-                                        MMLog.log(TAG, "file md5 mismatching delete the file "+f2);
+                                        MMLog.log(TAG, "file md5 mismatching delete the file " + f2);
                                         FileUtils.deleteFile(f2);
                                         tTask.getProperties().putString("MD5", md5);
                                         status = DataID.TASK_STATUS_ERROR;
                                     }
                                 } //else
-                                  //  MMLog.log(TAG, "skip md5 checking");
+                                //  MMLog.log(TAG, "skip md5 checking");
                             }
 
                             if (tTask.getCallBackHandler() != null) {
