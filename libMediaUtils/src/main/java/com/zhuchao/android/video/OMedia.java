@@ -612,6 +612,8 @@ public class OMedia implements Serializable, PlayerCallback {
                 //此时正在打开文件，设置源，调用 setSource()
                 break;
             case PlaybackEvent.Status_Buffering:
+                ///忽略buffering,此时正在读取文件
+                break;
             case PlaybackEvent.Status_Playing:
                 if (playRate != playerStatusInfo.getPlayRate()) setRate(playRate);//动态调整播放速度
                 if(magicNumber >=2 && restorePlay)
