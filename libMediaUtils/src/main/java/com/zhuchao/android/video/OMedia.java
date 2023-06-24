@@ -637,7 +637,7 @@ public class OMedia implements Serializable, PlayerCallback {
     private void restorePlay(float position, long Length) {
         try {
             if (((position + 100) < playTime) && (playTime < Length - 100) && (Length > 100)) {//播放进度恢复
-                MMLog.log(TAG, "OnEventCallBack seek to position " + position + "->" + playTime + " Length = " + Length);
+                MMLog.log(TAG, "OnEventCallBack seek position from " + position + " to " + playTime + "/" + Length);
                 setTime(playTime);
                 restorePlay = false;
             }
