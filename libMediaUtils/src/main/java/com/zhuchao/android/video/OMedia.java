@@ -605,7 +605,7 @@ public class OMedia implements Serializable, PlayerCallback {
             //case PlaybackEvent.Status_NothingIdle:
             //    break;
             case PlaybackEvent.Status_HasPrepared:
-                if (restorePlay && playerStatusInfo.isSourcePrepared())
+                if (restorePlay && playerStatusInfo.isSourcePrepared() && magicNumber <= 1 )
                     restorePlay(playerStatusInfo.getTimeChanged(), playerStatusInfo.getLength());
                 break;
             case PlaybackEvent.Status_Opening:
@@ -614,6 +614,8 @@ public class OMedia implements Serializable, PlayerCallback {
             case PlaybackEvent.Status_Buffering:
             case PlaybackEvent.Status_Playing:
                 if (playRate != playerStatusInfo.getPlayRate()) setRate(playRate);//动态调整播放速度
+                if(magicNumber >=2 && restorePlay)
+                  restorePlay(playerStatusInfo.getTimeChanged(), playerStatusInfo.getLength());
                 break;
             case PlaybackEvent.Status_Paused:
             case PlaybackEvent.Status_Stopped:

@@ -69,8 +69,9 @@ public class OPlayer extends PlayControl {
             else
                 playerStatusInfo.setEventType(status);
 
-            playerStatusInfo.setPositionChanged(event.getPositionChanged());
+            playerStatusInfo.setPosition(mMediaPlayer.getPosition());
             playerStatusInfo.setTimeChanged(event.getTimeChanged());
+            playerStatusInfo.setPositionChanged(event.getPositionChanged());
             playerStatusInfo.setLengthChanged(event.getLengthChanged());//getLength()
             playerStatusInfo.setChangedType(event.getEsChangedType());
 
@@ -81,10 +82,10 @@ public class OPlayer extends PlayControl {
 
             ///if(event.type == MediaPlayer.Event.EndReached)
             ///  playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
-            if(event.type == MediaPlayer.Event.LengthChanged)
-                playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
-            if(event.type == MediaPlayer.Event.MediaChanged)
-                playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
+            ///if(event.type == MediaPlayer.Event.LengthChanged)
+            ///    playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
+            ///if(event.type == MediaPlayer.Event.MediaChanged)
+            ///    playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
 
             if (playerEventCallBack != null)
                 playerEventCallBack.onEventPlayerStatus(playerStatusInfo);
