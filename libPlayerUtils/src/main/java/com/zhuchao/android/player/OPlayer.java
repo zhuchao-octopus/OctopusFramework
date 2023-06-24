@@ -48,7 +48,7 @@ public class OPlayer extends PlayControl {
     private IVLCVout vlcVout;
     private IVLCVoutCallBack mIVLCVoutCallBack;
     private long progressTick = 0;
-
+    //private boolean firstPlaying = false;
     @Override
     public String getTAG() {
         return TAG;
@@ -57,10 +57,12 @@ public class OPlayer extends PlayControl {
     private final MediaPlayer.EventListener mEventListener = new MediaPlayer.EventListener() {
         @Override
         public void onEvent(MediaPlayer.Event event) {
-            if ((System.currentTimeMillis() - progressTick < 1000) && (event.type == MediaPlayer.Event.Playing))
-                return;//一秒回调一次
 
-            progressTick = System.currentTimeMillis();
+            if ((System.currentTimeMillis() - progressTick < 1000) && (event.type == MediaPlayer.Event.Playing)) {
+                if(progressTick != 0)
+                   return;//一秒回调一次
+            }
+
             int status = mMediaPlayer.getPlayerState();
             if (status == Media.State.Ended)
                 playerStatusInfo.setEventType(PlaybackEvent.Status_Ended);
@@ -89,6 +91,18 @@ public class OPlayer extends PlayControl {
 
             if (playerEventCallBack != null)
                 playerEventCallBack.onEventPlayerStatus(playerStatusInfo);
+
+            switch (event.type)
+            {
+                case MediaPlayer.Event.Playing:
+                    progressTick = System.currentTimeMillis();
+                    break;
+                case MediaPlayer.Event.EndReached:
+                case MediaPlayer.Event.Stopped:
+                case MediaPlayer.Event.MediaChanged:
+                    progressTick = 0;
+                    break;
+            }
         }
     };
 
