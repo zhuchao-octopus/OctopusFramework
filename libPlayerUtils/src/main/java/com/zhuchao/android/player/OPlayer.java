@@ -68,8 +68,9 @@ public class OPlayer extends PlayControl {
             ///    }
             ///}
 
-            int status = mMediaPlayer.getPlayerState();
             playerStatusInfo.setEventCode(event.type);
+            int status = mMediaPlayer.getPlayerState();
+
             if (status == Media.State.Ended)
                 playerStatusInfo.setEventType(PlaybackEvent.Status_Ended);
             else if (status == Media.State.Error)
