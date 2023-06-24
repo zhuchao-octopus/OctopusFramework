@@ -181,8 +181,8 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
                 //MMLog.log(TAG, "PTask complete successfully,remove from task pool tag = " + tTag);
                 */
                 //isKeeping == false 后到这里
-                setTaskCounter(getTaskCounter() + 1);
-                //MMLog.log(TAG, "pTask finished,tTag  = " + tTag + ",total:" + getCount() + ",completed:" + taskCounter);
+                setTaskCounter(getTaskCounter() + 1);//完成的任务计数
+
                 if (getTaskCounter() == getCount()) {
                     doCallBackHandle(DataID.TASK_STATUS_FINISHED_ALL);////池中所有任务完成
                 }
@@ -200,6 +200,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
                     MMLog.log(TAG, "auto remove " + this.getTaskName());
                     deleteTask(this);
                 }
+                MMLog.log(TAG, "pTask finish tName = " + tName + " invoked:" + invokedCount+" pool:"+getTaskCounter()+"/"+getCount());
             } else {
                 MMLog.log(TAG, "not found PTask object in pool,break tag = " + tTag);
             }

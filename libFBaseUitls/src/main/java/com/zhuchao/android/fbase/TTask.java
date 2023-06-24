@@ -299,19 +299,23 @@ public class TTask implements TTaskInterface {
 
             sleepWaiting();
 
-            MMLog.log(TTask.this.TAG, "Ttask finish tName = " + tName + " count = " + invokedCount);
             properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_FINISHED_STOP);
-
             //任务完成回调必须放到线程池回调前面，线程池自动释放掉匿名线程导致安全隐患
             int result_status = properties.getInt("result_status", DataID.TASK_STATUS_FINISHED_STOP);
-            doCallBackHandle(result_status);//异步等待标记
-            if (threadPoolCallback != null) {
+            doCallBackHandle(result_status);//任务完成回调用户接口
+
+            if (threadPoolCallback != null)
+            {
                 //内部使用，当前任务已经完成，宿主任务终止
                 //（内部使用）任务结束、终止、停止不再需要运行，305
                 threadPoolCallback.onEventTask(TTask.this, DataID.TASK_STATUS_FINISHED_STOP);
-            } else if (isAutoFreeRemove())//没有threadPool
+            }
+            else
             {
-                freeFree();
+                //打印任务完成log
+                MMLog.log(TTask.this.TAG, "Ttask finish tName = " + tName + " invoked = " + invokedCount);
+                if (isAutoFreeRemove())//没有threadPool
+                   freeFree();
             }
             ttThread = null;
         }
