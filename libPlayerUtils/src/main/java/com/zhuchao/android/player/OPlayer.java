@@ -48,6 +48,7 @@ public class OPlayer extends PlayControl {
     private IVLCVout vlcVout;
     private IVLCVoutCallBack mIVLCVoutCallBack;
     private long progressTick = 0;
+
     //private boolean firstPlaying = false;
     @Override
     public String getTAG() {
@@ -57,13 +58,19 @@ public class OPlayer extends PlayControl {
     private final MediaPlayer.EventListener mEventListener = new MediaPlayer.EventListener() {
         @Override
         public void onEvent(MediaPlayer.Event event) {
-
             if ((System.currentTimeMillis() - progressTick < 1000) && (event.type == MediaPlayer.Event.Playing)) {
                 if(progressTick > 0)
                    return;//一秒回调一次
             }
+            ///if ((System.currentTimeMillis() - progressTick < 1000) && (status == PlaybackEvent.Status_Playing)) {
+            ///    if (progressTick > 0) {
+            ///        MMLog.e(TAG,"DAFDFDFDF TEST ");
+            ///        return;//一秒回调一次
+            ///    }
+            ///}
 
             int status = mMediaPlayer.getPlayerState();
+            playerStatusInfo.setEventCode(event.type);
             if (status == Media.State.Ended)
                 playerStatusInfo.setEventType(PlaybackEvent.Status_Ended);
             else if (status == Media.State.Error)
@@ -92,8 +99,10 @@ public class OPlayer extends PlayControl {
             if (playerEventCallBack != null)
                 playerEventCallBack.onEventPlayerStatus(playerStatusInfo);
 
-            switch (event.type)
-            {
+            if (status == PlaybackEvent.Status_Playing)
+                progressTick = System.currentTimeMillis();
+
+            switch (event.type) {
                 case MediaPlayer.Event.Playing:
                     progressTick = System.currentTimeMillis();
                     break;

@@ -2,6 +2,7 @@ package com.zhuchao.android.fbase.eventinterface;
 
 public class PlayerStatusInfo {
     private Object obj;
+    private int eventCode;
     private int eventType;
     private float position;
     private long timeChanged;
@@ -37,6 +38,14 @@ public class PlayerStatusInfo {
 
     public void setEventType(int eventType) {
         this.eventType = eventType;
+    }
+
+    public int getEventCode() {
+        return eventCode;
+    }
+
+    public void setEventCode(int eventCode) {
+        this.eventCode = eventCode;
     }
 
     public float getPosition() {
@@ -184,7 +193,8 @@ public class PlayerStatusInfo {
     }
 
     public String toString() {
-        String str = "EventType = " + eventType;
+        String str = "eventCode = " + eventCode;
+        str += " EventType = " + eventType;
         str += " TimeChanged = " + timeChanged;
         str += " Position = " + position;
         str += " PositionChanged = " + positionChanged;
