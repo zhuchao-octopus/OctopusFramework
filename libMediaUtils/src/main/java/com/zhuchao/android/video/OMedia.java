@@ -352,7 +352,7 @@ public class OMedia implements Serializable, PlayerCallback {
             if (isPlayerReady()) {
                 if (FPlayer.getPlayerStatusInfo().getEventType() != PlaybackEvent.Status_Stopped) {
                     playTime = getTime();
-                    MMLog.log(TAG, "o media playing time = " + playTime);
+                    //MMLog.log(TAG, "o media playing time = " + playTime);
                 }
 
                 FPlayer.stop();
@@ -404,7 +404,23 @@ public class OMedia implements Serializable, PlayerCallback {
                 MMLog.log(TAG, "oMedia resume, resumeTime = " + playTime);
                 play();
             } else {
+                restorePlay = true;
+                MMLog.log(TAG, "oMedia resume play");
                 FPlayer.resume();
+            }
+        }
+    }
+    public void resumeToLast() {//唤醒，恢复播放
+        //if (isPlayerReady())
+        {//允许此处创建新的播放器
+            if (FPlayer.getTAG().startsWith(MPLAYER)) {
+                restorePlay = true;
+                MMLog.log(TAG, "oMedia resume to last time = " + playTime);
+                play();
+            } else {
+                MMLog.log(TAG, "oMedia resume to last time "+playTime);
+                FPlayer.setPlayTime(playTime);
+                //FPlayer.resume();
             }
         }
     }
@@ -590,7 +606,7 @@ public class OMedia implements Serializable, PlayerCallback {
             //    break;
             case PlaybackEvent.Status_HasPrepared:
                 if (restorePlay && playerStatusInfo.isSourcePrepared())
-                    restorePlay(playerStatusInfo.getTimeChanged(), playerStatusInfo.getLengthChanged());
+                    restorePlay(playerStatusInfo.getTimeChanged(), playerStatusInfo.getLength());
                 break;
             case PlaybackEvent.Status_Opening:
                 //此时正在打开文件，设置源，调用 setSource()
@@ -622,10 +638,12 @@ public class OMedia implements Serializable, PlayerCallback {
                 MMLog.log(TAG, "OnEventCallBack seek to position " + position + "->" + playTime + " Length = " + Length);
                 setTime(playTime);
                 restorePlay = false;
-            } else
-                MMLog.log(TAG, "OnEventCallBack seek to position " + position + "->" + playTime + " Length = " + Length);
+            }
+            ///else {
+                ///MMLog.log(TAG, "OnEventCallBack seek to position " + position + "->" + playTime + " Length = " + Length);
+            ///}
         } catch (Exception e) {
-            //e.printStackTrace();
+            ///e.printStackTrace();
             MMLog.e(TAG, "restorePlay() " + e.toString());
         }
     }
@@ -635,8 +653,8 @@ public class OMedia implements Serializable, PlayerCallback {
         if (context == null) return;
         if (EmptyString(movie.getSrcUrl())) return;
         String md5 = FileUtils.MD5(movie.getSrcUrl());
-        //SPreference.saveSharedPreferences(mContext, md5, "name", mMovie.getMovieName());
-        //SPreference.saveSharedPreferences(mContext, md5, "url", mMovie.getSourceUrl());
+        ///SPreference.saveSharedPreferences(mContext, md5, "name", mMovie.getMovieName());
+        ///SPreference.saveSharedPreferences(mContext, md5, "url", mMovie.getSourceUrl());
         SPreference.putLong(context, md5, "playTime", playTime);
     }
 

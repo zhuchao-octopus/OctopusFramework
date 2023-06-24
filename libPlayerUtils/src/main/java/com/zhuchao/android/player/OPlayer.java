@@ -72,11 +72,20 @@ public class OPlayer extends PlayControl {
             playerStatusInfo.setPositionChanged(event.getPositionChanged());
             playerStatusInfo.setTimeChanged(event.getTimeChanged());
             playerStatusInfo.setLengthChanged(event.getLengthChanged());//getLength()
-            playerStatusInfo.setOutCount(event.getVoutCount());
             playerStatusInfo.setChangedType(event.getEsChangedType());
+
+            playerStatusInfo.setOutCount(event.getVoutCount());
             playerStatusInfo.setBuffering(event.getBuffering());
             playerStatusInfo.setPlayRate(mMediaPlayer.getRate());
             playerStatusInfo.setLength(mMediaPlayer.getLength());
+
+            ///if(event.type == MediaPlayer.Event.EndReached)
+            ///  playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
+            if(event.type == MediaPlayer.Event.LengthChanged)
+                playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
+            if(event.type == MediaPlayer.Event.MediaChanged)
+                playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
+
             if (playerEventCallBack != null)
                 playerEventCallBack.onEventPlayerStatus(playerStatusInfo);
         }
@@ -84,8 +93,8 @@ public class OPlayer extends PlayControl {
 
     public OPlayer(Context context, PlayerCallback callback) {
         super(context, callback);
-        //ArrayList<String> Options = new ArrayList<String>();
-        //Options.add("--cr-average=10000");
+        ///ArrayList<String> Options = new ArrayList<String>();
+        ///Options.add("--cr-average=10000");
         mIVLCVoutCallBack = new IVLCVoutCallBack();
         try {
             FLibVLC = new LibVLC(mContext);
@@ -97,9 +106,9 @@ public class OPlayer extends PlayControl {
             mMediaPlayer.setVolume(DefaultVolumeValue);
             mMediaPlayer.setScale(0);
             mMediaPlayer.setAspectRatio(null);
-            //MLog.log(TAG,"OPlayer=========>");
+            ///MLog.log(TAG,"OPlayer=========>");
         } catch (Exception e) {
-            //e.printStackTrace();
+            ///e.printStackTrace();
             MMLog.e(TAG, e.toString());
         }
     }
@@ -108,11 +117,11 @@ public class OPlayer extends PlayControl {
         super(context, callback);
         try {
             mIVLCVoutCallBack = new IVLCVoutCallBack();
-            //options.add("--cr-average=10000");
-            //Options.add("--file-caching=300");//文件缓存
-            //Options.add("--network-caching=10000");//网络缓存
-            //Options.add("--live-caching=10000");//直播缓存
-            //Options.add("--sout-mux-caching=1500");//输出缓存
+            ///options.add("--cr-average=10000");
+            ///Options.add("--file-caching=300");//文件缓存
+            ///Options.add("--network-caching=10000");//网络缓存
+            ///Options.add("--live-caching=10000");//直播缓存
+            ///Options.add("--sout-mux-caching=1500");//输出缓存
 
             FLibVLC = new LibVLC(mContext, options);
             mMediaPlayer = new MediaPlayer(FLibVLC);
@@ -122,7 +131,7 @@ public class OPlayer extends PlayControl {
             mMediaPlayer.setVolume(DefaultVolumeValue);
             mMediaPlayer.setScale(0);
             mMediaPlayer.setAspectRatio(null);
-            //MLog.log(TAG, "OPlayer=========>");
+            ///MLog.log(TAG, "OPlayer=========>");
         } catch (IllegalStateException e) {
             MMLog.e(TAG, e.toString());
         }
@@ -166,18 +175,18 @@ public class OPlayer extends PlayControl {
             }
             prepareMediaPlayer();
             media = new Media(FLibVLC, filePath);
-            //media.addOption(":no-audio");
+            ///media.addOption(":no-audio");
             media.addOption(":fullscreen");
-            //media.addOption(":no-autoscale");
-            //media.addOption(":file-caching=10000");//文件缓存
-            //media.addOption(":network-caching=10000");//网络缓存
-            //media.addOption(":live-caching=10000");//直播缓存
-            //media.addOption(":sout-mux-caching=10000");//输出缓存
+            ///media.addOption(":no-autoscale");
+            ///media.addOption(":file-caching=10000");//文件缓存
+            ///media.addOption(":network-caching=10000");//网络缓存
+            ///media.addOption(":live-caching=10000");//直播缓存
+            ///media.addOption(":sout-mux-caching=10000");//输出缓存
             setHWDecoderEnabled(true);
             mMediaPlayer.setMedia(media);
             playerStatusInfo.setSourcePrepared(true);
-            //mMediaPlayer.setAspectRatio(null);
-            //mMediaPlayer.setScale(0);
+            ///mMediaPlayer.setAspectRatio(null);
+            ///mMediaPlayer.setScale(0);
             mMediaPlayer.setVolume(DefaultVolumeValue);
             MMLog.log(TAG, "setSource successfully ");
         } catch (Exception e) {
@@ -194,18 +203,18 @@ public class OPlayer extends PlayControl {
         freeMedia();
         prepareMediaPlayer();
         media = new Media(FLibVLC, uri);
-        //media.addOption(":no-audio");
+        ///media.addOption(":no-audio");
         media.addOption(":fullscreen");
-        //media.addOption(":no-autoscale");
-        //media.addOption(":file-caching=10000");//文件缓存
-        //media.addOption(":network-caching=10000");//网络缓存
-        //media.addOption(":live-caching=10000");//直播缓存
-        //media.addOption(":sout-mux-caching=10000");//输出缓存
+        ///media.addOption(":no-autoscale");
+        ///media.addOption(":file-caching=10000");//文件缓存
+        ///media.addOption(":network-caching=10000");//网络缓存
+        ///media.addOption(":live-caching=10000");//直播缓存
+        ///media.addOption(":sout-mux-caching=10000");//输出缓存
         setHWDecoderEnabled(true);
         mMediaPlayer.setMedia(media);
         playerStatusInfo.setSourcePrepared(true);
-        //mMediaPlayer.setAspectRatio(null);
-        //mMediaPlayer.setScale(0);
+        ///mMediaPlayer.setAspectRatio(null);
+        ///mMediaPlayer.setScale(0);
         mMediaPlayer.setVolume(DefaultVolumeValue);
     }
 
@@ -217,18 +226,18 @@ public class OPlayer extends PlayControl {
         freeMedia();
         prepareMediaPlayer();
         media = new Media(FLibVLC, afd);
-        //media.addOption(":no-audio");
+        ///media.addOption(":no-audio");
         media.addOption(":fullscreen");
-        //media.addOption(":no-autoscale");
-        //media.addOption(":file-caching=10000");//文件缓存
-        //media.addOption(":network-caching=10000");//网络缓存
-        //media.addOption(":live-caching=10000");//直播缓存
-        //media.addOption(":sout-mux-caching=10000");//输出缓存
+        ///media.addOption(":no-autoscale");
+        ///media.addOption(":file-caching=10000");//文件缓存
+        ///media.addOption(":network-caching=10000");//网络缓存
+        ///media.addOption(":live-caching=10000");//直播缓存
+        ///media.addOption(":sout-mux-caching=10000");//输出缓存
         setHWDecoderEnabled(true);
         mMediaPlayer.setMedia(media);
         playerStatusInfo.setSourcePrepared(true);
-        //mMediaPlayer.setAspectRatio(null);
-        //mMediaPlayer.setScale(0);
+        ///mMediaPlayer.setAspectRatio(null);
+        ///mMediaPlayer.setScale(0);
         mMediaPlayer.setVolume(DefaultVolumeValue);
     }
 
@@ -240,18 +249,18 @@ public class OPlayer extends PlayControl {
         freeMedia();
         prepareMediaPlayer();
         media = new Media(FLibVLC, fd);
-        //media.addOption(":no-audio");
+        ///media.addOption(":no-audio");
         media.addOption(":fullscreen");
-        //media.addOption(":no-autoscale");
-        //media.addOption(":file-caching=10000");//文件缓存
-        //media.addOption(":network-caching=10000");//网络缓存
-        //media.addOption(":live-caching=10000");//直播缓存
-        //media.addOption(":sout-mux-caching=10000");//输出缓存
+        ///media.addOption(":no-autoscale");
+        ///media.addOption(":file-caching=10000");//文件缓存
+        ///media.addOption(":network-caching=10000");//网络缓存
+        ///media.addOption(":live-caching=10000");//直播缓存
+        ///media.addOption(":sout-mux-caching=10000");//输出缓存
         setHWDecoderEnabled(true);
         mMediaPlayer.setMedia(media);
         playerStatusInfo.setSourcePrepared(true);
-        //mMediaPlayer.setAspectRatio(null);
-        //mMediaPlayer.setScale(0);
+        ///mMediaPlayer.setAspectRatio(null);
+        ///mMediaPlayer.setScale(0);
         mMediaPlayer.setVolume(DefaultVolumeValue);
     }
 
@@ -325,11 +334,11 @@ public class OPlayer extends PlayControl {
         media = new Media(FLibVLC, filePath);
         //media.addOption(":no-audio");
         media.addOption(":fullscreen");
-        //media.addOption(":no-autoscale");
-        //media.addOption(":file-caching=10000");//文件缓存
-        //media.addOption(":network-caching=10000");//网络缓存
-        //media.addOption(":live-caching=10000");//直播缓存
-        //media.addOption(":sout-mux-caching=10000");//输出缓存
+        ///media.addOption(":no-autoscale");
+        ///media.addOption(":file-caching=10000");//文件缓存
+        ///media.addOption(":network-caching=10000");//网络缓存
+        ///media.addOption(":live-caching=10000");//直播缓存
+        ///media.addOption(":sout-mux-caching=10000");//输出缓存
         if (duplicated)
             media.addOption(new String(":sout=#duplicate{dst=rtp{sdp=rtsp://:8554/0},dst=display}"));//边推流边播放
         else
@@ -573,8 +582,8 @@ public class OPlayer extends PlayControl {
     }
 
     public int getAudioTracksCount() {
-        //if (mMediaPlayer == null)
-        //    return 0;
+        ///if (mMediaPlayer == null)
+        ///    return 0;
         return 0;//mMediaPlayer.getAudioTracksCount();
     }
 
@@ -612,8 +621,8 @@ public class OPlayer extends PlayControl {
     }
 
     public int getAudioTrack() {
-        //if (mMediaPlayer == null)
-        //    return 0;
+        ///if (mMediaPlayer == null)
+        ///    return 0;
         return 0;//mMediaPlayer.getAudioTrack();
     }
 

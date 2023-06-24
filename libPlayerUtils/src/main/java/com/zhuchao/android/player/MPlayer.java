@@ -512,8 +512,8 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         playerStatusInfo.setEventType(PlaybackEvent.Status_Error);
         MMLog.e(TAG, "onError:" + i + "," + i1 + " playStatus = " + PlaybackEvent.Status_Error);
         playerStatusInfo.setLastError(PlaybackEvent.Status_Error);
-        //return true;//
-        //CallbackProgress(PlaybackEvent.Status_Ended);//给前端处理错误的机会
+        ///return true;//
+        ///CallbackProgress(PlaybackEvent.Status_Ended);//给前端处理错误的机会
         return false;//// to call OnCompletionListener.onCompletion()方法。/自身结束错误
     }
 
@@ -657,6 +657,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                         public void onPrepared(MediaPlayer mp) {
                             try {
                                 playerStatusInfo.setLengthChanged(mp.getDuration());
+                                playerStatusInfo.setLength(mp.getDuration());
                                 playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
                                 playerStatusInfo.setSourcePrepared(true);
                                 CallbackProgress();//给前端seek to 的机会

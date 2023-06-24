@@ -411,7 +411,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                 MMLog.i(TAG, "delete file failed! ---> " + apkFilePath);
         }
 
-        MMLog.i(TAG, "Silent install installedReboot=" + installedReboot);
+        //MMLog.i(TAG, "Silent install installedReboot=" + installedReboot);
         //MMLog.i(TAG, "Silent install successfully  ->" + apkFilePath);
 
         if (installedReboot) {
