@@ -47,8 +47,7 @@ public class OPlayer extends PlayControl {
     private LibVLC FLibVLC = null;
     private IVLCVout vlcVout;
     private IVLCVoutCallBack mIVLCVoutCallBack;
-    private long progressTick = 0;
-
+    //private long progressTick = 0;
     //private boolean firstPlaying = false;
     @Override
     public String getTAG() {
@@ -58,10 +57,10 @@ public class OPlayer extends PlayControl {
     private final MediaPlayer.EventListener mEventListener = new MediaPlayer.EventListener() {
         @Override
         public void onEvent(MediaPlayer.Event event) {
-            if ((System.currentTimeMillis() - progressTick < 1000) && (event.type == MediaPlayer.Event.Playing)) {
-                if(progressTick > 0)
-                   return;//一秒回调一次
-            }
+            ///if ((System.currentTimeMillis() - progressTick < 1000) && (event.type == MediaPlayer.Event.Playing)) {
+            ///    if(progressTick > 0)
+            ///       return;//一秒回调一次
+            ///}
             ///if ((System.currentTimeMillis() - progressTick < 1000) && (status == PlaybackEvent.Status_Playing)) {
             ///    if (progressTick > 0) {
             ///        MMLog.e(TAG,"DAFDFDFDF TEST ");
@@ -88,28 +87,22 @@ public class OPlayer extends PlayControl {
             playerStatusInfo.setBuffering(event.getBuffering());
             playerStatusInfo.setPlayRate(mMediaPlayer.getRate());
             playerStatusInfo.setLength(mMediaPlayer.getLength());
-
-            ///if(event.type == MediaPlayer.Event.EndReached)
-            ///  playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
-            ///if(event.type == MediaPlayer.Event.LengthChanged)
-            ///    playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
-            ///if(event.type == MediaPlayer.Event.MediaChanged)
-            ///    playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
-            //MMLog.log(TAG,playerStatusInfo.toString());
+            ////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
             if (playerEventCallBack != null)
                 playerEventCallBack.onEventPlayerStatus(playerStatusInfo);
 
-            if (status == PlaybackEvent.Status_Playing)
-                progressTick = System.currentTimeMillis();
+            ///if (status == PlaybackEvent.Status_Playing)
+            ///    progressTick = System.currentTimeMillis();
 
             switch (event.type) {
                 case MediaPlayer.Event.Playing:
-                    progressTick = System.currentTimeMillis();
+                    ///progressTick = System.currentTimeMillis();
                     break;
                 case MediaPlayer.Event.EndReached:
                 case MediaPlayer.Event.Stopped:
                 case MediaPlayer.Event.MediaChanged:
-                    progressTick = 0;
+                    ///progressTick = 0;
                     break;
             }
         }
