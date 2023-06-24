@@ -59,7 +59,7 @@ public class OPlayer extends PlayControl {
         public void onEvent(MediaPlayer.Event event) {
 
             if ((System.currentTimeMillis() - progressTick < 1000) && (event.type == MediaPlayer.Event.Playing)) {
-                if(progressTick != 0)
+                if(progressTick > 0)
                    return;//一秒回调一次
             }
 
@@ -88,7 +88,7 @@ public class OPlayer extends PlayControl {
             ///    playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
             ///if(event.type == MediaPlayer.Event.MediaChanged)
             ///    playerStatusInfo.setEventType(PlaybackEvent.Status_HasPrepared);
-
+            //MMLog.log(TAG,playerStatusInfo.toString());
             if (playerEventCallBack != null)
                 playerEventCallBack.onEventPlayerStatus(playerStatusInfo);
 
