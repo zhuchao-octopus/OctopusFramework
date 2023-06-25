@@ -88,7 +88,8 @@ public class OMedia implements Serializable, PlayerCallback {
         if (this.magicNumber != magicNum) {
             ///MMLog.log(TAG, "setMagicNumber() this.magicNumber = " + this.magicNumber + ",magicNum = " + magicNum);
             this.magicNumber = magicNum;
-            free();
+            if (FPlayer != null)
+               free();
         }
         getPlayer();//获取播放器实例
         if (callback != null) setCallback(callback);
@@ -380,7 +381,7 @@ public class OMedia implements Serializable, PlayerCallback {
             @Override
             public void CALLTODO(String tag) {
                 if (isPlayerReady()) {
-                    MMLog.i(TAG, "call stopFree_t() with this" + FPlayer.getTAG());
+                    MMLog.i(TAG, "call stopFree_t() with this " + FPlayer.getTAG());
                     stopFree();
                 }
             }
@@ -397,11 +398,11 @@ public class OMedia implements Serializable, PlayerCallback {
         {//允许此处创建新的播放器
             if (FPlayer.getTAG().startsWith(MPLAYER)) {
                 restorePlay = true;
-                MMLog.log(TAG, "oMedia resume to last time " + playTime);
+                MMLog.log(TAG, "OMedia resume to last time " + playTime);
                 play();
             } else {
                 restorePlay = true;
-                MMLog.log(TAG, "oMedia resume to last time " + playTime);
+                MMLog.log(TAG, "OMedia resume to last time " + playTime);
                 FPlayer.resume();
             }
         }

@@ -285,12 +285,17 @@ public class OPlayer extends PlayControl {
 
     public void setSurfaceView(SurfaceView surfaceView) {
         if (surfaceView == null) {
-            MMLog.log(TAG, "setSurfaceView is null");
+            MMLog.log(TAG, "setSurfaceView surfaceView is null");
             return;
         }
         if (surfaceView == mSurfaceView) {
-            MMLog.log(TAG, "surfaceView is same");
-            return;
+            MMLog.log(TAG, "setSurfaceView surfaceView is same");
+            //return;
+        }
+        if (surfaceView.getHolder() != null) {
+            surfaceView.getHolder().setKeepScreenOn(true);
+        } else {
+            MMLog.log(TAG, "setSurfaceView surfaceView.getHolder() is null");
         }
         prepareMediaPlayer();
         try {
@@ -300,12 +305,6 @@ public class OPlayer extends PlayControl {
 
             vlcVout.setVideoView(surfaceView);
             vlcVout.attachViews();
-
-            if (mSurfaceView.getHolder() != null) {
-                mSurfaceView.getHolder().setKeepScreenOn(true);
-            } else {
-                MMLog.log(TAG, "mSurfaceView.getHolder() is null");
-            }
 
             mTextureView = null;
             mSurfaceView = surfaceView;
@@ -372,22 +371,22 @@ public class OPlayer extends PlayControl {
         setHWDecoderEnabled(true);
         mMediaPlayer.setMedia(media);
         playerStatusInfo.setSourcePrepared(true);
-        //mMediaPlayer.setAspectRatio(null);
-        //mMediaPlayer.setScale(0);
+        ///mMediaPlayer.setAspectRatio(null);
+        ///mMediaPlayer.setScale(0);
         mMediaPlayer.setVolume(DefaultVolumeValue);
 
     }
 
     public void play() {
         if (media == null) {
-            MMLog.log(TAG, "call play() media = null");
+            MMLog.log(TAG, "Calling play() media = null");
             return;
         }
         if (mMediaPlayer == null) {
-            MMLog.log(TAG, "call play() mMediaPlayer = null");
+            MMLog.log(TAG, "Calling play() mMediaPlayer = null");
             return;
         }
-        ///MMLog.log(TAG, "call native play()");
+        MMLog.log(TAG, "Calling native play()");
         mMediaPlayer.play();
     }
 

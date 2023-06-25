@@ -240,10 +240,10 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         }
         MMLog.log(TAG, "playPause() playStatus = " + oMediaPlaying.getPlayStatus());
         switch (oMediaPlaying.getPlayStatus()) {
-            //case PlaybackEvent.Status_NothingIdle:
-            //     MMLog.log(TAG, "PlaybackEvent.Status_NothingIdle go next");
-            //     playNext();//play next
-            //     break;
+            ///case PlaybackEvent.Status_NothingIdle:
+            ///     MMLog.log(TAG, "PlaybackEvent.Status_NothingIdle go next");
+            ///     playNext();//play next
+            ///     break;
             case PlaybackEvent.Status_Opening:
             case PlaybackEvent.Status_Buffering:
                 if (oMediaPlaying.tTask_play.isTimeOut(playTimeOut)) { //playTimeOut秒没有打开文件，结束播放
@@ -252,8 +252,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                     stopFree();
                 }
                 break;
-            //case PlaybackEvent.Status_Buffering:
-            //    break;
+            ///case PlaybackEvent.Status_Buffering:
+            ///    break;
             case PlaybackEvent.Status_Playing:
             case PlaybackEvent.Status_Paused:
                 MMLog.log(TAG, "playPause() timeout = " + playTimeOut);
@@ -310,14 +310,14 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         }
     }
 
-    public synchronized void setSurfaceView(SurfaceView sfView) {
+    public synchronized void setSurfaceView(@NonNull SurfaceView sfView) {
         this.surfaceView = sfView;
         if (oMediaPlaying != null) {
             oMediaPlaying.setSurfaceView(this.surfaceView);
         }
     }
 
-    public synchronized void setSurfaceViewDelay(SurfaceView sfView) {
+    public synchronized void setSurfaceViewDelay(@NonNull SurfaceView sfView) {
         this.surfaceView = sfView;
     }
 
@@ -408,6 +408,17 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         setVolume(getVolume() - 5);
     }
 
+    public void setWindowSize(int width, int height) {
+        if (oMediaPlaying != null)
+            oMediaPlaying.setWindowSize(width, height);
+    }
+    public void setFitSize(int width, int height) {
+        if (oMediaPlaying != null) {
+            oMediaPlaying.setWindowSize(width, height);
+            oMediaPlaying.setScale(0);
+            oMediaPlaying.setAspectRatio(null);
+        }
+    }
     public int getPlayerStatus() {
         if (oMediaPlaying != null)
             return oMediaPlaying.getPlayStatus();
@@ -543,8 +554,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             case Status_NothingIdle:
                 ///if (autoPlaySource >= DataID.SESSION_SOURCE_ALL) //立即跳转到收藏列表
                 ///{
-                    ///MMLog.log(TAG, "OnEventCallBack.EventType = " + playerStatusInfo.getEventType() + ", " + oMediaPlaying.getPathName());
-                    ///playEventHandler(playOrder);//继续播放，跳到上一首或下一首
+                ///MMLog.log(TAG, "OnEventCallBack.EventType = " + playerStatusInfo.getEventType() + ", " + oMediaPlaying.getPathName());
+                ///playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                 ///}
                 break;
             case PlaybackEvent.Status_Opening:
