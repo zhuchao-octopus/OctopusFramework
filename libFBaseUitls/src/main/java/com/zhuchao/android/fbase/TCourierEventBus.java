@@ -1,6 +1,8 @@
 package com.zhuchao.android.fbase;
 
+import com.zhuchao.android.fbase.eventinterface.EventCourierInterface;
 import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
+import com.zhuchao.android.fbase.eventinterface.TCourierEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -40,6 +42,7 @@ public class TCourierEventBus implements InvokeInterface {
         keepDoing = true;
         tTask = new TTask(TAG, this);
     }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //注册默认接口
     //@Deprecated
@@ -50,7 +53,7 @@ public class TCourierEventBus implements InvokeInterface {
         //InvokerList.addItem(tagName, tCourierEventListenerBundleManager);//显示注册默认接口
 
         findCourierEventTypeSubscriber(tag, courierEventListener);//分析当前类有无订阅者
-        MMLog.i(TAG, "registerEventObserver -> " + courierEventListener.getClass().getName() + ",tag = " + tag);
+        MMLog.i(TAG, "registerEventObserver -> " + courierEventListener.getClass().getName() + " tag = " + tag);
         //printAllEventListener();
     }
 
@@ -89,6 +92,7 @@ public class TCourierEventBus implements InvokeInterface {
             e.printStackTrace();
         }
     }
+
     public ObjectList getInvokerList() {
         return InvokerList;
     }
@@ -352,6 +356,14 @@ public class TCourierEventBus implements InvokeInterface {
                         });
                     break;
                 case BACKGROUND:
+                    if (tCourierEventListenerBundle.isParameterTypesMatched(event))
+                        ThreadUtils.runThreadNotOnMainUIThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                handleSingleEventType(tCourierEventListenerBundle, event);
+                            }
+                        });
+                    break;
                 case POSTING:
                 case ASYNC:
                     if (tCourierEventListenerBundle.isParameterTypesMatched(event))

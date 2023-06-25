@@ -1,4 +1,6 @@
-package com.zhuchao.android.fbase;
+package com.zhuchao.android.fbase.eventinterface;
+
+import com.zhuchao.android.fbase.EventCourier;
 
 public interface EventCourierInterface {
     abstract String getTag();

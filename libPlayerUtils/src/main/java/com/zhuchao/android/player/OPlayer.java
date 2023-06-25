@@ -47,6 +47,7 @@ public class OPlayer extends PlayControl {
     private LibVLC FLibVLC = null;
     private IVLCVout vlcVout;
     private IVLCVoutCallBack mIVLCVoutCallBack;
+
     //private long progressTick = 0;
     //private boolean firstPlaying = false;
     @Override
@@ -168,7 +169,7 @@ public class OPlayer extends PlayControl {
             mMediaPlayer.setEventListener(mEventListener);
             vlcVout = mMediaPlayer.getVLCVout();
             vlcVout.addCallback(mIVLCVoutCallBack);
-            MMLog.log(TAG, "prepare MediaPlayer successfully");
+            //MMLog.log(TAG, "prepare MediaPlayer successfully");
         }
     }
 
@@ -282,29 +283,40 @@ public class OPlayer extends PlayControl {
         mMediaPlayer.setVolume(DefaultVolumeValue);
     }
 
-    public void setSurfaceView(@NonNull SurfaceView surfaceView) {
+    public void setSurfaceView(SurfaceView surfaceView) {
+        if (surfaceView == null) {
+            MMLog.log(TAG, "setSurfaceView is null");
+            return;
+        }
+        if (surfaceView == mSurfaceView) {
+            MMLog.log(TAG, "surfaceView is same");
+            return;
+        }
         prepareMediaPlayer();
         try {
             vlcVout = mMediaPlayer.getVLCVout();
-            //if (surfaceView.equals(mSurfaceView)) return;
-
             if (vlcVout.areViewsAttached())
                 vlcVout.detachViews();
 
             vlcVout.setVideoView(surfaceView);
             vlcVout.attachViews();
+
+            if (mSurfaceView.getHolder() != null) {
+                mSurfaceView.getHolder().setKeepScreenOn(true);
+            } else {
+                MMLog.log(TAG, "mSurfaceView.getHolder() is null");
+            }
+
             mTextureView = null;
             mSurfaceView = surfaceView;
-            mSurfaceView.getHolder().setKeepScreenOn(true);
             MMLog.log(TAG, "setSurfaceView successfully");
         } catch (Exception e) {
             //e.printStackTrace();
-            MMLog.e(TAG, "setSurfaceView failed," + e.toString());
+            MMLog.e(TAG, "setSurfaceView failed " + e.toString());
         }
     }
 
     public void setTextureView(@NonNull TextureView textureView) {
-
         if (textureView.equals(mTextureView)) return;
         if (vlcVout.areViewsAttached())
             vlcVout.detachViews();
@@ -316,21 +328,16 @@ public class OPlayer extends PlayControl {
     }
 
     public void reAttachSurfaceView(SurfaceView surfaceView) {
-        vlcVout = mMediaPlayer.getVLCVout();
-        if (surfaceView == null) {
+
+        if (surfaceView == null && mMediaPlayer != null) {
+            vlcVout = mMediaPlayer.getVLCVout();
             if (vlcVout.areViewsAttached())
                 vlcVout.detachViews();
+            MMLog.log(TAG, "reAttachSurfaceView surfaceView = null");
             return;
         }
-
-        if (vlcVout.areViewsAttached())
-            vlcVout.detachViews();
-        vlcVout.setVideoView(surfaceView);
-        vlcVout.attachViews();
-
-        mSurfaceView = surfaceView;
-        mTextureView = null;
-        MMLog.log(TAG, "re attached surface view successfully");
+        setSurfaceView(surfaceView);
+        MMLog.log(TAG, "reattached surface view successfully");
     }
 
     public void reAttachTextureView(TextureView textureView) {
@@ -380,7 +387,7 @@ public class OPlayer extends PlayControl {
             MMLog.log(TAG, "call play() mMediaPlayer = null");
             return;
         }
-        MMLog.log(TAG, "call native play()");
+        ///MMLog.log(TAG, "call native play()");
         mMediaPlayer.play();
     }
 
@@ -526,7 +533,7 @@ public class OPlayer extends PlayControl {
 
     public Long getTime() {
         if (mMediaPlayer == null)
-            return Long.valueOf(0);
+            return 0L;
         return mMediaPlayer.getTime();
     }
 
@@ -696,7 +703,7 @@ public class OPlayer extends PlayControl {
 
         @Override
         public void onSurfacesDestroyed(IVLCVout ivlcVout) {
-            MMLog.log(TAG, "IVLCVoutCallBack onSurfacesDestroyed");
+            MMLog.log(TAG, "onSurfacesDestroyed.IVLCVout");
             playerStatusInfo.setSurfacePrepared(false);
         }
     }

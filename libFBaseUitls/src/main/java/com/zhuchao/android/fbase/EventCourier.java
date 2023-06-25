@@ -1,6 +1,8 @@
 package com.zhuchao.android.fbase;
 
 
+import com.zhuchao.android.fbase.eventinterface.EventCourierInterface;
+
 import java.util.Arrays;
 
 public class EventCourier implements EventCourierInterface {

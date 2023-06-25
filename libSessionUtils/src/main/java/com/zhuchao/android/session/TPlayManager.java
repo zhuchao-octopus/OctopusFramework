@@ -90,16 +90,15 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         return sta >= PlaybackEvent.Status_Opening && sta <= PlaybackEvent.Status_Playing;
     }
 
-    public synchronized void reStartPlay()
-    {
-       boolean playingLock_old = playingLock;
+    public synchronized void reStartPlay() {
+        boolean playingLock_old = playingLock;
         if (oMediaPlaying == null) {
             MMLog.log(TAG, "There is no media to reStartPlay!");
             return;
         }
         //stopPlay();
         playingLock = false;
-        MMLog.log(TAG, "reStartPlay "+oMediaPlaying.getPathName());
+        MMLog.log(TAG, "reStartPlay " + oMediaPlaying.getPathName());
         startPlay(oMediaPlaying);
         playingLock = playingLock_old;
     }
@@ -128,7 +127,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             }
         }
 
-        MMLog.log(TAG, "StartPlay--> " + oMedia.getMovie().getSrcUrl() + ",playMethod = "+playMethod);
+        MMLog.log(TAG, "StartPlay--> " + oMedia.getMovie().getSrcUrl() + ",playMethod = " + playMethod);
         //this.oMediaLoading = true;
         if (tryPlayCount <= 0)
             tryPlayCount = tryCountForError;
@@ -311,18 +310,18 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
         }
     }
 
-    public synchronized void setSurfaceView(@NonNull SurfaceView sfView) {
+    public synchronized void setSurfaceView(SurfaceView sfView) {
         this.surfaceView = sfView;
         if (oMediaPlaying != null) {
             oMediaPlaying.setSurfaceView(this.surfaceView);
         }
     }
 
-    public synchronized void setSurfaceViewDelay(@NonNull SurfaceView sfView) {
+    public synchronized void setSurfaceViewDelay(SurfaceView sfView) {
         this.surfaceView = sfView;
     }
 
-    public synchronized void attachSurfaceView(@NonNull SurfaceView sfView) {
+    public synchronized void attachSurfaceView(SurfaceView sfView) {
         this.surfaceView = sfView;
         if (oMediaPlaying != null) {
             oMediaPlaying.reAttachSurfaceView(surfaceView);
@@ -502,7 +501,6 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     }
 
     public synchronized void autoPlay() {
-        //自动播放就是播放指定位置的第一个
         if (isPlaying())
             return;
         autoPlay(autoPlaySource);
@@ -511,29 +509,21 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     public synchronized void autoPlay(int autoPlayType) {
         OMedia ooMedia = null;
         this.autoPlaySource = autoPlayType;
-        if (autoPlaySource == DataID.SESSION_SOURCE_NONE) return;
-
         switch (autoPlaySource) {
             case DataID.SESSION_SOURCE_PLAYLIST:
-                //ooMedia = defaultPlayingList.getFirstItem();
-                //break;
             case DataID.SESSION_SOURCE_ALL:
             case DataID.SESSION_SOURCE_FAVORITELIST:
-                //if (favoriteList.getCount() > 0)
-                //    ooMedia = favoriteList.getFirstItem();//优先切换到第二收藏列表，优先播放收藏列表
-                //
-                ooMedia = getFirstOMediaFromPlayLists();//defaultPlayingList.getFirstItem();
-                break;
             default:
+                ooMedia = getFirstOMediaFromPlayLists();
                 break;
         }
-        //String str = " (playingList = " + defaultPlayingList.getCount() + ",favoriteList = " + favoriteList.getCount() + ")";
-        if (ooMedia != null) {
-            //MMLog.log(TAG, "Auto play    " + ooMedia.getPathName() + str);
+        if (oMediaPlaying != null) {
+            oMediaPlaying.setRestorePlay(true);
+            startPlay(oMediaPlaying);
+        } else if (ooMedia != null) {
             ooMedia.setRestorePlay(true);
             startPlay(ooMedia);
-        }  //MMLog.log(TAG, "No oMedia found in playing list");
-
+        }
     }
 
     @Override
@@ -551,11 +541,11 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
 
         switch (playerStatusInfo.getEventType()) {
             case Status_NothingIdle:
-                if (autoPlaySource >= DataID.SESSION_SOURCE_ALL) //立即跳转到收藏列表
-                {
-                    MMLog.log(TAG, "OnEventCallBack.EventType = " + playerStatusInfo.getEventType() + ", " + oMediaPlaying.getPathName());
-                    //playEventHandler(playOrder);//继续播放，跳到上一首或下一首
-                }
+                ///if (autoPlaySource >= DataID.SESSION_SOURCE_ALL) //立即跳转到收藏列表
+                ///{
+                    ///MMLog.log(TAG, "OnEventCallBack.EventType = " + playerStatusInfo.getEventType() + ", " + oMediaPlaying.getPathName());
+                    ///playEventHandler(playOrder);//继续播放，跳到上一首或下一首
+                ///}
                 break;
             case PlaybackEvent.Status_Opening:
             case PlaybackEvent.Status_Buffering:
@@ -565,7 +555,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             case PlaybackEvent.MediaChanged:
                 break;
             case PlaybackEvent.Status_Error:
-                MMLog.log(TAG, "OnEventCallBack.EventType = Status_Error, stop play " + oMediaPlaying.getPathName());
+                MMLog.log(TAG, "OnEventCallBack.EventType = Status_Error stop play " + oMediaPlaying.getPathName());
                 break;
             case PlaybackEvent.Status_Ended:
                 if (playerStatusInfo.getLastError() == PlaybackEvent.Status_Error) {//处理错误
@@ -574,12 +564,11 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
                         playEventHandler(DataID.PLAY_MANAGER_PLAY_ORDER4);
                         tryPlayCount--;
                     } else {
-
                         playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                     }
                 } else {
                     tryPlayCount = tryCountForError;
-                    MMLog.log(TAG, "OnEventCallBack.EventType = Status_Ended, " + oMediaPlaying.getPathName());
+                    MMLog.log(TAG, "OnEventCallBack.EventType = Status_Ended " + oMediaPlaying.getPathName());
                     playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                 }
                 break;

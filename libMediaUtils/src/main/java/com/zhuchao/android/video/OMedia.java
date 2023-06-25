@@ -86,7 +86,7 @@ public class OMedia implements Serializable, PlayerCallback {
 
     public OMedia setMagicNumber(int magicNum) {
         if (this.magicNumber != magicNum) {
-            MMLog.log(TAG, "setMagicNumber() this.magicNumber = " + this.magicNumber + ",magicNum = " + magicNum);
+            ///MMLog.log(TAG, "setMagicNumber() this.magicNumber = " + this.magicNumber + ",magicNum = " + magicNum);
             this.magicNumber = magicNum;
             free();
         }
@@ -180,7 +180,7 @@ public class OMedia implements Serializable, PlayerCallback {
             MMLog.i(TAG, "playOn FPlayer is invalid");
             return;
         }
-        if (playView != null) FPlayer.setSurfaceView(playView);
+        setSurfaceView(playView);
         _play();
     }
 
@@ -207,13 +207,8 @@ public class OMedia implements Serializable, PlayerCallback {
                     return;
                 }
 
-                if (playView != null) {
-                    //MMLog.i(TAG, "setSurfaceView begin ");
-                    FPlayer.setSurfaceView(playView);
-                    //MMLog.i(TAG, "setSurfaceView end ");
-                }
-
                 try {
+                    setSurfaceView(playView);
                     _play();
                 } catch (Exception e) {
                     //e.printStackTrace();
@@ -247,27 +242,25 @@ public class OMedia implements Serializable, PlayerCallback {
         return this;
     }
 
-    public OMedia setSurfaceView(@NonNull SurfaceView surfaceView) {
+    public OMedia setSurfaceView(SurfaceView surfaceView) {
         if (isPlayerReady()) FPlayer.setSurfaceView(surfaceView);
         return this;
     }
 
     public OMedia setSurfaceView(TextureView textureView) {
-        if (!isPlayerReady()) return this;
-        FPlayer.stop();
-        FPlayer.reAttachTextureView(textureView);
-        FPlayer.resume();
+        if (isPlayerReady()) FPlayer.setTextureView(textureView);
         return this;
     }
 
     public void reAttachSurfaceView(SurfaceView surfaceView) {
-        FPlayer.reAttachSurfaceView(surfaceView);
+        if (isPlayerReady()) FPlayer.reAttachSurfaceView(surfaceView);
     }
 
     public void push(boolean duplicated) {
-        //if (isPlayerReady())
-        FPlayer.pushTo(movie.getSrcUrl(), duplicated);
-        FPlayer.play();
+        if (isPlayerReady()) {
+            FPlayer.pushTo(movie.getSrcUrl(), duplicated);
+            FPlayer.play();
+        }
     }
 
     public void pushTo(String fromHost, Device toDevice, boolean duplicated) {
@@ -355,11 +348,11 @@ public class OMedia implements Serializable, PlayerCallback {
                     long stopTime = getTime();
                     if(stopTime > 100)
                       playTime = stopTime;
-                    //MMLog.log(TAG, "o media playing time = " + playTime);
+                    //MMLog.log(TAG, "OMedia playing time = " + playTime);
                 }
 
                 FPlayer.stop();
-                MMLog.log(TAG, "o media has stopped at time " + playTime);
+                MMLog.log(TAG, "OMedia has stopped at time " + playTime);
             }
         } catch (Exception e) {
             //e.printStackTrace();

@@ -706,60 +706,59 @@ public class TTaskManager {
             }
         }
         MMLog.log(TAG, "downloading file from " + fromUrl + " to " + downloadingPathFileName);
-        try {
-            HttpUtils.download(tag, fromUrl, downloadingPathFileName, new HttpCallback() {
+        //try {
+        HttpUtils.download(tag, fromUrl, downloadingPathFileName, new HttpCallback() {
+            @Override
+            public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
+                String f1 = tTask.getProperties().getString("downloadingPathFileName");
+                String f2 = tTask.getProperties().getString("localPathFileName");
+                //String f2 = toUrl.substring(0, toUrl.length() - D_EXT_NAME.length());
+                switch (status) {
+                    case DataID.TASK_STATUS_ERROR:
+                        MMLog.log(TAG, "downloading file failed from " + fromUrl + ",result = " + result);
+                        tTask.free();//下载出错，释放任务
+                        //break;下载错误也执行下面代码
+                    case DataID.TASK_STATUS_PROGRESSING:
+                    case DataID.TASK_STATUS_SUCCESS:
+                        if ((progress == total) && (progress > 0) && (status == DataID.TASK_STATUS_SUCCESS)) {
+                            //MMLog.log(TAG, "download complete, from " + fromUrl + ", total size = " + total);
+                            if (FileUtils.renameFile(f1, f2))
+                                MMLog.log(TAG, "download completed file saved to " + f2 + ", total size = " + total);
+                            else
+                                MMLog.log(TAG, "download saving failed " + f2 + ", total size = " + total);
+                            tTask.free();//下载完成，释放任务等待模式,主题任务完成，解除同步
+                            String expected_md5 = tTask.getProperties().getString("EXPECTED_MD5");
+                            if (expected_md5 != null) {
+                                String md5 = FileUtils.getFileMD5(f2);
+                                MMLog.log(TAG, "check file " + f2 + ", MD5 = " + md5 + ", expected " + expected_md5);
+                                if (!Objects.equals(md5, expected_md5)) {
+                                    MMLog.log(TAG, "file md5 mismatching delete the file " + f2);
+                                    FileUtils.deleteFile(f2);
+                                    tTask.getProperties().putString("MD5", md5);
+                                    status = DataID.TASK_STATUS_ERROR;
+                                }
+                            } //else
+                            //  MMLog.log(TAG, "skip md5 checking");
+                        }
 
-                @Override
-                public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
-                    String f1 = tTask.getProperties().getString("downloadingPathFileName");
-                    String f2 = tTask.getProperties().getString("localPathFileName");
-                    //String f2 = toUrl.substring(0, toUrl.length() - D_EXT_NAME.length());
-                    switch (status) {
-                        case DataID.TASK_STATUS_ERROR:
-                            MMLog.log(TAG, "download file failed, from " + fromUrl + ",result = " + result);
-                            tTask.free();//下载出错，释放任务
-                            //break;下载错误也执行下面代码
-                        case DataID.TASK_STATUS_PROGRESSING:
-                        case DataID.TASK_STATUS_SUCCESS:
-                            if ((progress == total) && (progress > 0) && (status == DataID.TASK_STATUS_SUCCESS)) {
-                                //MMLog.log(TAG, "download complete, from " + fromUrl + ", total size = " + total);
-                                if (FileUtils.renameFile(f1, f2))
-                                    MMLog.log(TAG, "download complete save file to " + f2 + ", total size = " + total);
-                                else
-                                    MMLog.log(TAG, "download save file failed " + f2 + ", total size = " + total);
-                                tTask.free();//下载完成，释放任务等待模式,主题任务完成，解除同步
-                                String expected_md5 = tTask.getProperties().getString("EXPECTED_MD5");
-                                if (expected_md5 != null) {
-                                    String md5 = FileUtils.getFileMD5(f2);
-                                    MMLog.log(TAG, "check file " + f2 + ", MD5 = " + md5 + ", expected " + expected_md5);
-                                    if (!Objects.equals(md5, expected_md5)) {
-                                        MMLog.log(TAG, "file md5 mismatching delete the file " + f2);
-                                        FileUtils.deleteFile(f2);
-                                        tTask.getProperties().putString("MD5", md5);
-                                        status = DataID.TASK_STATUS_ERROR;
-                                    }
-                                } //else
-                                //  MMLog.log(TAG, "skip md5 checking");
-                            }
-
-                            if (tTask.getCallBackHandler() != null) {
-                                Message msg = taskMainLooperHandler.obtainMessage();
-                                msg.obj = tTask;
-                                tTask.getProperties().putString("tag", tag);
-                                tTask.getProperties().putString("fromUrl", fromUrl);
-                                tTask.getProperties().putString("toUrl", toUrl);
-                                tTask.getProperties().putLong("progress", progress);
-                                tTask.getProperties().putLong("total", total);
-                                tTask.getProperties().putString("result", result);
-                                tTask.getProperties().putInt("status", status);
-                                taskMainLooperHandler.sendMessage(msg);
-                            }
-                            break;
-                    }
+                        if (tTask.getCallBackHandler() != null) {
+                            Message msg = taskMainLooperHandler.obtainMessage();
+                            msg.obj = tTask;
+                            tTask.getProperties().putString("tag", tag);
+                            tTask.getProperties().putString("fromUrl", fromUrl);
+                            tTask.getProperties().putString("toUrl", toUrl);
+                            tTask.getProperties().putLong("progress", progress);
+                            tTask.getProperties().putLong("total", total);
+                            tTask.getProperties().putString("result", result);
+                            tTask.getProperties().putInt("status", status);
+                            taskMainLooperHandler.sendMessage(msg);
+                        }
+                        break;
                 }
-            });
-        } catch (Exception e) {
-            MMLog.e(TAG, "download() " + e.getMessage());//e.printStackTrace();
-        }
+            }
+        });
+        //} catch (Exception e) {
+        //    MMLog.e(TAG, "download() " + e.getMessage());//e.printStackTrace();
+        //}
     }
 }
