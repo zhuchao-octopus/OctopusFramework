@@ -605,14 +605,13 @@ public class OMedia implements Serializable, PlayerCallback {
 
     @Override
     public void onEventPlayerStatus(PlayerStatusInfo playerStatusInfo) {
-        switch (playerStatusInfo.getEventCode())
-        {
+        switch (playerStatusInfo.getEventCode()) {
             case PlaybackEvent.Buffering:
             case PlaybackEvent.EndReached:
                 break;
             case PlaybackEvent.Playing:
-                if(videoOutHeight > 10 && videoOutWidth > 10) {
-                    MMLog.log(TAG,"onEventPlayerStatus set video size to "+ videoOutWidth+":" +videoOutHeight);
+                if (videoOutHeight > 10 && videoOutWidth > 10) {
+                    MMLog.log(TAG, "onEventPlayerStatus set video size to " + videoOutWidth + ":" + videoOutHeight);
                     setWindowSize(videoOutWidth, videoOutHeight);
                 }
                 break;
@@ -712,35 +711,26 @@ public class OMedia implements Serializable, PlayerCallback {
 
     protected synchronized void getPlayer() {
         if (this.context == null) return;
-        //if (FPlayer == null) {
-        //MMLog.d(TAG, "GetPlayer() MagicNumber = " + magicNumber);
-        try {
-            switch (magicNumber) {
-                case 0:
-                default:
-                    FPlayer = PlayerManager.getSingleMPlayer(context, this);
-                    break;
-                case 1:
-                    if (FPlayer == null) FPlayer = PlayerManager.getMultiMPlayer(context, this);
-                    break;
-                case 2:
-                    FPlayer = PlayerManager.getSingleOPlayer(context, options, this);
-                    break;
-                case 3:
-                    if (FPlayer == null)
-                        FPlayer = PlayerManager.getMultiOPlayer(context, options, this);
-                    break;
-                //default:
-                //    FPlayer = PlayerManager.getSingleMPlayer(context, this);
-                //    break;
-            }
-            MMLog.d(TAG, "GetPlayer() MagicNumber = " + magicNumber + ", FPlayer = " + FPlayer.getTAG());
-        } catch (Exception e) {
-            //e.printStackTrace();
-            MMLog.e(TAG, "GetPlayer() MagicNumber = " + magicNumber + ", FPlayer = null" + "," + e.toString());
-            FPlayer = null;
+        switch (magicNumber) {
+            case 0:
+            default:
+                FPlayer = PlayerManager.getSingleMPlayer(context, this);
+                break;
+            case 1:
+                if (FPlayer == null) FPlayer = PlayerManager.getMultiMPlayer(context, this);
+                break;
+            case 2:
+                FPlayer = PlayerManager.getSingleOPlayer(context, options, this);
+                break;
+            case 3:
+                if (FPlayer == null)
+                    FPlayer = PlayerManager.getMultiOPlayer(context, options, this);
+                break;
+            //default:
+            //    FPlayer = PlayerManager.getSingleMPlayer(context, this);
+            //    break;
         }
-        //}
+        MMLog.d(TAG, "GetPlayer() MagicNumber = " + magicNumber + ", FPlayer = " + FPlayer.getTAG());
 
     }
 
