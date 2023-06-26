@@ -750,7 +750,6 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     private class ProgressThread extends Thread {
         private boolean isActive = true;
-
         @Override
         public void run() {
             super.run();

@@ -49,7 +49,6 @@ public class OMedia implements Serializable, PlayerCallback {
     protected PlayControl FPlayer = null;
     protected Context context = null;
     protected ArrayList<String> options = null;
-    protected int magicNumber = 0;
     private PlayerCallback callback = null;
     private OMedia preOMedia = null;
     private OMedia nextOMedia = null;
@@ -62,8 +61,12 @@ public class OMedia implements Serializable, PlayerCallback {
     private boolean restorePlay = false;
     public final TTask tTask_play = new TTask("OMedia.play", null);
     private final TTask tTask_stop = new TTask("OMedia.stop", null);
+    private int videoOutWidth = 0;
+    private int videoOutHeight = 0;
+    protected int magicNumber = 0;
 
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public OMedia with(Context context) {
         this.context = context;
         if (PlayerCallback.class.isAssignableFrom(context.getClass()))
@@ -89,12 +92,14 @@ public class OMedia implements Serializable, PlayerCallback {
             ///MMLog.log(TAG, "setMagicNumber() this.magicNumber = " + this.magicNumber + ",magicNum = " + magicNum);
             this.magicNumber = magicNum;
             if (FPlayer != null)
-               free();
+                free();
         }
         getPlayer();//获取播放器实例
         if (callback != null) setCallback(callback);
         tTask_play.setPriority(MAX_PRIORITY);
         tTask_stop.setPriority(MAX_PRIORITY);
+        this.videoOutWidth = 0;
+        this.videoOutHeight = 0;
         return this;
     }
 
@@ -347,8 +352,8 @@ public class OMedia implements Serializable, PlayerCallback {
             if (isPlayerReady()) {
                 if (FPlayer.getPlayerStatusInfo().getEventType() != PlaybackEvent.Status_Stopped) {
                     long stopTime = getTime();
-                    if(stopTime > 100)
-                      playTime = stopTime;
+                    if (stopTime > 100)
+                        playTime = stopTime;
                     //MMLog.log(TAG, "OMedia playing time = " + playTime);
                 }
 
@@ -394,18 +399,18 @@ public class OMedia implements Serializable, PlayerCallback {
     }
 
     public void resume() {//唤醒，恢复播放
-        //if (isPlayerReady())
-        {//允许此处创建新的播放器
-            if (FPlayer.getTAG().startsWith(MPLAYER)) {
-                restorePlay = true;
-                MMLog.log(TAG, "OMedia resume to last time " + playTime);
-                play();
-            } else {
-                restorePlay = true;
-                MMLog.log(TAG, "OMedia resume to last time " + playTime);
-                FPlayer.resume();
-            }
+        ///if (isPlayerReady())
+        ///{//允许此处创建新的播放器
+        if (FPlayer.getTAG().startsWith(MPLAYER)) {
+            restorePlay = true;
+            MMLog.log(TAG, "OMedia resume to last time " + playTime);
+            play();
+        } else {
+            restorePlay = true;
+            MMLog.log(TAG, "OMedia resume to last time " + playTime);
+            FPlayer.resume();
         }
+        ///}
     }
 
     private void setCallback(PlayerCallback callBack) {
@@ -566,6 +571,22 @@ public class OMedia implements Serializable, PlayerCallback {
         if (isPlayerReady()) FPlayer.setScale(scale);
     }
 
+    public int getVideoOutWidth() {
+        return videoOutWidth;
+    }
+
+    public void setVideoOutWidth(int videoOutWidth) {
+        this.videoOutWidth = videoOutWidth;
+    }
+
+    public int getVideoOutHeight() {
+        return videoOutHeight;
+    }
+
+    public void setVideoOutHeight(int videoOutHeight) {
+        this.videoOutHeight = videoOutHeight;
+    }
+
     public void setWindowSize(int width, int height) {
         if (isPlayerReady()) FPlayer.setWindowSize(width, height);
     }
@@ -584,15 +605,27 @@ public class OMedia implements Serializable, PlayerCallback {
 
     @Override
     public void onEventPlayerStatus(PlayerStatusInfo playerStatusInfo) {
+        switch (playerStatusInfo.getEventCode())
+        {
+            case PlaybackEvent.Buffering:
+            case PlaybackEvent.EndReached:
+                break;
+            case PlaybackEvent.Playing:
+                if(videoOutHeight > 10 && videoOutWidth > 10) {
+                    MMLog.log(TAG,"onEventPlayerStatus set video size to "+ videoOutWidth+":" +videoOutHeight);
+                    setWindowSize(videoOutWidth, videoOutHeight);
+                }
+                break;
+        }
         switch (playerStatusInfo.getEventType()) {
-            //case PlaybackEvent.Status_NothingIdle:
-            //    break;
+            ///case PlaybackEvent.Status_NothingIdle:
+            ///    break;
             case PlaybackEvent.Status_HasPrepared:
                 if (restorePlay && playerStatusInfo.isSourcePrepared() && magicNumber <= 1)
                     restorePlay(playerStatusInfo.getTimeChanged(), playerStatusInfo.getLength());
                 break;
             case PlaybackEvent.Status_Opening:
-                //此时正在打开文件，设置源，调用 setSource()
+                ///此时正在打开文件，设置源，调用 setSource()
                 break;
             case PlaybackEvent.Status_Buffering:
                 ///忽略buffering,此时正在读取文件

@@ -45,7 +45,11 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     private long playTimeOut = 20000;
     private int playMethod = 2;
     private boolean playingLock = true;
+    private int videoOutWidth = 0;
+    private int videoOutHeight = 0;
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public TPlayManager(Context mContext, SurfaceView sfView) {
         this.context = mContext;
         this.surfaceView = sfView;
@@ -409,16 +413,23 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
     }
 
     public void setWindowSize(int width, int height) {
-        if (oMediaPlaying != null)
+        if (oMediaPlaying != null) {
             oMediaPlaying.setWindowSize(width, height);
+        }
+        this.videoOutWidth = width;
+        this.videoOutHeight = height;
     }
+
     public void setFitSize(int width, int height) {
         if (oMediaPlaying != null) {
             oMediaPlaying.setWindowSize(width, height);
             oMediaPlaying.setScale(0);
             oMediaPlaying.setAspectRatio(null);
         }
+        this.videoOutWidth = width;
+        this.videoOutHeight = height;
     }
+
     public int getPlayerStatus() {
         if (oMediaPlaying != null)
             return oMediaPlaying.getPlayStatus();
@@ -549,7 +560,17 @@ public class TPlayManager implements PlayerCallback, NormalCallback {
             msg.arg2 = (int) playerStatusInfo.getLengthChanged();
             playHandler.sendMessage(msg);
         }
-
+        switch (playerStatusInfo.getEventCode()) {
+            case PlaybackEvent.Buffering:
+            case PlaybackEvent.EndReached:
+                break;
+            case PlaybackEvent.Playing:
+                if (videoOutHeight > 10 && videoOutWidth > 10) {
+                    MMLog.log(TAG,"onEventPlayerStatus set video size to "+ videoOutWidth+":" +videoOutHeight);
+                    setWindowSize(videoOutWidth, videoOutHeight);
+                }
+                break;
+        }
         switch (playerStatusInfo.getEventType()) {
             case Status_NothingIdle:
                 ///if (autoPlaySource >= DataID.SESSION_SOURCE_ALL) //立即跳转到收藏列表
