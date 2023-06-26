@@ -140,12 +140,17 @@ public class TCourierEventBus implements InvokeInterface {
     }
 
     public void postDelay(Object eventCourier, long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            //e.printStackTrace();
-        }
-        post(eventCourier);
+        ThreadUtils.runThreadNotOnMainUIThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(millis);
+                } catch (InterruptedException e) {
+                    //e.printStackTrace();
+                }
+                post(eventCourier);
+            }
+        });
     }
 
     private void startBus() {
@@ -160,8 +165,8 @@ public class TCourierEventBus implements InvokeInterface {
         }
         try {
             if (tTask != null) {
-                //tTask.notifyAll();
-                //LockSupport.unpark(tTask);
+                ///tTask.notifyAll();
+                ///LockSupport.unpark(tTask);
                 tTask.unPark();
             }
         } catch (Exception e) {
@@ -173,8 +178,8 @@ public class TCourierEventBus implements InvokeInterface {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void CALLTODO(String tag) {
-        //MMLog.log(TAG,"CALLTODO "+ keepDoing);
-        //MMLog.log(TAG, "Courier Event Bus start...");
+        ///MMLog.log(TAG,"CALLTODO "+ keepDoing);
+        ///MMLog.log(TAG, "Courier Event Bus start...");
         while (keepDoing) {
             //if (CourierEventsQueueA != null && CourierEventsQueueB != null)
             {
@@ -205,9 +210,9 @@ public class TCourierEventBus implements InvokeInterface {
             }
 
             //MMLog.log(TAG,"A:"+couriers_A.size()+",B:"+couriers_B.size()+"AM:"+couriers_MA.size()+"BM:"+couriers_MB.size());
-            if ((CourierEventsQueueA.size() <= 0) &&
-                    (CourierEventsQueueB.size() <= 0) &&
-                    (CourierEventsQueueMainA.size() <= 0) &&
+            if ((CourierEventsQueueA.size() == 0) &&
+                    (CourierEventsQueueB.size() == 0) &&
+                    (CourierEventsQueueMainA.size() == 0) &&
                     (CourierEventsQueueMainB.size() <= 0)) //A已经解锁，B内容始终为空
             {
                 try {
@@ -334,8 +339,8 @@ public class TCourierEventBus implements InvokeInterface {
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
-            //MMLog.e(TAG, tCourierEventListenerBundle.toToString());
-            //MMLog.e(TAG,  event.getClass().getSimpleName()+","+e.toString());
+            ///MMLog.e(TAG, tCourierEventListenerBundle.toToString());
+            ///MMLog.e(TAG,  event.getClass().getSimpleName()+","+e.toString());
         }
     }
 
