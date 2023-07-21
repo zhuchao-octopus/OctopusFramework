@@ -574,6 +574,7 @@ public class TTaskManager {
             deleteTask(tTask);
             return tTask;
         }
+        if (tTask.isBusy()) return tTask;
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.getProperties().putString("toPath", toPath);
         tTask.invoke(new InvokeInterface() {
@@ -592,6 +593,7 @@ public class TTaskManager {
             deleteTask(tTask);
             return tTask;
         }
+        if (tTask.isBusy()) return tTask;
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.getProperties().putString("toPath", toPath);
         tTask.invoke(new InvokeInterface() {
@@ -610,6 +612,7 @@ public class TTaskManager {
             deleteTask(tTask);
             return tTask;
         }
+        if (tTask.isBusy()) return tTask;
         tTask.getProperties().putString("fromUrl", fromUrl);
         tTask.getProperties().putString("toPath", toPath);
         tTask.invoke(new InvokeInterface() {
@@ -630,6 +633,7 @@ public class TTaskManager {
             //tTask.free();
             return;
         }
+
         String fileName = null;
         String downloadingPathFileName = null;
         String localPathFileName = null;

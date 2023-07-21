@@ -373,16 +373,19 @@ public class FileUtils {
 
     public static boolean deleteDirectory(String directoryPath) {
         File directory = new File(directoryPath);
-        if(!directory.canWrite())
-        {
-            MMLog.log(TAG,"Dir is not permit writing!");
-            return false;
-        }
+
         if(!directory.exists())
         {
-            MMLog.log(TAG,"Dir is not exit!");
+            MMLog.log(TAG,"Dir is not exit! ->" +directoryPath);
             return false;
         }
+
+        if(!directory.canWrite())
+        {
+            MMLog.log(TAG,"Dir is not permit writing! ->" +directoryPath);
+            return false;
+        }
+
         if (directory.isDirectory()) {
             File[] files = directory.listFiles();
             if (files != null && files.length > 0) {
