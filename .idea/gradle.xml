@@ -18,6 +18,7 @@
             <option value="$PROJECT_DIR$/libINetUtils" />
             <option value="$PROJECT_DIR$/libJOSUtils" />
             <option value="$PROJECT_DIR$/libMediaUtils" />
+            <option value="$PROJECT_DIR$/libOC-CNN" />
             <option value="$PROJECT_DIR$/libPlayerUtils" />
             <option value="$PROJECT_DIR$/libSessionUtils" />
           </set>

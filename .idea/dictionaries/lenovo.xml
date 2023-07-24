@@ -3,16 +3,23 @@
     <words>
       <w>autoscale</w>
       <w>calltodo</w>
+      <w>ccnn</w>
       <w>classzz</w>
+      <w>cnnlog</w>
       <w>datas</w>
       <w>destory</w>
       <w>facedetect</w>
+      <w>functionname</w>
       <w>hdmicodec</w>
       <w>hmmss</w>
       <w>infor</w>
       <w>infos</w>
       <w>keyevent</w>
       <w>libvlc</w>
+      <w>logd</w>
+      <w>logerror</w>
+      <w>loginfo</w>
+      <w>loginfor</w>
       <w>mediarender</w>
       <w>mediastore</w>
       <w>mtag</w>
@@ -22,8 +29,10 @@
       <w>reconfig</w>
       <w>seekable</w>
       <w>sout</w>
+      <w>thiz</w>
       <w>tian</w>
       <w>ttask</w>
+      <w>uint</w>
       <w>unknow</w>
       <w>vout</w>
       <w>zhuchao</w>
