@@ -68,7 +68,8 @@ public class OPlayer extends PlayControl {
             ///        return;//一秒回调一次
             ///    }
             ///}
-
+            if (mMediaPlayer == null)
+                return;
             playerStatusInfo.setEventCode(event.type);
             int status = mMediaPlayer.getPlayerState();
 
