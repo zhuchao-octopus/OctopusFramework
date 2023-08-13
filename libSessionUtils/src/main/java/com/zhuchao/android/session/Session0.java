@@ -228,11 +228,11 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
                 }
             });
         }
-        if (requestMethod.equals("GET")) {
+        ///if (requestMethod.equals("GET")) {
 
-        }
-        if (requestMethod.equals("POST")) {
+        ///}
+        ///if (requestMethod.equals("POST")) {
 
-        }
+        ///}
     }
 }
