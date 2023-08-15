@@ -455,8 +455,8 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     }
 
     private void Action_SystemShutdown() {
-        //TPlatform.sendKeyCode(KeyEvent.KEYCODE_F9);
-        //TPlatform.sendKeyEvent(KeyEvent.KEYCODE_F9);
+        ///TPlatform.sendKeyCode(KeyEvent.KEYCODE_F9);
+        ///TPlatform.sendKeyEvent(KeyEvent.KEYCODE_F9);
         TPlatform.ExecConsoleCommand("reboot -p");
     }
 

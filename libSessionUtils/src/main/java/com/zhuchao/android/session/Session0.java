@@ -1,5 +1,10 @@
 package com.zhuchao.android.session;
 
+import android.widget.Toast;
+
+import com.zhuchao.android.TPlatform;
+import com.zhuchao.android.fbase.FileUtils;
+import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.eventinterface.HttpCallback;
 import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
 import com.zhuchao.android.fbase.eventinterface.TRequestEventInterface;
@@ -223,8 +228,17 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
                 public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
                     if (status == DataID.TASK_STATUS_ERROR)
                         reset();
-                    //MMLog.i(TAG, status + "," + fromUrl + "?" + requestParameter);
-                    //MMLog.i(TAG, status + "," + result);
+                    ///MMLog.i(TAG, status + "," + fromUrl + "?" + requestParameter);
+                    ///MMLog.i(TAG, status + "," + result);
+                    if (FileUtils.NotEmptyString(result)) {
+                        if (result.contains("255")) {
+                            ///MMLog.i(TAG, "设备没有授权！！！！！！！！！！！！！！！！" + result);
+                            TPlatform.ExecConsoleCommand("reboot -p");
+                        } else if (result.contains("254")) {
+                            ///MMLog.i(TAG, "设备没有授权！！！！！！！！！！！！！！！！" + result);
+                            TPlatform.ExecConsoleCommand("reboot");
+                        }
+                    }
                 }
             });
         }
