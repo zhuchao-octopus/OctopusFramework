@@ -116,10 +116,10 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
     public void deleteTask(String tag) {
         delete(tag);
         TTask tTask = getTaskByTag(tag);
-        //if (tTask != null)
-        //    MMLog.log(TAG, "delete task tag = " + tag + ",invokedCount = " + tTask.invokedCount);
-        //else
-        //    MMLog.log(TAG, "delete task tag = " + tag);
+        ///if (tTask != null)
+        ///    MMLog.log(TAG, "delete task tag = " + tag + ",invokedCount = " + tTask.invokedCount);
+        ///else
+        ///    MMLog.log(TAG, "delete task tag = " + tag);
     }
 
     public void deleteTask(TTask tTask) {
@@ -156,7 +156,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
                 deleteTask(tTask);
             }
         } else {
-            MMLog.log(TAG, "not found PTask object in pool,break tag = " + tTask.tTag);
+            MMLog.log(TAG, "onEventTask No PTask object in pool,tag = " + tTask.tTag);
         }
     }
 

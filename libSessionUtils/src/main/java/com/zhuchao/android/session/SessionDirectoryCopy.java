@@ -2,6 +2,7 @@ package com.zhuchao.android.session;
 
 import android.os.Build;
 
+import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.eventinterface.FileFingerCallback;
 import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
 import com.zhuchao.android.fbase.eventinterface.TaskCallback;
@@ -49,6 +50,8 @@ public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
     public SessionDirectoryCopy(String fromFilePath, String toFilePath) {
         tMainTask = new TTask(fromFilePath + toFilePath);
         tMainTask.invoke(this);
+        this.fromPath = fromFilePath;
+        this.toPath = toFilePath;
     }
 
     public String getFromPath() {
@@ -166,7 +169,12 @@ public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
 
     @Override
     public void freeFree() {
-        tMainTask.freeFree();
+        try {
+            tMainTask.freeFree();
+            tTaskThreadPool.free();
+            filesFinder.free();
+        } finally {
+        }
     }
 
     @Override
@@ -238,12 +246,16 @@ public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
         {
             return;
         } else {//目录复制
+            MMLog.i(TAG, "start fingerFromDir " + fromPath);
             filesFinder.fingerFromDir(fromPath);//搜索目录
         }
         tMainTask.pack();
         //LockSupport.park(tMainTask);
         MMLog.i(TAG, "start to copy files ...");
         startCopyDirectory();
+
+        if (tMainTask.getCallBackHandler() != null)
+            tMainTask.getCallBackHandler().onEventTask(tMainTask, DataID.TASK_STATUS_FINISHED_ALL);
     }
 
     private void startCopyDirectory() {
@@ -288,10 +300,11 @@ public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
                     else
                         bRet = FileUtils.channelTransferTo(ff, tf);
 
-                    if (bRet) {
+                    if (!bRet) {
                         MMLog.log(TAG, "tTaskCopyFile copy file failed -->" + ff + " to " + tf);
                         FileUtils.deleteFile(tf);
                     }
+                    MMLog.log(TAG, "tTaskCopyFile copy file successfully -->" + ff + " to " + tf);
                     fTask.getProperties().putLong("endTick", System.currentTimeMillis());
                 }
             });
@@ -301,9 +314,9 @@ public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
                     synchronized (tTaskThreadPool) {
                         if (tMainTask.getCallBackHandler() != null)
                             tMainTask.getCallBackHandler().onEventTask(obj, status);
-                        tTaskThreadPool.deleteTask(fTask);
+                        tTaskThreadPool.deleteTask((TTask)obj);
                     }
-                    //LockSupport.unpark(tMainTask);
+                    ///LockSupport.unpark(tMainTask);
                 }
             });
             fTask.start();

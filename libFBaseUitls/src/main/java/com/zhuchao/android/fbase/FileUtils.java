@@ -289,7 +289,8 @@ public class FileUtils {
                 filePath.startsWith("ftp:") ||
                 filePath.startsWith("rtp:") ||
                 filePath.startsWith("rtsp:") ||
-                filePath.startsWith("mms:")) {//url的文件名
+                filePath.startsWith("mms:"))
+        {//url的文件名
             int lastSlash = filePath.lastIndexOf('/');
             if (lastSlash >= 0) {
                 lastSlash++;
@@ -300,7 +301,8 @@ public class FileUtils {
                     }
                 }
             }
-        } else//本地文件名
+        }
+        else//本地文件名
         {
             File file = new File(filePath);
             if (file.exists()) {
@@ -399,7 +401,32 @@ public class FileUtils {
             }
         }
         return directory.delete();
+    }
 
+    public static String findDirFromPath(String DirName,String Path) {
+        File directory = new File(Path);
+        String foundPath = "";
+        if (directory.exists() && directory.isDirectory())
+        {
+            if(directory.getName().equals(DirName)) {
+                MMLog.log(TAG,"findDirFromPath ->" +DirName +":"+directory.getAbsolutePath());
+                foundPath = directory.getAbsolutePath();
+            }
+            else
+            {
+                File[] files = directory.listFiles();
+                if (files != null && files.length > 0)
+                {
+                    for (File file : files) {
+                        if (file.isDirectory()) {
+                            foundPath = findDirFromPath(DirName, file.getAbsolutePath());
+                            if(!Objects.equals(foundPath, "")) break;
+                        }
+                    }
+                }
+            }
+        }
+        return foundPath;
     }
 
     public static boolean renameFile(String fromFilePathName, String newFilePathName) {
@@ -459,14 +486,14 @@ public class FileUtils {
 
     //@RequiresApi(api = Build.VERSION_CODES.O)
     public static boolean channelTransferTo(String fromFile, String toFile) {
-        //final Path ff = Paths.get(fromFile);
-        //final Path tf = Paths.get(toFile);
+        ///final Path ff = Paths.get(fromFile);
+        ///final Path tf = Paths.get(toFile);
         try {
             FileChannel fileChannel_f = new FileInputStream(fromFile).getChannel();
             FileChannel fileChannel_t = new FileOutputStream(toFile).getChannel();
 
-            //FileChannel fileChannel_f = (FileChannel.open(ff, EnumSet.of(StandardOpenOption.READ)));
-            //FileChannel fileChannel_t = (FileChannel.open(tf, EnumSet.of(StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)));
+            ///FileChannel fileChannel_f = (FileChannel.open(ff, EnumSet.of(StandardOpenOption.READ)));
+            ///FileChannel fileChannel_t = (FileChannel.open(tf, EnumSet.of(StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)));
             fileChannel_f.transferTo(0L, fileChannel_f.size(), fileChannel_t);
             fileChannel_f.close();
             fileChannel_t.close();
@@ -760,6 +787,7 @@ public class FileUtils {
             getType = volumeInfoClazz.getMethod("getType");
             getPath = volumeInfoClazz.getMethod("getPath");
             volumes = (List<?>) getVolumes.invoke(mStorageManager);
+            assert volumes != null;
             for (Object vol : volumes) {
                 if (vol != null && (boolean) isMountedReadable.invoke(vol) && (int) getType.invoke(vol) == 0) {
                     File path2 = (File) getPath.invoke(vol);
