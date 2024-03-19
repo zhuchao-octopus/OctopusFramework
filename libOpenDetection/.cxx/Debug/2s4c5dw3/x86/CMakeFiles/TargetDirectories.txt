@@ -1,3 +1,0 @@
-F:/StudioProjects/OctopusFramework/libOpenFaceDetection/.cxx/Debug/2s4c5dw3/x86/CMakeFiles/detection_based_tracker.dir
-F:/StudioProjects/OctopusFramework/libOpenFaceDetection/.cxx/Debug/2s4c5dw3/x86/CMakeFiles/edit_cache.dir
-F:/StudioProjects/OctopusFramework/libOpenFaceDetection/.cxx/Debug/2s4c5dw3/x86/CMakeFiles/rebuild_cache.dir

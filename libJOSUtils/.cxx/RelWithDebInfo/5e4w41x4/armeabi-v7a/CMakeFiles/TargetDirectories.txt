@@ -1,3 +1,0 @@
-F:/StudioProjects/OctopusFramework/libJOSUtils/.cxx/RelWithDebInfo/5e4w41x4/armeabi-v7a/CMakeFiles/rebuild_cache.dir
-F:/StudioProjects/OctopusFramework/libJOSUtils/.cxx/RelWithDebInfo/5e4w41x4/armeabi-v7a/CMakeFiles/serial_port.dir
-F:/StudioProjects/OctopusFramework/libJOSUtils/.cxx/RelWithDebInfo/5e4w41x4/armeabi-v7a/CMakeFiles/edit_cache.dir

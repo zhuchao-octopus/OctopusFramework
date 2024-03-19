@@ -1,3 +1,0 @@
-F:/StudioProjects/OctopusFramework/libJOSUtils/.cxx/Debug/5s96o346/arm64-v8a/CMakeFiles/rebuild_cache.dir
-F:/StudioProjects/OctopusFramework/libJOSUtils/.cxx/Debug/5s96o346/arm64-v8a/CMakeFiles/serial_port.dir
-F:/StudioProjects/OctopusFramework/libJOSUtils/.cxx/Debug/5s96o346/arm64-v8a/CMakeFiles/edit_cache.dir

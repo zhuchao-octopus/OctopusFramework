@@ -1,7 +1,0 @@
-Executable : F:\Android\SDK\cmake\3.18.1\bin\ninja.exe
-arguments : 
--C
-F:\StudioProjects\OctopusFramework\libOpenDetection\.cxx\Debug\22606c17\x86
-detection_based_tracker
-jvmArgs : 
-

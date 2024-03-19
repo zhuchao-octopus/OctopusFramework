@@ -1,7 +1,0 @@
-[
-{
-  "directory": "F:/StudioProjects/OctopusFramework/libOpenDetection/.cxx/RelWithDebInfo/5n145x4w/arm64-v8a",
-  "command": "F:\\Android\\SDK\\ndk\\21.1.6352462\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=aarch64-none-linux-android24 --gcc-toolchain=F:/Android/SDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=F:/Android/SDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Ddetection_based_tracker_EXPORTS -IF:/StudioProjects/OctopusFramework/libOpenDetection/jni -isystem F:/StudioProjects/OctopusFramework/libOpenComputerVision/native/jni/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -O2 -g -DNDEBUG -fPIC -o CMakeFiles\\detection_based_tracker.dir\\DetectionBasedTracker_jni.cpp.o -c F:\\StudioProjects\\OctopusFramework\\libOpenDetection\\jni\\DetectionBasedTracker_jni.cpp",
-  "file": "F:\\StudioProjects\\OctopusFramework\\libOpenDetection\\jni\\DetectionBasedTracker_jni.cpp"
-}
-]

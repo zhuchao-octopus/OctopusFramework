@@ -1,7 +1,0 @@
-Executable : F:\Android\SDK\cmake\3.18.1\bin\ninja.exe
-arguments : 
--C
-F:\StudioProjects\OctopusFramework\libOpenComputerVision\.cxx\Debug\5v5q4f6m\x86_64
-opencv_jni_shared
-jvmArgs : 
-

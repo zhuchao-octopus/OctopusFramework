@@ -1,2 +1,0 @@
-ninja: Entering directory `F:\StudioProjects\OctopusFramework\libOpenFaceDetection\.cxx\Debug\2s4c5dw3\arm64-v8a'
-ninja: no work to do.

@@ -1,7 +1,0 @@
-Executable : F:\Android\SDK\cmake\3.18.1\bin\ninja.exe
-arguments : 
--C
-F:\StudioProjects\OctopusFramework\libJOSUtils\.cxx\Debug\3k4l3x51\x86_64
-serial_port
-jvmArgs : 
-

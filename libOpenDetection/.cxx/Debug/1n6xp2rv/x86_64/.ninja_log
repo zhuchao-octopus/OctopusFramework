@@ -1,6 +1,0 @@
-# ninja log v5
-1	948	685709729	CMakeFiles/detection_based_tracker.dir/DetectionBasedTracker_jni.cpp.o	1561f0042287bde2
-950	1109	685709729	F:/StudioProjects/OctopusFramework/libOpenDetection/build/intermediates/cxx/Debug/1n6xp2rv/obj/x86_64/libdetection_based_tracker.so	bf5da7ca8c66add6
-0	6	0	clean	5257a025ec128d60
-2	905	685709939	CMakeFiles/detection_based_tracker.dir/DetectionBasedTracker_jni.cpp.o	1561f0042287bde2
-905	1026	685709939	F:/StudioProjects/OctopusFramework/libOpenDetection/build/intermediates/cxx/Debug/1n6xp2rv/obj/x86_64/libdetection_based_tracker.so	bf5da7ca8c66add6

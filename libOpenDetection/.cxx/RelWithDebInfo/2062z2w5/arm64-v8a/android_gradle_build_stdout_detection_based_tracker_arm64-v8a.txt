@@ -1,3 +1,0 @@
-ninja: Entering directory `F:\StudioProjects\OctopusFramework\libOpenFaceDetection\.cxx\RelWithDebInfo\2062z2w5\arm64-v8a'
-[1/2] Building CXX object CMakeFiles/detection_based_tracker.dir/DetectionBasedTracker_jni.cpp.o
-[2/2] Linking CXX shared library F:\StudioProjects\OctopusFramework\libOpenFaceDetection\build\intermediates\cxx\RelWithDebInfo\2062z2w5\obj\arm64-v8a\libdetection_based_tracker.so

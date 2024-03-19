@@ -1,3 +1,0 @@
-F:/StudioProjects/OctopusFramework/libOpenComputerVision/.cxx/RelWithDebInfo/2el315x2/x86_64/CMakeFiles/opencv_jni_shared.dir
-F:/StudioProjects/OctopusFramework/libOpenComputerVision/.cxx/RelWithDebInfo/2el315x2/x86_64/CMakeFiles/edit_cache.dir
-F:/StudioProjects/OctopusFramework/libOpenComputerVision/.cxx/RelWithDebInfo/2el315x2/x86_64/CMakeFiles/rebuild_cache.dir
