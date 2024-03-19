@@ -8,10 +8,11 @@ package com.zhuchao.android.detect;
 import android.content.Context;
 import android.util.Log;
 
-import com.zhuchao.android.eventinterface.NormalCallback;
 import com.zhuchao.android.fbase.DateTimeUtils;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.eventinterface.NormalCallback;
+import com.zhuchao.android.libOpenDetection.R;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.core.Mat;

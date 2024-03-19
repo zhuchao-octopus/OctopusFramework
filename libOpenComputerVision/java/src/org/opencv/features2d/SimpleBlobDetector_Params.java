@@ -4,24 +4,18 @@
 package org.opencv.features2d;
 
 
+
 // C++: class Params
 
 public class SimpleBlobDetector_Params {
 
     protected final long nativeObj;
+    protected SimpleBlobDetector_Params(long addr) { nativeObj = addr; }
 
-    protected SimpleBlobDetector_Params(long addr) {
-        nativeObj = addr;
-    }
-
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
+    public long getNativeObjAddr() { return nativeObj; }
 
     // internal usage only
-    public static SimpleBlobDetector_Params __fromPtr__(long addr) {
-        return new SimpleBlobDetector_Params(addr);
-    }
+    public static SimpleBlobDetector_Params __fromPtr__(long addr) { return new SimpleBlobDetector_Params(addr); }
 
     //
     // C++:   cv::SimpleBlobDetector::Params::Params()
@@ -370,10 +364,29 @@ public class SimpleBlobDetector_Params {
     }
 
 
+    //
+    // C++: bool SimpleBlobDetector_Params::collectContours
+    //
+
+    public boolean get_collectContours() {
+        return get_collectContours_0(nativeObj);
+    }
+
+
+    //
+    // C++: void SimpleBlobDetector_Params::collectContours
+    //
+
+    public void set_collectContours(boolean collectContours) {
+        set_collectContours_0(nativeObj, collectContours);
+    }
+
+
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:   cv::SimpleBlobDetector::Params::Params()
@@ -486,6 +499,12 @@ public class SimpleBlobDetector_Params {
 
     // C++: void SimpleBlobDetector_Params::maxConvexity
     private static native void set_maxConvexity_0(long nativeObj, float maxConvexity);
+
+    // C++: bool SimpleBlobDetector_Params::collectContours
+    private static native boolean get_collectContours_0(long nativeObj);
+
+    // C++: void SimpleBlobDetector_Params::collectContours
+    private static native void set_collectContours_0(long nativeObj, boolean collectContours);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);

@@ -3,25 +3,22 @@
 //
 package org.opencv.photo;
 
-// C++: class CalibrateDebevec
+import org.opencv.photo.CalibrateCRF;
 
+// C++: class CalibrateDebevec
 /**
  * Inverse camera response function is extracted for each brightness value by minimizing an objective
  * function as linear system. Objective function is constructed using pixel values on the same position
  * in all images, extra term is added to make the result smoother.
- * <p>
+ *
  * For more information see CITE: DM97 .
  */
 public class CalibrateDebevec extends CalibrateCRF {
 
-    protected CalibrateDebevec(long addr) {
-        super(addr);
-    }
+    protected CalibrateDebevec(long addr) { super(addr); }
 
     // internal usage only
-    public static CalibrateDebevec __fromPtr__(long addr) {
-        return new CalibrateDebevec(addr);
-    }
+    public static CalibrateDebevec __fromPtr__(long addr) { return new CalibrateDebevec(addr); }
 
     //
     // C++:  float cv::CalibrateDebevec::getLambda()
@@ -81,6 +78,7 @@ public class CalibrateDebevec extends CalibrateCRF {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:  float cv::CalibrateDebevec::getLambda()

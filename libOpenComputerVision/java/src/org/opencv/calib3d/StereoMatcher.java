@@ -7,20 +7,15 @@ import org.opencv.core.Algorithm;
 import org.opencv.core.Mat;
 
 // C++: class StereoMatcher
-
 /**
  * The base class for stereo correspondence algorithms.
  */
 public class StereoMatcher extends Algorithm {
 
-    protected StereoMatcher(long addr) {
-        super(addr);
-    }
+    protected StereoMatcher(long addr) { super(addr); }
 
     // internal usage only
-    public static StereoMatcher __fromPtr__(long addr) {
-        return new StereoMatcher(addr);
-    }
+    public static StereoMatcher __fromPtr__(long addr) { return new StereoMatcher(addr); }
 
     // C++: enum <unnamed>
     public static final int
@@ -35,11 +30,11 @@ public class StereoMatcher extends Algorithm {
     /**
      * Computes disparity map for the specified stereo pair
      *
-     * @param left      Left 8-bit single-channel image.
-     * @param right     Right image of the same size and the same type as the left one.
-     * @param disparity Output disparity map. It has the same size as the input images. Some algorithms,
-     *                  like StereoBM or StereoSGBM compute 16-bit fixed-point disparity map (where each disparity value
-     *                  has 4 fractional bits), whereas other algorithms output 32-bit floating-point disparity map.
+     *     @param left Left 8-bit single-channel image.
+     *     @param right Right image of the same size and the same type as the left one.
+     *     @param disparity Output disparity map. It has the same size as the input images. Some algorithms,
+     *     like StereoBM or StereoSGBM compute 16-bit fixed-point disparity map (where each disparity value
+     *     has 4 fractional bits), whereas other algorithms output 32-bit floating-point disparity map.
      */
     public void compute(Mat left, Mat right, Mat disparity) {
         compute_0(nativeObj, left.nativeObj, right.nativeObj, disparity.nativeObj);
@@ -158,6 +153,7 @@ public class StereoMatcher extends Algorithm {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:  void cv::StereoMatcher::compute(Mat left, Mat right, Mat& disparity)

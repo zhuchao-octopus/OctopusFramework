@@ -2,10 +2,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
 ext {
-    GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
+    GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libINetUtils'
-    PUBLISH_VERSION = '2.0'
+    PUBLISH_VERSION = '2.1'
 }
 
 afterEvaluate {
@@ -29,10 +29,10 @@ afterEvaluate {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
     defaultConfig {
-        minSdkVersion 24
-        targetSdkVersion 33
+        minSdk 24
+        targetSdk 34
     }
 
     publishing {

@@ -3,29 +3,26 @@
 //
 package org.opencv.photo;
 
-// C++: class TonemapDrago
+import org.opencv.photo.Tonemap;
 
+// C++: class TonemapDrago
 /**
  * Adaptive logarithmic mapping is a fast global tonemapping algorithm that scales the image in
  * logarithmic domain.
- * <p>
+ *
  * Since it's a global operator the same function is applied to all the pixels, it is controlled by the
  * bias parameter.
- * <p>
+ *
  * Optional saturation enhancement is possible as described in CITE: FL02 .
- * <p>
+ *
  * For more information see CITE: DM03 .
  */
 public class TonemapDrago extends Tonemap {
 
-    protected TonemapDrago(long addr) {
-        super(addr);
-    }
+    protected TonemapDrago(long addr) { super(addr); }
 
     // internal usage only
-    public static TonemapDrago __fromPtr__(long addr) {
-        return new TonemapDrago(addr);
-    }
+    public static TonemapDrago __fromPtr__(long addr) { return new TonemapDrago(addr); }
 
     //
     // C++:  float cv::TonemapDrago::getSaturation()
@@ -67,6 +64,7 @@ public class TonemapDrago extends Tonemap {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:  float cv::TonemapDrago::getSaturation()

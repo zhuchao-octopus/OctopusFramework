@@ -12,17 +12,15 @@
 #include <opencv2/gapi/gkernel.hpp> // GKernelPackage
 
 namespace cv {
-    namespace gapi {
-        namespace core {
-            namespace ocl {
+namespace gapi {
+namespace core {
+namespace ocl {
 
-                GAPI_EXPORTS_W cv::gapi::GKernelPackage
+GAPI_EXPORTS_W cv::GKernelPackage kernels();
 
-                kernels();
-
-            } // namespace ocl
-        } // namespace core
-    } // namespace gapi
+} // namespace ocl
+} // namespace core
+} // namespace gapi
 } // namespace cv
 
 

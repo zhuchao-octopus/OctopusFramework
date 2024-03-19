@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
 ext {
-    GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
+    GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libPlayerUtils'
 
@@ -12,7 +12,7 @@ ext {
     //def LIBVLC_AAR = 'libvlc-all-3.5.0-eap8.aar' //PUBLISH_VERSION = '>=1.2'
     //PUBLISH_VERSION = '2.6' //v2.6 stable
 
-    PUBLISH_VERSION = '2.8' //libvlc-3.5.4-armeabi-v7a-release.aar
+    PUBLISH_VERSION = '2.9' //libvlc-3.5.4-armeabi-v7a-release.aar
 }
 
 afterEvaluate {
@@ -35,10 +35,10 @@ afterEvaluate {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
     defaultConfig {
-        minSdkVersion 24
-        targetSdkVersion 33
+        minSdk 24
+        targetSdk 34
     }
 
     publishing {

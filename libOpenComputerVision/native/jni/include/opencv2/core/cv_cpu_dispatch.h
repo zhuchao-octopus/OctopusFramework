@@ -79,6 +79,10 @@
 #  endif
 #  define CV_FP16 1
 #endif
+#ifdef CV_CPU_COMPILE_NEON_DOTPROD
+#  include <arm_neon.h>
+#  define CV_NEON_DOT 1
+#endif
 #ifdef CV_CPU_COMPILE_AVX2
 #  include <immintrin.h>
 #  define CV_AVX2 1
@@ -168,6 +172,11 @@
 #  define CV_MSA 1
 #endif
 
+#ifdef CV_CPU_COMPILE_LASX
+#  include <lasxintrin.h>
+#  define CV_LASX 1
+#endif
+
 #ifdef __EMSCRIPTEN__
 #  define CV_WASM_SIMD 1
 #  include <wasm_simd128.h>
@@ -203,12 +212,11 @@ struct VZeroUpperGuard {
 #endif // __OPENCV_BUILD
 
 
+
 #if !defined __OPENCV_BUILD /* Compatibility code */ \
     && !defined __CUDACC__ /* do not include SSE/AVX/NEON headers for NVCC compiler */
 #if defined __SSE2__ || defined _M_X64 || (defined _M_IX86_FP && _M_IX86_FP >= 2)
-
 #  include <emmintrin.h>
-
 #  define CV_MMX 1
 #  define CV_SSE 1
 #  define CV_SSE2 1
@@ -233,6 +241,7 @@ struct VZeroUpperGuard {
 #endif
 
 #endif // !__OPENCV_BUILD && !__CUDACC (Compatibility code)
+
 
 
 #ifndef CV_MMX
@@ -365,4 +374,8 @@ struct VZeroUpperGuard {
 
 #ifndef CV_RVV
 #  define CV_RVV 0
+#endif
+
+#ifndef CV_LASX
+#  define CV_LASX 0
 #endif

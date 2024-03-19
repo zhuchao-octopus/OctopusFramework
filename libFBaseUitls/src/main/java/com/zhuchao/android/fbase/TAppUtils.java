@@ -117,6 +117,15 @@ public class TAppUtils {
         callUserCallback(null);
     }
 
+    public void printAllApps()
+    {
+        for (AppInfo Info : AllAppInfo) {
+            if (Info != null)
+               MMLog.log(TAG, Info.totoString());
+        }
+    }
+
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     public void registerApplicationsReceiver() {
         try {
             IntentFilter intentFilter = new IntentFilter();
@@ -344,7 +353,7 @@ public class TAppUtils {
             context.startActivity(intent);
             MMLog.log(TAG, "startApp ... " + packageName);
         } else {
-            MMLog.log(TAG, "app not found " + packageName);
+            MMLog.log(TAG, "App Not Found " + packageName);
         }
     }
 

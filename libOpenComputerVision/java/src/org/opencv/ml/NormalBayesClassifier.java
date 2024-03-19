@@ -4,24 +4,21 @@
 package org.opencv.ml;
 
 import org.opencv.core.Mat;
+import org.opencv.ml.NormalBayesClassifier;
+import org.opencv.ml.StatModel;
 
 // C++: class NormalBayesClassifier
-
 /**
  * Bayes classifier for normally distributed data.
- * <p>
+ *
  * SEE: REF: ml_intro_bayes
  */
 public class NormalBayesClassifier extends StatModel {
 
-    protected NormalBayesClassifier(long addr) {
-        super(addr);
-    }
+    protected NormalBayesClassifier(long addr) { super(addr); }
 
     // internal usage only
-    public static NormalBayesClassifier __fromPtr__(long addr) {
-        return new NormalBayesClassifier(addr);
-    }
+    public static NormalBayesClassifier __fromPtr__(long addr) { return new NormalBayesClassifier(addr); }
 
     //
     // C++:  float cv::ml::NormalBayesClassifier::predictProb(Mat inputs, Mat& outputs, Mat& outputProbs, int flags = 0)
@@ -29,17 +26,16 @@ public class NormalBayesClassifier extends StatModel {
 
     /**
      * Predicts the response for sample(s).
-     * <p>
-     * The method estimates the most probable classes for input vectors. Input vectors (one or more)
-     * are stored as rows of the matrix inputs. In case of multiple input vectors, there should be one
-     * output vector outputs. The predicted class for a single input vector is returned by the method.
-     * The vector outputProbs contains the output probabilities corresponding to each element of
-     * result.
      *
-     * @param inputs      automatically generated
-     * @param outputs     automatically generated
+     *     The method estimates the most probable classes for input vectors. Input vectors (one or more)
+     *     are stored as rows of the matrix inputs. In case of multiple input vectors, there should be one
+     *     output vector outputs. The predicted class for a single input vector is returned by the method.
+     *     The vector outputProbs contains the output probabilities corresponding to each element of
+     *     result.
+     * @param inputs automatically generated
+     * @param outputs automatically generated
      * @param outputProbs automatically generated
-     * @param flags       automatically generated
+     * @param flags automatically generated
      * @return automatically generated
      */
     public float predictProb(Mat inputs, Mat outputs, Mat outputProbs, int flags) {
@@ -48,15 +44,14 @@ public class NormalBayesClassifier extends StatModel {
 
     /**
      * Predicts the response for sample(s).
-     * <p>
-     * The method estimates the most probable classes for input vectors. Input vectors (one or more)
-     * are stored as rows of the matrix inputs. In case of multiple input vectors, there should be one
-     * output vector outputs. The predicted class for a single input vector is returned by the method.
-     * The vector outputProbs contains the output probabilities corresponding to each element of
-     * result.
      *
-     * @param inputs      automatically generated
-     * @param outputs     automatically generated
+     *     The method estimates the most probable classes for input vectors. Input vectors (one or more)
+     *     are stored as rows of the matrix inputs. In case of multiple input vectors, there should be one
+     *     output vector outputs. The predicted class for a single input vector is returned by the method.
+     *     The vector outputProbs contains the output probabilities corresponding to each element of
+     *     result.
+     * @param inputs automatically generated
+     * @param outputs automatically generated
      * @param outputProbs automatically generated
      * @return automatically generated
      */
@@ -72,7 +67,6 @@ public class NormalBayesClassifier extends StatModel {
     /**
      * Creates empty model
      * Use StatModel::train to train the model after creation.
-     *
      * @return automatically generated
      */
     public static NormalBayesClassifier create() {
@@ -86,7 +80,7 @@ public class NormalBayesClassifier extends StatModel {
 
     /**
      * Loads and creates a serialized NormalBayesClassifier from a file
-     * <p>
+     *
      * Use NormalBayesClassifier::save to serialize and store an NormalBayesClassifier to disk.
      * Load the NormalBayesClassifier from this file again, by calling this function with the path to the file.
      * Optionally specify the node for the file containing the classifier
@@ -101,7 +95,7 @@ public class NormalBayesClassifier extends StatModel {
 
     /**
      * Loads and creates a serialized NormalBayesClassifier from a file
-     * <p>
+     *
      * Use NormalBayesClassifier::save to serialize and store an NormalBayesClassifier to disk.
      * Load the NormalBayesClassifier from this file again, by calling this function with the path to the file.
      * Optionally specify the node for the file containing the classifier
@@ -120,9 +114,9 @@ public class NormalBayesClassifier extends StatModel {
     }
 
 
+
     // C++:  float cv::ml::NormalBayesClassifier::predictProb(Mat inputs, Mat& outputs, Mat& outputProbs, int flags = 0)
     private static native float predictProb_0(long nativeObj, long inputs_nativeObj, long outputs_nativeObj, long outputProbs_nativeObj, int flags);
-
     private static native float predictProb_1(long nativeObj, long inputs_nativeObj, long outputs_nativeObj, long outputProbs_nativeObj);
 
     // C++: static Ptr_NormalBayesClassifier cv::ml::NormalBayesClassifier::create()
@@ -130,7 +124,6 @@ public class NormalBayesClassifier extends StatModel {
 
     // C++: static Ptr_NormalBayesClassifier cv::ml::NormalBayesClassifier::load(String filepath, String nodeName = String())
     private static native long load_0(String filepath, String nodeName);
-
     private static native long load_1(String filepath);
 
     // native support for java finalize()

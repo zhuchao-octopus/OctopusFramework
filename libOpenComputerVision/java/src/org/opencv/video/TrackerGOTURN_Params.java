@@ -4,24 +4,18 @@
 package org.opencv.video;
 
 
+
 // C++: class Params
 
 public class TrackerGOTURN_Params {
 
     protected final long nativeObj;
+    protected TrackerGOTURN_Params(long addr) { nativeObj = addr; }
 
-    protected TrackerGOTURN_Params(long addr) {
-        nativeObj = addr;
-    }
-
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
+    public long getNativeObjAddr() { return nativeObj; }
 
     // internal usage only
-    public static TrackerGOTURN_Params __fromPtr__(long addr) {
-        return new TrackerGOTURN_Params(addr);
-    }
+    public static TrackerGOTURN_Params __fromPtr__(long addr) { return new TrackerGOTURN_Params(addr); }
 
     //
     // C++:   cv::TrackerGOTURN::Params::Params()
@@ -72,6 +66,7 @@ public class TrackerGOTURN_Params {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:   cv::TrackerGOTURN::Params::Params()

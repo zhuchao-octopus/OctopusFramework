@@ -61,13 +61,17 @@
  *  @}
  */
 
-namespace cv {
-    namespace gapi {
-        namespace wip {
-            namespace draw {
+namespace cv
+{
+namespace gapi
+{
+namespace wip
+{
+namespace draw
+{
 
-                using GMat2 = std::tuple<cv::GMat, cv::GMat>;
-                using GMatDesc2 = std::tuple<cv::GMatDesc, cv::GMatDesc>;
+using GMat2     = std::tuple<cv::GMat,cv::GMat>;
+using GMatDesc2 = std::tuple<cv::GMatDesc,cv::GMatDesc>;
 
 //! @addtogroup gapi_draw_api
 //! @{
@@ -77,14 +81,9 @@ namespace cv {
 @param prims vector of drawing primitivies
 @param args graph compile time parameters
 */
-                void GAPI_EXPORTS_W
-                render(cv::Mat
-                & bgr,
-                const Prims &prims,
-                        cv::GCompileArgs
-                &&
-                args = {}
-                );
+void GAPI_EXPORTS_W render(cv::Mat& bgr,
+                           const Prims& prims,
+                           cv::GCompileArgs&& args = {});
 
 /** @brief The function renders on two NV12 planes passed drawing primitivies
 
@@ -93,15 +92,10 @@ namespace cv {
 @param prims vector of drawing primitivies
 @param args graph compile time parameters
 */
-                void GAPI_EXPORTS_W
-                render(cv::Mat
-                & y_plane,
-                cv::Mat &uv_plane,
-                const Prims &prims,
-                        cv::GCompileArgs
-                &&
-                args = {}
-                );
+void GAPI_EXPORTS_W render(cv::Mat& y_plane,
+                           cv::Mat& uv_plane,
+                           const Prims& prims,
+                           cv::GCompileArgs&& args = {});
 
 /** @brief The function renders on the input media frame passed drawing primitivies
 
@@ -109,42 +103,34 @@ namespace cv {
 @param prims vector of drawing primitivies
 @param args graph compile time parameters
 */
-                void GAPI_EXPORTS
-                render(cv::MediaFrame
-                & frame,
-                const Prims &prims,
-                        cv::GCompileArgs
-                &&
-                args = {}
-                );
+void GAPI_EXPORTS render(cv::MediaFrame& frame,
+                         const Prims& prims,
+                         cv::GCompileArgs&& args = {});
 
 
-                G_TYPED_KERNEL_M(GRenderNV12,
-                <
-                GMat2(cv::GMat, cv::GMat, cv::GArray<wip::draw::Prim>
-                )>, "org.opencv.render.nv12") {
-                static GMatDesc2 outMeta(GMatDesc y_plane, GMatDesc uv_plane, GArrayDesc) {
-                    return std::make_tuple(y_plane, uv_plane);
-                }
-            };
+G_TYPED_KERNEL_M(GRenderNV12, <GMat2(cv::GMat,cv::GMat,cv::GArray<wip::draw::Prim>)>, "org.opencv.render.nv12")
+{
+     static GMatDesc2 outMeta(GMatDesc y_plane, GMatDesc uv_plane, GArrayDesc)
+     {
+         return std::make_tuple(y_plane, uv_plane);
+     }
+};
 
-            G_TYPED_KERNEL(GRenderBGR,
-            <
-            cv::GMat(cv::GMat, cv::GArray<wip::draw::Prim>
-            )>, "org.opencv.render.bgr") {
-            static GMatDesc outMeta(GMatDesc bgr, GArrayDesc) {
-                return bgr;
-            }
-        };
+G_TYPED_KERNEL(GRenderBGR, <cv::GMat(cv::GMat,cv::GArray<wip::draw::Prim>)>, "org.opencv.render.bgr")
+{
+     static GMatDesc outMeta(GMatDesc bgr, GArrayDesc)
+     {
+         return bgr;
+     }
+};
 
-        G_TYPED_KERNEL(GRenderFrame,
-        <
-        cv::GFrame(cv::GFrame, cv::GArray<wip::draw::Prim>
-        )>, "org.opencv.render.frame") {
-        static GFrameDesc outMeta(GFrameDesc desc, GArrayDesc) {
-            return desc;
-        }
-    };
+G_TYPED_KERNEL(GRenderFrame, <cv::GFrame(cv::GFrame, cv::GArray<wip::draw::Prim>)>, "org.opencv.render.frame")
+{
+    static GFrameDesc outMeta(GFrameDesc desc, GArrayDesc)
+    {
+        return desc;
+    }
+};
 
 /** @brief Renders on 3 channels input
 
@@ -153,9 +139,7 @@ Output image must be 8-bit unsigned planar 3-channel image
 @param src input image: 8-bit unsigned 3-channel image @ref CV_8UC3
 @param prims draw primitives
 */
-    GAPI_EXPORTS_W GMat
-
-    render3ch(const GMat &src, const GArray <Prim> &prims);
+GAPI_EXPORTS_W GMat render3ch(const GMat& src, const GArray<Prim>& prims);
 
 /** @brief Renders on two planes
 
@@ -166,11 +150,9 @@ uv image must be 8-bit unsigned planar 2-channel image @ref CV_8UC2
 @param uv input image: 8-bit unsigned 2-channel image @ref CV_8UC2
 @param prims draw primitives
 */
-    GAPI_EXPORTS_W GMat2
-
-    renderNV12(const GMat &y,
-               const GMat &uv,
-               const GArray <Prim> &prims);
+GAPI_EXPORTS_W GMat2 renderNV12(const GMat& y,
+                                const GMat& uv,
+                                const GArray<Prim>& prims);
 
 /** @brief Renders Media Frame
 
@@ -179,10 +161,8 @@ Output media frame frame cv::MediaFrame
 @param m_frame input image: cv::MediaFrame @ref cv::MediaFrame
 @param prims draw primitives
 */
-    GAPI_EXPORTS GFrame
-
-    renderFrame(const GFrame &m_frame,
-                const GArray <Prim> &prims);
+GAPI_EXPORTS GFrame renderFrame(const GFrame& m_frame,
+                                const GArray<Prim>& prims);
 
 //! @} gapi_draw_api
 
@@ -193,20 +173,21 @@ Output media frame frame cv::MediaFrame
  * @brief This namespace contains G-API CPU rendering backend functions,
  * structures, and symbols. See @ref gapi_draw for details.
  */
-namespace render {
-    namespace ocv {
-        GAPI_EXPORTS_W cv::gapi::GKernelPackage
+namespace render
+{
+namespace ocv
+{
+    GAPI_EXPORTS_W cv::GKernelPackage kernels();
 
-        kernels();
-
-    } // namespace ocv
+} // namespace ocv
 } // namespace render
 } // namespace gapi
 
-namespace detail {
-    template<>
-    struct CompileArgTag<cv::gapi::wip::draw::freetype_font> {
-        static const char *tag() { return "gapi.freetype_font"; }
+namespace detail
+{
+    template<> struct CompileArgTag<cv::gapi::wip::draw::freetype_font>
+    {
+        static const char* tag() { return "gapi.freetype_font"; }
     };
 } // namespace detail
 

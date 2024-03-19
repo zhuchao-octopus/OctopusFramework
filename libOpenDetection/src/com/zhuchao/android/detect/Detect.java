@@ -3,7 +3,6 @@ package com.zhuchao.android.detect;
 import android.content.Context;
 import android.util.Log;
 
-import com.zhuchao.android.eventinterface.NormalCallback;
 import com.zhuchao.android.fbase.MMLog;
 
 import org.opencv.android.BaseLoaderCallback;

@@ -4,10 +4,10 @@ plugins {
 }
 
 ext {
-    GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
+    GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libC-CNN'
-    PUBLISH_VERSION = '0.1' //设备支持多接口
+    PUBLISH_VERSION = '0.2' //设备支持多接口
 }
 
 afterEvaluate {
@@ -31,11 +31,11 @@ afterEvaluate {
 
 android {
     namespace 'com.zhuchao.android.libc_cnn'
-    compileSdk 33
-
+    compileSdk 34
     defaultConfig {
         minSdk 24
-        targetSdk 33
+        targetSdk 34
+
         externalNativeBuild {
             cmake {
                 cppFlags "-frtti -fexceptions"
@@ -77,9 +77,9 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }

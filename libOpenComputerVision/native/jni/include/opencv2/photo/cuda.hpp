@@ -45,8 +45,7 @@
 
 #include "opencv2/core/cuda.hpp"
 
-namespace cv {
-    namespace cuda {
+namespace cv { namespace cuda {
 
 //! @addtogroup photo_denoise
 //! @{
@@ -65,12 +64,21 @@ BORDER_REPLICATE , BORDER_CONSTANT , BORDER_REFLECT and BORDER_WRAP are supporte
 @sa
    fastNlMeansDenoising
  */
-        CV_EXPORTS void nonLocalMeans(InputArray src, OutputArray dst,
-                                      float h,
-                                      int search_window = 21,
-                                      int block_size = 7,
-                                      int borderMode = BORDER_DEFAULT,
-                                      Stream &stream = Stream::Null());
+CV_EXPORTS void nonLocalMeans(InputArray src, OutputArray dst,
+                            float h,
+                            int search_window = 21,
+                            int block_size = 7,
+                            int borderMode = BORDER_DEFAULT,
+                            Stream& stream = Stream::Null());
+CV_WRAP inline void nonLocalMeans(const GpuMat& src, CV_OUT GpuMat& dst,
+                            float h,
+                            int search_window = 21,
+                            int block_size = 7,
+                            int borderMode = BORDER_DEFAULT,
+                            Stream& stream = Stream::Null())
+{
+    nonLocalMeans(InputArray(src), OutputArray(dst), h, search_window, block_size, borderMode, stream);
+};
 
 /** @brief Perform image denoising using Non-local Means Denoising algorithm
 <http://www.ipol.im/pub/algo/bcm_non_local_means_denoising> with several computational
@@ -93,11 +101,19 @@ FastNonLocalMeansDenoising::labMethod.
 @sa
    fastNlMeansDenoising
  */
-        CV_EXPORTS void fastNlMeansDenoising(InputArray src, OutputArray dst,
-                                             float h,
-                                             int search_window = 21,
-                                             int block_size = 7,
-                                             Stream &stream = Stream::Null());
+CV_EXPORTS void fastNlMeansDenoising(InputArray src, OutputArray dst,
+                                    float h,
+                                    int search_window = 21,
+                                    int block_size = 7,
+                                    Stream& stream = Stream::Null());
+CV_WRAP inline void fastNlMeansDenoising(const GpuMat& src, CV_OUT GpuMat& dst,
+                                    float h,
+                                    int search_window = 21,
+                                    int block_size = 7,
+                                    Stream& stream = Stream::Null())
+{
+    fastNlMeansDenoising(InputArray(src), OutputArray(dst), h, search_window, block_size, stream);
+}
 
 /** @brief Modification of fastNlMeansDenoising function for colored images
 
@@ -120,15 +136,22 @@ with given h parameters using FastNonLocalMeansDenoising::simpleMethod function.
 @sa
    fastNlMeansDenoisingColored
  */
-        CV_EXPORTS void fastNlMeansDenoisingColored(InputArray src, OutputArray dst,
-                                                    float h_luminance, float photo_render,
-                                                    int search_window = 21,
-                                                    int block_size = 7,
-                                                    Stream &stream = Stream::Null());
+CV_EXPORTS void fastNlMeansDenoisingColored(InputArray src, OutputArray dst,
+                                            float h_luminance, float photo_render,
+                                            int search_window = 21,
+                                            int block_size = 7,
+                                            Stream& stream = Stream::Null());
+CV_WRAP inline void fastNlMeansDenoisingColored(const GpuMat& src, CV_OUT GpuMat& dst,
+                                            float h_luminance, float photo_render,
+                                            int search_window = 21,
+                                            int block_size = 7,
+                                            Stream& stream = Stream::Null())
+{
+    fastNlMeansDenoisingColored(InputArray(src), OutputArray(dst), h_luminance, photo_render, search_window, block_size, stream);
+}
 
 //! @} photo
 
-    }
-} // namespace cv { namespace cuda {
+}} // namespace cv { namespace cuda {
 
 #endif /* OPENCV_PHOTO_CUDA_HPP */

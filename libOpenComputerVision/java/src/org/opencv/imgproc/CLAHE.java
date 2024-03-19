@@ -8,20 +8,15 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 
 // C++: class CLAHE
-
 /**
  * Base class for Contrast Limited Adaptive Histogram Equalization.
  */
 public class CLAHE extends Algorithm {
 
-    protected CLAHE(long addr) {
-        super(addr);
-    }
+    protected CLAHE(long addr) { super(addr); }
 
     // internal usage only
-    public static CLAHE __fromPtr__(long addr) {
-        return new CLAHE(addr);
-    }
+    public static CLAHE __fromPtr__(long addr) { return new CLAHE(addr); }
 
     //
     // C++:  void cv::CLAHE::apply(Mat src, Mat& dst)
@@ -30,8 +25,8 @@ public class CLAHE extends Algorithm {
     /**
      * Equalizes the histogram of a grayscale image using Contrast Limited Adaptive Histogram Equalization.
      *
-     * @param src Source image of type CV_8UC1 or CV_16UC1.
-     * @param dst Destination image.
+     *     @param src Source image of type CV_8UC1 or CV_16UC1.
+     *     @param dst Destination image.
      */
     public void apply(Mat src, Mat dst) {
         apply_0(nativeObj, src.nativeObj, dst.nativeObj);
@@ -45,7 +40,7 @@ public class CLAHE extends Algorithm {
     /**
      * Sets threshold for contrast limiting.
      *
-     * @param clipLimit threshold value.
+     *     @param clipLimit threshold value.
      */
     public void setClipLimit(double clipLimit) {
         setClipLimit_0(nativeObj, clipLimit);
@@ -67,9 +62,9 @@ public class CLAHE extends Algorithm {
 
     /**
      * Sets size of grid for histogram equalization. Input image will be divided into
-     * equally sized rectangular tiles.
+     *     equally sized rectangular tiles.
      *
-     * @param tileGridSize defines the number of tiles in row and column.
+     *     @param tileGridSize defines the number of tiles in row and column.
      */
     public void setTilesGridSize(Size tileGridSize) {
         setTilesGridSize_0(nativeObj, tileGridSize.width, tileGridSize.height);
@@ -98,6 +93,7 @@ public class CLAHE extends Algorithm {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:  void cv::CLAHE::apply(Mat src, Mat& dst)

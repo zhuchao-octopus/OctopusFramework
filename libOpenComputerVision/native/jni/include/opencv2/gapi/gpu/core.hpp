@@ -14,13 +14,13 @@
 #include <opencv2/gapi/ocl/core.hpp>
 
 namespace cv {
-    namespace gapi {
-        namespace core {
-            namespace gpu {
-                using namespace ocl;
-            } // namespace gpu
-        } // namespace core
-    } // namespace gapi
+namespace gapi {
+namespace core {
+namespace gpu {
+    using namespace ocl;
+} // namespace gpu
+} // namespace core
+} // namespace gapi
 } // namespace cv
 
 

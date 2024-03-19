@@ -4,24 +4,18 @@
 package org.opencv.video;
 
 
+
 // C++: class Params
 
 public class TrackerMIL_Params {
 
     protected final long nativeObj;
+    protected TrackerMIL_Params(long addr) { nativeObj = addr; }
 
-    protected TrackerMIL_Params(long addr) {
-        nativeObj = addr;
-    }
-
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
+    public long getNativeObjAddr() { return nativeObj; }
 
     // internal usage only
-    public static TrackerMIL_Params __fromPtr__(long addr) {
-        return new TrackerMIL_Params(addr);
-    }
+    public static TrackerMIL_Params __fromPtr__(long addr) { return new TrackerMIL_Params(addr); }
 
     //
     // C++:   cv::TrackerMIL::Params::Params()
@@ -162,6 +156,7 @@ public class TrackerMIL_Params {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:   cv::TrackerMIL::Params::Params()

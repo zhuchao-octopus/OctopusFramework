@@ -19,13 +19,12 @@
 # include "va/va.h"
 #else  // HAVE_VA
 # if !defined(_VA_H_)
-typedef void *VADisplay;
-typedef unsigned int VASurfaceID;
+    typedef void* VADisplay;
+    typedef unsigned int VASurfaceID;
 # endif // !_VA_H_
 #endif // HAVE_VA
 
-namespace cv {
-    namespace va_intel {
+namespace cv { namespace va_intel {
 
 /** @addtogroup core_va_intel
 This section describes Intel VA-API/OpenCL (CL-VA) interoperability.
@@ -40,8 +39,8 @@ Check usage example for details: samples/va_intel/va_intel_interop.cpp
 
 /////////////////// CL-VA Interoperability Functions ///////////////////
 
-        namespace ocl {
-            using namespace cv::ocl;
+namespace ocl {
+using namespace cv::ocl;
 
 // TODO static functions in the Context class
 /** @brief Creates OpenCL context from VA.
@@ -49,14 +48,9 @@ Check usage example for details: samples/va_intel/va_intel_interop.cpp
 @param tryInterop - try to set up for interoperability, if true; set up for use slow copy if false.
 @return Returns reference to OpenCL Context
  */
-            CV_EXPORTS Context
-            &
-            initializeContextFromVA(VADisplay
-            display,
-            bool tryInterop = true
-            );
+CV_EXPORTS Context& initializeContextFromVA(VADisplay display, bool tryInterop = true);
 
-        } // namespace cv::va_intel::ocl
+} // namespace cv::va_intel::ocl
 
 /** @brief Converts InputArray to VASurfaceID object.
 @param display - VADisplay object.
@@ -64,8 +58,7 @@ Check usage example for details: samples/va_intel/va_intel_interop.cpp
 @param surface - destination VASurfaceID object.
 @param size    - size of image represented by VASurfaceID object.
  */
-        CV_EXPORTS void
-        convertToVASurface(VADisplay display, InputArray src, VASurfaceID surface, Size size);
+CV_EXPORTS void convertToVASurface(VADisplay display, InputArray src, VASurfaceID surface, Size size);
 
 /** @brief Converts VASurfaceID object to OutputArray.
 @param display - VADisplay object.
@@ -73,12 +66,10 @@ Check usage example for details: samples/va_intel/va_intel_interop.cpp
 @param size    - size of image represented by VASurfaceID object.
 @param dst     - destination OutputArray.
  */
-        CV_EXPORTS void
-        convertFromVASurface(VADisplay display, VASurfaceID surface, Size size, OutputArray dst);
+CV_EXPORTS void convertFromVASurface(VADisplay display, VASurfaceID surface, Size size, OutputArray dst);
 
 //! @}
 
-    }
-} // namespace cv::va_intel
+}} // namespace cv::va_intel
 
 #endif /* OPENCV_CORE_VA_INTEL_HPP */

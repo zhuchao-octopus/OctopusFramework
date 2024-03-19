@@ -10,6 +10,7 @@ import android.os.Message;
 
 import androidx.annotation.RequiresApi;
 
+import com.zhuchao.android.fbase.TCourierEventBus;
 import com.zhuchao.android.fbase.eventinterface.HttpCallback;
 import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
 import com.zhuchao.android.fbase.DataID;
@@ -21,6 +22,7 @@ import com.zhuchao.android.fbase.TTask;
 import com.zhuchao.android.fbase.TTaskInterface;
 import com.zhuchao.android.fbase.TTaskThreadPool;
 import com.zhuchao.android.net.HttpUtils;
+import com.zhuchao.android.persist.TPersistent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,11 +34,11 @@ import java.util.concurrent.locks.LockSupport;
 
 public class TTaskManager {
     private final String TAG = "TTaskManager";
-    private final String D_EXT_NAME = ".downloading.temp";
-    private Context mContext = null;
     private TTaskThreadPool tTaskThreadPool = null;
-    //private boolean stopContinue = true;
-    //private boolean reDownload = true;
+    public TPersistent tPersistent = null;
+    public TCourierEventBus tCourierEventBus = new TCourierEventBus();
+    ///private boolean stopContinue = true;
+    ///private boolean reDownload = true;
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     private final Handler TimerTaskHandler = new Handler(Looper.myLooper()) {
@@ -57,19 +59,19 @@ public class TTaskManager {
         if (tTask.getCallBackHandler() != null) {
             //在UI主线程中回调单个线程任务完成后处理方法
             tTask.doCallBackHandle(tTask.getProperties().getInt("status"));
-            //tTask.getCallBackHandler().onEventTask(//在主线程中调用前端回调函数更新UI
-            //        tTask,
-            //        tTask.getProperties().getInt("status")
-            //);
+            ///tTask.getCallBackHandler().onEventTask(//在主线程中调用前端回调函数更新UI
+            ///        tTask,
+            ///        tTask.getProperties().getInt("status")
+            ///);
         }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public TTaskManager(Context context) {
-        mContext = context;
         tTaskThreadPool = new TTaskThreadPool();
         //TTaskThreadPool_SESSION_UPDATE_TEST_INIT();
+        tPersistent = new TPersistent(context, context.getPackageName());
         tTaskManagerTTaskPoolInit();
     }
 
@@ -637,13 +639,14 @@ public class TTaskManager {
         String fileName = null;
         String downloadingPathFileName = null;
         String localPathFileName = null;
+        String d_EXT_NAME = ".downloading.temp";
         if (EmptyString(toPath)) {
             //从原来的路径截取文件名
             fileName = FileUtils.getFileNameFromPathName(fromUrl);
             if (EmptyString(fileName))
                 fileName = tag;
             //没有指定下载目录 获取默认的下载目录
-            downloadingPathFileName = FileUtils.getDownloadDir(null) + fileName + D_EXT_NAME;
+            downloadingPathFileName = FileUtils.getDownloadDir(null) + fileName + d_EXT_NAME;
             localPathFileName = FileUtils.getDownloadDir(null) + fileName;
         } else {
             String toToPath = toPath;
@@ -667,7 +670,7 @@ public class TTaskManager {
 
             if (EmptyString(fileName))
                 fileName = tag;
-            downloadingPathFileName = toToPath + "/" + fileName + D_EXT_NAME;
+            downloadingPathFileName = toToPath + "/" + fileName + d_EXT_NAME;
             localPathFileName = toToPath + "/" + fileName;
         }
 

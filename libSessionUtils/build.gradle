@@ -2,10 +2,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
 ext {
-    GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
+    GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libSessionUtils'
-    PUBLISH_VERSION = '2.7' //v2.7 stable
+    PUBLISH_VERSION = '2.8' //v2.7 stable
 }
 
 afterEvaluate {
@@ -28,10 +28,10 @@ afterEvaluate {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
     defaultConfig {
-        minSdkVersion 24
-        targetSdkVersion 33
+        minSdk 24
+        targetSdk 34
     }
 
     publishing {
@@ -64,5 +64,6 @@ dependencies {
     implementation project(path: ':libINetUtils')
     implementation project(path: ':libMediaUtils')
     implementation project(path: ':libPlayerUtils')
+    implementation project(path: ':libGPersistUtils')
 
 }

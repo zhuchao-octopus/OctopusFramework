@@ -3,6 +3,7 @@ package com.zhuchao.android.session;
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -16,6 +17,7 @@ import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import com.zhuchao.android.TPlatform;
 import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
@@ -205,6 +207,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         }
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private void registerUserEventReceiver() {
         try {
             IntentFilter intentFilter = new IntentFilter();
@@ -516,6 +519,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    @SuppressLint("ObsoleteSdkInt")
     private synchronized static void install(File apkFile) {
         String cmd = "";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
@@ -773,4 +777,8 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         }
     }
 
+    public void test()
+    {
+        //KeyEvent.KEYCODE_Z
+    }
 }

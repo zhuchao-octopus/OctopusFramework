@@ -18,12 +18,12 @@
 #include <opencv2/gapi/own/assert.hpp>
 
 // TODO GAPI_EXPORTS or so
-namespace cv {
+namespace cv
+{
 // Forward declaration; GNode and GOrigin are an internal
 // (user-inaccessible) classes.
-    class GNode;
-
-    struct GOrigin;
+class GNode;
+struct GOrigin;
 
 /** \addtogroup gapi_data_objects
  * @{
@@ -48,7 +48,7 @@ namespace cv {
  * operations like BGR(), Y(), UV() -- these operations provide
  * access to frame's data in the familiar cv::GMat form, which can be
  * used with the majority of the existing G-API operations. These
- * accessor functions may perform color space converion on the fly if
+ * accessor functions may perform color space conversion on the fly if
  * the image format of the GFrame they are applied to differs from the
  * operation's semantic (e.g. the BGR() accessor is called on an NV12
  * image frame).
@@ -57,65 +57,56 @@ namespace cv {
  *
  * @sa cv::MediaFrame, cv::GFrameDesc, BGR(), Y(), UV(), infer<>().
  */
-    class GAPI_EXPORTS_W_SIMPLE GFrame
-            {
-                    public:
-                    /**
-                     * @brief Constructs an empty GFrame
-                     *
-                     * Normally, empty G-API data objects denote a starting point of
-                     * the graph. When an empty GFrame is assigned to a result of some
-                     * operation, it obtains a functional link to this operation (and
-                     * is not empty anymore).
-                     */
-                    GAPI_WRAP GFrame();                      // Empty constructor
+class GAPI_EXPORTS_W_SIMPLE GFrame
+{
+public:
+    /**
+     * @brief Constructs an empty GFrame
+     *
+     * Normally, empty G-API data objects denote a starting point of
+     * the graph. When an empty GFrame is assigned to a result of some
+     * operation, it obtains a functional link to this operation (and
+     * is not empty anymore).
+     */
+    GAPI_WRAP GFrame();                      // Empty constructor
 
-                    /// @private
-                    GFrame(const GNode &n, std::size_t out); // Operation result constructor
-                    /// @private
-                    GOrigin& priv();                         // Internal use only
-                    /// @private
-                    const GOrigin& priv()  const;            // Internal use only
+    /// @private
+    GFrame(const GNode &n, std::size_t out); // Operation result constructor
+    /// @private
+    GOrigin& priv();                         // Internal use only
+    /// @private
+    const GOrigin& priv()  const;            // Internal use only
 
-                    private:
-                    std::shared_ptr<GOrigin> m_priv;
-            };
-
+private:
+    std::shared_ptr<GOrigin> m_priv;
+};
 /** @} */
 
-    enum class MediaFormat : int {
-        BGR = 0,
-        NV12,
-    };
+enum class MediaFormat: int
+{
+    BGR = 0,
+    NV12,
+    GRAY,
+};
 
 /**
  * \addtogroup gapi_meta_args
  * @{
  */
-    struct GAPI_EXPORTS GFrameDesc
-            {
-                    MediaFormat fmt;
-            cv::Size size;
+struct GAPI_EXPORTS GFrameDesc
+{
+    MediaFormat fmt;
+    cv::Size size;
 
-            bool operator== (const GFrameDesc &) const;
-            };
-
-    static inline GFrameDesc empty_gframe_desc() { return GFrameDesc{}; }
-
+    bool operator== (const GFrameDesc &) const;
+};
+static inline GFrameDesc empty_gframe_desc() { return GFrameDesc{}; }
 /** @} */
 
-    class MediaFrame;
+class MediaFrame;
+GAPI_EXPORTS GFrameDesc descr_of(const MediaFrame &frame);
 
-    GAPI_EXPORTS GFrameDesc
-
-    descr_of(const MediaFrame &frame);
-
-    GAPI_EXPORTS std::ostream
-    &
-    operator<<(std::ostream
-    & os,
-    const cv::GFrameDesc &desc
-    );
+GAPI_EXPORTS std::ostream& operator<<(std::ostream& os, const cv::GFrameDesc &desc);
 
 } // namespace cv
 

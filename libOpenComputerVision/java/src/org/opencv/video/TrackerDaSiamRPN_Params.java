@@ -4,24 +4,18 @@
 package org.opencv.video;
 
 
+
 // C++: class Params
 
 public class TrackerDaSiamRPN_Params {
 
     protected final long nativeObj;
+    protected TrackerDaSiamRPN_Params(long addr) { nativeObj = addr; }
 
-    protected TrackerDaSiamRPN_Params(long addr) {
-        nativeObj = addr;
-    }
-
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
+    public long getNativeObjAddr() { return nativeObj; }
 
     // internal usage only
-    public static TrackerDaSiamRPN_Params __fromPtr__(long addr) {
-        return new TrackerDaSiamRPN_Params(addr);
-    }
+    public static TrackerDaSiamRPN_Params __fromPtr__(long addr) { return new TrackerDaSiamRPN_Params(addr); }
 
     //
     // C++:   cv::TrackerDaSiamRPN::Params::Params()
@@ -126,6 +120,7 @@ public class TrackerDaSiamRPN_Params {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:   cv::TrackerDaSiamRPN::Params::Params()

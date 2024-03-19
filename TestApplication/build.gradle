@@ -7,21 +7,24 @@ ext {
     ///PUBLISH_PLATFORM = 'rk3288'
     ///PUBLISH_PLATFORM = 'AW40I'
     PUBLISH_PLATFORM = 'AW507'
-    GITHUB_REPO_PATH = 'F:\\StudioProjects\\OctopusFrameworkLibs'
+    GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'wms'
 }
 
 android {
     namespace 'com.zhuchao.android.wms'
-    compileSdk 33
 
+
+    compileSdk 34
     defaultConfig {
-        applicationId "com.zhuchao.android.wms"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
+
         versionCode 105
         versionName "1.06"
+        flavorDimensions "dimen"
+        applicationId "com.zhuchao.android.wms"
     }
 
     buildTypes {
@@ -31,17 +34,16 @@ android {
         }
     }
 
-
-    flavorDimensions 'ZHUCHAO_ANDROID'
     productFlavors {
         WMS {
             manifestPlaceholders = [APP_NAME: "WatchManService"]
             //buildConfigField 'String', 'platform', '"rk3288"'
         }
     }
+    flavorDimensions 'Flavors_Dimen1'
 
-    android.applicationVariants.all { variant ->
-        variant.outputs.all {
+    android.applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach {
             def date = new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("GMT+08"))
             if (variant.buildType.name == 'release') {
                 outputFileName = "${PUBLISH_PLATFORM}_${variant.productFlavors[0].name}_${date}_${versionName}.apk"
@@ -51,12 +53,21 @@ android {
 }
 
 dependencies {
+
+    //implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.20") {
+    //        because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+    //    }
+    //    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20") {
+    //        because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+    //    }
+
+
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
 
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation project(path: ':libFBaseUitls')
     implementation project(path: ':libSessionUtils')

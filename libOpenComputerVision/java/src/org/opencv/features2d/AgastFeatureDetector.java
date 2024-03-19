@@ -3,21 +3,19 @@
 //
 package org.opencv.features2d;
 
-// C++: class AgastFeatureDetector
+import org.opencv.features2d.AgastFeatureDetector;
+import org.opencv.features2d.Feature2D;
 
+// C++: class AgastFeatureDetector
 /**
  * Wrapping class for feature detection using the AGAST method. :
  */
 public class AgastFeatureDetector extends Feature2D {
 
-    protected AgastFeatureDetector(long addr) {
-        super(addr);
-    }
+    protected AgastFeatureDetector(long addr) { super(addr); }
 
     // internal usage only
-    public static AgastFeatureDetector __fromPtr__(long addr) {
-        return new AgastFeatureDetector(addr);
-    }
+    public static AgastFeatureDetector __fromPtr__(long addr) { return new AgastFeatureDetector(addr); }
 
     // C++: enum <unnamed>
     public static final int
@@ -123,13 +121,11 @@ public class AgastFeatureDetector extends Feature2D {
     }
 
 
+
     // C++: static Ptr_AgastFeatureDetector cv::AgastFeatureDetector::create(int threshold = 10, bool nonmaxSuppression = true, AgastFeatureDetector_DetectorType type = AgastFeatureDetector::OAST_9_16)
     private static native long create_0(int threshold, boolean nonmaxSuppression, int type);
-
     private static native long create_1(int threshold, boolean nonmaxSuppression);
-
     private static native long create_2(int threshold);
-
     private static native long create_3();
 
     // C++:  void cv::AgastFeatureDetector::setThreshold(int threshold)

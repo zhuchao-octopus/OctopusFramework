@@ -4,36 +4,29 @@
 package org.opencv.core;
 
 
-// C++: class TickMeter
 
+// C++: class TickMeter
 /**
  * a Class to measure passing time.
- * <p>
+ *
  * The class computes passing time by counting the number of ticks per second. That is, the following code computes the
  * execution time in seconds:
  * SNIPPET: snippets/core_various.cpp TickMeter_total
- * <p>
+ *
  * It is also possible to compute the average time over multiple runs:
  * SNIPPET: snippets/core_various.cpp TickMeter_average
- * <p>
+ *
  * SEE: getTickCount, getTickFrequency
  */
 public class TickMeter {
 
     protected final long nativeObj;
+    protected TickMeter(long addr) { nativeObj = addr; }
 
-    protected TickMeter(long addr) {
-        nativeObj = addr;
-    }
-
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
+    public long getNativeObjAddr() { return nativeObj; }
 
     // internal usage only
-    public static TickMeter __fromPtr__(long addr) {
-        return new TickMeter(addr);
-    }
+    public static TickMeter __fromPtr__(long addr) { return new TickMeter(addr); }
 
     //
     // C++:   cv::TickMeter::TickMeter()
@@ -147,6 +140,7 @@ public class TickMeter {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:   cv::TickMeter::TickMeter()

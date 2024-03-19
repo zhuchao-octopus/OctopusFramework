@@ -13,9 +13,9 @@
 #include <memory>
 
 namespace cv {
-    namespace gapi {
-        namespace wip {
-            namespace gst {
+namespace gapi {
+namespace wip {
+namespace gst {
 
 /**
  * @brief OpenCV's GStreamer streaming source.
@@ -32,13 +32,13 @@ namespace cv {
  *        Pipeline can actually contain many sink elements, but it must have one and only one
  *        appsink among them.
  *
- *      - data passed to appsink should be video-frame in NV12 format.
+ *      - data passed to appsink should be video-frame in NV12 or GRAY8 format.
  *
  * 'outputType' is used to select type of output data to produce: 'cv::MediaFrame' or 'cv::Mat'.
  * To produce 'cv::MediaFrame'-s you need to pass 'GStreamerSource::OutputType::FRAME' and,
  * correspondingly, 'GStreamerSource::OutputType::MAT' to produce 'cv::Mat'-s.
  * Please note, that in the last case, output 'cv::Mat' will be of BGR format, internal conversion
- * from NV12 GStreamer data will happen.
+ * from NV12 / GRAY8 GStreamer data will happen.
  * Default value for 'outputType' is 'GStreamerSource::OutputType::MAT'.
  *
  * @note Stream sources are passed to G-API via shared pointers, so please use gapi::make_src<>
@@ -47,57 +47,50 @@ namespace cv {
  * @note You need to build OpenCV with GStreamer support to use this class.
  */
 
-                class GStreamerPipelineFacade;
+class GStreamerPipelineFacade;
 
-                class GAPI_EXPORTS GStreamerSource
+class GAPI_EXPORTS GStreamerSource : public IStreamSource
+{
+public:
+    class Priv;
 
-                : public IStreamSource {
-                public:
+    // Indicates what type of data should be produced by GStreamerSource: cv::MediaFrame or cv::Mat
+    enum class OutputType {
+        FRAME,
+        MAT
+    };
 
-                class Priv;
+    GStreamerSource(const std::string& pipeline,
+                    const GStreamerSource::OutputType outputType =
+                        GStreamerSource::OutputType::MAT);
+    GStreamerSource(std::shared_ptr<GStreamerPipelineFacade> pipeline,
+                    const std::string& appsinkName,
+                    const GStreamerSource::OutputType outputType =
+                        GStreamerSource::OutputType::MAT);
 
-                // Indicates what type of data should be produced by GStreamerSource: cv::MediaFrame or cv::Mat
-                enum class OutputType {
-                    FRAME,
-                    MAT
-                };
+    bool pull(cv::gapi::wip::Data& data) override;
+    GMetaArg descr_of() const override;
+    ~GStreamerSource() override;
 
-                GStreamerSource(const std::string &pipeline,
-                                const GStreamerSource::OutputType outputType =
-                                GStreamerSource::OutputType::MAT);
+protected:
+    explicit GStreamerSource(std::unique_ptr<Priv> priv);
 
-                GStreamerSource(std::shared_ptr<GStreamerPipelineFacade>
-                pipeline,
-                const std::string &appsinkName,
-                const GStreamerSource::OutputType outputType =
-                        GStreamerSource::OutputType::MAT
-                );
+    std::unique_ptr<Priv> m_priv;
+};
 
-                bool pull(cv::gapi::wip::Data &data)
+} // namespace gst
 
-                override;
+using GStreamerSource = gst::GStreamerSource;
 
-                GMetaArg descr_of() const
-
-                override;
-                ~
-
-                GStreamerSource()
-
-                override;
-
-                protected:
-                explicit GStreamerSource(std::unique_ptr<Priv>
-                priv);
-
-                std::unique_ptr <Priv> m_priv;
-            };
-
-        } // namespace gst
-
-        using GStreamerSource = gst::GStreamerSource;
-
-    } // namespace wip
+// NB: Overload for using from python
+GAPI_EXPORTS_W cv::Ptr<IStreamSource>
+inline make_gst_src(const std::string& pipeline,
+                    const GStreamerSource::OutputType outputType =
+                    GStreamerSource::OutputType::MAT)
+{
+    return make_src<GStreamerSource>(pipeline, outputType);
+}
+} // namespace wip
 } // namespace gapi
 } // namespace cv
 

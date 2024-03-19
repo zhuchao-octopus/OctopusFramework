@@ -3,33 +3,28 @@
 //
 package org.opencv.objdetect;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Size;
+import org.opencv.utils.Converters;
 
 // C++: class CascadeClassifier
-
 /**
  * Cascade classifier class for object detection.
  */
 public class CascadeClassifier {
 
     protected final long nativeObj;
+    protected CascadeClassifier(long addr) { nativeObj = addr; }
 
-    protected CascadeClassifier(long addr) {
-        nativeObj = addr;
-    }
-
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
+    public long getNativeObjAddr() { return nativeObj; }
 
     // internal usage only
-    public static CascadeClassifier __fromPtr__(long addr) {
-        return new CascadeClassifier(addr);
-    }
+    public static CascadeClassifier __fromPtr__(long addr) { return new CascadeClassifier(addr); }
 
     //
     // C++:   cv::CascadeClassifier::CascadeClassifier()
@@ -47,7 +42,7 @@ public class CascadeClassifier {
     /**
      * Loads a classifier from a file.
      *
-     * @param filename Name of the file from which the classifier is loaded.
+     *     @param filename Name of the file from which the classifier is loaded.
      */
     public CascadeClassifier(String filename) {
         nativeObj = CascadeClassifier_1(filename);
@@ -60,7 +55,6 @@ public class CascadeClassifier {
 
     /**
      * Checks whether the classifier has been loaded.
-     *
      * @return automatically generated
      */
     public boolean empty() {
@@ -75,9 +69,9 @@ public class CascadeClassifier {
     /**
      * Loads a classifier from a file.
      *
-     * @param filename Name of the file from which the classifier is loaded. The file may contain an old
-     *                 HAAR classifier trained by the haartraining application or a new cascade classifier trained by the
-     *                 traincascade application.
+     *     @param filename Name of the file from which the classifier is loaded. The file may contain an old
+     *     HAAR classifier trained by the haartraining application or a new cascade classifier trained by the
+     *     traincascade application.
      * @return automatically generated
      */
     public boolean load(String filename) {
@@ -98,28 +92,18 @@ public class CascadeClassifier {
 
     /**
      * Detects objects of different sizes in the input image. The detected objects are returned as a list
-     * of rectangles.
+     *     of rectangles.
      *
-     * @param image        Matrix of the type CV_8U containing an image where objects are detected.
-     * @param objects      Vector of rectangles where each rectangle contains the detected object, the
-     *                     rectangles may be partially outside the original image.
-     * @param scaleFactor  Parameter specifying how much the image size is reduced at each image scale.
-     * @param minNeighbors Parameter specifying how many neighbors each candidate rectangle should have
-     *                     to retain it.
-     * @param flags        Parameter with the same meaning for an old cascade as in the function
-     *                     cvHaarDetectObjects. It is not used for a new cascade.
-     * @param minSize      Minimum possible object size. Objects smaller than that are ignored.
-     * @param maxSize      Maximum possible object size. Objects larger than that are ignored. If {@code maxSize == minSize} model is evaluated on single scale.
-     *                     <p>
-     *                     The function is parallelized with the TBB library.
-     *
-     *                     <b>Note:</b>
-     *                     <ul>
-     *                       <li>
-     *                               (Python) A face detection example using cascade classifiers can be found at
-     *                                 opencv_source_code/samples/python/facedetect.py
-     *                       </li>
-     *                     </ul>
+     *     @param image Matrix of the type CV_8U containing an image where objects are detected.
+     *     @param objects Vector of rectangles where each rectangle contains the detected object, the
+     *     rectangles may be partially outside the original image.
+     *     @param scaleFactor Parameter specifying how much the image size is reduced at each image scale.
+     *     @param minNeighbors Parameter specifying how many neighbors each candidate rectangle should have
+     *     to retain it.
+     *     @param flags Parameter with the same meaning for an old cascade as in the function
+     *     cvHaarDetectObjects. It is not used for a new cascade.
+     *     @param minSize Minimum possible object size. Objects smaller than that are ignored.
+     *     @param maxSize Maximum possible object size. Objects larger than that are ignored. If {@code maxSize == minSize} model is evaluated on single scale.
      */
     public void detectMultiScale(Mat image, MatOfRect objects, double scaleFactor, int minNeighbors, int flags, Size minSize, Size maxSize) {
         Mat objects_mat = objects;
@@ -128,27 +112,17 @@ public class CascadeClassifier {
 
     /**
      * Detects objects of different sizes in the input image. The detected objects are returned as a list
-     * of rectangles.
+     *     of rectangles.
      *
-     * @param image        Matrix of the type CV_8U containing an image where objects are detected.
-     * @param objects      Vector of rectangles where each rectangle contains the detected object, the
-     *                     rectangles may be partially outside the original image.
-     * @param scaleFactor  Parameter specifying how much the image size is reduced at each image scale.
-     * @param minNeighbors Parameter specifying how many neighbors each candidate rectangle should have
-     *                     to retain it.
-     * @param flags        Parameter with the same meaning for an old cascade as in the function
-     *                     cvHaarDetectObjects. It is not used for a new cascade.
-     * @param minSize      Minimum possible object size. Objects smaller than that are ignored.
-     *                     <p>
-     *                     The function is parallelized with the TBB library.
-     *
-     *                     <b>Note:</b>
-     *                     <ul>
-     *                       <li>
-     *                               (Python) A face detection example using cascade classifiers can be found at
-     *                                 opencv_source_code/samples/python/facedetect.py
-     *                       </li>
-     *                     </ul>
+     *     @param image Matrix of the type CV_8U containing an image where objects are detected.
+     *     @param objects Vector of rectangles where each rectangle contains the detected object, the
+     *     rectangles may be partially outside the original image.
+     *     @param scaleFactor Parameter specifying how much the image size is reduced at each image scale.
+     *     @param minNeighbors Parameter specifying how many neighbors each candidate rectangle should have
+     *     to retain it.
+     *     @param flags Parameter with the same meaning for an old cascade as in the function
+     *     cvHaarDetectObjects. It is not used for a new cascade.
+     *     @param minSize Minimum possible object size. Objects smaller than that are ignored.
      */
     public void detectMultiScale(Mat image, MatOfRect objects, double scaleFactor, int minNeighbors, int flags, Size minSize) {
         Mat objects_mat = objects;
@@ -157,26 +131,16 @@ public class CascadeClassifier {
 
     /**
      * Detects objects of different sizes in the input image. The detected objects are returned as a list
-     * of rectangles.
+     *     of rectangles.
      *
-     * @param image        Matrix of the type CV_8U containing an image where objects are detected.
-     * @param objects      Vector of rectangles where each rectangle contains the detected object, the
-     *                     rectangles may be partially outside the original image.
-     * @param scaleFactor  Parameter specifying how much the image size is reduced at each image scale.
-     * @param minNeighbors Parameter specifying how many neighbors each candidate rectangle should have
-     *                     to retain it.
-     * @param flags        Parameter with the same meaning for an old cascade as in the function
-     *                     cvHaarDetectObjects. It is not used for a new cascade.
-     *                     <p>
-     *                     The function is parallelized with the TBB library.
-     *
-     *                     <b>Note:</b>
-     *                     <ul>
-     *                       <li>
-     *                               (Python) A face detection example using cascade classifiers can be found at
-     *                                 opencv_source_code/samples/python/facedetect.py
-     *                       </li>
-     *                     </ul>
+     *     @param image Matrix of the type CV_8U containing an image where objects are detected.
+     *     @param objects Vector of rectangles where each rectangle contains the detected object, the
+     *     rectangles may be partially outside the original image.
+     *     @param scaleFactor Parameter specifying how much the image size is reduced at each image scale.
+     *     @param minNeighbors Parameter specifying how many neighbors each candidate rectangle should have
+     *     to retain it.
+     *     @param flags Parameter with the same meaning for an old cascade as in the function
+     *     cvHaarDetectObjects. It is not used for a new cascade.
      */
     public void detectMultiScale(Mat image, MatOfRect objects, double scaleFactor, int minNeighbors, int flags) {
         Mat objects_mat = objects;
@@ -185,25 +149,15 @@ public class CascadeClassifier {
 
     /**
      * Detects objects of different sizes in the input image. The detected objects are returned as a list
-     * of rectangles.
+     *     of rectangles.
      *
-     * @param image        Matrix of the type CV_8U containing an image where objects are detected.
-     * @param objects      Vector of rectangles where each rectangle contains the detected object, the
-     *                     rectangles may be partially outside the original image.
-     * @param scaleFactor  Parameter specifying how much the image size is reduced at each image scale.
-     * @param minNeighbors Parameter specifying how many neighbors each candidate rectangle should have
-     *                     to retain it.
-     *                     cvHaarDetectObjects. It is not used for a new cascade.
-     *                     <p>
-     *                     The function is parallelized with the TBB library.
-     *
-     *                     <b>Note:</b>
-     *                     <ul>
-     *                       <li>
-     *                               (Python) A face detection example using cascade classifiers can be found at
-     *                                 opencv_source_code/samples/python/facedetect.py
-     *                       </li>
-     *                     </ul>
+     *     @param image Matrix of the type CV_8U containing an image where objects are detected.
+     *     @param objects Vector of rectangles where each rectangle contains the detected object, the
+     *     rectangles may be partially outside the original image.
+     *     @param scaleFactor Parameter specifying how much the image size is reduced at each image scale.
+     *     @param minNeighbors Parameter specifying how many neighbors each candidate rectangle should have
+     *     to retain it.
+     *     cvHaarDetectObjects. It is not used for a new cascade.
      */
     public void detectMultiScale(Mat image, MatOfRect objects, double scaleFactor, int minNeighbors) {
         Mat objects_mat = objects;
@@ -212,24 +166,14 @@ public class CascadeClassifier {
 
     /**
      * Detects objects of different sizes in the input image. The detected objects are returned as a list
-     * of rectangles.
+     *     of rectangles.
      *
-     * @param image       Matrix of the type CV_8U containing an image where objects are detected.
-     * @param objects     Vector of rectangles where each rectangle contains the detected object, the
-     *                    rectangles may be partially outside the original image.
-     * @param scaleFactor Parameter specifying how much the image size is reduced at each image scale.
-     *                    to retain it.
-     *                    cvHaarDetectObjects. It is not used for a new cascade.
-     *                    <p>
-     *                    The function is parallelized with the TBB library.
-     *
-     *                    <b>Note:</b>
-     *                    <ul>
-     *                      <li>
-     *                              (Python) A face detection example using cascade classifiers can be found at
-     *                                opencv_source_code/samples/python/facedetect.py
-     *                      </li>
-     *                    </ul>
+     *     @param image Matrix of the type CV_8U containing an image where objects are detected.
+     *     @param objects Vector of rectangles where each rectangle contains the detected object, the
+     *     rectangles may be partially outside the original image.
+     *     @param scaleFactor Parameter specifying how much the image size is reduced at each image scale.
+     *     to retain it.
+     *     cvHaarDetectObjects. It is not used for a new cascade.
      */
     public void detectMultiScale(Mat image, MatOfRect objects, double scaleFactor) {
         Mat objects_mat = objects;
@@ -238,23 +182,13 @@ public class CascadeClassifier {
 
     /**
      * Detects objects of different sizes in the input image. The detected objects are returned as a list
-     * of rectangles.
+     *     of rectangles.
      *
-     * @param image   Matrix of the type CV_8U containing an image where objects are detected.
-     * @param objects Vector of rectangles where each rectangle contains the detected object, the
-     *                rectangles may be partially outside the original image.
-     *                to retain it.
-     *                cvHaarDetectObjects. It is not used for a new cascade.
-     *                <p>
-     *                The function is parallelized with the TBB library.
-     *
-     *                <b>Note:</b>
-     *                <ul>
-     *                  <li>
-     *                          (Python) A face detection example using cascade classifiers can be found at
-     *                            opencv_source_code/samples/python/facedetect.py
-     *                  </li>
-     *                </ul>
+     *     @param image Matrix of the type CV_8U containing an image where objects are detected.
+     *     @param objects Vector of rectangles where each rectangle contains the detected object, the
+     *     rectangles may be partially outside the original image.
+     *     to retain it.
+     *     cvHaarDetectObjects. It is not used for a new cascade.
      */
     public void detectMultiScale(Mat image, MatOfRect objects) {
         Mat objects_mat = objects;
@@ -267,19 +201,20 @@ public class CascadeClassifier {
     //
 
     /**
-     * @param image         Matrix of the type CV_8U containing an image where objects are detected.
-     * @param objects       Vector of rectangles where each rectangle contains the detected object, the
-     *                      rectangles may be partially outside the original image.
-     * @param numDetections Vector of detection numbers for the corresponding objects. An object's number
-     *                      of detections is the number of neighboring positively classified rectangles that were joined
-     *                      together to form the object.
-     * @param scaleFactor   Parameter specifying how much the image size is reduced at each image scale.
-     * @param minNeighbors  Parameter specifying how many neighbors each candidate rectangle should have
-     *                      to retain it.
-     * @param flags         Parameter with the same meaning for an old cascade as in the function
-     *                      cvHaarDetectObjects. It is not used for a new cascade.
-     * @param minSize       Minimum possible object size. Objects smaller than that are ignored.
-     * @param maxSize       Maximum possible object size. Objects larger than that are ignored. If {@code maxSize == minSize} model is evaluated on single scale.
+     *
+     *     @param image Matrix of the type CV_8U containing an image where objects are detected.
+     *     @param objects Vector of rectangles where each rectangle contains the detected object, the
+     *     rectangles may be partially outside the original image.
+     *     @param numDetections Vector of detection numbers for the corresponding objects. An object's number
+     *     of detections is the number of neighboring positively classified rectangles that were joined
+     *     together to form the object.
+     *     @param scaleFactor Parameter specifying how much the image size is reduced at each image scale.
+     *     @param minNeighbors Parameter specifying how many neighbors each candidate rectangle should have
+     *     to retain it.
+     *     @param flags Parameter with the same meaning for an old cascade as in the function
+     *     cvHaarDetectObjects. It is not used for a new cascade.
+     *     @param minSize Minimum possible object size. Objects smaller than that are ignored.
+     *     @param maxSize Maximum possible object size. Objects larger than that are ignored. If {@code maxSize == minSize} model is evaluated on single scale.
      */
     public void detectMultiScale2(Mat image, MatOfRect objects, MatOfInt numDetections, double scaleFactor, int minNeighbors, int flags, Size minSize, Size maxSize) {
         Mat objects_mat = objects;
@@ -288,18 +223,19 @@ public class CascadeClassifier {
     }
 
     /**
-     * @param image         Matrix of the type CV_8U containing an image where objects are detected.
-     * @param objects       Vector of rectangles where each rectangle contains the detected object, the
-     *                      rectangles may be partially outside the original image.
-     * @param numDetections Vector of detection numbers for the corresponding objects. An object's number
-     *                      of detections is the number of neighboring positively classified rectangles that were joined
-     *                      together to form the object.
-     * @param scaleFactor   Parameter specifying how much the image size is reduced at each image scale.
-     * @param minNeighbors  Parameter specifying how many neighbors each candidate rectangle should have
-     *                      to retain it.
-     * @param flags         Parameter with the same meaning for an old cascade as in the function
-     *                      cvHaarDetectObjects. It is not used for a new cascade.
-     * @param minSize       Minimum possible object size. Objects smaller than that are ignored.
+     *
+     *     @param image Matrix of the type CV_8U containing an image where objects are detected.
+     *     @param objects Vector of rectangles where each rectangle contains the detected object, the
+     *     rectangles may be partially outside the original image.
+     *     @param numDetections Vector of detection numbers for the corresponding objects. An object's number
+     *     of detections is the number of neighboring positively classified rectangles that were joined
+     *     together to form the object.
+     *     @param scaleFactor Parameter specifying how much the image size is reduced at each image scale.
+     *     @param minNeighbors Parameter specifying how many neighbors each candidate rectangle should have
+     *     to retain it.
+     *     @param flags Parameter with the same meaning for an old cascade as in the function
+     *     cvHaarDetectObjects. It is not used for a new cascade.
+     *     @param minSize Minimum possible object size. Objects smaller than that are ignored.
      */
     public void detectMultiScale2(Mat image, MatOfRect objects, MatOfInt numDetections, double scaleFactor, int minNeighbors, int flags, Size minSize) {
         Mat objects_mat = objects;
@@ -308,17 +244,18 @@ public class CascadeClassifier {
     }
 
     /**
-     * @param image         Matrix of the type CV_8U containing an image where objects are detected.
-     * @param objects       Vector of rectangles where each rectangle contains the detected object, the
-     *                      rectangles may be partially outside the original image.
-     * @param numDetections Vector of detection numbers for the corresponding objects. An object's number
-     *                      of detections is the number of neighboring positively classified rectangles that were joined
-     *                      together to form the object.
-     * @param scaleFactor   Parameter specifying how much the image size is reduced at each image scale.
-     * @param minNeighbors  Parameter specifying how many neighbors each candidate rectangle should have
-     *                      to retain it.
-     * @param flags         Parameter with the same meaning for an old cascade as in the function
-     *                      cvHaarDetectObjects. It is not used for a new cascade.
+     *
+     *     @param image Matrix of the type CV_8U containing an image where objects are detected.
+     *     @param objects Vector of rectangles where each rectangle contains the detected object, the
+     *     rectangles may be partially outside the original image.
+     *     @param numDetections Vector of detection numbers for the corresponding objects. An object's number
+     *     of detections is the number of neighboring positively classified rectangles that were joined
+     *     together to form the object.
+     *     @param scaleFactor Parameter specifying how much the image size is reduced at each image scale.
+     *     @param minNeighbors Parameter specifying how many neighbors each candidate rectangle should have
+     *     to retain it.
+     *     @param flags Parameter with the same meaning for an old cascade as in the function
+     *     cvHaarDetectObjects. It is not used for a new cascade.
      */
     public void detectMultiScale2(Mat image, MatOfRect objects, MatOfInt numDetections, double scaleFactor, int minNeighbors, int flags) {
         Mat objects_mat = objects;
@@ -327,16 +264,17 @@ public class CascadeClassifier {
     }
 
     /**
-     * @param image         Matrix of the type CV_8U containing an image where objects are detected.
-     * @param objects       Vector of rectangles where each rectangle contains the detected object, the
-     *                      rectangles may be partially outside the original image.
-     * @param numDetections Vector of detection numbers for the corresponding objects. An object's number
-     *                      of detections is the number of neighboring positively classified rectangles that were joined
-     *                      together to form the object.
-     * @param scaleFactor   Parameter specifying how much the image size is reduced at each image scale.
-     * @param minNeighbors  Parameter specifying how many neighbors each candidate rectangle should have
-     *                      to retain it.
-     *                      cvHaarDetectObjects. It is not used for a new cascade.
+     *
+     *     @param image Matrix of the type CV_8U containing an image where objects are detected.
+     *     @param objects Vector of rectangles where each rectangle contains the detected object, the
+     *     rectangles may be partially outside the original image.
+     *     @param numDetections Vector of detection numbers for the corresponding objects. An object's number
+     *     of detections is the number of neighboring positively classified rectangles that were joined
+     *     together to form the object.
+     *     @param scaleFactor Parameter specifying how much the image size is reduced at each image scale.
+     *     @param minNeighbors Parameter specifying how many neighbors each candidate rectangle should have
+     *     to retain it.
+     *     cvHaarDetectObjects. It is not used for a new cascade.
      */
     public void detectMultiScale2(Mat image, MatOfRect objects, MatOfInt numDetections, double scaleFactor, int minNeighbors) {
         Mat objects_mat = objects;
@@ -345,15 +283,16 @@ public class CascadeClassifier {
     }
 
     /**
-     * @param image         Matrix of the type CV_8U containing an image where objects are detected.
-     * @param objects       Vector of rectangles where each rectangle contains the detected object, the
-     *                      rectangles may be partially outside the original image.
-     * @param numDetections Vector of detection numbers for the corresponding objects. An object's number
-     *                      of detections is the number of neighboring positively classified rectangles that were joined
-     *                      together to form the object.
-     * @param scaleFactor   Parameter specifying how much the image size is reduced at each image scale.
-     *                      to retain it.
-     *                      cvHaarDetectObjects. It is not used for a new cascade.
+     *
+     *     @param image Matrix of the type CV_8U containing an image where objects are detected.
+     *     @param objects Vector of rectangles where each rectangle contains the detected object, the
+     *     rectangles may be partially outside the original image.
+     *     @param numDetections Vector of detection numbers for the corresponding objects. An object's number
+     *     of detections is the number of neighboring positively classified rectangles that were joined
+     *     together to form the object.
+     *     @param scaleFactor Parameter specifying how much the image size is reduced at each image scale.
+     *     to retain it.
+     *     cvHaarDetectObjects. It is not used for a new cascade.
      */
     public void detectMultiScale2(Mat image, MatOfRect objects, MatOfInt numDetections, double scaleFactor) {
         Mat objects_mat = objects;
@@ -362,14 +301,15 @@ public class CascadeClassifier {
     }
 
     /**
-     * @param image         Matrix of the type CV_8U containing an image where objects are detected.
-     * @param objects       Vector of rectangles where each rectangle contains the detected object, the
-     *                      rectangles may be partially outside the original image.
-     * @param numDetections Vector of detection numbers for the corresponding objects. An object's number
-     *                      of detections is the number of neighboring positively classified rectangles that were joined
-     *                      together to form the object.
-     *                      to retain it.
-     *                      cvHaarDetectObjects. It is not used for a new cascade.
+     *
+     *     @param image Matrix of the type CV_8U containing an image where objects are detected.
+     *     @param objects Vector of rectangles where each rectangle contains the detected object, the
+     *     rectangles may be partially outside the original image.
+     *     @param numDetections Vector of detection numbers for the corresponding objects. An object's number
+     *     of detections is the number of neighboring positively classified rectangles that were joined
+     *     together to form the object.
+     *     to retain it.
+     *     cvHaarDetectObjects. It is not used for a new cascade.
      */
     public void detectMultiScale2(Mat image, MatOfRect objects, MatOfInt numDetections) {
         Mat objects_mat = objects;
@@ -383,31 +323,31 @@ public class CascadeClassifier {
     //
 
     /**
-     * This function allows you to retrieve the final stage decision certainty of classification.
-     * For this, one needs to set {@code outputRejectLevels} on true and provide the {@code rejectLevels} and {@code levelWeights} parameter.
-     * For each resulting detection, {@code levelWeights} will then contain the certainty of classification at the final stage.
-     * This value can then be used to separate strong from weaker classifications.
-     * <p>
-     * A code sample on how to use it efficiently can be found below:
-     * <code>
-     * Mat img;
-     * vector&lt;double&gt; weights;
-     * vector&lt;int&gt; levels;
-     * vector&lt;Rect&gt; detections;
-     * CascadeClassifier model("/path/to/your/model.xml");
-     * model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
-     * cerr &lt;&lt; "Detection " &lt;&lt; detections[0] &lt;&lt; " with weight " &lt;&lt; weights[0] &lt;&lt; endl;
-     * </code>
      *
-     * @param image              automatically generated
-     * @param objects            automatically generated
-     * @param rejectLevels       automatically generated
-     * @param levelWeights       automatically generated
-     * @param scaleFactor        automatically generated
-     * @param minNeighbors       automatically generated
-     * @param flags              automatically generated
-     * @param minSize            automatically generated
-     * @param maxSize            automatically generated
+     *     This function allows you to retrieve the final stage decision certainty of classification.
+     *     For this, one needs to set {@code outputRejectLevels} on true and provide the {@code rejectLevels} and {@code levelWeights} parameter.
+     *     For each resulting detection, {@code levelWeights} will then contain the certainty of classification at the final stage.
+     *     This value can then be used to separate strong from weaker classifications.
+     *
+     *     A code sample on how to use it efficiently can be found below:
+     *     <code>
+     *     Mat img;
+     *     vector&lt;double&gt; weights;
+     *     vector&lt;int&gt; levels;
+     *     vector&lt;Rect&gt; detections;
+     *     CascadeClassifier model("/path/to/your/model.xml");
+     *     model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
+     *     cerr &lt;&lt; "Detection " &lt;&lt; detections[0] &lt;&lt; " with weight " &lt;&lt; weights[0] &lt;&lt; endl;
+     *     </code>
+     * @param image automatically generated
+     * @param objects automatically generated
+     * @param rejectLevels automatically generated
+     * @param levelWeights automatically generated
+     * @param scaleFactor automatically generated
+     * @param minNeighbors automatically generated
+     * @param flags automatically generated
+     * @param minSize automatically generated
+     * @param maxSize automatically generated
      * @param outputRejectLevels automatically generated
      */
     public void detectMultiScale3(Mat image, MatOfRect objects, MatOfInt rejectLevels, MatOfDouble levelWeights, double scaleFactor, int minNeighbors, int flags, Size minSize, Size maxSize, boolean outputRejectLevels) {
@@ -418,31 +358,31 @@ public class CascadeClassifier {
     }
 
     /**
-     * This function allows you to retrieve the final stage decision certainty of classification.
-     * For this, one needs to set {@code outputRejectLevels} on true and provide the {@code rejectLevels} and {@code levelWeights} parameter.
-     * For each resulting detection, {@code levelWeights} will then contain the certainty of classification at the final stage.
-     * This value can then be used to separate strong from weaker classifications.
-     * <p>
-     * A code sample on how to use it efficiently can be found below:
-     * <code>
-     * Mat img;
-     * vector&lt;double&gt; weights;
-     * vector&lt;int&gt; levels;
-     * vector&lt;Rect&gt; detections;
-     * CascadeClassifier model("/path/to/your/model.xml");
-     * model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
-     * cerr &lt;&lt; "Detection " &lt;&lt; detections[0] &lt;&lt; " with weight " &lt;&lt; weights[0] &lt;&lt; endl;
-     * </code>
      *
-     * @param image        automatically generated
-     * @param objects      automatically generated
+     *     This function allows you to retrieve the final stage decision certainty of classification.
+     *     For this, one needs to set {@code outputRejectLevels} on true and provide the {@code rejectLevels} and {@code levelWeights} parameter.
+     *     For each resulting detection, {@code levelWeights} will then contain the certainty of classification at the final stage.
+     *     This value can then be used to separate strong from weaker classifications.
+     *
+     *     A code sample on how to use it efficiently can be found below:
+     *     <code>
+     *     Mat img;
+     *     vector&lt;double&gt; weights;
+     *     vector&lt;int&gt; levels;
+     *     vector&lt;Rect&gt; detections;
+     *     CascadeClassifier model("/path/to/your/model.xml");
+     *     model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
+     *     cerr &lt;&lt; "Detection " &lt;&lt; detections[0] &lt;&lt; " with weight " &lt;&lt; weights[0] &lt;&lt; endl;
+     *     </code>
+     * @param image automatically generated
+     * @param objects automatically generated
      * @param rejectLevels automatically generated
      * @param levelWeights automatically generated
-     * @param scaleFactor  automatically generated
+     * @param scaleFactor automatically generated
      * @param minNeighbors automatically generated
-     * @param flags        automatically generated
-     * @param minSize      automatically generated
-     * @param maxSize      automatically generated
+     * @param flags automatically generated
+     * @param minSize automatically generated
+     * @param maxSize automatically generated
      */
     public void detectMultiScale3(Mat image, MatOfRect objects, MatOfInt rejectLevels, MatOfDouble levelWeights, double scaleFactor, int minNeighbors, int flags, Size minSize, Size maxSize) {
         Mat objects_mat = objects;
@@ -452,30 +392,30 @@ public class CascadeClassifier {
     }
 
     /**
-     * This function allows you to retrieve the final stage decision certainty of classification.
-     * For this, one needs to set {@code outputRejectLevels} on true and provide the {@code rejectLevels} and {@code levelWeights} parameter.
-     * For each resulting detection, {@code levelWeights} will then contain the certainty of classification at the final stage.
-     * This value can then be used to separate strong from weaker classifications.
-     * <p>
-     * A code sample on how to use it efficiently can be found below:
-     * <code>
-     * Mat img;
-     * vector&lt;double&gt; weights;
-     * vector&lt;int&gt; levels;
-     * vector&lt;Rect&gt; detections;
-     * CascadeClassifier model("/path/to/your/model.xml");
-     * model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
-     * cerr &lt;&lt; "Detection " &lt;&lt; detections[0] &lt;&lt; " with weight " &lt;&lt; weights[0] &lt;&lt; endl;
-     * </code>
      *
-     * @param image        automatically generated
-     * @param objects      automatically generated
+     *     This function allows you to retrieve the final stage decision certainty of classification.
+     *     For this, one needs to set {@code outputRejectLevels} on true and provide the {@code rejectLevels} and {@code levelWeights} parameter.
+     *     For each resulting detection, {@code levelWeights} will then contain the certainty of classification at the final stage.
+     *     This value can then be used to separate strong from weaker classifications.
+     *
+     *     A code sample on how to use it efficiently can be found below:
+     *     <code>
+     *     Mat img;
+     *     vector&lt;double&gt; weights;
+     *     vector&lt;int&gt; levels;
+     *     vector&lt;Rect&gt; detections;
+     *     CascadeClassifier model("/path/to/your/model.xml");
+     *     model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
+     *     cerr &lt;&lt; "Detection " &lt;&lt; detections[0] &lt;&lt; " with weight " &lt;&lt; weights[0] &lt;&lt; endl;
+     *     </code>
+     * @param image automatically generated
+     * @param objects automatically generated
      * @param rejectLevels automatically generated
      * @param levelWeights automatically generated
-     * @param scaleFactor  automatically generated
+     * @param scaleFactor automatically generated
      * @param minNeighbors automatically generated
-     * @param flags        automatically generated
-     * @param minSize      automatically generated
+     * @param flags automatically generated
+     * @param minSize automatically generated
      */
     public void detectMultiScale3(Mat image, MatOfRect objects, MatOfInt rejectLevels, MatOfDouble levelWeights, double scaleFactor, int minNeighbors, int flags, Size minSize) {
         Mat objects_mat = objects;
@@ -485,29 +425,29 @@ public class CascadeClassifier {
     }
 
     /**
-     * This function allows you to retrieve the final stage decision certainty of classification.
-     * For this, one needs to set {@code outputRejectLevels} on true and provide the {@code rejectLevels} and {@code levelWeights} parameter.
-     * For each resulting detection, {@code levelWeights} will then contain the certainty of classification at the final stage.
-     * This value can then be used to separate strong from weaker classifications.
-     * <p>
-     * A code sample on how to use it efficiently can be found below:
-     * <code>
-     * Mat img;
-     * vector&lt;double&gt; weights;
-     * vector&lt;int&gt; levels;
-     * vector&lt;Rect&gt; detections;
-     * CascadeClassifier model("/path/to/your/model.xml");
-     * model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
-     * cerr &lt;&lt; "Detection " &lt;&lt; detections[0] &lt;&lt; " with weight " &lt;&lt; weights[0] &lt;&lt; endl;
-     * </code>
      *
-     * @param image        automatically generated
-     * @param objects      automatically generated
+     *     This function allows you to retrieve the final stage decision certainty of classification.
+     *     For this, one needs to set {@code outputRejectLevels} on true and provide the {@code rejectLevels} and {@code levelWeights} parameter.
+     *     For each resulting detection, {@code levelWeights} will then contain the certainty of classification at the final stage.
+     *     This value can then be used to separate strong from weaker classifications.
+     *
+     *     A code sample on how to use it efficiently can be found below:
+     *     <code>
+     *     Mat img;
+     *     vector&lt;double&gt; weights;
+     *     vector&lt;int&gt; levels;
+     *     vector&lt;Rect&gt; detections;
+     *     CascadeClassifier model("/path/to/your/model.xml");
+     *     model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
+     *     cerr &lt;&lt; "Detection " &lt;&lt; detections[0] &lt;&lt; " with weight " &lt;&lt; weights[0] &lt;&lt; endl;
+     *     </code>
+     * @param image automatically generated
+     * @param objects automatically generated
      * @param rejectLevels automatically generated
      * @param levelWeights automatically generated
-     * @param scaleFactor  automatically generated
+     * @param scaleFactor automatically generated
      * @param minNeighbors automatically generated
-     * @param flags        automatically generated
+     * @param flags automatically generated
      */
     public void detectMultiScale3(Mat image, MatOfRect objects, MatOfInt rejectLevels, MatOfDouble levelWeights, double scaleFactor, int minNeighbors, int flags) {
         Mat objects_mat = objects;
@@ -517,27 +457,27 @@ public class CascadeClassifier {
     }
 
     /**
-     * This function allows you to retrieve the final stage decision certainty of classification.
-     * For this, one needs to set {@code outputRejectLevels} on true and provide the {@code rejectLevels} and {@code levelWeights} parameter.
-     * For each resulting detection, {@code levelWeights} will then contain the certainty of classification at the final stage.
-     * This value can then be used to separate strong from weaker classifications.
-     * <p>
-     * A code sample on how to use it efficiently can be found below:
-     * <code>
-     * Mat img;
-     * vector&lt;double&gt; weights;
-     * vector&lt;int&gt; levels;
-     * vector&lt;Rect&gt; detections;
-     * CascadeClassifier model("/path/to/your/model.xml");
-     * model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
-     * cerr &lt;&lt; "Detection " &lt;&lt; detections[0] &lt;&lt; " with weight " &lt;&lt; weights[0] &lt;&lt; endl;
-     * </code>
      *
-     * @param image        automatically generated
-     * @param objects      automatically generated
+     *     This function allows you to retrieve the final stage decision certainty of classification.
+     *     For this, one needs to set {@code outputRejectLevels} on true and provide the {@code rejectLevels} and {@code levelWeights} parameter.
+     *     For each resulting detection, {@code levelWeights} will then contain the certainty of classification at the final stage.
+     *     This value can then be used to separate strong from weaker classifications.
+     *
+     *     A code sample on how to use it efficiently can be found below:
+     *     <code>
+     *     Mat img;
+     *     vector&lt;double&gt; weights;
+     *     vector&lt;int&gt; levels;
+     *     vector&lt;Rect&gt; detections;
+     *     CascadeClassifier model("/path/to/your/model.xml");
+     *     model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
+     *     cerr &lt;&lt; "Detection " &lt;&lt; detections[0] &lt;&lt; " with weight " &lt;&lt; weights[0] &lt;&lt; endl;
+     *     </code>
+     * @param image automatically generated
+     * @param objects automatically generated
      * @param rejectLevels automatically generated
      * @param levelWeights automatically generated
-     * @param scaleFactor  automatically generated
+     * @param scaleFactor automatically generated
      * @param minNeighbors automatically generated
      */
     public void detectMultiScale3(Mat image, MatOfRect objects, MatOfInt rejectLevels, MatOfDouble levelWeights, double scaleFactor, int minNeighbors) {
@@ -548,27 +488,27 @@ public class CascadeClassifier {
     }
 
     /**
-     * This function allows you to retrieve the final stage decision certainty of classification.
-     * For this, one needs to set {@code outputRejectLevels} on true and provide the {@code rejectLevels} and {@code levelWeights} parameter.
-     * For each resulting detection, {@code levelWeights} will then contain the certainty of classification at the final stage.
-     * This value can then be used to separate strong from weaker classifications.
-     * <p>
-     * A code sample on how to use it efficiently can be found below:
-     * <code>
-     * Mat img;
-     * vector&lt;double&gt; weights;
-     * vector&lt;int&gt; levels;
-     * vector&lt;Rect&gt; detections;
-     * CascadeClassifier model("/path/to/your/model.xml");
-     * model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
-     * cerr &lt;&lt; "Detection " &lt;&lt; detections[0] &lt;&lt; " with weight " &lt;&lt; weights[0] &lt;&lt; endl;
-     * </code>
      *
-     * @param image        automatically generated
-     * @param objects      automatically generated
+     *     This function allows you to retrieve the final stage decision certainty of classification.
+     *     For this, one needs to set {@code outputRejectLevels} on true and provide the {@code rejectLevels} and {@code levelWeights} parameter.
+     *     For each resulting detection, {@code levelWeights} will then contain the certainty of classification at the final stage.
+     *     This value can then be used to separate strong from weaker classifications.
+     *
+     *     A code sample on how to use it efficiently can be found below:
+     *     <code>
+     *     Mat img;
+     *     vector&lt;double&gt; weights;
+     *     vector&lt;int&gt; levels;
+     *     vector&lt;Rect&gt; detections;
+     *     CascadeClassifier model("/path/to/your/model.xml");
+     *     model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
+     *     cerr &lt;&lt; "Detection " &lt;&lt; detections[0] &lt;&lt; " with weight " &lt;&lt; weights[0] &lt;&lt; endl;
+     *     </code>
+     * @param image automatically generated
+     * @param objects automatically generated
      * @param rejectLevels automatically generated
      * @param levelWeights automatically generated
-     * @param scaleFactor  automatically generated
+     * @param scaleFactor automatically generated
      */
     public void detectMultiScale3(Mat image, MatOfRect objects, MatOfInt rejectLevels, MatOfDouble levelWeights, double scaleFactor) {
         Mat objects_mat = objects;
@@ -578,24 +518,24 @@ public class CascadeClassifier {
     }
 
     /**
-     * This function allows you to retrieve the final stage decision certainty of classification.
-     * For this, one needs to set {@code outputRejectLevels} on true and provide the {@code rejectLevels} and {@code levelWeights} parameter.
-     * For each resulting detection, {@code levelWeights} will then contain the certainty of classification at the final stage.
-     * This value can then be used to separate strong from weaker classifications.
-     * <p>
-     * A code sample on how to use it efficiently can be found below:
-     * <code>
-     * Mat img;
-     * vector&lt;double&gt; weights;
-     * vector&lt;int&gt; levels;
-     * vector&lt;Rect&gt; detections;
-     * CascadeClassifier model("/path/to/your/model.xml");
-     * model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
-     * cerr &lt;&lt; "Detection " &lt;&lt; detections[0] &lt;&lt; " with weight " &lt;&lt; weights[0] &lt;&lt; endl;
-     * </code>
      *
-     * @param image        automatically generated
-     * @param objects      automatically generated
+     *     This function allows you to retrieve the final stage decision certainty of classification.
+     *     For this, one needs to set {@code outputRejectLevels} on true and provide the {@code rejectLevels} and {@code levelWeights} parameter.
+     *     For each resulting detection, {@code levelWeights} will then contain the certainty of classification at the final stage.
+     *     This value can then be used to separate strong from weaker classifications.
+     *
+     *     A code sample on how to use it efficiently can be found below:
+     *     <code>
+     *     Mat img;
+     *     vector&lt;double&gt; weights;
+     *     vector&lt;int&gt; levels;
+     *     vector&lt;Rect&gt; detections;
+     *     CascadeClassifier model("/path/to/your/model.xml");
+     *     model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
+     *     cerr &lt;&lt; "Detection " &lt;&lt; detections[0] &lt;&lt; " with weight " &lt;&lt; weights[0] &lt;&lt; endl;
+     *     </code>
+     * @param image automatically generated
+     * @param objects automatically generated
      * @param rejectLevels automatically generated
      * @param levelWeights automatically generated
      */
@@ -649,6 +589,7 @@ public class CascadeClassifier {
     }
 
 
+
     // C++:   cv::CascadeClassifier::CascadeClassifier()
     private static native long CascadeClassifier_0();
 
@@ -663,43 +604,27 @@ public class CascadeClassifier {
 
     // C++:  void cv::CascadeClassifier::detectMultiScale(Mat image, vector_Rect& objects, double scaleFactor = 1.1, int minNeighbors = 3, int flags = 0, Size minSize = Size(), Size maxSize = Size())
     private static native void detectMultiScale_0(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, double scaleFactor, int minNeighbors, int flags, double minSize_width, double minSize_height, double maxSize_width, double maxSize_height);
-
     private static native void detectMultiScale_1(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, double scaleFactor, int minNeighbors, int flags, double minSize_width, double minSize_height);
-
     private static native void detectMultiScale_2(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, double scaleFactor, int minNeighbors, int flags);
-
     private static native void detectMultiScale_3(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, double scaleFactor, int minNeighbors);
-
     private static native void detectMultiScale_4(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, double scaleFactor);
-
     private static native void detectMultiScale_5(long nativeObj, long image_nativeObj, long objects_mat_nativeObj);
 
     // C++:  void cv::CascadeClassifier::detectMultiScale(Mat image, vector_Rect& objects, vector_int& numDetections, double scaleFactor = 1.1, int minNeighbors = 3, int flags = 0, Size minSize = Size(), Size maxSize = Size())
     private static native void detectMultiScale2_0(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, long numDetections_mat_nativeObj, double scaleFactor, int minNeighbors, int flags, double minSize_width, double minSize_height, double maxSize_width, double maxSize_height);
-
     private static native void detectMultiScale2_1(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, long numDetections_mat_nativeObj, double scaleFactor, int minNeighbors, int flags, double minSize_width, double minSize_height);
-
     private static native void detectMultiScale2_2(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, long numDetections_mat_nativeObj, double scaleFactor, int minNeighbors, int flags);
-
     private static native void detectMultiScale2_3(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, long numDetections_mat_nativeObj, double scaleFactor, int minNeighbors);
-
     private static native void detectMultiScale2_4(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, long numDetections_mat_nativeObj, double scaleFactor);
-
     private static native void detectMultiScale2_5(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, long numDetections_mat_nativeObj);
 
     // C++:  void cv::CascadeClassifier::detectMultiScale(Mat image, vector_Rect& objects, vector_int& rejectLevels, vector_double& levelWeights, double scaleFactor = 1.1, int minNeighbors = 3, int flags = 0, Size minSize = Size(), Size maxSize = Size(), bool outputRejectLevels = false)
     private static native void detectMultiScale3_0(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, long rejectLevels_mat_nativeObj, long levelWeights_mat_nativeObj, double scaleFactor, int minNeighbors, int flags, double minSize_width, double minSize_height, double maxSize_width, double maxSize_height, boolean outputRejectLevels);
-
     private static native void detectMultiScale3_1(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, long rejectLevels_mat_nativeObj, long levelWeights_mat_nativeObj, double scaleFactor, int minNeighbors, int flags, double minSize_width, double minSize_height, double maxSize_width, double maxSize_height);
-
     private static native void detectMultiScale3_2(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, long rejectLevels_mat_nativeObj, long levelWeights_mat_nativeObj, double scaleFactor, int minNeighbors, int flags, double minSize_width, double minSize_height);
-
     private static native void detectMultiScale3_3(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, long rejectLevels_mat_nativeObj, long levelWeights_mat_nativeObj, double scaleFactor, int minNeighbors, int flags);
-
     private static native void detectMultiScale3_4(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, long rejectLevels_mat_nativeObj, long levelWeights_mat_nativeObj, double scaleFactor, int minNeighbors);
-
     private static native void detectMultiScale3_5(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, long rejectLevels_mat_nativeObj, long levelWeights_mat_nativeObj, double scaleFactor);
-
     private static native void detectMultiScale3_6(long nativeObj, long image_nativeObj, long objects_mat_nativeObj, long rejectLevels_mat_nativeObj, long levelWeights_mat_nativeObj);
 
     // C++:  bool cv::CascadeClassifier::isOldFormatCascade()

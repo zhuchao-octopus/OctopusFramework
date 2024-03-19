@@ -11,18 +11,10 @@
 #include <opencv2/gapi/gkernel.hpp> // GKernelPackage
 #include <opencv2/gapi/own/exports.hpp> // GAPI_EXPORTS
 
-namespace cv {
-    namespace gapi {
-        namespace core {
-            namespace fluid {
+namespace cv { namespace gapi { namespace core { namespace fluid {
 
-                GAPI_EXPORTS_W cv::gapi::GKernelPackage
+GAPI_EXPORTS_W cv::GKernelPackage kernels();
 
-                kernels();
-
-            }
-        }
-    }
-}
+}}}}
 
 #endif // OPENCV_GAPI_FLUID_CORE_HPP

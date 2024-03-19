@@ -99,27 +99,31 @@ public class TPlatform {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public static String GetSystemProperty(String key) {
-        return com.zhuchao.android.TGOS.get(key);
+        //return com.zhuchao.android.TGOS.get(key);
+        return null;
     }
 
     public static void SetSystemProperty(String key, String val) {
-        com.zhuchao.android.TGOS.set(key, val);
+        //com.zhuchao.android.TGOS.set(key, val);
+
     }
 
     public static void SetAudioOutputPolicy(String policyName) {
-        com.zhuchao.android.TGOS.SetAudioOutputPolicy(policyName);
+        //com.zhuchao.android.TGOS.SetAudioOutputPolicy(policyName);
     }
 
     public static void SetAudioInputPolicy(String policyName) {
-        com.zhuchao.android.TGOS.SetAudioInputPolicy(policyName);
+        //com.zhuchao.android.TGOS.SetAudioInputPolicy(policyName);
     }
 
     public static String GetAudioOutputPolicy() {
-        return com.zhuchao.android.TGOS.GetAudioOutputPolicy();
+        //return com.zhuchao.android.TGOS.GetAudioOutputPolicy();
+        return null;
     }
 
     public static String GetAudioInputPolicy() {
-        return com.zhuchao.android.TGOS.GetAudioInputPolicy();
+        //return com.zhuchao.android.TGOS.GetAudioInputPolicy();
+        return null;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

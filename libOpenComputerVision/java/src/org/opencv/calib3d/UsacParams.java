@@ -4,24 +4,18 @@
 package org.opencv.calib3d;
 
 
+
 // C++: class UsacParams
 
 public class UsacParams {
 
     protected final long nativeObj;
+    protected UsacParams(long addr) { nativeObj = addr; }
 
-    protected UsacParams(long addr) {
-        nativeObj = addr;
-    }
-
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
+    public long getNativeObjAddr() { return nativeObj; }
 
     // internal usage only
-    public static UsacParams __fromPtr__(long addr) {
-        return new UsacParams(addr);
-    }
+    public static UsacParams __fromPtr__(long addr) { return new UsacParams(addr); }
 
     //
     // C++:   cv::UsacParams::UsacParams()
@@ -230,10 +224,47 @@ public class UsacParams {
     }
 
 
+    //
+    // C++: PolishingMethod UsacParams::final_polisher
+    //
+
+    public int get_final_polisher() {
+        return get_final_polisher_0(nativeObj);
+    }
+
+
+    //
+    // C++: void UsacParams::final_polisher
+    //
+
+    public void set_final_polisher(int final_polisher) {
+        set_final_polisher_0(nativeObj, final_polisher);
+    }
+
+
+    //
+    // C++: int UsacParams::final_polisher_iterations
+    //
+
+    public int get_final_polisher_iterations() {
+        return get_final_polisher_iterations_0(nativeObj);
+    }
+
+
+    //
+    // C++: void UsacParams::final_polisher_iterations
+    //
+
+    public void set_final_polisher_iterations(int final_polisher_iterations) {
+        set_final_polisher_iterations_0(nativeObj, final_polisher_iterations);
+    }
+
+
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:   cv::UsacParams::UsacParams()
@@ -304,6 +335,18 @@ public class UsacParams {
 
     // C++: void UsacParams::threshold
     private static native void set_threshold_0(long nativeObj, double threshold);
+
+    // C++: PolishingMethod UsacParams::final_polisher
+    private static native int get_final_polisher_0(long nativeObj);
+
+    // C++: void UsacParams::final_polisher
+    private static native void set_final_polisher_0(long nativeObj, int final_polisher);
+
+    // C++: int UsacParams::final_polisher_iterations
+    private static native int get_final_polisher_iterations_0(long nativeObj);
+
+    // C++: void UsacParams::final_polisher_iterations
+    private static native void set_final_polisher_iterations_0(long nativeObj, int final_polisher_iterations);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);

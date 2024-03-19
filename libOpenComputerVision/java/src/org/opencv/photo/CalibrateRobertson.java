@@ -4,25 +4,21 @@
 package org.opencv.photo;
 
 import org.opencv.core.Mat;
+import org.opencv.photo.CalibrateCRF;
 
 // C++: class CalibrateRobertson
-
 /**
  * Inverse camera response function is extracted for each brightness value by minimizing an objective
  * function as linear system. This algorithm uses all image pixels.
- * <p>
+ *
  * For more information see CITE: RB99 .
  */
 public class CalibrateRobertson extends CalibrateCRF {
 
-    protected CalibrateRobertson(long addr) {
-        super(addr);
-    }
+    protected CalibrateRobertson(long addr) { super(addr); }
 
     // internal usage only
-    public static CalibrateRobertson __fromPtr__(long addr) {
-        return new CalibrateRobertson(addr);
-    }
+    public static CalibrateRobertson __fromPtr__(long addr) { return new CalibrateRobertson(addr); }
 
     //
     // C++:  int cv::CalibrateRobertson::getMaxIter()
@@ -73,6 +69,7 @@ public class CalibrateRobertson extends CalibrateCRF {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:  int cv::CalibrateRobertson::getMaxIter()

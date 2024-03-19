@@ -3,31 +3,25 @@
 //
 package org.opencv.dnn;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.opencv.core.Algorithm;
 import org.opencv.core.Mat;
 import org.opencv.utils.Converters;
 
-import java.util.ArrayList;
-import java.util.List;
-
 // C++: class Layer
-
 /**
  * This interface class allows to build new Layers - are building blocks of networks.
- * <p>
+ *
  * Each class, derived from Layer, must implement allocate() methods to declare own outputs and forward() to compute outputs.
  * Also before using the new layer into networks you must register your layer by using one of REF: dnnLayerFactory "LayerFactory" macros.
  */
 public class Layer extends Algorithm {
 
-    protected Layer(long addr) {
-        super(addr);
-    }
+    protected Layer(long addr) { super(addr); }
 
     // internal usage only
-    public static Layer __fromPtr__(long addr) {
-        return new Layer(addr);
-    }
+    public static Layer __fromPtr__(long addr) { return new Layer(addr); }
 
     //
     // C++:  void cv::dnn::Layer::finalize(vector_Mat inputs, vector_Mat& outputs)
@@ -35,12 +29,11 @@ public class Layer extends Algorithm {
 
     /**
      * Computes and sets internal parameters according to inputs, outputs and blobs.
-     *
      * @param outputs vector of already allocated output blobs
-     *                <p>
-     *                If this method is called after network has allocated all memory for input and output blobs
-     *                and before inferencing.
-     * @param inputs  automatically generated
+     *
+     * If this method is called after network has allocated all memory for input and output blobs
+     * and before inferencing.
+     * @param inputs automatically generated
      */
     public void finalize(List<Mat> inputs, List<Mat> outputs) {
         Mat inputs_mat = Converters.vector_Mat_to_Mat(inputs);
@@ -57,11 +50,10 @@ public class Layer extends Algorithm {
 
     /**
      * Allocates layer and computes output.
-     *
-     * @param inputs    automatically generated
-     * @param outputs   automatically generated
-     * @param internals automatically generated
      * @deprecated This method will be removed in the future release.
+     * @param inputs automatically generated
+     * @param outputs automatically generated
+     * @param internals automatically generated
      */
     @Deprecated
     public void run(List<Mat> inputs, List<Mat> outputs, List<Mat> internals) {
@@ -83,7 +75,6 @@ public class Layer extends Algorithm {
     /**
      * Returns index of output blob in output array.
      * SEE: inputNameToIndex()
-     *
      * @param outputName automatically generated
      * @return automatically generated
      */
@@ -145,6 +136,7 @@ public class Layer extends Algorithm {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:  void cv::dnn::Layer::finalize(vector_Mat inputs, vector_Mat& outputs)

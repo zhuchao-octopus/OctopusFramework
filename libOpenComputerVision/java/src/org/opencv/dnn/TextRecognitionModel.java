@@ -3,16 +3,18 @@
 //
 package org.opencv.dnn;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.opencv.core.Mat;
+import org.opencv.dnn.Model;
+import org.opencv.dnn.Net;
+import org.opencv.dnn.TextRecognitionModel;
 import org.opencv.utils.Converters;
 
-import java.util.List;
-
 // C++: class TextRecognitionModel
-
 /**
  * This class represents high-level API for text recognition networks.
- * <p>
+ *
  * TextRecognitionModel allows to set params for preprocessing input image.
  * TextRecognitionModel creates net from file with trained weights and config,
  * sets preprocessing input, runs forward pass and return recognition result.
@@ -20,14 +22,10 @@ import java.util.List;
  */
 public class TextRecognitionModel extends Model {
 
-    protected TextRecognitionModel(long addr) {
-        super(addr);
-    }
+    protected TextRecognitionModel(long addr) { super(addr); }
 
     // internal usage only
-    public static TextRecognitionModel __fromPtr__(long addr) {
-        return new TextRecognitionModel(addr);
-    }
+    public static TextRecognitionModel __fromPtr__(long addr) { return new TextRecognitionModel(addr); }
 
     //
     // C++:   cv::dnn::TextRecognitionModel::TextRecognitionModel(Net network)
@@ -36,7 +34,6 @@ public class TextRecognitionModel extends Model {
     /**
      * Create Text Recognition model from deep learning network
      * Call setDecodeType() and setVocabulary() after constructor to initialize the decoding method
-     *
      * @param network Net object
      */
     public TextRecognitionModel(Net network) {
@@ -51,8 +48,7 @@ public class TextRecognitionModel extends Model {
     /**
      * Create text recognition model from network represented in one of the supported formats
      * Call setDecodeType() and setVocabulary() after constructor to initialize the decoding method
-     *
-     * @param model  Binary file contains trained weights
+     * @param model Binary file contains trained weights
      * @param config Text file contains network configuration
      */
     public TextRecognitionModel(String model, String config) {
@@ -62,7 +58,6 @@ public class TextRecognitionModel extends Model {
     /**
      * Create text recognition model from network represented in one of the supported formats
      * Call setDecodeType() and setVocabulary() after constructor to initialize the decoding method
-     *
      * @param model Binary file contains trained weights
      */
     public TextRecognitionModel(String model) {
@@ -76,10 +71,9 @@ public class TextRecognitionModel extends Model {
 
     /**
      * Set the decoding method of translating the network output into string
-     *
      * @param decodeType The decoding method of translating the network output into string, currently supported type:
-     *                   - {@code "CTC-greedy"} greedy decoding for the output of CTC-based methods
-     *                   - {@code "CTC-prefix-beam-search"} Prefix beam search decoding for the output of CTC-based methods
+     * - {@code "CTC-greedy"} greedy decoding for the output of CTC-based methods
+     * - {@code "CTC-prefix-beam-search"} Prefix beam search decoding for the output of CTC-based methods
      * @return automatically generated
      */
     public TextRecognitionModel setDecodeType(String decodeType) {
@@ -93,7 +87,6 @@ public class TextRecognitionModel extends Model {
 
     /**
      * Get the decoding method
-     *
      * @return the decoding method
      */
     public String getDecodeType() {
@@ -107,10 +100,9 @@ public class TextRecognitionModel extends Model {
 
     /**
      * Set the decoding method options for {@code "CTC-prefix-beam-search"} decode usage
-     *
-     * @param beamSize     Beam size for search
+     * @param beamSize Beam size for search
      * @param vocPruneSize Parameter to optimize big vocabulary search,
-     *                     only take top {@code vocPruneSize} tokens in each search step, {@code vocPruneSize} &lt;= 0 stands for disable this prune.
+     * only take top {@code vocPruneSize} tokens in each search step, {@code vocPruneSize} &lt;= 0 stands for disable this prune.
      * @return automatically generated
      */
     public TextRecognitionModel setDecodeOptsCTCPrefixBeamSearch(int beamSize, int vocPruneSize) {
@@ -119,9 +111,8 @@ public class TextRecognitionModel extends Model {
 
     /**
      * Set the decoding method options for {@code "CTC-prefix-beam-search"} decode usage
-     *
      * @param beamSize Beam size for search
-     *                 only take top {@code vocPruneSize} tokens in each search step, {@code vocPruneSize} &lt;= 0 stands for disable this prune.
+     * only take top {@code vocPruneSize} tokens in each search step, {@code vocPruneSize} &lt;= 0 stands for disable this prune.
      * @return automatically generated
      */
     public TextRecognitionModel setDecodeOptsCTCPrefixBeamSearch(int beamSize) {
@@ -135,7 +126,6 @@ public class TextRecognitionModel extends Model {
 
     /**
      * Set the vocabulary for recognition.
-     *
      * @param vocabulary the associated vocabulary of the network.
      * @return automatically generated
      */
@@ -150,7 +140,6 @@ public class TextRecognitionModel extends Model {
 
     /**
      * Get the vocabulary for recognition.
-     *
      * @return vocabulary the associated vocabulary
      */
     public List<String> getVocabulary() {
@@ -164,7 +153,6 @@ public class TextRecognitionModel extends Model {
 
     /**
      * Given the {@code input} frame, create input blob, run net and return recognition result
-     *
      * @param frame The input image
      * @return The text recognition result
      */
@@ -179,10 +167,9 @@ public class TextRecognitionModel extends Model {
 
     /**
      * Given the {@code input} frame, create input blob, run net and return recognition result
-     *
-     * @param frame    The input image
+     * @param frame The input image
      * @param roiRects List of text detection regions of interest (cv::Rect, CV_32SC4). ROIs is be cropped as the network inputs
-     * @param results  A set of text recognition results.
+     * @param results A set of text recognition results.
      */
     public void recognize(Mat frame, List<Mat> roiRects, List<String> results) {
         Mat roiRects_mat = Converters.vector_Mat_to_Mat(roiRects);
@@ -196,12 +183,12 @@ public class TextRecognitionModel extends Model {
     }
 
 
+
     // C++:   cv::dnn::TextRecognitionModel::TextRecognitionModel(Net network)
     private static native long TextRecognitionModel_0(long network_nativeObj);
 
     // C++:   cv::dnn::TextRecognitionModel::TextRecognitionModel(string model, string config = "")
     private static native long TextRecognitionModel_1(String model, String config);
-
     private static native long TextRecognitionModel_2(String model);
 
     // C++:  TextRecognitionModel cv::dnn::TextRecognitionModel::setDecodeType(string decodeType)
@@ -212,7 +199,6 @@ public class TextRecognitionModel extends Model {
 
     // C++:  TextRecognitionModel cv::dnn::TextRecognitionModel::setDecodeOptsCTCPrefixBeamSearch(int beamSize, int vocPruneSize = 0)
     private static native long setDecodeOptsCTCPrefixBeamSearch_0(long nativeObj, int beamSize, int vocPruneSize);
-
     private static native long setDecodeOptsCTCPrefixBeamSearch_1(long nativeObj, int beamSize);
 
     // C++:  TextRecognitionModel cv::dnn::TextRecognitionModel::setVocabulary(vector_string vocabulary)

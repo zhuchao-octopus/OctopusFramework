@@ -3,29 +3,25 @@
 //
 package org.opencv.photo;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.opencv.core.Mat;
+import org.opencv.photo.MergeExposures;
 import org.opencv.utils.Converters;
 
-import java.util.List;
-
 // C++: class MergeRobertson
-
 /**
  * The resulting HDR image is calculated as weighted average of the exposures considering exposure
  * values and camera response.
- * <p>
+ *
  * For more information see CITE: RB99 .
  */
 public class MergeRobertson extends MergeExposures {
 
-    protected MergeRobertson(long addr) {
-        super(addr);
-    }
+    protected MergeRobertson(long addr) { super(addr); }
 
     // internal usage only
-    public static MergeRobertson __fromPtr__(long addr) {
-        return new MergeRobertson(addr);
-    }
+    public static MergeRobertson __fromPtr__(long addr) { return new MergeRobertson(addr); }
 
     //
     // C++:  void cv::MergeRobertson::process(vector_Mat src, Mat& dst, Mat times, Mat response)
@@ -51,6 +47,7 @@ public class MergeRobertson extends MergeExposures {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:  void cv::MergeRobertson::process(vector_Mat src, Mat& dst, Mat times, Mat response)

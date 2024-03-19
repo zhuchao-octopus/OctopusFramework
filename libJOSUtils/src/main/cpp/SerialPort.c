@@ -167,7 +167,6 @@ Java_com_zhuchao_android_serialport_SerialPort_open(JNIEnv *env, jobject thiz,
         cfsetispeed(&cfg, speed);
         cfsetospeed(&cfg, speed);
 
-
         cfg.c_cflag &= ~CSIZE;
         switch (data_bits) {
             case 5:

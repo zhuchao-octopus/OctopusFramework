@@ -12,7 +12,7 @@
 #include <opencv2/gapi/own/exports.hpp> // GAPI_EXPORTS
 
 namespace cv {
-    namespace gapi {
+namespace gapi {
 
 /**
  * @brief This namespace contains G-API Python backend functions,
@@ -22,56 +22,49 @@ namespace cv {
  * and kernels when using G-API from Python, no need to use it in the
  * C++ form.
  */
-        namespace python {
+namespace python {
 
-            GAPI_EXPORTS cv::gapi::GBackend
+GAPI_EXPORTS cv::gapi::GBackend backend();
 
-            backend();
+struct GPythonContext
+{
+    const cv::GArgs      &ins;
+    const cv::GMetaArgs  &in_metas;
+    const cv::GTypesInfo &out_info;
 
-            struct GPythonContext {
-                const cv::GArgs &ins;
-                const cv::GMetaArgs &in_metas;
-                const cv::GTypesInfo &out_info;
-            };
+    cv::optional<cv::GArg> m_state;
+};
 
-            using Impl = std::function<
+using Impl = std::function<cv::GRunArgs(const GPythonContext&)>;
+using Setup = std::function<cv::GArg(const GMetaArgs&, const GArgs&)>;
 
-            cv::GRunArgs(const GPythonContext &)
+class GAPI_EXPORTS GPythonKernel
+{
+public:
+    GPythonKernel() = default;
+    GPythonKernel(Impl run, Setup setup);
 
-            >;
+    Impl  run;
+    Setup setup       = nullptr;
+    bool  is_stateful = false;
+};
 
-            class GAPI_EXPORTS GPythonKernel
-                    {
-                            public:
-                            GPythonKernel() = default;
-                            GPythonKernel(Impl run);
+class GAPI_EXPORTS GPythonFunctor : public cv::gapi::GFunctor
+{
+public:
+    using Meta = cv::GKernel::M;
 
-                            cv::GRunArgs operator()(const GPythonContext& ctx);
-                            private:
-                            Impl m_run;
-                    };
+    GPythonFunctor(const char* id, const Meta& meta, const Impl& impl,
+                   const Setup& setup = nullptr);
 
-            class GAPI_EXPORTS GPythonFunctor
+    GKernelImpl    impl()    const override;
+    gapi::GBackend backend() const override;
 
-            : public cv::gapi::GFunctor {
-            public:
-            using Meta = cv::GKernel::M;
+private:
+    GKernelImpl impl_;
+};
 
-            GPythonFunctor(const char *id, const Meta &meta, const Impl &impl);
-
-            GKernelImpl impl() const
-
-            override;
-
-            gapi::GBackend backend() const
-
-            override;
-
-            private:
-            GKernelImpl impl_;
-        };
-
-    } // namespace python
+} // namespace python
 } // namespace gapi
 } // namespace cv
 

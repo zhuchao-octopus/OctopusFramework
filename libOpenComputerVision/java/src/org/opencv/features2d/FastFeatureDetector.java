@@ -3,21 +3,19 @@
 //
 package org.opencv.features2d;
 
-// C++: class FastFeatureDetector
+import org.opencv.features2d.FastFeatureDetector;
+import org.opencv.features2d.Feature2D;
 
+// C++: class FastFeatureDetector
 /**
  * Wrapping class for feature detection using the FAST method. :
  */
 public class FastFeatureDetector extends Feature2D {
 
-    protected FastFeatureDetector(long addr) {
-        super(addr);
-    }
+    protected FastFeatureDetector(long addr) { super(addr); }
 
     // internal usage only
-    public static FastFeatureDetector __fromPtr__(long addr) {
-        return new FastFeatureDetector(addr);
-    }
+    public static FastFeatureDetector __fromPtr__(long addr) { return new FastFeatureDetector(addr); }
 
     // C++: enum <unnamed>
     public static final int
@@ -123,13 +121,11 @@ public class FastFeatureDetector extends Feature2D {
     }
 
 
+
     // C++: static Ptr_FastFeatureDetector cv::FastFeatureDetector::create(int threshold = 10, bool nonmaxSuppression = true, FastFeatureDetector_DetectorType type = FastFeatureDetector::TYPE_9_16)
     private static native long create_0(int threshold, boolean nonmaxSuppression, int type);
-
     private static native long create_1(int threshold, boolean nonmaxSuppression);
-
     private static native long create_2(int threshold);
-
     private static native long create_3();
 
     // C++:  void cv::FastFeatureDetector::setThreshold(int threshold)

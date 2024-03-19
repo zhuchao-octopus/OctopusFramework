@@ -14,8 +14,8 @@ include ':libSessionUtils'
 
 //include ':libEventInterface'
 //include ':libICameraController'
-//include ':libOpenComputerVision'
-//include ':libOpenDetection'
+include ':libOpenComputerVision'
+include ':libOpenDetection'
 
 include ':TestApplication'
 

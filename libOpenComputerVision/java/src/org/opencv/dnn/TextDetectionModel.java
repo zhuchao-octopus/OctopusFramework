@@ -3,29 +3,25 @@
 //
 package org.opencv.dnn;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfFloat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfRotatedRect;
+import org.opencv.dnn.Model;
 import org.opencv.utils.Converters;
 
-import java.util.List;
-
 // C++: class TextDetectionModel
-
 /**
  * Base class for text detection networks
  */
 public class TextDetectionModel extends Model {
 
-    protected TextDetectionModel(long addr) {
-        super(addr);
-    }
+    protected TextDetectionModel(long addr) { super(addr); }
 
     // internal usage only
-    public static TextDetectionModel __fromPtr__(long addr) {
-        return new TextDetectionModel(addr);
-    }
+    public static TextDetectionModel __fromPtr__(long addr) { return new TextDetectionModel(addr); }
 
     //
     // C++:  void cv::dnn::TextDetectionModel::detect(Mat frame, vector_vector_Point& detections, vector_float& confidences)
@@ -33,21 +29,21 @@ public class TextDetectionModel extends Model {
 
     /**
      * Performs detection
-     * <p>
+     *
      * Given the input {@code frame}, prepare network input, run network inference, post-process network output and return result detections.
-     * <p>
+     *
      * Each result is quadrangle's 4 points in this order:
      * - bottom-left
      * - top-left
      * - top-right
      * - bottom-right
-     * <p>
-     * Use cv::getPerspectiveTransform function to retrive image region without perspective transformations.
+     *
+     * Use cv::getPerspectiveTransform function to retrieve image region without perspective transformations.
      *
      * <b>Note:</b> If DL model doesn't support that kind of output then result may be derived from detectTextRectangles() output.
      *
-     * @param frame       The input image
-     * @param detections  array with detections' quadrangles (4 points per result)
+     * @param frame The input image
+     * @param detections array with detections' quadrangles (4 points per result)
      * @param confidences array with detection confidences
      */
     public void detect(Mat frame, List<MatOfPoint> detections, MatOfFloat confidences) {
@@ -77,15 +73,15 @@ public class TextDetectionModel extends Model {
 
     /**
      * Performs detection
-     * <p>
+     *
      * Given the input {@code frame}, prepare network input, run network inference, post-process network output and return result detections.
-     * <p>
+     *
      * Each result is rotated rectangle.
      *
      * <b>Note:</b> Result may be inaccurate in case of strong perspective transformations.
      *
-     * @param frame       the input image
-     * @param detections  array with detections' RotationRect results
+     * @param frame the input image
+     * @param detections array with detections' RotationRect results
      * @param confidences array with detection confidences
      */
     public void detectTextRectangles(Mat frame, MatOfRotatedRect detections, MatOfFloat confidences) {
@@ -109,6 +105,7 @@ public class TextDetectionModel extends Model {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:  void cv::dnn::TextDetectionModel::detect(Mat frame, vector_vector_Point& detections, vector_float& confidences)
