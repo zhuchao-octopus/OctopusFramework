@@ -74,6 +74,7 @@ android {
 dependencies {
     //implementation files('libs\\javalib.jar')
     //implementation files('libs/javalib.jar')
+    implementation files('libs/framework.jar')
     implementation project(path: ':libFBaseUitls')
 
 }
