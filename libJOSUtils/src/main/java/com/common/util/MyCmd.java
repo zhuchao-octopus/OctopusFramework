@@ -913,9 +913,7 @@ public class MyCmd {
     public static final int SOURCE_OFF = 0x1000;
     public static final int SOURCE_BT_OFF = SOURCE_OFF | SOURCE_BT;
 
-
-    public final static String VENDOR_DIR = "/mnt/vendor/";// test  // 7.1
-
+    //public final static String VENDOR_DIR = "/mnt/vendor/";// test  // 7.1
     //canbox use
     public static final String RADIO_SOURCE_CHANGE = "com.my.radio.SOURCE_CHANGE";
     public static final String DVD_SOURCE_CHANGE = "com.my.dvd.SOURCE_CHANGE";

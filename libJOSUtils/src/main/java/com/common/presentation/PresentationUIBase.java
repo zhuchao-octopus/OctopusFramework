@@ -1,22 +1,8 @@
 package com.common.presentation;
 
-import com.common.util.BroadcastUtil;
-import com.common.util.MyCmd;
-import com.common.view.CarUiBase;
-
-import android.widget.VideoView;
-import android.util.Log;
-import android.hardware.display.DisplayManager;
-import android.media.MediaPlayer;
-import android.media.MediaRouter.RouteInfo;
-import android.media.MediaRouter;
 import android.app.Activity;
-import android.app.Application;
 import android.app.Presentation;
-import android.os.Bundle;
 import android.view.Display;
-import android.view.KeyEvent;
-import android.view.View;
 import android.content.Context;
 import android.view.WindowManager;
 

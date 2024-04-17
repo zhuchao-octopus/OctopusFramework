@@ -10,17 +10,17 @@ import android.os.Message;
 
 import androidx.annotation.RequiresApi;
 
-import com.zhuchao.android.fbase.TCourierEventBus;
-import com.zhuchao.android.fbase.eventinterface.HttpCallback;
-import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.FilesFinger;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.ObjectList;
+import com.zhuchao.android.fbase.TCourierEventBus;
 import com.zhuchao.android.fbase.TTask;
 import com.zhuchao.android.fbase.TTaskInterface;
 import com.zhuchao.android.fbase.TTaskThreadPool;
+import com.zhuchao.android.fbase.eventinterface.HttpCallback;
+import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
 import com.zhuchao.android.net.HttpUtils;
 import com.zhuchao.android.persist.TPersistent;
 
@@ -35,8 +35,8 @@ import java.util.concurrent.locks.LockSupport;
 public class TTaskManager {
     private final String TAG = "TTaskManager";
     private TTaskThreadPool tTaskThreadPool = null;
-    public TPersistent tPersistent = null;
-    public TCourierEventBus tCourierEventBus = new TCourierEventBus();
+    private TPersistent tPersistent = null;
+    private static final TCourierEventBus tCourierEventBus = new TCourierEventBus();
     ///private boolean stopContinue = true;
     ///private boolean reDownload = true;
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,6 +73,15 @@ public class TTaskManager {
         //TTaskThreadPool_SESSION_UPDATE_TEST_INIT();
         tPersistent = new TPersistent(context, context.getPackageName());
         tTaskManagerTTaskPoolInit();
+    }
+
+    public synchronized TPersistent getPersistent(Context context) {
+        if (tPersistent == null) return new TPersistent(context, context.getPackageName());
+        else return tPersistent;
+    }
+
+    public static synchronized TCourierEventBus getEventBus() {
+        return tCourierEventBus;
     }
 
     public <T> T getTask(String tName) {
@@ -121,10 +130,8 @@ public class TTaskManager {
     }
 
     public TTask getNewTask(String tName) {
-        if (existsTask(tName))
-            return tTaskThreadPool.createTask(tName + System.currentTimeMillis());
-        else
-            return tTaskThreadPool.createTask(tName);
+        if (existsTask(tName)) return tTaskThreadPool.createTask(tName + System.currentTimeMillis());
+        else return tTaskThreadPool.createTask(tName);
     }
 
     public TTask getAvailableTask(String tName) {
@@ -132,8 +139,7 @@ public class TTaskManager {
         if (tTask != null) {
             tTask.resetAll();
             return tTask;
-        } else
-            return getNewTask(tName);
+        } else return getNewTask(tName);
     }
 
     public TTask getAvailableTaskLock(String tName) {
@@ -215,8 +221,7 @@ public class TTaskManager {
                     //filesFinger.setMultiThread(false);
                     filesFinger.fingerFromDir(fromPath);
                     //MMLog.log(TAG, "tTask finger files waiting... " + fromPath);
-                    if (tTask.getProperties().getBoolean("fingerFirst", true))
-                        LockSupport.park(tTask);
+                    if (tTask.getProperties().getBoolean("fingerFirst", true)) LockSupport.park(tTask);
                 }
                 //MMLog.log(TAG, "tTask start copying files...");
                 tTask.getProperties().putInt("copiedCount", 0);
@@ -225,14 +230,12 @@ public class TTaskManager {
                 //for (Object o : objects)
                 {
                     if ("fingerEnd".equals(tTask.getProperties().getString("fingerStatus"))) {
-                        if (tTask.getProperties().getInt("copiedCount") >= filesFinger.getCount())
-                            break;//等待任务完成
+                        if (tTask.getProperties().getInt("copiedCount") >= filesFinger.getCount()) break;//等待任务完成
                     }
                     //String fromFile = ((File) o).getAbsolutePath();
                     Object o = concurrentLinkedQueue.poll();
                     if (o == null) {
-                        if ("fingerEnd".equals(tTask.getProperties().getString("fingerStatus")))
-                            break;
+                        if ("fingerEnd".equals(tTask.getProperties().getString("fingerStatus"))) break;
                         continue;
                     }
 
@@ -281,12 +284,9 @@ public class TTaskManager {
                                 //MMLog.log(TAG,"copy file from "+ff +" to "+tf);
 
                                 int copyMethod = tTask.getProperties().getInt("copyMethod", 0);
-                                if (copyMethod == 1)
-                                    bRet = FileUtils.pathCopy(ff, tf);
-                                else if (copyMethod == 2)
-                                    bRet = FileUtils.bufferCopyFile(ff, tf);
-                                else if (copyMethod == 3)
-                                    bRet = FileUtils.streamCopy(ff, tf);
+                                if (copyMethod == 1) bRet = FileUtils.pathCopy(ff, tf);
+                                else if (copyMethod == 2) bRet = FileUtils.bufferCopyFile(ff, tf);
+                                else if (copyMethod == 3) bRet = FileUtils.streamCopy(ff, tf);
                                 else {
                                     //long tickCount = System.currentTimeMillis();
                                     //MMLog.log(TAG,"channelTransferTo take up time: "+ tickCount);
@@ -643,8 +643,7 @@ public class TTaskManager {
         if (EmptyString(toPath)) {
             //从原来的路径截取文件名
             fileName = FileUtils.getFileNameFromPathName(fromUrl);
-            if (EmptyString(fileName))
-                fileName = tag;
+            if (EmptyString(fileName)) fileName = tag;
             //没有指定下载目录 获取默认的下载目录
             downloadingPathFileName = FileUtils.getDownloadDir(null) + fileName + d_EXT_NAME;
             localPathFileName = FileUtils.getDownloadDir(null) + fileName;
@@ -668,8 +667,7 @@ public class TTaskManager {
             if (fileName == null)//没有指定文件名，从原URL中提取文件名
                 fileName = FileUtils.getFileNameFromPathName(fromUrl);
 
-            if (EmptyString(fileName))
-                fileName = tag;
+            if (EmptyString(fileName)) fileName = tag;
             downloadingPathFileName = toToPath + "/" + fileName + d_EXT_NAME;
             localPathFileName = toToPath + "/" + fileName;
         }
@@ -729,10 +727,8 @@ public class TTaskManager {
                     case DataID.TASK_STATUS_SUCCESS:
                         if ((progress == total) && (progress > 0) && (status == DataID.TASK_STATUS_SUCCESS)) {
                             //MMLog.log(TAG, "download complete, from " + fromUrl + ", total size = " + total);
-                            if (FileUtils.renameFile(f1, f2))
-                                MMLog.log(TAG, "download completed file saved to " + f2 + ", total size = " + total);
-                            else
-                                MMLog.log(TAG, "download saving failed " + f2 + ", total size = " + total);
+                            if (FileUtils.renameFile(f1, f2)) MMLog.log(TAG, "download completed file saved to " + f2 + ", total size = " + total);
+                            else MMLog.log(TAG, "download saving failed " + f2 + ", total size = " + total);
                             tTask.free();//下载完成，释放任务等待模式,主题任务完成，解除同步
                             String expected_md5 = tTask.getProperties().getString("EXPECTED_MD5");
                             if (expected_md5 != null) {

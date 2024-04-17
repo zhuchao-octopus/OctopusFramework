@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
 ext {
-    GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
+    //GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libPlayerUtils'
 
@@ -12,7 +12,9 @@ ext {
     //def LIBVLC_AAR = 'libvlc-all-3.5.0-eap8.aar' //PUBLISH_VERSION = '>=1.2'
     //PUBLISH_VERSION = '2.6' //v2.6 stable
 
-    PUBLISH_VERSION = '2.9' //libvlc-3.5.4-armeabi-v7a-release.aar
+    //PUBLISH_VERSION = '2.9' //libvlc-3.5.4-armeabi-v7a-release.aar
+
+    PUBLISH_VERSION = '3.0' //libvlc-all-4.0.0-eap15.aar
 }
 
 afterEvaluate {
@@ -68,7 +70,8 @@ android {
 
 dependencies {
     api files('libs/clink210.jar')
-    compileOnly files('libs/libvlc-3.5.4-armeabi-v7a-release.aar')
+    //compileOnly files('libs/libvlc-3.5.4-armeabi-v7a-release.aar')
+    compileOnly files('libs/libvlc-all-4.0.0-eap15.aar')
     implementation project(path: ':libFBaseUitls')
     implementation project(path: ':libINetUtils')
     implementation project(path: ':libJOSUtils')

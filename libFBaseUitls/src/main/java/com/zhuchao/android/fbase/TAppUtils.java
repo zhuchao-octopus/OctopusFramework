@@ -5,6 +5,7 @@ import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.app.Application;
 import android.app.PendingIntent;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
@@ -19,7 +20,6 @@ import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
 
@@ -117,11 +117,9 @@ public class TAppUtils {
         callUserCallback(null);
     }
 
-    public void printAllApps()
-    {
+    public void printAllApps() {
         for (AppInfo Info : AllAppInfo) {
-            if (Info != null)
-               MMLog.log(TAG, Info.totoString());
+            if (Info != null) MMLog.log(TAG, Info.totoString());
         }
     }
 
@@ -272,19 +270,15 @@ public class TAppUtils {
     public String getPackageName(String apkPath) {
         PackageManager packageManager = mContext.getPackageManager();
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
-        if (packageInfo != null)
-            return packageInfo.packageName;
-        else
-            return null;
+        if (packageInfo != null) return packageInfo.packageName;
+        else return null;
     }
 
     public static String getPackageName(Context context, String apkPath) {
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
-        if (packageInfo != null)
-            return packageInfo.packageName;
-        else
-            return null;
+        if (packageInfo != null) return packageInfo.packageName;
+        else return null;
     }
 
     public AppInfo getAppInfo(String packageName) {
@@ -468,8 +462,7 @@ public class TAppUtils {
                 while ((line = errorResult.readLine()) != null) {
                     errorMsg.append(line);
                 }
-                if (NotEmptyString(errorMsg.toString()))
-                    MMLog.i(TAG, "uninstall " + errorMsg.toString());
+                if (NotEmptyString(errorMsg.toString())) MMLog.i(TAG, "uninstall " + errorMsg.toString());
                 if (NotEmptyString(successMsg.toString()) && successMsg.toString().contains("Success")) {
                     MMLog.i(TAG, "uninstall " + successMsg.toString());
                 }
@@ -515,8 +508,7 @@ public class TAppUtils {
             method = Class.forName("android.app.ActivityManager").getMethod("forceStopPackage", String.class);
             method.invoke(mActivityManager, packageName);
             MMLog.i(TAG, "Kill application: " + packageName);
-        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException |
-                 InvocationTargetException e) {
+        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
             MMLog.log(TAG, e.toString());//e.printStackTrace();
         }
     }
@@ -536,8 +528,7 @@ public class TAppUtils {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> mList = activityManager.getRunningAppProcesses();
         for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : mList) {
-            if (runningAppProcessInfo.processName.equals(PackageName))
-                return true;
+            if (runningAppProcessInfo.processName.equals(PackageName)) return true;
         }
         return false;
     }
@@ -547,8 +538,7 @@ public class TAppUtils {
         ArrayList<ActivityManager.RunningServiceInfo> mList = (ArrayList<ActivityManager.RunningServiceInfo>) activityManager.getRunningServices(30);
 
         for (ActivityManager.RunningServiceInfo runningServiceInfo : mList) {
-            if (runningServiceInfo.service.getClassName().equals(serviceName))
-                return true;
+            if (runningServiceInfo.service.getClassName().equals(serviceName)) return true;
         }
         return false;
     }
@@ -629,15 +619,22 @@ public class TAppUtils {
     }
 
     public static void startSystemSetting(Context context) {
-        context.startActivity(
-                new Intent(Settings.ACTION_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        );
+        context.startActivity(new Intent(Settings.ACTION_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     public static void startWifiSetting(Context context) {
-        context.startActivity(
-                new Intent(Settings.ACTION_WIFI_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        );
+        context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    @SuppressLint("PrivateApi")
+    public static Application getApplicationByReflection() {
+        try {
+            return (Application) Class.forName("android.app.ActivityThread").getMethod("currentApplication").invoke(null, (Object[]) null);
+        } catch (Exception e) {
+            //e.printStackTrace();
+            MMLog.d(TAG, "Exception:"+e);
+        }
+        return null;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -746,4 +743,6 @@ public class TAppUtils {
             return "Name=" + name + ",Version=" + versionCode + ",PackageName=" + packageName + ",Ico=" + icon + ",Size=" + size + ",User=" + isUserApp + ",Rom=" + isRom + ",Path=" + filePath;
         }
     }
+
+
 }

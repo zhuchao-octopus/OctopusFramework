@@ -30,8 +30,7 @@ public class TI2CFile extends TDevice implements TCourierEventListener, InvokeIn
     public void closeDevice() {
         super.closeDevice();
         try {
-            if (i2cDevice != null)
-                i2cDevice.close();
+            if (i2cDevice != null) i2cDevice.close();
             i2cDevice = null;
         } catch (IOException e) {
             //e.printStackTrace();
@@ -161,10 +160,9 @@ public class TI2CFile extends TDevice implements TCourierEventListener, InvokeIn
         switch (eventCourier.getId()) {
             case DataID.DEVICE_EVENT_I2C_WRITE:
             case DataID.DEVICE_EVENT_WRITE:
-                if (eventCourier.getTag().equals(getDevicePath()))
-                {
+                if (eventCourier.getTag().equals(getDevicePath())) {
                     if (eventCourier.getDatas() != null) {
-                        writeFile(eventCourier.getDatas(),eventCourier.getDatas().length);
+                        writeFile(eventCourier.getDatas(), eventCourier.getDatas().length);
                     }
                     return true;
                 }

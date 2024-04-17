@@ -103,6 +103,27 @@ public class OMedia implements Serializable, PlayerCallback {
         return this;
     }
 
+    public OMedia build(int magicNum)
+    {
+        if (!isPlayerReady())
+        {
+            setMagicNumber(magicNum);
+        }
+        return this;
+    }
+    public OMedia build()
+    {
+        if (!isPlayerReady())
+        {
+            getPlayer();//获取播放器实例
+            if (callback != null) setCallback(callback);
+            tTask_play.setPriority(MAX_PRIORITY);
+            tTask_stop.setPriority(MAX_PRIORITY);
+            this.videoOutWidth = 0;
+            this.videoOutHeight = 0;
+        }
+        return this;
+    }
     public OMedia(final String url) {
         this.fileDescriptor = null;
         this.assetFileDescriptor = null;
@@ -183,7 +204,7 @@ public class OMedia implements Serializable, PlayerCallback {
 
     public void playOn(SurfaceView playView) {
         if (!isPlayerReady()) {
-            MMLog.i(TAG, "playOn FPlayer is invalid");
+            MMLog.i(TAG, "playOn failed,FPlayer is invalid!");
             return;
         }
         setSurfaceView(playView);

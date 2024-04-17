@@ -18,7 +18,7 @@ public class BootBroadCastReceiver extends BroadcastReceiver {
         // an Intent broadcast.
         //throw new UnsupportedOperationException("Not yet implemented");
         try {
-            MMLog.d(TAG,intent.getAction().toString());
+            MMLog.d(TAG, intent.getAction());
             if (intent.getAction().equals(ACTION)) {
                 Intent intent1 = new Intent(context, TWatchManService.class);
                 //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

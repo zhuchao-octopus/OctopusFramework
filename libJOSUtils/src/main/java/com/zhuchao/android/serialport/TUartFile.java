@@ -197,7 +197,7 @@ public class TUartFile extends TDevice implements TCourierEventListener {
 
     public String toDeviceString() {
         String str = serialPort.getDevice().getAbsolutePath();
-        str += "," + serialPort.getBaudrate();
+        str += "," + serialPort.getBaudRate();
         str += "," + serialPort.getDataBits();
         str += "," + serialPort.getStopBits();
         str += "," + serialPort.getParity();

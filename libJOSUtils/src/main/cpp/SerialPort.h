@@ -12,16 +12,14 @@ extern "C" {
  * Method:    open
  * Signature: (Ljava/lang/String;IIIII)Ljava/io/FileDescriptor;
  */
-JNIEXPORT jobject JNICALL Java_android_serialport_SerialPort_open
-        (JNIEnv *, jobject, jstring, jint, jint, jint, jint, jint);
+JNIEXPORT jobject JNICALL Java_android_serialport_SerialPort_open(JNIEnv *, jobject, jstring, jint, jint, jint, jint, jint);
 
 /*
  * Class:     android_serialport_SerialPort
  * Method:    close
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_android_serialport_SerialPort_close
-        (JNIEnv *, jobject);
+JNIEXPORT void JNICALL Java_android_serialport_SerialPort_close(JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }

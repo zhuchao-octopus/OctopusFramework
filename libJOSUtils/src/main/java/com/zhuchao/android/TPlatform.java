@@ -52,10 +52,10 @@ public class TPlatform {
             @SuppressLint("PrivateApi") Class<?> c = Class.forName("android.os.SystemProperties");
             Method get = c.getMethod("get", String.class);
             result = (String) get.invoke(c, key);
-
         } catch (ClassNotFoundException | InvocationTargetException | IllegalArgumentException |
                  IllegalAccessException | NoSuchMethodException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.e(TAG,"Exception:"+e);
         }
         return result;
     }
@@ -67,7 +67,8 @@ public class TPlatform {
             set.invoke(c, key, val);
         } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException |
                  InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.e(TAG,"Exception:"+e);
         }
     }
 

@@ -86,12 +86,12 @@ public class JavaCamera2View extends CameraBridgeViewBase {
     }
 
     protected boolean initializeCamera() {
-        Log.i(LOGTAG, "initializeCamera");
+        Log.i(LOGTAG, "initializeCamera...");
         CameraManager manager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
         try {
-            String camList[] = manager.getCameraIdList();
+            String[] camList = manager.getCameraIdList();
             if (camList.length == 0) {
-                Log.e(LOGTAG, "Error: camera isn't detected.");
+                Log.e(LOGTAG, "initializeCamera Error: camera isn't detected.");
                 return false;
             }
             for (String cameraID : camList) {
@@ -273,7 +273,7 @@ public class JavaCamera2View extends CameraBridgeViewBase {
     boolean calcPreviewSize(final int width, final int height) {
         Log.i(LOGTAG, "calcPreviewSize: " + width + "x" + height);
         if (mCameraID == null) {
-            Log.e(LOGTAG, "Camera isn't initialized!");
+            Log.e(LOGTAG, "calcPreviewSize but camera isn't initialized!");
             return false;
         }
         CameraManager manager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);

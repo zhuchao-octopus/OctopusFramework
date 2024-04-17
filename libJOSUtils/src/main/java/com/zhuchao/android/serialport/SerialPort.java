@@ -29,13 +29,12 @@ import java.io.OutputStream;
 public final class SerialPort {
     private static final String TAG = "SerialPort";
     public static final String DEFAULT_SU_PATH = "/system/bin/su";
-    private static String sSuPath = DEFAULT_SU_PATH;
-    private File device;
-    private int baudrate;
-    private int dataBits;
-    private int parity;
-    private int stopBits;
-    private int flags;
+    private final File device;
+    private final int baudrate;
+    private final int dataBits;
+    private final int parity;
+    private final int stopBits;
+    private final int flags;
 
     /*
      * Do not remove or rename the field mFd: it is used by native method close();
@@ -44,10 +43,9 @@ public final class SerialPort {
     private FileInputStream mFileInputStream = null;
     private FileOutputStream mFileOutputStream = null;
 
-    public SerialPort(File device, int baudrate, int dataBits, int parity, int stopBits,
-                      int flags) throws SecurityException, IOException {
+    public SerialPort(File device, int baudRate, int dataBits, int parity, int stopBits, int flags) throws SecurityException, IOException {
         this.device = device;
-        this.baudrate = baudrate;
+        this.baudrate = baudRate;
         this.dataBits = dataBits;
         this.parity = parity;
         this.stopBits = stopBits;
@@ -56,7 +54,7 @@ public final class SerialPort {
             try {
                 /* Missing read/write permission, trying to chmod the file */
                 Process su;
-                su = Runtime.getRuntime().exec(sSuPath);
+                su = Runtime.getRuntime().exec(DEFAULT_SU_PATH);
                 String cmd = "chmod 666 " + device.getAbsolutePath() + "\n" + "exit\n";
                 su.getOutputStream().write(cmd.getBytes());
                 if ((su.waitFor() != 0) || !device.canRead() || !device.canWrite()) {
@@ -86,13 +84,12 @@ public final class SerialPort {
         }
     }
 
-    public SerialPort(File device, int baudrate) throws SecurityException, IOException {
-        this(device, baudrate, 8, 0, 1, 0);
+    public SerialPort(File device, int baudRate) throws SecurityException, IOException {
+        this(device, baudRate, 8, 0, 1, 0);
     }
 
-    public SerialPort(File device, int baudrate, int dataBits, int parity, int stopBits)
-            throws SecurityException, IOException {
-        this(device, baudrate, dataBits, parity, stopBits, 0);
+    public SerialPort(File device, int baudRate, int dataBits, int parity, int stopBits) throws SecurityException, IOException {
+        this(device, baudRate, dataBits, parity, stopBits, 0);
     }
 
     // Getters and setters
@@ -108,7 +105,7 @@ public final class SerialPort {
         return device;
     }
 
-    public int getBaudrate() {
+    public int getBaudRate() {
         return baudrate;
     }
 
@@ -133,8 +130,7 @@ public final class SerialPort {
     }
 
     // JNI
-    private native FileDescriptor open(String absolutePath, int baudrate, int dataBits, int parity,
-                                       int stopBits, int flags);
+    private native FileDescriptor open(String absolutePath, int baudRate, int dataBits, int parity, int stopBits, int flags);
 
     public native void close();
 
@@ -162,33 +158,29 @@ public final class SerialPort {
         }
     }
 
-    static {
-        System.loadLibrary("uart");
+    public static Builder newBuilder(File device, int baudRate) {
+        return new Builder(device, baudRate);
     }
 
-    public static Builder newBuilder(File device, int baudrate) {
-        return new Builder(device, baudrate);
-    }
-
-    public static Builder newBuilder(String devicePath, int baudrate) {
-        return new Builder(devicePath, baudrate);
+    public static Builder newBuilder(String devicePath, int baudRate) {
+        return new Builder(devicePath, baudRate);
     }
 
     public final static class Builder {
-        private File device;
-        private int baudrate;
+        private final File device;
+        private final int baudRate;
         private int dataBits = 8;
         private int parity = 0;
         private int stopBits = 1;
         private int flags = 0;
 
-        private Builder(File device, int baudrate) {
+        private Builder(File device, int baudRate) {
             this.device = device;
-            this.baudrate = baudrate;
+            this.baudRate = baudRate;
         }
 
-        private Builder(String devicePath, int baudrate) {
-            this(new File(devicePath), baudrate);
+        private Builder(String devicePath, int baudRate) {
+            this(new File(devicePath), baudRate);
         }
 
         public Builder dataBits(int dataBits) {
@@ -212,7 +204,11 @@ public final class SerialPort {
         }
 
         public SerialPort build() throws SecurityException, IOException {
-            return new SerialPort(device, baudrate, dataBits, parity, stopBits, flags);
+            return new SerialPort(device, baudRate, dataBits, parity, stopBits, flags);
         }
+    }
+
+    static {
+        System.loadLibrary("uart");
     }
 }

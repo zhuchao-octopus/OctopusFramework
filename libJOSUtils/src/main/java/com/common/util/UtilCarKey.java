@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 
 
 import android.app.ActivityManager;
@@ -19,13 +20,15 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.zhuchao.android.fbase.MMLog;
+
 public class UtilCarKey {
     private final static String TAG = "UtilCarKey";
 
-    public static final String PROPERTIESFILE = MyCmd.VENDOR_DIR + ".properties_file";
+    ///public static final String PROPERTIESFILE = MyCmd.VENDOR_DIR + ".properties_file";
 
-    //	private final static String CLD_GPS_NAME = "com.autonavi.amapauto";
-    //	private final static String CLD_GPS_CLASS_NAME = "com.autonavi.auto.remote.fill.UsbFillActivity";
+    ///	private final static String CLD_GPS_NAME = "com.autonavi.amapauto";
+    ///	private final static String CLD_GPS_CLASS_NAME = "com.autonavi.auto.remote.fill.UsbFillActivity";
     public static boolean mBtMusicInBTapk = false;
 
     static {
@@ -230,33 +233,32 @@ public class UtilCarKey {
         }
     }
 
-    //	public static void doKeyEQ(Context context) {
-    //		if (!AppConfig.CAR_EQ.equals(AppConfig.getTopActivity())) {
-    //			try {
-    //				Intent it = new Intent(Intent.ACTION_VIEW);
-    //				it.setClassName("com.eqset", "com.eqset.EQActivity");
-    //				it.putExtra("switch", "1");
-    //				it.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
-    //				context.startActivity(it);
-    //			} catch (Exception e) {
-    //				Log.e(TAG, e.getMessage());
-    //			}
-    //		}
-    //	}
+    public static void doKeyEQ2(Context context, int PageIndex) {
+        //if (!AppConfig.CAR_EQ.equals(AppConfig.getTopActivity()))
+        {
+            try {
+                Intent it = new Intent(Intent.ACTION_VIEW);
+                it.setClassName("com.eqset", "com.eqset.EQActivity");
+                it.putExtra("PageIndex", PageIndex);
+                it.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(it);
+
+                MMLog.d("EQ", "doKeyEQ2 PageIndex=" + it.getIntExtra("PageIndex", 0));
+            } catch (Exception e) {
+                Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+            }
+        }
+    }
 
     public static boolean doKeyRadio(Context context) {
         if (!AppConfig.CAR_UI_RADIO.equals(AppConfig.getTopActivity())) {
-
             UtilSystem.doRunActivity(context, AppConfig.PACKAGE_CAR_UI, "com.my.radio.RadioActivity");
-
             return true;
         }
         return false;
-
     }
 
     public static void doKeyAudioEx(Context context, String song) {
-
         try {
             Intent it = new Intent();
             it.setClassName("com.my.audio", "com.my.audio.MusicActivity");
@@ -264,16 +266,14 @@ public class UtilCarKey {
             it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(it);
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
         }
-
     }
 
     public static void doKeyDVR(Context context) {
         if (!"com.my.dvr".equals(AppConfig.getTopActivity())) {
             UtilSystem.doRunActivity(context, "com.my.dvr", "com.my.dvr.MainActivity");
         }
-
     }
 
     public static void doKeyPic(Context context) {

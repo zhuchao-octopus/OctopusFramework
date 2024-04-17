@@ -2,6 +2,8 @@ package com.common.util;
 
 import android.os.Build;
 
+import com.zhuchao.android.fbase.MMLog;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,7 +13,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 public class MachineConfig {
-
+    private final static String TAG = "MachineConfig";
     public final static String KEY_CANBOX_DOOR_TYPE = "key_canbox_door_type";
     public final static String KEY_STATUSBAR_POWER = "key_statusbar_power";
     public final static String KEY_ARM_MEMORY_FOR_MCU = "key_memory_for_mcu";
@@ -210,7 +212,7 @@ public class MachineConfig {
     public final static String VALUE_CAR_TYPE_AUDIQ51024 = "audiQ51024";
     public final static String VALUE_CAR_TYPE_GM = "gm";
     // logo
-    public final static String VALUE_BOOTANIM_PATH = "/mnt/parameter/";
+    public final static String VALUE_BOOTANIM_PATH = "/mnt/paramter/";
     public final static String VALUE_BOOTANIM_AUDI = "audi.zip";
     public final static String VALUE_BOOTANIM_AUDI1024 = "audi1024.zip";
     public final static String VALUE_BOOTANIM_BENZ = "benz.zip";
@@ -231,7 +233,7 @@ public class MachineConfig {
     public final static String VALUE_BOOTANIM_OTHER = "other.zip";
     public final static String VALUE_BOOTANIM_OTHER1024 = "other1024.zip";
 
-    public final static String VALUE_LOGO_PATH = "/mnt/parameter/logo/";
+    public final static String VALUE_LOGO_PATH = "/mnt/paramter/logo/";
 
     public final static String VALUE_CUSTOMER_YX = "yx";
     public final static String VALUE_BOOTANIM_CZL = "czl";
@@ -376,25 +378,13 @@ public class MachineConfig {
     public static String DEFAULT_GPS_PACKAGE = "none";
     public static String DEFAULT_GPS_CLASS = "none";
 
-
-    private final static String PROJECT_CONFIG_FILENAME = ".config_properties";
-    private final static String SYSTEM_CONFIG = MyCmd.VENDOR_DIR + PROJECT_CONFIG_FILENAME;
-
-    //parameter readonly
-    //	private final static String PARAMETER_CONFIG = "/mnt/parameter/" + PROJECT_CONFIG;
-
-
     public final static String KEY_HIDE_SCREEN_SHOT = "hide_screen_shot";
-
     public final static String KEY_BT_TYPE = "bt_type";
-
     public final static String KEY_HIDE_LAUNCHER = "hide_launcher";
     public final static String KEY_LAUNCHER_UI = "launcher_ui";
 
 
     public final static String KEY_SHOW_BACK_CAMERA = "show_back_camera";
-
-
     public final static String KEY_SHOW_DARK_MODE = "show_dark_mode";
     public final static String KEY_MODE_KEY_CONTENT = "mode_key_content";
 
@@ -501,15 +491,20 @@ public class MachineConfig {
     public final static String KEY_TOUCH_ASSISTANT = "touch_assistant";
 
     private static Properties mProperties = new Properties();
+    private static Properties mPropertiesReadOnly;
 
+    private final static String PROJECT_CONFIG_FILENAME = ".config_properties";
+    public final static String VENDOR_DIR = "/mnt/vendor/";// test  // 7.1
+    public final static String PARAMETER_DIR = "/mnt/paramter/";
+    private final static String SYSTEM_CONFIG = VENDOR_DIR + PROJECT_CONFIG_FILENAME;
+    private final static String PARAMETER_CONFIG = PARAMETER_DIR + PROJECT_CONFIG_FILENAME;
 
-    public final static String KEY_PARAMETER_PATH = "parameter_path";
-
-    private static String mParameterPath = "/mnt/parameter/";
+    private static String mParameterPath = PARAMETER_DIR;
+    private final static String KEY_PARAMETER_PATH = "parameter_path";
 
     static {
         InputStream inputStream = null;
-        File configFile = new File("/mnt/parameter/+ PROJECT_CONFIG");
+        File configFile = new File(PARAMETER_CONFIG);
         if (configFile.exists()) {
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) inputStream = Files.newInputStream(configFile.toPath());
@@ -521,6 +516,7 @@ public class MachineConfig {
                 String s = pt.getProperty(KEY_PARAMETER_PATH);
                 if (s != null) {
                     mParameterPath = s;
+                    MMLog.d(TAG, "Parameter Path changed to " + mParameterPath);
                 }
                 pt = null;
             } catch (Exception e) {
@@ -642,9 +638,10 @@ public class MachineConfig {
         getConfigProperties();
         return mProperties.getProperty(name);
     }
-
-    private static Properties mPropertiesReadOnly;
-
+    public static String getPropertyForce(String name) {
+        getConfigProperties();
+        return mProperties.getProperty(name);
+    }
     public static String getPropertyReadOnly(String name) {
         if (mPropertiesReadOnly == null) {
             InputStream inputStream = null;

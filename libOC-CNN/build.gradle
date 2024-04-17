@@ -4,7 +4,7 @@ plugins {
 }
 
 ext {
-    GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
+    //GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libC-CNN'
     PUBLISH_VERSION = '0.2' //设备支持多接口

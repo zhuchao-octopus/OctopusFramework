@@ -117,8 +117,7 @@ Java_com_zhuchao_android_serialport_SerialPort_close(JNIEnv *env, jobject thiz) 
 }
 
 JNIEXPORT jobject JNICALL
-Java_com_zhuchao_android_serialport_SerialPort_open(JNIEnv *env, jobject thiz,
-                                                    jstring absolute_path, jint baudrate,
+Java_com_zhuchao_android_serialport_SerialPort_open(JNIEnv *env, jobject thiz, jstring absolute_path, jint baudRate,
                                                     jint data_bits, jint parity, jint stop_bits,
                                                     jint flags) {
     // TODO: implement open()
@@ -128,7 +127,7 @@ Java_com_zhuchao_android_serialport_SerialPort_open(JNIEnv *env, jobject thiz,
 
     /* Check arguments */
     {
-        speed = getBaudrate(baudrate);
+        speed = getBaudrate(baudRate);
         if (speed == -1) {
             /* TODO: throw an exception */
             //LOGE("Invalid baudrate");

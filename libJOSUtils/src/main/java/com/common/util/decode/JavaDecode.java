@@ -26,6 +26,7 @@ public class JavaDecode {
         try {
             return new String(decodingUTFToByte(hex), enc);
         } catch (UnsupportedEncodingException ex) {
+            ex.toString();
             return null;
         }
     }

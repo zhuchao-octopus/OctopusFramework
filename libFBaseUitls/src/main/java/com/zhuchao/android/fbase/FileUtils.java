@@ -75,10 +75,12 @@ public class FileUtils {
     public static <T> T toType(Object obj) {
         return (T) obj;
     }
+
     @SuppressWarnings("unchecked")
     public static <T> T toType(Object obj, Class<T> classOfT) {
         return (T) obj;
     }
+
     public static <T> T fromJson(String json, Class<T> classOfT) {
         try {
             return new Gson().fromJson(json, classOfT);
@@ -88,14 +90,14 @@ public class FileUtils {
         }
     }
 
-    public static void WaitingFor(long Millis)
-    {
+    public static void WaitingFor(long Millis) {
         try {
             Thread.sleep(Millis);//等待任务完成
         } catch (InterruptedException e) {
             //throw new RuntimeException(e);
         }
     }
+
     public static boolean EmptyString(String str) {
         return TextUtils.isEmpty(str);
     }
@@ -111,10 +113,8 @@ public class FileUtils {
     public static ObjectList getPartitions(ObjectList Result) {
         ObjectList Partitions = null;
         long totalSize = 0;
-        if (Result == null)
-            Partitions = new ObjectList();
-        else
-            Partitions = Result;
+        if (Result == null) Partitions = new ObjectList();
+        else Partitions = Result;
 
         String cmd = "cat /proc/partitions";
         try {
@@ -136,8 +136,7 @@ public class FileUtils {
                 if (partition[2].equals("#blocks") || partition[3].equals("name")) continue;
                 if (partition.length == 4) {
                     try {
-                        if (partition[0].trim() != "179")
-                            totalSize = totalSize + Long.parseLong(partition[2].trim());
+                        if (partition[0].trim() != "179") totalSize = totalSize + Long.parseLong(partition[2].trim());
                         Partitions.putLong(partition[3].trim(), Long.valueOf(partition[2].trim()));
                     } catch (NumberFormatException e) {
                         //e.printStackTrace();
@@ -157,10 +156,8 @@ public class FileUtils {
     public static ObjectList getFileSystemPartitions(ObjectList Result) {
         ObjectList Partitions = null;
         //long totalSize = 0;
-        if (Result == null)
-            Partitions = new ObjectList();
-        else
-            Partitions = Result;
+        if (Result == null) Partitions = new ObjectList();
+        else Partitions = Result;
 
         String cmd = "df";
         try {
@@ -179,8 +176,7 @@ public class FileUtils {
                 line = line.replaceAll(" +", ",");
                 String[] partition = line.split(",");
                 //MMLog.log(TAG, "partition = " + line + " length = " + partition.length);
-                if (partition[0].equals("Filesystem") || partition[2].equals("#blocks") || partition[3].equals("name"))
-                    continue;
+                if (partition[0].equals("Filesystem") || partition[2].equals("#blocks") || partition[3].equals("name")) continue;
                 if (partition.length == 6) {
                     try {
                         Partitions.putLong(partition[0].trim(), Long.valueOf(partition[1].trim()));
@@ -201,22 +197,12 @@ public class FileUtils {
 
     public static boolean isExternalLinks(String filePath) {
         if (EmptyString(filePath)) return false;
-        return filePath.startsWith("http:") ||
-                filePath.startsWith("https:") ||
-                filePath.startsWith("ftp:") ||
-                filePath.startsWith("rtp:") ||
-                filePath.startsWith("rtsp:") ||
-                filePath.startsWith("mms:");
+        return filePath.startsWith("http:") || filePath.startsWith("https:") || filePath.startsWith("ftp:") || filePath.startsWith("rtp:") || filePath.startsWith("rtsp:") || filePath.startsWith("mms:");
     }
 
     public static boolean existFile(String filePath) {
         if (EmptyString(filePath)) return false;
-        if (filePath.startsWith("http:") ||
-                filePath.startsWith("https:") ||
-                filePath.startsWith("ftp:") ||
-                filePath.startsWith("rtp:") ||
-                filePath.startsWith("rtsp:") ||
-                filePath.startsWith("mms:"))
+        if (filePath.startsWith("http:") || filePath.startsWith("https:") || filePath.startsWith("ftp:") || filePath.startsWith("rtp:") || filePath.startsWith("rtsp:") || filePath.startsWith("mms:"))
             return true;
 
         try {
@@ -284,13 +270,7 @@ public class FileUtils {
     //无法获得不存在资源的文件名
     public static String getFileName(String filePath) {
         String fileName = filePath;
-        if (filePath.startsWith("http:") ||
-                filePath.startsWith("https:") ||
-                filePath.startsWith("ftp:") ||
-                filePath.startsWith("rtp:") ||
-                filePath.startsWith("rtsp:") ||
-                filePath.startsWith("mms:"))
-        {//url的文件名
+        if (filePath.startsWith("http:") || filePath.startsWith("https:") || filePath.startsWith("ftp:") || filePath.startsWith("rtp:") || filePath.startsWith("rtsp:") || filePath.startsWith("mms:")) {//url的文件名
             int lastSlash = filePath.lastIndexOf('/');
             if (lastSlash >= 0) {
                 lastSlash++;
@@ -301,15 +281,12 @@ public class FileUtils {
                     }
                 }
             }
-        }
-        else//本地文件名
+        } else//本地文件名
         {
             File file = new File(filePath);
             if (file.exists()) {
-                if (file.isFile())
-                    return file.getName();
-                else
-                    return null;
+                if (file.isFile()) return file.getName();
+                else return null;
             }
         }
         return null;
@@ -345,10 +322,8 @@ public class FileUtils {
     public static long getFileSize(String fileName) {
         try {
             File file = new File(fileName);
-            if (file.exists() && file.isFile())
-                return file.length();
-            else
-                return 0;
+            if (file.exists() && file.isFile()) return file.length();
+            else return 0;
         } catch (Exception e) {
             //e.printStackTrace();
         }
@@ -357,8 +332,7 @@ public class FileUtils {
 
     public static boolean deleteFile(String filePath) {
         File file = new File(filePath);
-        if (file.exists())
-            return file.delete();
+        if (file.exists()) return file.delete();
         return false;
     }
 
@@ -376,15 +350,13 @@ public class FileUtils {
     public static boolean deleteDirectory(String directoryPath) {
         File directory = new File(directoryPath);
 
-        if(!directory.exists())
-        {
-            MMLog.log(TAG,"Dir is not exit! ->" +directoryPath);
+        if (!directory.exists()) {
+            MMLog.log(TAG, "Dir is not exit! ->" + directoryPath);
             return false;
         }
 
-        if(!directory.canWrite())
-        {
-            MMLog.log(TAG,"Dir is not permit writing! ->" +directoryPath);
+        if (!directory.canWrite()) {
+            MMLog.log(TAG, "Dir is not permit writing! ->" + directoryPath);
             return false;
         }
 
@@ -403,24 +375,20 @@ public class FileUtils {
         return directory.delete();
     }
 
-    public static String findDirFromPath(String DirName,String Path) {
+    public static String findDirFromPath(String DirName, String Path) {
         File directory = new File(Path);
         String foundPath = "";
-        if (directory.exists() && directory.isDirectory())
-        {
-            if(directory.getName().equals(DirName)) {
-                MMLog.log(TAG,"findDirFromPath ->" +DirName +":"+directory.getAbsolutePath());
+        if (directory.exists() && directory.isDirectory()) {
+            if (directory.getName().equals(DirName)) {
+                MMLog.log(TAG, "findDirFromPath ->" + DirName + ":" + directory.getAbsolutePath());
                 foundPath = directory.getAbsolutePath();
-            }
-            else
-            {
+            } else {
                 File[] files = directory.listFiles();
-                if (files != null && files.length > 0)
-                {
+                if (files != null && files.length > 0) {
                     for (File file : files) {
                         if (file.isDirectory()) {
                             foundPath = findDirFromPath(DirName, file.getAbsolutePath());
-                            if(!Objects.equals(foundPath, "")) break;
+                            if (!Objects.equals(foundPath, "")) break;
                         }
                     }
                 }
@@ -563,8 +531,7 @@ public class FileUtils {
         File file = new File(filePath);
         List<File> list = new ArrayList<>();
         File[] fileArray = null;
-        if (file.exists() && file.isDirectory())
-            fileArray = file.listFiles();
+        if (file.exists() && file.isDirectory()) fileArray = file.listFiles();
 
         if (fileArray != null) {
             for (File f : fileArray) {
@@ -582,8 +549,7 @@ public class FileUtils {
         File file = new File(filePath);
         List<File> list = new ArrayList<>();
         File[] fileArray = null;
-        if (file.exists() && file.isDirectory())
-            fileArray = file.listFiles();
+        if (file.exists() && file.isDirectory()) fileArray = file.listFiles();
 
         if (fileArray != null) {
             for (File f : fileArray) {
@@ -621,8 +587,7 @@ public class FileUtils {
 
     public static int getFileType(String path) {
         path = path.toLowerCase();
-        if (path.endsWith(".doc") || path.endsWith(".docx") || path.endsWith(".xls") || path.endsWith(".xlsx")
-                || path.endsWith(".ppt") || path.endsWith(".pptx")) {
+        if (path.endsWith(".doc") || path.endsWith(".docx") || path.endsWith(".xls") || path.endsWith(".xlsx") || path.endsWith(".ppt") || path.endsWith(".pptx")) {
             return TYPE_DOC;
         } else if (path.endsWith(".apk")) {
             return TYPE_APK;
@@ -638,8 +603,7 @@ public class FileUtils {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/";
         String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Downloads/";
 
-        if (existDirectory(downloadDir))
-            return downloadDir;
+        if (existDirectory(downloadDir)) return downloadDir;
 
         if (existDirectory(path)) {
             return path;
@@ -662,16 +626,13 @@ public class FileUtils {
             //e.printStackTrace();
             MMLog.e(TAG, e.toString());
         }
-        if (file != null)
-            return file.getAbsolutePath();
-        else
-            return null;
+        if (file != null) return file.getAbsolutePath();
+        else return null;
     }
 
     public static String getDirBaseExternalStorageDirectory(String myDirName) {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-        if (NotEmptyString(myDirName))
-            path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + myDirName;
+        if (NotEmptyString(myDirName)) path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + myDirName;
         if (existDirectory(path)) {
             return path;
         }
@@ -688,15 +649,12 @@ public class FileUtils {
             //e.printStackTrace();
             MMLog.e(TAG, e.toString());
         }
-        if (file != null)
-            return file.getAbsolutePath();
-        else
-            return null;
+        if (file != null) return file.getAbsolutePath();
+        else return null;
     }
 
     public static String getDiskCachePath(Context context) {
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                || !Environment.isExternalStorageRemovable()) {
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) || !Environment.isExternalStorageRemovable()) {
             return context.getExternalCacheDir().getAbsolutePath();
         } else {
             return context.getCacheDir().getAbsolutePath();
@@ -704,8 +662,7 @@ public class FileUtils {
     }
 
     public static boolean isSDCardAvailable() {
-        return Environment.MEDIA_MOUNTED.equals(Environment
-                .getExternalStorageState());
+        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
     public static String getExtNameFromPathName(String fileName) {
@@ -719,18 +676,14 @@ public class FileUtils {
     //合法的文件按名字必须带扩展名，否则被认为是目录
     public static String extractFileName(String filePathName) {
         if (EmptyString(filePathName)) return null;
-        if (filePathName.endsWith("\\"))
-            return null;
-        if (filePathName.endsWith("/"))
-            return null;
+        if (filePathName.endsWith("\\")) return null;
+        if (filePathName.endsWith("/")) return null;
         //filePathName = filePathName.replace("\\\\","\\");
         filePathName = filePathName.replace("//", "/");
         String[] split = filePathName.split("/");
         String fileName = split[split.length - 1];
-        if (getExtNameFromPathName(fileName) == null)
-            return null;//没有扩展名，则当作目录处理
-        else
-            return fileName;//合法的文件按名字必须带扩展名
+        if (getExtNameFromPathName(fileName) == null) return null;//没有扩展名，则当作目录处理
+        else return fileName;//合法的文件按名字必须带扩展名
     }
 
     public static String getFileNameFromPathName(String filePathName) {
@@ -848,8 +801,7 @@ public class FileUtils {
     public static List<LMusic> getMusics(Context context) {
         ArrayList<LMusic> musics = new ArrayList<>();
         ContentResolver mContentResolver = context.getContentResolver();
-        try (Cursor c = mContentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null,
-                MediaStore.Audio.Media.DEFAULT_SORT_ORDER)) {
+        try (Cursor c = mContentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER)) {
 
             while (c.moveToNext()) {
                 String path = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));// 路径
@@ -944,15 +896,12 @@ public class FileUtils {
         List<ImgFolderBean> folders = new ArrayList<ImgFolderBean>();
         ContentResolver mContentResolver = context.getContentResolver();
         // 扫描图片
-        try (Cursor c = mContentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
-                MediaStore.Images.Media.MIME_TYPE + "= ? or " + MediaStore.Images.Media.MIME_TYPE + "= ?",
-                new String[]{"image/jpeg", "image/png"}, MediaStore.Images.Media.DATE_MODIFIED)) {
+        try (Cursor c = mContentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, MediaStore.Images.Media.MIME_TYPE + "= ? or " + MediaStore.Images.Media.MIME_TYPE + "= ?", new String[]{"image/jpeg", "image/png"}, MediaStore.Images.Media.DATE_MODIFIED)) {
             List<String> mDirs = new ArrayList<String>();//用于保存已经添加过的文件夹目录
             while (c.moveToNext()) {
                 @SuppressLint("Range") String path = c.getString(c.getColumnIndex(MediaStore.Images.Media.DATA));// 路径
                 File parentFile = new File(path).getParentFile();
-                if (parentFile == null)
-                    continue;
+                if (parentFile == null) continue;
 
                 String dir = parentFile.getAbsolutePath();
                 if (mDirs.contains(dir))//如果已经添加过
@@ -962,8 +911,7 @@ public class FileUtils {
                 ImgFolderBean folderBean = new ImgFolderBean();
                 folderBean.setDir(dir);
                 folderBean.setFistImgPath(path);
-                if (parentFile.list() == null)
-                    continue;
+                if (parentFile.list() == null) continue;
                 int count = Objects.requireNonNull(parentFile.list(new FilenameFilter() {
                     @Override
                     public boolean accept(File dir, String filename) {
@@ -1080,12 +1028,10 @@ public class FileUtils {
     }
 
     public static String getRealFilePathFromUri(Context context, final Uri uri) {
-        if (null == uri)
-            return null;
+        if (null == uri) return null;
         final String scheme = uri.getScheme();
         String data = null;
-        if (scheme == null)
-            data = uri.getPath();
+        if (scheme == null) data = uri.getPath();
         else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
             data = uri.getPath();
         } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
@@ -1111,8 +1057,7 @@ public class FileUtils {
     }
 
     public static String getImageAbsolutePath(Context context, Uri imageUri) {
-        if (context == null || imageUri == null)
-            return null;
+        if (context == null || imageUri == null) return null;
         if (DocumentsContract.isDocumentUri(context, imageUri)) {
             if (isExternalStorageDocument(imageUri)) {
                 String docId = DocumentsContract.getDocumentId(imageUri);
@@ -1144,8 +1089,7 @@ public class FileUtils {
         } // MediaStore (and general)
         else if ("content".equalsIgnoreCase(imageUri.getScheme())) {
             // Return the remote address
-            if (isGooglePhotosUri(imageUri))
-                return imageUri.getLastPathSegment();
+            if (isGooglePhotosUri(imageUri)) return imageUri.getLastPathSegment();
             return getDataColumn(context, imageUri, null, null);
         }
         // File
@@ -1166,8 +1110,7 @@ public class FileUtils {
                 return cursor.getString(index);
             }
         } finally {
-            if (cursor != null)
-                cursor.close();
+            if (cursor != null) cursor.close();
         }
         return null;
     }
@@ -1209,10 +1152,8 @@ public class FileUtils {
         } catch (NoSuchAlgorithmException | IOException e) {
             //e.printStackTrace();
         }
-        if (bi != null)
-            return bi.toString(16);
-        else
-            return "";
+        if (bi != null) return bi.toString(16);
+        else return "";
     }
 
     public static String getFileMD5(File file) {

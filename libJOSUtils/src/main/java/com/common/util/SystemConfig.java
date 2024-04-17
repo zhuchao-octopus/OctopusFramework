@@ -100,7 +100,7 @@ public class SystemConfig {
     public final static String KEY_CANBOX_EQ = "key_canbox_eq";
     public final static String KEY_CANBOX_TOUCH_PANNEL = "key_canbox_touch_pannel";
 
-    public final static String PATH_WALLPAPER = "/mnt/parameter/wallpaper/";
+    public final static String PATH_WALLPAPER = "/mnt/paramter/wallpaper/";
     public final static String PATH_DEFAULT_WALLPAPER0 = "default_screen0.jpg";
     public final static String PATH_DEFAULT_WALLPAPER1 = "default_screen1.jpg";
     public final static String PATH_DEFAULT_CE_WALLPAPER = "default_ce_screen.jpg";

@@ -103,7 +103,7 @@ public class Camera2Renderer extends CameraGLRendererBase {
         try {
             String camList[] = manager.getCameraIdList();
             if(camList.length == 0) {
-                Log.e(LOGTAG, "Error: camera isn't detected.");
+                Log.e(LOGTAG, "openCamera Error: camera isn't detected.");
                 return;
             }
             if(id == CameraBridgeViewBase.CAMERA_ID_ANY) {

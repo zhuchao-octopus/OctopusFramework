@@ -34,6 +34,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.libOpenDetection.R;
 
 
@@ -46,7 +47,6 @@ public class FdActivity extends CameraActivity implements CvCameraViewListener2 
 
     private Mat mRgba;
     private Mat mGray;
-    private File mCascadeFile;
     private CascadeClassifier mJavaDetector;
     private DetectionBasedTracker mNativeDetector;
 
@@ -58,15 +58,13 @@ public class FdActivity extends CameraActivity implements CvCameraViewListener2 
     private CameraBridgeViewBase mOpenCvCameraView1;
     private CameraBridgeViewBase mOpenCvCameraView2;
 
-    private Button button1;
-
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     public FdActivity() {
         mDetectorName = new String[2];
         mDetectorName[JAVA_DETECTOR] = "Java";
         mDetectorName[NATIVE_DETECTOR] = "Native (tracking)";
-        Log.i(TAG, "Instantiated new " + this.getClass());
+        MMLog.i(TAG, "Instantiated new " + this.getClass());
     }
 
     /**
@@ -74,7 +72,7 @@ public class FdActivity extends CameraActivity implements CvCameraViewListener2 
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.i(TAG, "called onCreate");
+        MMLog.i(TAG, "called onCreate()");
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.face_detect_surface_view);
@@ -86,27 +84,25 @@ public class FdActivity extends CameraActivity implements CvCameraViewListener2 
         mOpenCvCameraView2 = (CameraBridgeViewBase) findViewById(R.id.fd_activity_surface_view2);
         mOpenCvCameraView2.setVisibility(CameraBridgeViewBase.VISIBLE);
         //mOpenCvCameraView2.setCvCameraViewListener(this);
-        button1 = (Button) findViewById(R.id.button1);
+        Button button1 = (Button) findViewById(R.id.button1);
 
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (mOpenCvCameraView1 != null)
-            mOpenCvCameraView1.disableView();
-        if (mOpenCvCameraView2 != null)
-            mOpenCvCameraView2.disableView();
+        if (mOpenCvCameraView1 != null) mOpenCvCameraView1.disableView();
+        if (mOpenCvCameraView2 != null) mOpenCvCameraView2.disableView();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         if (!OpenCVLoader.initDebug()) {
-            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+            MMLog.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
         } else {
-            Log.d(TAG, "OpenCV library found inside package. Using it!");
+            MMLog.d(TAG, "OpenCV library found inside package. Using it!");
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
     }
@@ -132,8 +128,8 @@ public class FdActivity extends CameraActivity implements CvCameraViewListener2 
     }
 
     public void onCameraViewStopped() {
-        mGray.release();
-        mRgba.release();
+        if (mGray != null) mGray.release();
+        if (mRgba != null) mRgba.release();
     }
 
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
@@ -151,19 +147,16 @@ public class FdActivity extends CameraActivity implements CvCameraViewListener2 
         MatOfRect faces = new MatOfRect();
 
         if (mDetectorType == JAVA_DETECTOR) {
-            if (mJavaDetector != null)
-                mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
-                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
+            if (mJavaDetector != null) mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                    new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else if (mDetectorType == NATIVE_DETECTOR) {
-            if (mNativeDetector != null)
-                mNativeDetector.detect(mGray, faces);
+            if (mNativeDetector != null) mNativeDetector.detect(mGray, faces);
         } else {
-            Log.e(TAG, "Detection method is not selected!");
+            MMLog.e(TAG, "Detection method is not selected!");
         }
 
         Rect[] facesArray = faces.toArray();
-        for (int i = 0; i < facesArray.length; i++)
-            Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 2);
+        for (Rect rect : facesArray) Imgproc.rectangle(mRgba, rect.tl(), rect.br(), FACE_RECT_COLOR, 2);
 
         return mRgba;
     }
@@ -178,61 +171,55 @@ public class FdActivity extends CameraActivity implements CvCameraViewListener2 
             mDetectorType = type;
 
             if (type == NATIVE_DETECTOR) {
-                Log.i(TAG, "Detection Based Tracker enabled");
+                MMLog.i(TAG, "Detection Based Tracker enabled");
                 mNativeDetector.start();
             } else {
-                Log.i(TAG, "Cascade detector enabled");
+                MMLog.i(TAG, "Cascade detector enabled");
                 mNativeDetector.stop();
             }
         }
     }
 
-    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+    private final BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
-            switch (status) {
-                case LoaderCallbackInterface.SUCCESS: {
-                    Log.i(TAG, "OpenCV loaded successfully");
-                    // Load native library after(!) OpenCV initialization
-                    System.loadLibrary("detection_based_tracker");
+            if (status == LoaderCallbackInterface.SUCCESS) {
+                MMLog.i(TAG, "OpenCV loaded successfully");
+                // Load native library after(!) OpenCV initialization
+                System.loadLibrary("detection_based_tracker");
 
-                    try {
-                        // load cascade file from application resources
-                        InputStream inputStream = getResources().openRawResource(R.raw.lbpcascade_frontalface);
-                        File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
-                        mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
-                        FileOutputStream fileOutputStream = new FileOutputStream(mCascadeFile);
+                try {
+                    // load cascade file from application resources
+                    InputStream inputStream = getResources().openRawResource(R.raw.lbpcascade_frontalface);
+                    File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
+                    File mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
+                    FileOutputStream fileOutputStream = new FileOutputStream(mCascadeFile);
 
-                        byte[] buffer = new byte[4096];
-                        int bytesRead;
-                        while ((bytesRead = inputStream.read(buffer)) != -1) {
-                            fileOutputStream.write(buffer, 0, bytesRead);
-                        }
-                        inputStream.close();
-                        fileOutputStream.close();
-
-                        mJavaDetector = new CascadeClassifier(mCascadeFile.getAbsolutePath());
-                        if (mJavaDetector.empty()) {
-                            Log.e(TAG, "Failed to load cascade classifier");
-                            mJavaDetector = null;
-                        } else
-                            Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
-
-                        mNativeDetector = new DetectionBasedTracker(mCascadeFile.getAbsolutePath(), 0);
-                        cascadeDir.delete();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.e(TAG, "Failed to load cascade. Exception thrown: " + e);
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        fileOutputStream.write(buffer, 0, bytesRead);
                     }
+                    inputStream.close();
+                    fileOutputStream.close();
 
-                    mOpenCvCameraView1.enableView();
-                    mOpenCvCameraView2.enableView();
+                    mJavaDetector = new CascadeClassifier(mCascadeFile.getAbsolutePath());
+                    if (mJavaDetector.empty()) {
+                        MMLog.e(TAG, "Failed to load cascade classifier");
+                        mJavaDetector = null;
+                    } else MMLog.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
+
+                    mNativeDetector = new DetectionBasedTracker(mCascadeFile.getAbsolutePath(), 0);
+                    cascadeDir.delete();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    MMLog.e(TAG, "Failed to load cascade. Exception thrown: " + e);
                 }
-                break;
-                default: {
-                    super.onManagerConnected(status);
-                }
-                break;
+
+                mOpenCvCameraView1.enableView();
+                mOpenCvCameraView2.enableView();
+            } else {
+                super.onManagerConnected(status);
             }
         }
     };

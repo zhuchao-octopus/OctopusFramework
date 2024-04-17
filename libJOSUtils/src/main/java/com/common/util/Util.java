@@ -1,5 +1,7 @@
 package com.common.util;
 
+import static com.common.util.MachineConfig.VENDOR_DIR;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -42,6 +44,8 @@ import android.os.Build;
 import android.os.storage.StorageManager;
 import android.util.Log;
 import android.view.KeyEvent;
+
+import com.zhuchao.android.fbase.MMLog;
 
 public class Util {
     private final static String tag = "Util";
@@ -283,13 +287,13 @@ public class Util {
 
     public static int setProperty(String key, String value) {
         try {
-            Log.d("Util", key + "=" + value);
+            MMLog.d("Util", key + "=" + value);
             Class<?> c = Class.forName("android.os.SystemProperties");
             Method set = c.getMethod("set", String.class, String.class);
             set.invoke(c, key, value);
             return 0;
         } catch (Exception e) {
-            Log.e(tag, "" + e);
+            MMLog.e(tag, "" + e);
         }
         return -1;
     }
@@ -300,7 +304,7 @@ public class Util {
             Method get = c.getMethod("get", String.class);
             return (String) get.invoke(c, key);
         } catch (Exception e) {
-            Log.e(tag, "" + e);
+            MMLog.e(tag, "" + e);
         }
         return null;
     }
@@ -1010,7 +1014,7 @@ public class Util {
         return false;
     }
 
-    private final static String LOG_CONFIG = MyCmd.VENDOR_DIR + "log.txt";
+    private final static String LOG_CONFIG = VENDOR_DIR + "log.txt";
 
     public static void logAccPowerOff(String log) {
         String s = getFileString(LOG_CONFIG);

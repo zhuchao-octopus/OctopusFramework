@@ -1,21 +1,20 @@
 package com.common.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.HashSet;
+import static com.zhuchao.android.TPlatform.systemPropertiesGet;
 
-import android.app.Activity;
-import android.app.ActivityThread;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
-import android.os.Build;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.os.SystemProperties;
+
+import com.zhuchao.android.SysProperties;
+import com.zhuchao.android.fbase.MMLog;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.HashSet;
+//import android.os.SystemProperties;
 
 public class AppConfig {
     private final static String TAG = "AppConfig";
@@ -39,7 +38,6 @@ public class AppConfig {
 
     public final static String PACKAGE_CAR_SERVICE = "com.my.out";
     public final static String PACKAGE_RADIO = "com.my.radio";
-
     public final static String PACKAGE_AUDIO = "com.my.audio";
     public final static String PACKAGE_EQ = "com.eqset";
     public final static String PACKAGE_LAUNCHER = "com.android.launcher";
@@ -188,9 +186,10 @@ public class AppConfig {
         String topPackageName = "";
         if (Util.isAndroidLaterP()) {
             try {
-                topPackageName = SystemProperties.get("ak.status.public_top_activity");
+                //topPackageName = SystemProperties.get("ak.status.public_top_activity");
+                topPackageName = systemPropertiesGet("ak.status.public_top_activity");
             } catch (Exception e) {
-                Log.e(TAG, "getTopActivity exctption: " + e);
+                MMLog.e(TAG, "getTopActivity Exception: " + e);
             }
         } else {
             FileReader fr = null;
@@ -201,11 +200,10 @@ public class AppConfig {
                 reader.close();
                 fr.close();
             } catch (Exception e) {
-                Log.e(TAG, "getTopActivity exctption: " + e);
+                MMLog.e(TAG, "getTopActivity exception: " + e);
             }
         }
         return topPackageName == null ? "" : topPackageName;
-
     }
 
     public static String getTopActivity(int displayId) {
@@ -213,16 +211,17 @@ public class AppConfig {
         String topPackageName = "";
         if (Util.isAndroidLaterP()) {
             try {
-                topPackageName = SystemProperties.get("ak.status.public_top_activity" + (displayId > 0 ? displayId : ""));
+                //topPackageName = SystemProperties.get("ak.status.public_top_activity" + (displayId > 0 ? displayId : ""));
+                topPackageName = SysProperties.get("ak.status.public_top_activity" + (displayId > 0 ? displayId : ""));
             } catch (Exception e) {
-                Log.e(TAG, "getTopActivity displayId exctption: " + e);
+                MMLog.e(TAG, "getTopActivity displayId:" + displayId + " Exception: " + e);
             }
         }
         return topPackageName == null ? "" : topPackageName;
 
     }
 
-    private static HashSet<String> mSetHideApp = new HashSet<String>();
+    private static final HashSet<String> mSetHideApp = new HashSet<String>();
     // these set for hide
     public static final String HIDE_APP_DVD = "DVD";
     public static final String HIDE_APP_AUX = "AUX";
@@ -562,8 +561,8 @@ public class AppConfig {
         int mBTType = 0;
         if (s != null) {
             try {
-                mBTType = Integer.valueOf(s);
-            } catch (Exception e) {
+                mBTType = Integer.parseInt(s);
+            } catch (Exception ignored) {
 
             }
         }
@@ -574,6 +573,17 @@ public class AppConfig {
         // mSetHideApp.add("com.my.dvd.DVDPlayer"); //default is hide dvd , if
         // not set anything
         // }
+
+        mSetHideApp.add("com.adobe.reader.AdobeReader");
+        mSetHideApp.add("net.easyconn.ui.Sv05MainActivity");
+        mSetHideApp.add("com.google.android.gm.ConversationListActivityGmail");
+        mSetHideApp.add("am.radiogr.SplashScreenActivity");
+        mSetHideApp.add("tunein.ui.activities.TuneInHomeActivity");
+        mSetHideApp.add("tunein.ui.activities.SplashScreenActivity");
+
+        mSetHideApp.add("com.canboxsetting.AVMActivity");
+
+        mSetHideApp.add("com.android.deskclock.DeskClock");
 
         updateHideAppConbox(appHide);
 
@@ -597,19 +607,20 @@ public class AppConfig {
             mSetHideApp.add("com.my.frontcamera.FrontCameraActivity4");
         }
 
-        // Log.d("updateHideAppConfig", mSetHideApp.size());
-        // for (String s : mSetHideApp) {
-        // Log.d("updateHideAppConfig", s);
-        // }
+        /// Log.d("updateHideAppConfig", mSetHideApp.size());
+        /// for (String s : mSetHideApp) {
+        /// Log.d("updateHideAppConfig", s);
+        /// }
+
         if (MachineConfig.getPropertyIntReadOnly(MachineConfig.KEY_SHOW_BACK_CAMERA) != 1) {
             mSetHideApp.add("com.my.frontcamera.BackCameraActivity");
         }
 
         addHiedAppForever();
 
-        //		for (String sss : mSetHideApp) {
-        //			Log.d(TAG, ":" + sss);
-        //		}
+        ///for (String sss : mSetHideApp) {
+        ///Log.d(TAG, ":" + sss);
+        ///}
     }
 
     public static String getCanboxSetting() {

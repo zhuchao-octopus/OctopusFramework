@@ -21,71 +21,67 @@ package com.common.util;
 // b[i][j]=min(b[i-1]][j] + 1,b[i][j-1] + 1,b[i-1][j-1]+(s1[i]==s2[i]?0:1));
 
 public class EditDistance {
-	/*
-	 * private String s; private String aim;
-	 */
+    /*
+     * private String s; private String aim;
+     */
 
-	/*
-	 * public EditDistance(){
-	 * 
-	 * }
-	 */
+    /*
+     * public EditDistance(){
+     *
+     * }
+     */
 
-	/*
-	 * public EditDistance(String s, String aim) { this.s = s; this.aim = aim; }
-	 */
+    /*
+     * public EditDistance(String s, String aim) { this.s = s; this.aim = aim; }
+     */
 
-	/*
-	 * public void setStrings(String s, String aim){ this.s = s; this.aim = aim;
-	 * }
-	 */
+    /*
+     * public void setStrings(String s, String aim){ this.s = s; this.aim = aim;
+     * }
+     */
 
-	public static double getSimilarity(String str1, String str2) {
-		if (str1 == null || str2 == null) {
-			return Double.MAX_VALUE;
-		}
-		int distance = calculteEditDistance(str1, str2);
-		int maxLen = str1.length() > str2.length() ? str1.length() : str2
-				.length();
-		double similarity = (double) (maxLen - distance) / maxLen;
-		return similarity;
-	}
+    public static double getSimilarity(String str1, String str2) {
+        if (str1 == null || str2 == null) {
+            return Double.MAX_VALUE;
+        }
+        int distance = calculteEditDistance(str1, str2);
+        int maxLen = str1.length() > str2.length() ? str1.length() : str2.length();
+        double similarity = (double) (maxLen - distance) / maxLen;
+        return similarity;
+    }
 
-	public static int calculteEditDistance(String str1, String str2) {
-		int sLength = str1.length() + 1;
-		int aLength = str2.length() + 1;
-		int[][] b = new int[aLength][sLength];
-		for (int i = 1; i < sLength; i++) {
-			b[0][i] = i;
-		}
-		for (int k = 1; k < aLength; k++) {
-			b[k][0] = k;
-		}
-		for (int j = 1; j < sLength; j++) {
-			for (int i = 1; i < aLength; i++) {
-				int x = b[i - 1][j] + 1;
-				int y = b[i][j - 1] + 1;
-				int z = b[i - 1][j - 1]
-						+ ((str1.charAt(j - 1) == str2.charAt(i - 1)) ? 0 : 1);
-				b[i][j] = min(x, y, z);
-			}
-		}
-		return b[aLength - 1][sLength - 1];
-	}
+    public static int calculteEditDistance(String str1, String str2) {
+        int sLength = str1.length() + 1;
+        int aLength = str2.length() + 1;
+        int[][] b = new int[aLength][sLength];
+        for (int i = 1; i < sLength; i++) {
+            b[0][i] = i;
+        }
+        for (int k = 1; k < aLength; k++) {
+            b[k][0] = k;
+        }
+        for (int j = 1; j < sLength; j++) {
+            for (int i = 1; i < aLength; i++) {
+                int x = b[i - 1][j] + 1;
+                int y = b[i][j - 1] + 1;
+                int z = b[i - 1][j - 1] + ((str1.charAt(j - 1) == str2.charAt(i - 1)) ? 0 : 1);
+                b[i][j] = min(x, y, z);
+            }
+        }
+        return b[aLength - 1][sLength - 1];
+    }
 
-	public static int min(int x, int y, int z) {
-		int temp = x;
-		if (temp > y)
-			temp = y;
-		if (temp > z)
-			temp = z;
-		return temp;
-	}
+    public static int min(int x, int y, int z) {
+        int temp = x;
+        if (temp > y) temp = y;
+        if (temp > z) temp = z;
+        return temp;
+    }
 
-	/*
-	 * public static void main(String[] args) { String str1 = "abc"; String str2
-	 * = "bbbdc"; EditDistance ed = new EditDistance(str1, str2); int distance =
-	 * ed.calculteEditDistance(); System.out.println("distance = " + distance);
-	 * }
-	 */
+    /*
+     * public static void main(String[] args) { String str1 = "abc"; String str2
+     * = "bbbdc"; EditDistance ed = new EditDistance(str1, str2); int distance =
+     * ed.calculteEditDistance(); System.out.println("distance = " + distance);
+     * }
+     */
 }

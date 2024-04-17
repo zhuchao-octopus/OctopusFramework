@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
 ext {
-    GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
+    //GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libJOSUtils'
     //PUBLISH_VERSION = '1.2'
@@ -72,10 +72,8 @@ android {
 }
 
 dependencies {
-    //implementation files('libs\\javalib.jar')
-    //implementation files('libs/javalib.jar')
-    implementation files('libs/framework.jar')
     implementation project(path: ':libFBaseUitls')
-
+    //implementation files('libs/framework.jar')
+    //implementation files('libs\\javalib.jar')
 }
 
