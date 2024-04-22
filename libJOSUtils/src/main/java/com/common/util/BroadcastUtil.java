@@ -1,13 +1,7 @@
 package com.common.util;
 
-import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.util.Log;
-import android.view.KeyEvent;
 
 public class BroadcastUtil {
 

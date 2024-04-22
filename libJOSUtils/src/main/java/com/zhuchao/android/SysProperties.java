@@ -80,7 +80,7 @@ public class SysProperties {
     }
 
     public static void addChangeCallback(Runnable callback) {
-        synchronized(sChangeCallbacks) {
+        synchronized (sChangeCallbacks) {
             if (sChangeCallbacks.size() == 0) {
                 native_add_change_callback();
             }
@@ -90,12 +90,12 @@ public class SysProperties {
     }
 
     static void callChangeCallbacks() {
-        synchronized(sChangeCallbacks) {
+        synchronized (sChangeCallbacks) {
             if (sChangeCallbacks.size() != 0) {
                 ArrayList<Runnable> callbacks = new ArrayList(sChangeCallbacks);
 
-                for(int i = 0; i < callbacks.size(); ++i) {
-                    ((Runnable)callbacks.get(i)).run();
+                for (int i = 0; i < callbacks.size(); ++i) {
+                    ((Runnable) callbacks.get(i)).run();
                 }
 
             }

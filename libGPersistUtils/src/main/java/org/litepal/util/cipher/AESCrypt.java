@@ -77,8 +77,7 @@ public final class AESCrypt {
      * @return Base64 encoded CipherText
      * @throws GeneralSecurityException if problems occur during encryption
      */
-    public static String encrypt(final String password, String message)
-            throws GeneralSecurityException {
+    public static String encrypt(final String password, String message) throws GeneralSecurityException {
 
         try {
             final SecretKeySpec key = generateKey(password);
@@ -92,8 +91,7 @@ public final class AESCrypt {
             log("Base64.NO_WRAP", encoded);
             return encoded;
         } catch (UnsupportedEncodingException e) {
-            if (DEBUG_LOG_ENABLED)
-                Log.e(TAG, "UnsupportedEncodingException ", e);
+            if (DEBUG_LOG_ENABLED) Log.e(TAG, "UnsupportedEncodingException ", e);
             throw new GeneralSecurityException(e);
         }
     }
@@ -108,8 +106,7 @@ public final class AESCrypt {
      * @return Encrypted cipher text (not encoded)
      * @throws GeneralSecurityException if something goes wrong during encryption
      */
-    public static byte[] encrypt(final SecretKeySpec key, final byte[] iv, final byte[] message)
-            throws GeneralSecurityException {
+    public static byte[] encrypt(final SecretKeySpec key, final byte[] iv, final byte[] message) throws GeneralSecurityException {
         final Cipher cipher = Cipher.getInstance(AES_MODE);
         IvParameterSpec ivSpec = new IvParameterSpec(iv);
         cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
@@ -129,8 +126,7 @@ public final class AESCrypt {
      * @return message in Plain text (String UTF-8)
      * @throws GeneralSecurityException if there's an issue decrypting
      */
-    public static String decrypt(final String password, String base64EncodedCipherText)
-            throws GeneralSecurityException {
+    public static String decrypt(final String password, String base64EncodedCipherText) throws GeneralSecurityException {
 
         try {
             final SecretKeySpec key = generateKey(password);
@@ -148,8 +144,7 @@ public final class AESCrypt {
 
             return message;
         } catch (UnsupportedEncodingException e) {
-            if (DEBUG_LOG_ENABLED)
-                Log.e(TAG, "UnsupportedEncodingException ", e);
+            if (DEBUG_LOG_ENABLED) Log.e(TAG, "UnsupportedEncodingException ", e);
 
             throw new GeneralSecurityException(e);
         }
@@ -165,8 +160,7 @@ public final class AESCrypt {
      * @return Decrypted message cipher text (not encoded)
      * @throws GeneralSecurityException if something goes wrong during encryption
      */
-    public static byte[] decrypt(final SecretKeySpec key, final byte[] iv, final byte[] decodedCipherText)
-            throws GeneralSecurityException {
+    public static byte[] decrypt(final SecretKeySpec key, final byte[] iv, final byte[] decodedCipherText) throws GeneralSecurityException {
         final Cipher cipher = Cipher.getInstance(AES_MODE);
         IvParameterSpec ivSpec = new IvParameterSpec(iv);
         cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
@@ -179,13 +173,11 @@ public final class AESCrypt {
 
 
     private static void log(String what, byte[] bytes) {
-        if (DEBUG_LOG_ENABLED)
-            Log.d(TAG, what + "[" + bytes.length + "] [" + bytesToHex(bytes) + "]");
+        if (DEBUG_LOG_ENABLED) Log.d(TAG, what + "[" + bytes.length + "] [" + bytesToHex(bytes) + "]");
     }
 
     private static void log(String what, String value) {
-        if (DEBUG_LOG_ENABLED)
-            Log.d(TAG, what + "[" + value.length() + "] [" + value + "]");
+        if (DEBUG_LOG_ENABLED) Log.d(TAG, what + "[" + value.length() + "] [" + value + "]");
     }
 
 
@@ -196,8 +188,7 @@ public final class AESCrypt {
      * @return
      */
     private static String bytesToHex(byte[] bytes) {
-        final char[] hexArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8',
-                '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        final char[] hexArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
         char[] hexChars = new char[bytes.length * 2];
         int v;
         for (int j = 0; j < bytes.length; j++) {

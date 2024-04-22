@@ -52,8 +52,7 @@ public class ImplementProxy implements HttpCallback {
         Map<Integer, String> map = new HashMap<Integer, String>();
         for (JsonElement user : jsonArray) {
             IdNameBean idNameBean = gson.fromJson(user, IdNameBean.class);
-            if (idNameBean.getStatus() == 1)
-                map.put(idNameBean.getId(), idNameBean.getName());
+            if (idNameBean.getStatus() == 1) map.put(idNameBean.getId(), idNameBean.getName());
         }
         return map;
     }
@@ -89,8 +88,7 @@ public class ImplementProxy implements HttpCallback {
         }
         StringBuilder hex = new StringBuilder(hash.length * 2);
         for (byte b : hash) {
-            if ((b & 0xFF) < 0x10)
-                hex.append("0");
+            if ((b & 0xFF) < 0x10) hex.append("0");
             hex.append(Integer.toHexString(b & 0xFF));
         }
 
@@ -140,8 +138,7 @@ public class ImplementProxy implements HttpCallback {
                 break;
         }
 
-        if (FSessionCallback != null)
-            FSessionCallback.OnSessionComplete((int) progress, result);
+        if (FSessionCallback != null) FSessionCallback.OnSessionComplete((int) progress, result, (int) progress);
     }
 }
 

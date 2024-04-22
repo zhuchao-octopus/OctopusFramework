@@ -65,10 +65,7 @@ public class HttpUtils {
             formBody.add(entry.getKey(), entry.getValue().toString());
         }
         RequestBody requestBody = formBody.build();
-        Request request = new Request.Builder()
-                .url(fromUrl)
-                .post(requestBody)
-                .build();
+        Request request = new Request.Builder().url(fromUrl).post(requestBody).build();
         HttpUtils.getInstance().getOkHttpClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -86,19 +83,14 @@ public class HttpUtils {
                 }
                 try {
                     String result = response.body().string();
-                    if (response.isSuccessful())
-                    {
+                    if (response.isSuccessful()) {
                         response.close();
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_SUCCESS, RequestCallBack);
-                    }
-                    else
-                    {
+                    } else {
                         response.close();
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_ERROR, RequestCallBack);
                     }
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                     response.close();
                     //MMLog.e(TAG, "request().onResponse " + e.getMessage());
                     ResultCallBack(tag, fromUrl, "", 0, 0, e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
@@ -134,19 +126,14 @@ public class HttpUtils {
                 }
                 try {
                     String result = response.body().string();
-                    if (response.isSuccessful())
-                    {
+                    if (response.isSuccessful()) {
                         response.close();
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_SUCCESS, RequestCallBack);
-                    }
-                    else
-                    {
+                    } else {
                         response.close();
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_ERROR, RequestCallBack);
                     }
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                     response.close();
                     //MMLog.e(TAG, "request().onResponse " + e.getMessage());
                     ResultCallBack(tag, fromUrl, "", 0, 0, e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
@@ -181,16 +168,12 @@ public class HttpUtils {
                         response.close();
                         //MMLog.log(TAG, "Request ok result " + result);
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_SUCCESS, RequestCallBack);
-                    }
-                    else
-                    {
+                    } else {
                         response.close();
                         //MMLog.log(TAG, "Request failed from " + fromUrl);
                         ResultCallBack(tag, fromUrl, "", 0, 0, result, DataID.TASK_STATUS_ERROR, RequestCallBack);
                     }
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                     response.close();
                     //MMLog.e(TAG, "request().onResponse " + e.getMessage());
                     ResultCallBack(tag, fromUrl, "", 0, 0, "fromUrl = " + fromUrl + "," + e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
@@ -202,67 +185,61 @@ public class HttpUtils {
 
     //asynchronous 异步方法
     public static void download(final String tag, final String fromUrl, final String toUrl, final HttpCallback RequestCallBack) {
-        HttpUtils.getInstance()
-                .getOkHttpClient()
-                .newCall(new Request.Builder()
-                        .tag(tag)
-                        .url(fromUrl)
-                        .build())
-                .enqueue(new Callback() {//asynchronous
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        //MMLog.e(TAG, e.toString());
-                        //MMLog.log(TAG, "download onFailure from " + fromUrl);
-                        ResultCallBack(tag, fromUrl, toUrl, 0, 0, e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
-                    }
+        HttpUtils.getInstance().getOkHttpClient().newCall(new Request.Builder().tag(tag).url(fromUrl).build()).enqueue(new Callback() {//asynchronous
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                //MMLog.e(TAG, e.toString());
+                //MMLog.log(TAG, "download onFailure from " + fromUrl);
+                ResultCallBack(tag, fromUrl, toUrl, 0, 0, e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
+            }
 
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        if (response == null) {
-                            ResultCallBack(tag, fromUrl, toUrl, 0, 0, "response is null", DataID.TASK_STATUS_ERROR, RequestCallBack);
-                            return;
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response == null) {
+                    ResultCallBack(tag, fromUrl, toUrl, 0, 0, "response is null", DataID.TASK_STATUS_ERROR, RequestCallBack);
+                    return;
+                }
+                try {
+                    if (response.isSuccessful()) {
+                        InputStream inputStream = null;
+                        FileOutputStream fileOutputStream = null;
+                        long rwOffset = FileUtils.getFileSize(toUrl);
+                        inputStream = response.body().byteStream();
+
+                        long contentLength = response.body().contentLength();
+                        long downloadLengthSum = rwOffset;
+                        if (rwOffset <= 0) {
+                            //完整下载模式，覆盖模式
+                            fileOutputStream = new FileOutputStream(toUrl, false);
+                            downloadLengthSum = 0;
+                        } else {
+                            inputStream.skip(rwOffset);//断点续传
+                            fileOutputStream = new FileOutputStream(toUrl, true);
+                            //MMLog.log(TAG, "continue downloading rw offset = " + rwOffset);
                         }
-                        try {
-                            if (response.isSuccessful()) {
-                                InputStream inputStream = null;
-                                FileOutputStream fileOutputStream = null;
-                                long rwOffset = FileUtils.getFileSize(toUrl);
-                                inputStream = response.body().byteStream();
+                        int len = 0;
+                        byte[] buffer = new byte[1024 * 10];
+                        while ((len = inputStream.read(buffer)) != -1) {
+                            fileOutputStream.write(buffer, 0, len);
+                            downloadLengthSum += len;
 
-                                long contentLength = response.body().contentLength();
-                                long downloadLengthSum = rwOffset;
-                                if (rwOffset <= 0) {
-                                    //完整下载模式，覆盖模式
-                                    fileOutputStream = new FileOutputStream(toUrl, false);
-                                    downloadLengthSum = 0;
-                                } else {
-                                    inputStream.skip(rwOffset);//断点续传
-                                    fileOutputStream = new FileOutputStream(toUrl, true);
-                                    //MMLog.log(TAG, "continue downloading rw offset = " + rwOffset);
-                                }
-                                int len = 0;
-                                byte[] buffer = new byte[1024 * 10];
-                                while ((len = inputStream.read(buffer)) != -1) {
-                                    fileOutputStream.write(buffer, 0, len);
-                                    downloadLengthSum += len;
-
-                                    ResultCallBack(tag, fromUrl, toUrl, downloadLengthSum, contentLength, "", DataID.TASK_STATUS_PROGRESSING, RequestCallBack);
-                                }
-                                fileOutputStream.flush();
-                                fileOutputStream.close();
-                                inputStream.close();
-                                ResultCallBack(tag, fromUrl, toUrl, downloadLengthSum, contentLength, "SUCCESS", DataID.TASK_STATUS_SUCCESS, RequestCallBack);
-                            } else {
-                                //MMLog.log(TAG, "download failed from " + fromUrl);
-                                ResultCallBack(tag, fromUrl, toUrl, 0, 0, "response is not Successful()", DataID.TASK_STATUS_ERROR, RequestCallBack);
-                            }
-                        } catch (Exception e) {
-                            //.e(TAG, "download() response " + e.getMessage());
-                            ResultCallBack(tag, fromUrl, toUrl, 0, 0, e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
+                            ResultCallBack(tag, fromUrl, toUrl, downloadLengthSum, contentLength, "", DataID.TASK_STATUS_PROGRESSING, RequestCallBack);
                         }
-                        response.close();
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                        inputStream.close();
+                        ResultCallBack(tag, fromUrl, toUrl, downloadLengthSum, contentLength, "SUCCESS", DataID.TASK_STATUS_SUCCESS, RequestCallBack);
+                    } else {
+                        //MMLog.log(TAG, "download failed from " + fromUrl);
+                        ResultCallBack(tag, fromUrl, toUrl, 0, 0, "response is not Successful()", DataID.TASK_STATUS_ERROR, RequestCallBack);
                     }
-                });//{//asynchronous
+                } catch (Exception e) {
+                    //.e(TAG, "download() response " + e.getMessage());
+                    ResultCallBack(tag, fromUrl, toUrl, 0, 0, e.toString(), DataID.TASK_STATUS_ERROR, RequestCallBack);
+                }
+                response.close();
+            }
+        });//{//asynchronous
     }
 
     public static void asynchronousGet(final String tag, final String fromUrl, final int requestId, final HttpCallback callBack) {
@@ -331,10 +308,8 @@ public class HttpUtils {
                 //throw new RuntimeException(" responseCode is not 200 ... ");
                 MMLog.log(TAG, "get failed from " + fromUrl);
             }
-            if (inputStream != null)
-                inputStream.close();
-            if (byteArrayOutputStream != null)
-                byteArrayOutputStream.close();
+            if (inputStream != null) inputStream.close();
+            if (byteArrayOutputStream != null) byteArrayOutputStream.close();
             httpURLConnection.disconnect();
         } catch (Exception e) {
             //MMLog.log(TAG, e.toString());
@@ -371,8 +346,7 @@ public class HttpUtils {
             while ((str = bufferedReader.readLine()) != null) {
                 result += str;
             }
-            if (printWriter != null)
-                printWriter.close();
+            if (printWriter != null) printWriter.close();
             bufferedReader.close();
         } catch (Exception e) {
             MMLog.e(TAG, "Post() " + e.getMessage());

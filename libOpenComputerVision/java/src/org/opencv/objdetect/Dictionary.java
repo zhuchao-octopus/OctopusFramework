@@ -6,25 +6,33 @@ package org.opencv.objdetect;
 import org.opencv.core.Mat;
 
 // C++: class Dictionary
+
 /**
  * Dictionary/Set of markers, it contains the inner codification
- *
+ * <p>
  * BytesList contains the marker codewords where:
  * - bytesList.rows is the dictionary size
  * - each marker is encoded using {@code nbytes = ceil(markerSize*markerSize/8.)}
  * - each row contains all 4 rotations of the marker, so its length is {@code 4*nbytes}
- *
+ * <p>
  * {@code bytesList.ptr(i)[k*nbytes + j]} is then the j-th byte of i-th marker, in its k-th rotation.
  */
 public class Dictionary {
 
     protected final long nativeObj;
-    protected Dictionary(long addr) { nativeObj = addr; }
 
-    public long getNativeObjAddr() { return nativeObj; }
+    protected Dictionary(long addr) {
+        nativeObj = addr;
+    }
+
+    public long getNativeObjAddr() {
+        return nativeObj;
+    }
 
     // internal usage only
-    public static Dictionary __fromPtr__(long addr) { return new Dictionary(addr); }
+    public static Dictionary __fromPtr__(long addr) {
+        return new Dictionary(addr);
+    }
 
     //
     // C++:   cv::aruco::Dictionary::Dictionary()
@@ -68,11 +76,12 @@ public class Dictionary {
 
     /**
      * Given a matrix of bits. Returns whether if marker is identified or not.
-     *
+     * <p>
      * It returns by reference the correct id (if any) and the correct rotation
-     * @param onlyBits automatically generated
-     * @param idx automatically generated
-     * @param rotation automatically generated
+     *
+     * @param onlyBits          automatically generated
+     * @param idx               automatically generated
+     * @param rotation          automatically generated
      * @param maxCorrectionRate automatically generated
      * @return automatically generated
      */
@@ -80,8 +89,8 @@ public class Dictionary {
         double[] idx_out = new double[1];
         double[] rotation_out = new double[1];
         boolean retVal = identify_0(nativeObj, onlyBits.nativeObj, idx_out, rotation_out, maxCorrectionRate);
-        if(idx!=null) idx[0] = (int)idx_out[0];
-        if(rotation!=null) rotation[0] = (int)rotation_out[0];
+        if (idx != null) idx[0] = (int) idx_out[0];
+        if (rotation != null) rotation[0] = (int) rotation_out[0];
         return retVal;
     }
 
@@ -92,10 +101,11 @@ public class Dictionary {
 
     /**
      * Returns the distance of the input bits to the specific id.
-     *
+     * <p>
      * If allRotations is true, the four posible bits rotation are considered
-     * @param bits automatically generated
-     * @param id automatically generated
+     *
+     * @param bits         automatically generated
+     * @param id           automatically generated
      * @param allRotations automatically generated
      * @return automatically generated
      */
@@ -105,10 +115,11 @@ public class Dictionary {
 
     /**
      * Returns the distance of the input bits to the specific id.
-     *
+     * <p>
      * If allRotations is true, the four posible bits rotation are considered
+     *
      * @param bits automatically generated
-     * @param id automatically generated
+     * @param id   automatically generated
      * @return automatically generated
      */
     public int getDistanceToId(Mat bits, int id) {
@@ -122,9 +133,10 @@ public class Dictionary {
 
     /**
      * Generate a canonical marker image
-     * @param id automatically generated
+     *
+     * @param id         automatically generated
      * @param sidePixels automatically generated
-     * @param _img automatically generated
+     * @param _img       automatically generated
      * @param borderBits automatically generated
      */
     public void generateImageMarker(int id, int sidePixels, Mat _img, int borderBits) {
@@ -133,9 +145,10 @@ public class Dictionary {
 
     /**
      * Generate a canonical marker image
-     * @param id automatically generated
+     *
+     * @param id         automatically generated
      * @param sidePixels automatically generated
-     * @param _img automatically generated
+     * @param _img       automatically generated
      */
     public void generateImageMarker(int id, int sidePixels, Mat _img) {
         generateImageMarker_1(nativeObj, id, sidePixels, _img.nativeObj);
@@ -148,6 +161,7 @@ public class Dictionary {
 
     /**
      * Transform matrix of bits to list of bytes in the 4 rotations
+     *
      * @param bits automatically generated
      * @return automatically generated
      */
@@ -162,7 +176,8 @@ public class Dictionary {
 
     /**
      * Transform list of bytes to matrix of bits
-     * @param byteList automatically generated
+     *
+     * @param byteList   automatically generated
      * @param markerSize automatically generated
      * @return automatically generated
      */
@@ -231,12 +246,12 @@ public class Dictionary {
     }
 
 
-
     // C++:   cv::aruco::Dictionary::Dictionary()
     private static native long Dictionary_0();
 
     // C++:   cv::aruco::Dictionary::Dictionary(Mat bytesList, int _markerSize, int maxcorr = 0)
     private static native long Dictionary_1(long bytesList_nativeObj, int _markerSize, int maxcorr);
+
     private static native long Dictionary_2(long bytesList_nativeObj, int _markerSize);
 
     // C++:  bool cv::aruco::Dictionary::identify(Mat onlyBits, int& idx, int& rotation, double maxCorrectionRate)
@@ -244,10 +259,12 @@ public class Dictionary {
 
     // C++:  int cv::aruco::Dictionary::getDistanceToId(Mat bits, int id, bool allRotations = true)
     private static native int getDistanceToId_0(long nativeObj, long bits_nativeObj, int id, boolean allRotations);
+
     private static native int getDistanceToId_1(long nativeObj, long bits_nativeObj, int id);
 
     // C++:  void cv::aruco::Dictionary::generateImageMarker(int id, int sidePixels, Mat& _img, int borderBits = 1)
     private static native void generateImageMarker_0(long nativeObj, int id, int sidePixels, long _img_nativeObj, int borderBits);
+
     private static native void generateImageMarker_1(long nativeObj, int id, int sidePixels, long _img_nativeObj);
 
     // C++: static Mat cv::aruco::Dictionary::getByteListFromBits(Mat bits)

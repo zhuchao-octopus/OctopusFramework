@@ -137,15 +137,10 @@ public class AssociationsModel {
         if (o instanceof AssociationsModel) {
             AssociationsModel association = (AssociationsModel) o;
             if (association.getTableName() != null && association.getAssociatedTableName() != null) {
-                if (association.getAssociationType() == associationType
-                        && association.getTableHoldsForeignKey().equals(tableHoldsForeignKey)) {
-                    if (association.getTableName().equals(tableName)
-                            && association.getAssociatedTableName().equals(associatedTableName)
-                            && association.getTableHoldsForeignKey().equals(tableHoldsForeignKey)) {
+                if (association.getAssociationType() == associationType && association.getTableHoldsForeignKey().equals(tableHoldsForeignKey)) {
+                    if (association.getTableName().equals(tableName) && association.getAssociatedTableName().equals(associatedTableName) && association.getTableHoldsForeignKey().equals(tableHoldsForeignKey)) {
                         return true;
-                    } else if (association.getTableName().equals(associatedTableName)
-                            && association.getAssociatedTableName().equals(tableName)
-                            && association.getTableHoldsForeignKey().equals(tableHoldsForeignKey)) {
+                    } else if (association.getTableName().equals(associatedTableName) && association.getAssociatedTableName().equals(tableName) && association.getTableHoldsForeignKey().equals(tableHoldsForeignKey)) {
                         return true;
                     }
                 }

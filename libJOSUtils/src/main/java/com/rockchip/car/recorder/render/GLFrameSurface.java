@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 import android.view.WindowManager;
 
 import com.rockchip.car.recorder.activity.AVideoUI;
-import com.rockchip.car.recorder.camera2.CameraHolder;
 import com.rockchip.car.recorder.service.BufferManager;
 import com.rockchip.car.recorder.utils.SLog;
 
@@ -76,17 +75,18 @@ public class GLFrameSurface extends GLSurfaceView {
             @Override
             public void notifyTextureUpdated(final byte[] data) {
                 // TODO Auto-generated method stub
-                if(data == null) {
+                if (data == null) {
                     SLog.d(TAG, "data is null");
                     return;
                 }
                 callbackRender.addCallBackBuffer(id, data);
             }
-        },this, callbackRender);
+        }, this, callbackRender);
         setRenderer(mRender);
         SLog.d(TAG, "surface setRenderMode RENDERMODE_WHEN_DIRTY");
     }
-    public  GLFrameRenderer getRender() {
+
+    public GLFrameRenderer getRender() {
         return mRender;
     }
 
@@ -95,29 +95,29 @@ public class GLFrameSurface extends GLSurfaceView {
             SLog.d(TAG, "Camera" + id + " setRenderSize w,h = " + width + "," + height);
             Point outSize = new Point();
             ((WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getSize(outSize);
-//            int pic_in_pic_w = (int) mContext.getResources().getDimension(R.dimen.pic_in_pic_width);
-//            int pic_in_pic_h = (int) mContext.getResources().getDimension(R.dimen.pic_in_pic_height);
-//            if (id == 0/*CameraHolder.instance().getBackCameraId()*/) {
-//                if (CameraSettings.isPreviewSwitched() && CameraHolder.instance().getNumberOfCameras() > 1
-//                        ) {
-//                    mRender.updateSurfaceSize(pic_in_pic_w, pic_in_pic_h);
-//                } else {
-//                    mRender.updateSurfaceSize(outSize.x, outSize.y);
-//                }
-//            } else if (id == 1/*CameraHolder.instance().getFrontCameraId()*/) {
-//                if (CameraSettings.isPreviewSwitched() && CameraHolder.instance().getNumberOfCameras() > 1
-//                       ) {
-                    mRender.updateSurfaceSize(outSize.x, outSize.y);
-//                } else {
-//                    mRender.updateSurfaceSize(pic_in_pic_w, pic_in_pic_h);
-//                }
-//            }
+            //            int pic_in_pic_w = (int) mContext.getResources().getDimension(R.dimen.pic_in_pic_width);
+            //            int pic_in_pic_h = (int) mContext.getResources().getDimension(R.dimen.pic_in_pic_height);
+            //            if (id == 0/*CameraHolder.instance().getBackCameraId()*/) {
+            //                if (CameraSettings.isPreviewSwitched() && CameraHolder.instance().getNumberOfCameras() > 1
+            //                        ) {
+            //                    mRender.updateSurfaceSize(pic_in_pic_w, pic_in_pic_h);
+            //                } else {
+            //                    mRender.updateSurfaceSize(outSize.x, outSize.y);
+            //                }
+            //            } else if (id == 1/*CameraHolder.instance().getFrontCameraId()*/) {
+            //                if (CameraSettings.isPreviewSwitched() && CameraHolder.instance().getNumberOfCameras() > 1
+            //                       ) {
+            mRender.updateSurfaceSize(outSize.x, outSize.y);
+            //                } else {
+            //                    mRender.updateSurfaceSize(pic_in_pic_w, pic_in_pic_h);
+            //                }
+            //            }
             mRender.update(width, height);
         }
     }
 
     public boolean requestRender(int id, byte[] data) {
-        if (mRender == null || data == null || data.length == 0)  return false;
+        if (mRender == null || data == null || data.length == 0) return false;
         mRender.requestRender();
         return true;
     }

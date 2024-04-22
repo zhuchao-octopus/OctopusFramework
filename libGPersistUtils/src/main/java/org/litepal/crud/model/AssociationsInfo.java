@@ -183,14 +183,11 @@ public class AssociationsInfo {
         if (o instanceof AssociationsInfo) {
             AssociationsInfo other = (AssociationsInfo) o;
             if (o != null && other != null) {
-                if (other.getAssociationType() == associationType
-                        && other.getClassHoldsForeignKey().equals(classHoldsForeignKey)) {
-                    if (other.getSelfClassName().equals(selfClassName)
-                            && other.getAssociatedClassName().equals(associatedClassName)) {
+                if (other.getAssociationType() == associationType && other.getClassHoldsForeignKey().equals(classHoldsForeignKey)) {
+                    if (other.getSelfClassName().equals(selfClassName) && other.getAssociatedClassName().equals(associatedClassName)) {
                         return true;
                     }
-                    if (other.getSelfClassName().equals(associatedClassName)
-                            && other.getAssociatedClassName().equals(selfClassName)) {
+                    if (other.getSelfClassName().equals(associatedClassName) && other.getAssociatedClassName().equals(selfClassName)) {
                         return true;
                     }
                 }

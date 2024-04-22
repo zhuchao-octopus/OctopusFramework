@@ -20,15 +20,15 @@ public class TGPIOFile extends TDevice implements TCourierEventListener, InvokeI
     private final GpioCallback mCallback = new GpioCallback() {
         @Override
         public boolean onGpioEdge(Gpio gpio) {
-            MMLog.i(TAG, "GPIO "+gpio.getName()+ " status changed");
-            if(mGpioEventListener != null)
+            MMLog.i(TAG, "GPIO " + gpio.getName() + " status changed");
+            if (mGpioEventListener != null)
                 mGpioEventListener.onCourierEvent(new EventCourier(getDevicePath(), DataID.DEVICE_EVENT_GPIO_STATUS, getGpioValue()));
             // Step 5. Return true to keep callback active.
             return true;
         }
     };
 
-    public TGPIOFile(String gpioPinName,TCourierEventListener courierEventListener) {
+    public TGPIOFile(String gpioPinName, TCourierEventListener courierEventListener) {
         PeripheralManager manager = PeripheralManager.getInstance();
         try {
             // Step 1. Create GPIO connection.
@@ -41,7 +41,7 @@ public class TGPIOFile extends TDevice implements TCourierEventListener, InvokeI
             mGpio.registerGpioCallback(mCallback);
 
             mGpioEventListener = courierEventListener;
-            setDevicePath(mGpio.getClass().getSimpleName()+mGpio.getName());
+            setDevicePath(mGpio.getClass().getSimpleName() + mGpio.getName());
             setDeviceType("GPIO");
         } catch (IOException e) {
             MMLog.e(TAG, "Error on PeripheralIO API " + e);
@@ -69,12 +69,13 @@ public class TGPIOFile extends TDevice implements TCourierEventListener, InvokeI
 
     public boolean getGpioValue() {
         try {
-          return mGpio.getValue();
+            return mGpio.getValue();
         } catch (IOException e) {
             MMLog.e(TAG, String.valueOf(e));
         }
         return false;
     }
+
     @Override
     public void closeDevice() {
         super.closeDevice();

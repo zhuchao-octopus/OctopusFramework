@@ -50,9 +50,11 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
     private final NetworkInformation networkInformation;
     private final TTask tTask_ParseExternalIP = new TTask("getInternetStatus");
     private final TTask tTask_NetworkCallback = new TTask("NetworkCallback ");
+
     public interface NetworkStatusListener {
         void onNetStatusChanged(NetworkInformation networkInformation);
     }
+
     @Override
     public void onAvailable(@NonNull Network network) {
         super.onAvailable(network);
@@ -86,10 +88,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         mContext = context;//.getApplicationContext()
         MainLooperHandler = new Handler(Looper.getMainLooper());
         networkInformation = new NetworkInformation();
-        NetworkRequest networkRequest = new NetworkRequest.Builder()
-                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .build();
+        NetworkRequest networkRequest = new NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR).addTransportType(NetworkCapabilities.TRANSPORT_WIFI).build();
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         connectivityManager.registerNetworkCallback(networkRequest, this);
 
@@ -347,10 +346,8 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         if (EmptyString(mac)) {
             mac = getEthernetMacFromInterface();
         }
-        if (EmptyString(mac))
-            return mac;
-        else
-            return mac.toUpperCase();
+        if (EmptyString(mac)) return mac;
+        else return mac.toUpperCase();
     }
 
     public static String getEthernetMacFromInterface() {
@@ -423,8 +420,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         if (wifiManager == null) return "";
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         @SuppressLint("HardwareIds") String wifiMac = wifiInfo.getMacAddress();
-        if (NotEmptyString(wifiMac))
-            return wifiMac.toUpperCase();
+        if (NotEmptyString(wifiMac)) return wifiMac.toUpperCase();
         return wifiInfo.getMacAddress();
     }
 
@@ -478,8 +474,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
             if (en == null) return "";
             while (en.hasMoreElements()) {
                 NetworkInterface networkInterface = en.nextElement();
-                for (Enumeration<InetAddress> enumeration = networkInterface
-                        .getInetAddresses(); enumeration.hasMoreElements(); ) {
+                for (Enumeration<InetAddress> enumeration = networkInterface.getInetAddresses(); enumeration.hasMoreElements(); ) {
                     InetAddress inetAddress = enumeration.nextElement();
                     if (!inetAddress.isLoopbackAddress()) {
                         String ip = inetAddress.getHostAddress();
@@ -516,10 +511,8 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
                                     networkInformation.lon = ipDataBean.getLon();
                                     networkInformation.lat = ipDataBean.getLat();
                                     networkInformation.zip = (ipDataBean.getZip() == null) ? null : ipDataBean.getZip().trim();
-                                    if (ipDataBean.getIsp() == null)
-                                        networkInformation.isp = null;
-                                    else
-                                        networkInformation.isp = ipDataBean.getIsp().trim();
+                                    if (ipDataBean.getIsp() == null) networkInformation.isp = null;
+                                    else networkInformation.isp = ipDataBean.getIsp().trim();
 
                                     MMLog.log(TAG, "External IP:" + networkInformation.internetIP);
                                 }
@@ -566,14 +559,9 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
 
     private static boolean MatcherIP4(String IP4) {
         if (EmptyString(IP4)) return false;
-        String regex = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\." +
-                "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." +
-                "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." +
-                "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
-        if (IP4.matches(regex))
-            return true;
-        else
-            return false;
+        String regex = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\." + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
+        if (IP4.matches(regex)) return true;
+        else return false;
     }
 
     public static String getCPUSerialCode() {

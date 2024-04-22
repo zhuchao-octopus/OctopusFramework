@@ -29,70 +29,79 @@
 #define CIFAR10_IMAGE_SIZE (3072 + 1) // 32X32X3+1
 #define CIFAR100_IMAGE_SIZE (3072 + 2) // 32X32X3+2
 
- // ÎÄ¼þÐÅÏ¢Í·½á¹¹Ìå
-typedef struct BITMAPFILEHEADER
-{
-    uint16_t bfType;        // 19778£¬±ØÐëÊÇBM×Ö·û´®£¬¶ÔÓ¦µÄÊ®Áù½øÖÆÎª0x4d42£¬Ê®½øÖÆÎª19778£¬·ñÔò²»ÊÇBMP¸ñÊ½ÎÄ¼þ
-    uint32_t bfSize;        // ÎÄ¼þ´óÐ¡£¬ÒÔ×Ö½ÚÎªµ¥Î»£¨2-5×Ö½Ú£©
-    uint16_t bfReserved1;   // ±£Áô£¬±ØÐëÉèÖÃÎª0£¨6-7×Ö½Ú£©
-    uint16_t bfReserved2;   // ±£Áô£¬±ØÐëÉèÖÃÎª0£¨8-9×Ö½Ú£©
-    uint32_t bfOffBits;     // ´ÓÎÄ¼þÍ·µ½ÏñËØÊý¾ÝµÄÆ«ÒÆ£¨10-13×Ö½Ú£©
+// ï¿½Ä¼ï¿½ï¿½ï¿½Ï¢Í·ï¿½á¹¹ï¿½ï¿½
+typedef struct BITMAPFILEHEADER {
+    uint16_t bfType;        // 19778ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½BMï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½Ê®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª0x4d42ï¿½ï¿½Ê®ï¿½ï¿½ï¿½ï¿½Îª19778ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½BMPï¿½ï¿½Ê½ï¿½Ä¼ï¿½
+    uint32_t bfSize;        // ï¿½Ä¼ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½Îªï¿½ï¿½Î»ï¿½ï¿½2-5ï¿½Ö½Ú£ï¿½
+    uint16_t bfReserved1;   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª0ï¿½ï¿½6-7ï¿½Ö½Ú£ï¿½
+    uint16_t bfReserved2;   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª0ï¿½ï¿½8-9ï¿½Ö½Ú£ï¿½
+    uint32_t bfOffBits;     // ï¿½ï¿½ï¿½Ä¼ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½Æ«ï¿½Æ£ï¿½10-13ï¿½Ö½Ú£ï¿½
 } TBITMAPFILEHEADER;
 
-// Í¼ÏñÐÅÏ¢Í·½á¹¹Ìå
-typedef struct BITMAPINFOHEADER
-{
-    uint32_t biSize;          // ´Ë½á¹¹ÌåµÄ´óÐ¡£¨14-17×Ö½Ú£©
-    uint32_t biWidth;         // Í¼ÏñµÄ¿í£¨18-21×Ö½Ú£©
-    uint32_t biHeight;        // Í¼ÏñµÄ¸ß£¨22-25×Ö½Ú£©
-    uint16_t biPlanes;        // ±íÊ¾BMPÍ¼Æ¬µÄÆ½ÃæÊô£¬ÏÔÈ»ÏÔÊ¾Æ÷Ö»ÓÐÒ»¸öÆ½Ãæ£¬ËùÒÔºãµÈÓÚ1£¨26-27×Ö½Ú£©
-    uint16_t biBitCount;      // Ò»ÏñËØËùÕ¼µÄÎ»Êý£¬Ò»°ãÎª24£¨28-29×Ö½Ú£©
-    uint32_t biCompression;   // ËµÃ÷Í¼ÏñÊý¾ÝÑ¹ËõµÄÀàÐÍ£¬0Îª²»Ñ¹Ëõ£¨30-33×Ö½Ú£©
-    uint32_t biSizeImage;     // ÏñËØÊý¾ÝËùÕ¼´óÐ¡£¬Õâ¸öÖµÓ¦¸ÃµÈÓÚÉÏÃæÎÄ¼þÍ·½á¹¹ÖÐbfSize - bfOffBits£¨34-37×Ö½Ú£©
-    uint32_t biXPelsPerMeter; // ËµÃ÷Ë®Æ½·Ö±æÂÊ£¬ÓÃÏñËØ/Ã×±íÊ¾¡£Ò»°ãÎª0£¨38-41×Ö½Ú£©
-    uint32_t biYPelsPerMeter; // ËµÃ÷´¹Ö±·Ö±æÂÊ£¬ÓÃÏñËØ/Ã×±íÊ¾¡£Ò»°ãÎª0£¨42-45×Ö½Ú£©
-    uint32_t biClrUsed;       // ËµÃ÷Î»Í¼Êµ¼ÊÊ¹ÓÃµÄ²ÊÉ«±íÖÐµÄÑÕÉ«Ë÷ÒýÊý£¨ÉèÎª0µÄ»°£¬ÔòËµÃ÷Ê¹ÓÃËùÓÐµ÷É«°åÏî£©£¨46-49×Ö½Ú£©
-    uint32_t biClrImportant;  // ËµÃ÷¶ÔÍ¼ÏñÏÔÊ¾ÓÐÖØÒªÓ°ÏìµÄÑÕÉ«Ë÷ÒýµÄÊýÄ¿£¬Èç¹ûÊÇ0£¬±íÊ¾¶¼ÖØÒª£¨50-53×Ö½Ú£©
+// Í¼ï¿½ï¿½ï¿½ï¿½Ï¢Í·ï¿½á¹¹ï¿½ï¿½
+typedef struct BITMAPINFOHEADER {
+    uint32_t biSize;          // ï¿½Ë½á¹¹ï¿½ï¿½Ä´ï¿½Ð¡ï¿½ï¿½14-17ï¿½Ö½Ú£ï¿½
+    uint32_t biWidth;         // Í¼ï¿½ï¿½Ä¿ï¿½18-21ï¿½Ö½Ú£ï¿½
+    uint32_t biHeight;        // Í¼ï¿½ï¿½Ä¸ß£ï¿½22-25ï¿½Ö½Ú£ï¿½
+    uint16_t biPlanes;        // ï¿½ï¿½Ê¾BMPÍ¼Æ¬ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½Ê¾ï¿½ï¿½Ö»ï¿½ï¿½Ò»ï¿½ï¿½Æ½ï¿½æ£¬ï¿½ï¿½ï¿½Ôºï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½26-27ï¿½Ö½Ú£ï¿½
+    uint16_t biBitCount;      // Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Îª24ï¿½ï¿½28-29ï¿½Ö½Ú£ï¿½
+    uint32_t biCompression;   // Ëµï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½0Îªï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½30-33ï¿½Ö½Ú£ï¿½
+    uint32_t biSizeImage;     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÓ¦ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Í·ï¿½á¹¹ï¿½ï¿½bfSize - bfOffBitsï¿½ï¿½34-37ï¿½Ö½Ú£ï¿½
+    uint32_t biXPelsPerMeter; // Ëµï¿½ï¿½Ë®Æ½ï¿½Ö±ï¿½ï¿½Ê£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½×±ï¿½Ê¾ï¿½ï¿½Ò»ï¿½ï¿½Îª0ï¿½ï¿½38-41ï¿½Ö½Ú£ï¿½
+    uint32_t biYPelsPerMeter; // Ëµï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ö±ï¿½ï¿½Ê£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½×±ï¿½Ê¾ï¿½ï¿½Ò»ï¿½ï¿½Îª0ï¿½ï¿½42-45ï¿½Ö½Ú£ï¿½
+    uint32_t biClrUsed;       // Ëµï¿½ï¿½Î»Í¼Êµï¿½ï¿½Ê¹ï¿½ÃµÄ²ï¿½É«ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª0ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½É«ï¿½ï¿½ï¿½î£©ï¿½ï¿½46-49ï¿½Ö½Ú£ï¿½
+    uint32_t biClrImportant;  // Ëµï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ÒªÓ°ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½50-53ï¿½Ö½Ú£ï¿½
 } TBITMAPINFOHEADER;
 
-// 24Î»Í¼ÏñËØÐÅÏ¢½á¹¹Ìå£¬¼´µ÷É«°å
+// 24Î»Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½á¹¹ï¿½å£¬ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½
 typedef struct PixelInfo {
-    uint8_t rgbBlue;    // ¸ÃÑÕÉ«µÄÀ¶É«·ÖÁ¿£¨Öµ·¶Î§Îª0-255£©
-    uint8_t rgbGreen;   // ¸ÃÑÕÉ«µÄÂÌÉ«·ÖÁ¿£¨Öµ·¶Î§Îª0-255£©
-    uint8_t rgbRed;     // ¸ÃÑÕÉ«µÄºìÉ«·ÖÁ¿£¨Öµ·¶Î§Îª0-255£©
-    uint8_t rgbReserved; // ±£Áô£¬±ØÐëÎª0
+    uint8_t rgbBlue;    // ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Î§Îª0-255ï¿½ï¿½
+    uint8_t rgbGreen;   // ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Î§Îª0-255ï¿½ï¿½
+    uint8_t rgbRed;     // ï¿½ï¿½ï¿½ï¿½É«ï¿½Äºï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Î§Îª0-255ï¿½ï¿½
+    uint8_t rgbReserved; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª0
 } TPixelInfo;
 
 
-typedef enum DataSetType
-{
-	Cifar10,
-	Cifar100
+typedef enum DataSetType {
+    Cifar10,
+    Cifar100
 } TDataSetType;
 
-typedef struct ANN_CNN_DataSet_Image
-{
-	TDataSetType data_type;
-	uint16_t labelIndex;
-	uint16_t detailIndex;
-	TPVolume volume;
+typedef struct ANN_CNN_DataSet_Image {
+    TDataSetType data_type;
+    uint16_t labelIndex;
+    uint16_t detailIndex;
+    TPVolume volume;
 } TDSImage, *TPPicture;
 
 char *GetDataSetName(uint16_t DsType);
 
 TPPicture Dataset_GetTestingPic(uint32_t TestingIndex, uint16_t DataSetType);
+
 TPPicture Dataset_GetTrainningPic(uint32_t TrainningIndex, uint16_t DataSetType);
+
 TPPicture Dataset_GetPic(FILE *PFile, uint32_t ImageIndex, uint16_t DataSetType);
+
 uint32_t CifarReadImage(const char *FileName, uint8_t *Buffer, uint32_t ImageIndex);
+
 uint32_t Cifar10ReadImage(FILE *PFile, uint8_t *Buffer, uint32_t ImageIndex);
-uint32_t Cifar100ReadImage(FILE* PFile, uint8_t* Buffer, uint32_t ImageIndex);
-uint32_t ReadFileToBuffer(const char* FileName, uint8_t* Buffer, uint32_t ReadSize, uint32_t OffSet);
+
+uint32_t Cifar100ReadImage(FILE *PFile, uint8_t *Buffer, uint32_t ImageIndex);
+
+uint32_t ReadFileToBuffer(const char *FileName, uint8_t *Buffer, uint32_t ReadSize, uint32_t OffSet);
+
 uint32_t ReadFileToBuffer2(FILE *PFile, uint8_t *Buffer, uint32_t ReadSize, uint32_t OffSet);
 
-void PrintBMP(char* BMPFileName);
-FILE* CreateBMP(char* BMPFileName, uint16_t biBitCount, uint16_t width, uint16_t height);
-TPVolume LoadBmpFileToVolume(const char* FileName);
-void SaveVolumeToBMP(TPVolume PVolume, bool_t Grads, uint16_t Depth, uint16_t biBitCount, const char* FileName);
+void PrintBMP(char *BMPFileName);
+
+FILE *CreateBMP(char *BMPFileName, uint16_t biBitCount, uint16_t width, uint16_t height);
+
+TPVolume LoadBmpFileToVolume(const char *FileName);
+
+void SaveVolumeToBMP(TPVolume PVolume, bool_t Grads, uint16_t Depth, uint16_t biBitCount, const char *FileName);
+
 void CloseTestingDataset();
+
 void CloseTrainningDataset();
+
 #endif /* _INC_ANN_CNN_H_ */

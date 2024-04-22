@@ -16,8 +16,7 @@ public class BufferCache {
     }
 
     public synchronized void push(byte[] bytes) {
-        if (bytes != null)
-            mBuffers.offer(bytes);
+        if (bytes != null) mBuffers.offer(bytes);
     }
 
     public synchronized byte[] pull() {

@@ -20,8 +20,8 @@ import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
 import java.io.File;
@@ -96,8 +96,7 @@ public class FaceDetector extends Detect {
             if (mJavaDetector.empty()) {
                 MMLog.e(TAG, "Failed to load cascade classifier");
                 mJavaDetector = null;
-            } else
-                MMLog.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
+            } else MMLog.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
 
             mNativeDetector = new DetectionBasedTracker(mCascadeFile.getAbsolutePath(), 0);
             cascadeDir.delete();
@@ -175,8 +174,7 @@ public class FaceDetector extends Detect {
                     new Size(mGray.width(), mGray.height()));
             */
         } else if (mDetectorType == NATIVE_DETECTOR) {
-            if (mNativeDetector != null)
-                mNativeDetector.detect(mGray, faces);
+            if (mNativeDetector != null) mNativeDetector.detect(mGray, faces);
         } else {
             Log.e(TAG, "Detection method is not selected!");
         }

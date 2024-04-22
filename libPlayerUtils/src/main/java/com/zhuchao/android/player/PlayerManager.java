@@ -67,12 +67,10 @@ public class PlayerManager {
     }
 
     public synchronized static void free() {
-        if (FOPlayer != null)
-            FOPlayer.free();
+        if (FOPlayer != null) FOPlayer.free();
         FOPlayer = null;
 
-        if (FMPlayer != null)
-            FMPlayer.free();
+        if (FMPlayer != null) FMPlayer.free();
         FMPlayer = null;
     }
 }

@@ -15,7 +15,6 @@ ext {
 android {
     namespace 'com.zhuchao.android.wms'
 
-
     compileSdk 34
     defaultConfig {
         minSdk 24

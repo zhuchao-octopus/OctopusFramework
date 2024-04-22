@@ -3,24 +3,25 @@
 //
 package org.opencv.dnn;
 
-import org.opencv.dnn.Net;
-import org.opencv.dnn.TextDetectionModel;
-import org.opencv.dnn.TextDetectionModel_EAST;
-
 // C++: class TextDetectionModel_EAST
+
 /**
  * This class represents high-level API for text detection DL networks compatible with EAST model.
- *
+ * <p>
  * Configurable parameters:
  * - (float) confThreshold - used to filter boxes by confidences, default: 0.5f
  * - (float) nmsThreshold - used in non maximum suppression, default: 0.0f
  */
 public class TextDetectionModel_EAST extends TextDetectionModel {
 
-    protected TextDetectionModel_EAST(long addr) { super(addr); }
+    protected TextDetectionModel_EAST(long addr) {
+        super(addr);
+    }
 
     // internal usage only
-    public static TextDetectionModel_EAST __fromPtr__(long addr) { return new TextDetectionModel_EAST(addr); }
+    public static TextDetectionModel_EAST __fromPtr__(long addr) {
+        return new TextDetectionModel_EAST(addr);
+    }
 
     //
     // C++:   cv::dnn::TextDetectionModel_EAST::TextDetectionModel_EAST(Net network)
@@ -28,6 +29,7 @@ public class TextDetectionModel_EAST extends TextDetectionModel {
 
     /**
      * Create text detection algorithm from deep learning network
+     *
      * @param network Net object
      */
     public TextDetectionModel_EAST(Net network) {
@@ -42,7 +44,8 @@ public class TextDetectionModel_EAST extends TextDetectionModel {
     /**
      * Create text detection model from network represented in one of the supported formats.
      * An order of {@code model} and {@code config} arguments does not matter.
-     * @param model Binary file contains trained weights.
+     *
+     * @param model  Binary file contains trained weights.
      * @param config Text file contains network configuration.
      */
     public TextDetectionModel_EAST(String model, String config) {
@@ -52,6 +55,7 @@ public class TextDetectionModel_EAST extends TextDetectionModel {
     /**
      * Create text detection model from network represented in one of the supported formats.
      * An order of {@code model} and {@code config} arguments does not matter.
+     *
      * @param model Binary file contains trained weights.
      */
     public TextDetectionModel_EAST(String model) {
@@ -65,6 +69,7 @@ public class TextDetectionModel_EAST extends TextDetectionModel {
 
     /**
      * Set the detection confidence threshold
+     *
      * @param confThreshold A threshold used to filter boxes by confidences
      * @return automatically generated
      */
@@ -79,6 +84,7 @@ public class TextDetectionModel_EAST extends TextDetectionModel {
 
     /**
      * Get the detection confidence threshold
+     *
      * @return automatically generated
      */
     public float getConfidenceThreshold() {
@@ -92,6 +98,7 @@ public class TextDetectionModel_EAST extends TextDetectionModel {
 
     /**
      * Set the detection NMS filter threshold
+     *
      * @param nmsThreshold A threshold used in non maximum suppression
      * @return automatically generated
      */
@@ -106,6 +113,7 @@ public class TextDetectionModel_EAST extends TextDetectionModel {
 
     /**
      * Get the detection confidence threshold
+     *
      * @return automatically generated
      */
     public float getNMSThreshold() {
@@ -119,12 +127,12 @@ public class TextDetectionModel_EAST extends TextDetectionModel {
     }
 
 
-
     // C++:   cv::dnn::TextDetectionModel_EAST::TextDetectionModel_EAST(Net network)
     private static native long TextDetectionModel_EAST_0(long network_nativeObj);
 
     // C++:   cv::dnn::TextDetectionModel_EAST::TextDetectionModel_EAST(string model, string config = "")
     private static native long TextDetectionModel_EAST_1(String model, String config);
+
     private static native long TextDetectionModel_EAST_2(String model);
 
     // C++:  TextDetectionModel_EAST cv::dnn::TextDetectionModel_EAST::setConfidenceThreshold(float confThreshold)

@@ -1,6 +1,5 @@
 package com.zhuchao.android.fbase;
 
-import static com.zhuchao.android.fbase.ByteUtils.BuffToHexStr;
 import static com.zhuchao.android.fbase.ByteUtils.BytesToHexStr;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 
@@ -706,6 +705,7 @@ public class FileUtils {
         return null;
     }
 
+    @SuppressLint("SimpleDateFormat")
     public static String getModifiedTime(File f) {
         Calendar cal = Calendar.getInstance();
         long time = f.lastModified();
@@ -716,7 +716,8 @@ public class FileUtils {
         return formatter.format(cal.getTime());
     }
 
-    public static Map<String, String> getUDiscName(Context c) {
+    @SuppressLint("PrivateApi")
+    public static Map<String, String> getUDiscName(Context context) {
         StorageManager mStorageManager;
         Map<String, String> USBDiscs = new HashMap<String, String>();
         Class<?> volumeInfoClazz = null;
@@ -730,7 +731,7 @@ public class FileUtils {
         String p1 = "";
         String p2 = "";
         try {
-            mStorageManager = (StorageManager) c.getSystemService(Activity.STORAGE_SERVICE);
+            mStorageManager = (StorageManager) context.getSystemService(Activity.STORAGE_SERVICE);
             volumeInfoClazz = Class.forName("android.os.storage.VolumeInfo");
             //getDescriptionComparator = volumeInfoClazz.getMethod("getDescriptionComparator");
             getBestVolumeDescription = StorageManager.class.getMethod("getBestVolumeDescription", volumeInfoClazz);
@@ -744,10 +745,12 @@ public class FileUtils {
             for (Object vol : volumes) {
                 if (vol != null && (boolean) isMountedReadable.invoke(vol) && (int) getType.invoke(vol) == 0) {
                     File path2 = (File) getPath.invoke(vol);
-                    p1 = (String) getBestVolumeDescription.invoke(mStorageManager, vol);
-                    p2 = path2.getPath();
-                    USBDiscs.put(p1, p2);
-                    //MLog.log(TAG, "getUDiscName DeviceName = " + p1 + ":" + p2);
+                    if (path2 != null) {
+                        p1 = (String) getBestVolumeDescription.invoke(mStorageManager, vol);
+                        p2 = path2.getPath();
+                        USBDiscs.put(p1, p2);
+                        //MLog.log(TAG, "getUDiscName DeviceName = " + p1 + ":" + p2);
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -756,7 +759,8 @@ public class FileUtils {
         return USBDiscs;
     }
 
-    public static String getUDiscPath(Context c) {
+    @SuppressLint("PrivateApi")
+    public static String getUDiscPath(Context context) {
         StorageManager mStorageManager;
         Map<String, String> USBDiscs = new HashMap<String, String>();
         Class<?> volumeInfoClazz = null;
@@ -769,7 +773,7 @@ public class FileUtils {
         List<?> volumes = null;
         String rpath = null;
         try {
-            mStorageManager = (StorageManager) c.getSystemService(Activity.STORAGE_SERVICE);
+            mStorageManager = (StorageManager) context.getSystemService(Activity.STORAGE_SERVICE);
             volumeInfoClazz = Class.forName("android.os.storage.VolumeInfo");
             //getDescriptionComparator = volumeInfoClazz.getMethod("getDescriptionComparator");
             getBestVolumeDescription = StorageManager.class.getMethod("getBestVolumeDescription", volumeInfoClazz);
@@ -934,7 +938,12 @@ public class FileUtils {
             File file = new File(filePath);
             int count = 0;//初始化 key值
             if (file.isFile() && file.exists()) {//文件存在
-                InputStreamReader isr = new InputStreamReader(new FileInputStream(file));
+                InputStreamReader isr = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    isr = new InputStreamReader(Files.newInputStream(file.toPath()));
+                }
+                if(isr == null) return newList;
+
                 BufferedReader br = new BufferedReader(isr);
                 String lineTxt = null;
                 while ((lineTxt = br.readLine()) != null) {
@@ -946,7 +955,6 @@ public class FileUtils {
                 }
                 isr.close();
                 br.close();
-            } else {
             }
         } catch (Exception e) {
             e.printStackTrace();

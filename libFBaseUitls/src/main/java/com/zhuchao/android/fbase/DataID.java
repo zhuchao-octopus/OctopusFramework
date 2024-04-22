@@ -47,7 +47,6 @@ public class DataID {
     public static final int MEDIA_TYPE_ID_AUDIO_VIDEO = MEDIA_TYPE_ID_VIDEO + 1;
     public static final int MEDIA_TYPE_ID_OTHERS = MEDIA_TYPE_ID_AUDIO_VIDEO + 1;
 
-
     public static final int PLAY_MANAGER_PLAY_ORDER0 = 200;
     public static final int PLAY_MANAGER_PLAY_ORDER1 = PLAY_MANAGER_PLAY_ORDER0 + 1;
     public static final int PLAY_MANAGER_PLAY_ORDER2 = PLAY_MANAGER_PLAY_ORDER1 + 1;
@@ -77,7 +76,7 @@ public class DataID {
     public static final int DEVICE_TYPE_UART = DEVICE_TYPE_FILE + 1;
 
     //Event bus id
-    public static final int DEVICE_EVENT = 10000;
+    public static final int DEVICE_EVENT = 1000;
     public static final int DEVICE_EVENT_OPEN = DEVICE_EVENT + 1;
     public static final int DEVICE_EVENT_READ = DEVICE_EVENT_OPEN + 1;
     public static final int DEVICE_EVENT_UART_READ = DEVICE_EVENT_READ + 1;
@@ -88,7 +87,7 @@ public class DataID {
     public static final int DEVICE_EVENT_CLOSE = DEVICE_EVENT_UART_WRITE + 1;
     public static final int DEVICE_EVENT_ERROR = DEVICE_EVENT_CLOSE + 1;
 
-    public static final int DEVICE_EVENT_I2C = 10100;
+    public static final int DEVICE_EVENT_I2C = 1100;
     public static final int DEVICE_EVENT_I2C_READ = DEVICE_EVENT_I2C + 1;
     public static final int DEVICE_EVENT_I2C_WRITE = DEVICE_EVENT_I2C_READ + 1;
     public static final int DEVICE_EVENT_GPIO_STATUS = DEVICE_EVENT_I2C_WRITE + 1;
@@ -105,8 +104,7 @@ public class DataID {
         }
         String str = builder.toString();
         if (str.length() <= 0) return null;
-        if (builder.toString().charAt(str.length() - 1) == '&')
-            str = str.substring(0, str.length() - 1);
+        if (builder.toString().charAt(str.length() - 1) == '&') str = str.substring(0, str.length() - 1);
         return str;
     }
 

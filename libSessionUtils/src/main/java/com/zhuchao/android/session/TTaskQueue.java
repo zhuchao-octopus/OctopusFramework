@@ -2,13 +2,13 @@ package com.zhuchao.android.session;
 
 import static java.lang.Thread.MAX_PRIORITY;
 
-import com.zhuchao.android.fbase.FileUtils;
-import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
-import com.zhuchao.android.fbase.eventinterface.TaskCallback;
 import com.zhuchao.android.fbase.DataID;
+import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.ObjectArray;
 import com.zhuchao.android.fbase.TTask;
+import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
+import com.zhuchao.android.fbase.eventinterface.TaskCallback;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -62,10 +62,8 @@ public class TTaskQueue {
     }
 
     public void setMaxConcurrencyCount(int concurrencyCount) {
-        if (concurrencyCount <= 0)
-            this.maxConcurrencyCount = 1;
-        else
-            this.maxConcurrencyCount = concurrencyCount;
+        if (concurrencyCount <= 0) this.maxConcurrencyCount = 1;
+        else this.maxConcurrencyCount = concurrencyCount;
     }
 
     public long getDelayedMillis() {
@@ -81,10 +79,8 @@ public class TTaskQueue {
     }
 
     public void setDotTaskMillis(long dotTaskMillis) {
-        if (dotTaskMillis <= 0)
-            this.dotTaskMillis = 500;
-        else
-            this.dotTaskMillis = dotTaskMillis;
+        if (dotTaskMillis <= 0) this.dotTaskMillis = 500;
+        else this.dotTaskMillis = dotTaskMillis;
     }
 
     public int getQueueCount() {
@@ -140,8 +136,7 @@ public class TTaskQueue {
                 if (doTTask.isFinishedStop()) {
                     MMLog.log(TAG, "Ttask isFinishedStop" + doTTask.getTaskName());
                 }
-                if (!doTTask.isWorking())
-                    doTTask.start();
+                if (!doTTask.isWorking()) doTTask.start();
                 /////////////////////////////////////////////////////////////////////////////////
                 /////////////////////////////////////////////////////////////////////////////////
                 while (workingObjectArray.size() >= maxConcurrencyCount) {//hold住线程，等待异步任务完成
@@ -157,8 +152,7 @@ public class TTaskQueue {
     };
 
     public void startWork() {
-        if (!userLinkedQueue.isEmpty())
-            startQueueTTask();
+        if (!userLinkedQueue.isEmpty()) startQueueTTask();
     }
 
     private void startQueueTTask() {
@@ -166,16 +160,14 @@ public class TTaskQueue {
             return;//列队已经在工作
         }
 
-        if (tTaskQueue.getInvokeInterface() == null)
-            tTaskQueue.invoke(invokeInterface);//指派队列管理接口
+        if (tTaskQueue.getInvokeInterface() == null) tTaskQueue.invoke(invokeInterface);//指派队列管理接口
 
         //队列工作完毕的回调
         tTaskQueue.callbackHandler(new TaskCallback() {
             @Override
             public void onEventTask(Object obj, int status) {
                 if (status == DataID.TASK_STATUS_FINISHED_STOP) {
-                    if (tTaskQueueCallback != null)
-                        tTaskQueueCallback.onEventTask(obj, status);
+                    if (tTaskQueueCallback != null) tTaskQueueCallback.onEventTask(obj, status);
                 }
             }
         });

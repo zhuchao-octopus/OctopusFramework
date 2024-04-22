@@ -3,7 +3,6 @@ package com.zhuchao.android.fbase;
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
-
 import com.zhuchao.android.fbase.eventinterface.FileFingerCallback;
 
 import java.io.File;
@@ -55,8 +54,7 @@ public class FilesFinder extends ObjectArray {
 
     public void addFile(String filePathName) {
         File file = new File(filePathName);
-        if (file.exists())
-            add(filePathName);
+        if (file.exists()) add(filePathName);
     }
 
     public String getFileName(int Index) {
@@ -72,15 +70,13 @@ public class FilesFinder extends ObjectArray {
         if (EmptyString(fileName)) return false;
         for (String ext : fileTypes) {
             if (ext.equals(".*")) return true;
-            if (fileName.endsWith(ext))
-                return true;
+            if (fileName.endsWith(ext)) return true;
         }
         return false;
     }
 
     public void fingerFromDir(String dirPath) {
-        if (dirList.contains(dirPath))
-            return;
+        if (dirList.contains(dirPath)) return;
         //lStart = System.currentTimeMillis();
         searchDir(dirPath);
     }
@@ -106,8 +102,7 @@ public class FilesFinder extends ObjectArray {
         File file = new File(FilePath);
         if (!file.exists()) return;
         File[] files = file.listFiles();
-        if (files != null)
-            getFileList(files);
+        if (files != null) getFileList(files);
     }
 
     private void getFileList(File[] files) {
@@ -122,10 +117,8 @@ public class FilesFinder extends ObjectArray {
                 //e.printStackTrace();
             }
             if (file.isDirectory()) {
-                if (bMultiThread)
-                    searchDir(file.getAbsolutePath());
-                else
-                    getFileList(file.listFiles());
+                if (bMultiThread) searchDir(file.getAbsolutePath());
+                else getFileList(file.listFiles());
             } else //if(file.isFile())
             {
                 totalSize = totalSize + file.length();

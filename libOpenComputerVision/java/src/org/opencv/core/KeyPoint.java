@@ -1,7 +1,5 @@
 package org.opencv.core;
 
-import org.opencv.core.Point;
-
 //javadoc: KeyPoint
 public class KeyPoint {
 
@@ -69,9 +67,7 @@ public class KeyPoint {
 
     @Override
     public String toString() {
-        return "KeyPoint [pt=" + pt + ", size=" + size + ", angle=" + angle
-                + ", response=" + response + ", octave=" + octave
-                + ", class_id=" + class_id + "]";
+        return "KeyPoint [pt=" + pt + ", size=" + size + ", angle=" + angle + ", response=" + response + ", octave=" + octave + ", class_id=" + class_id + "]";
     }
 
 }

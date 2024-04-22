@@ -5,32 +5,44 @@
     android:sharedUserMaxSdkVersion="32"
     tools:targetApi="tiramisu">
 
-    <permission  android:name="android.intent.action.ACTION_WATCHMAN_HELLO"
+    <permission
+        android:name="android.intent.action.ACTION_WATCHMAN_HELLO"
         tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="android.intent.action.GET_RUNNING_TASK"
+    <permission
+        android:name="android.intent.action.GET_RUNNING_TASK"
         tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="android.intent.action.WATCHMAN_SWITCH_ONOFF"
+    <permission
+        android:name="android.intent.action.WATCHMAN_SWITCH_ONOFF"
         tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="android.intent.action.UPDATE_NET_STATUS"
+    <permission
+        android:name="android.intent.action.UPDATE_NET_STATUS"
         tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="android.intent.action.ACTION_REQUEST_SHUTDOWN"
+    <permission
+        android:name="android.intent.action.ACTION_REQUEST_SHUTDOWN"
         tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="android.intent.action.ACTION_REQUEST_REBOOT"
+    <permission
+        android:name="android.intent.action.ACTION_REQUEST_REBOOT"
         tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="android.intent.action.SILENT_INSTALL_PACKAGE"
+    <permission
+        android:name="android.intent.action.SILENT_INSTALL_PACKAGE"
         tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="android.intent.action.SILENT_UNINSTALL_PACKAGE"
+    <permission
+        android:name="android.intent.action.SILENT_UNINSTALL_PACKAGE"
         tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="android.intent.action.SILENT_CLOSE_PACKAGE"
+    <permission
+        android:name="android.intent.action.SILENT_CLOSE_PACKAGE"
         tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="android.intent.action.SET_AUDIO_OUTPUT_CHANNEL"
+    <permission
+        android:name="android.intent.action.SET_AUDIO_OUTPUT_CHANNEL"
         tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="android.intent.action.SET_AUDIO_INPUT_CHANNEL"
+    <permission
+        android:name="android.intent.action.SET_AUDIO_INPUT_CHANNEL"
         tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="android.intent.action.SILENT_INSTALL_PACKAGE_COMPLETE"
+    <permission
+        android:name="android.intent.action.SILENT_INSTALL_PACKAGE_COMPLETE"
         tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="action.uniwin.shutdown" />
-    <permission  android:name="action.uniwin.reboot.receiver" />
+    <permission android:name="action.uniwin.shutdown" />
+    <permission android:name="action.uniwin.reboot.receiver" />
 
     <!--<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
@@ -46,15 +58,18 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="32"
         tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
     <uses-permission
@@ -119,7 +134,7 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
         </receiver>
@@ -128,8 +143,7 @@
             android:name="com.zhuchao.android.session.TWatchManService"
             android:enabled="true"
             android:exported="true"
-            android:persistent="true"
-            />
+            android:persistent="true" />
     </application>
 
 </manifest>

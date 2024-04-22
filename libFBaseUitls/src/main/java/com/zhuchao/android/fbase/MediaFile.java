@@ -15,6 +15,12 @@
  */
 package com.zhuchao.android.fbase;
 
+import static com.zhuchao.android.fbase.DataID.MEDIA_TYPE_ID_AUDIO;
+import static com.zhuchao.android.fbase.DataID.MEDIA_TYPE_ID_AUDIO_VIDEO;
+import static com.zhuchao.android.fbase.DataID.MEDIA_TYPE_ID_AllMEDIA;
+import static com.zhuchao.android.fbase.DataID.MEDIA_TYPE_ID_PIC;
+import static com.zhuchao.android.fbase.DataID.MEDIA_TYPE_ID_VIDEO;
+
 import android.content.Context;
 import android.content.Intent;
 
@@ -30,7 +36,7 @@ import java.util.Locale;
  * time   : 2016/8/9 22:38
  */
 public class MediaFile {
-
+    private static final String TAG = "MediaFile";
     // Audio file types
     public static final int FILE_TYPE_MP3 = 1;
     public static final int FILE_TYPE_M4A = 2;
@@ -111,10 +117,8 @@ public class MediaFile {
         }
     }
 
-    private static final HashMap<String, MediaFileType> sFileTypeMap
-            = new HashMap<String, MediaFileType>();
-    private static final HashMap<String, Integer> sMimeTypeMap
-            = new HashMap<String, Integer>();
+    private static final HashMap<String, MediaFileType> sFileTypeMap = new HashMap<String, MediaFileType>();
+    private static final HashMap<String, Integer> sMimeTypeMap = new HashMap<String, Integer>();
 
     static void addFileType(String extension, int fileType, String mimeType) {
         sFileTypeMap.put(extension, new MediaFileType(fileType, mimeType));
@@ -199,10 +203,7 @@ public class MediaFile {
      * @return if is audio type , return true;otherwise , return false
      */
     public static boolean isAudioFileType(int fileType) {
-        return ((fileType >= FIRST_AUDIO_FILE_TYPE &&
-                fileType <= LAST_AUDIO_FILE_TYPE) ||
-                (fileType >= FIRST_MIDI_FILE_TYPE &&
-                        fileType <= LAST_MIDI_FILE_TYPE));
+        return ((fileType >= FIRST_AUDIO_FILE_TYPE && fileType <= LAST_AUDIO_FILE_TYPE) || (fileType >= FIRST_MIDI_FILE_TYPE && fileType <= LAST_MIDI_FILE_TYPE));
     }
 
     /**
@@ -212,10 +213,7 @@ public class MediaFile {
      * @return if is video type , return true ; otherwise , return false
      */
     public static boolean isVideoFileType(int fileType) {
-        return (fileType >= FIRST_VIDEO_FILE_TYPE &&
-                fileType <= LAST_VIDEO_FILE_TYPE)
-                || (fileType >= FIRST_VIDEO_FILE_TYPE2 &&
-                fileType <= LAST_VIDEO_FILE_TYPE2);
+        return (fileType >= FIRST_VIDEO_FILE_TYPE && fileType <= LAST_VIDEO_FILE_TYPE) || (fileType >= FIRST_VIDEO_FILE_TYPE2 && fileType <= LAST_VIDEO_FILE_TYPE2);
     }
 
     /**
@@ -225,8 +223,7 @@ public class MediaFile {
      * @return if is image type , return true ; otherwise , return false ;
      */
     public static boolean isImageFileType(int fileType) {
-        return (fileType >= FIRST_IMAGE_FILE_TYPE &&
-                fileType <= LAST_IMAGE_FILE_TYPE);
+        return (fileType >= FIRST_IMAGE_FILE_TYPE && fileType <= LAST_IMAGE_FILE_TYPE);
     }
 
     /**
@@ -236,8 +233,7 @@ public class MediaFile {
      * @return if is playlist type , return true ; otherwise , return false ;
      */
     public static boolean isPlayListFileType(int fileType) {
-        return (fileType >= FIRST_PLAYLIST_FILE_TYPE &&
-                fileType <= LAST_PLAYLIST_FILE_TYPE);
+        return (fileType >= FIRST_PLAYLIST_FILE_TYPE && fileType <= LAST_PLAYLIST_FILE_TYPE);
     }
 
     /**
@@ -247,8 +243,7 @@ public class MediaFile {
      * @return if is drm type , return true ; otherwise , return false ;
      */
     public static boolean isDrmFileType(int fileType) {
-        return (fileType >= FIRST_DRM_FILE_TYPE &&
-                fileType <= LAST_DRM_FILE_TYPE);
+        return (fileType >= FIRST_DRM_FILE_TYPE && fileType <= LAST_DRM_FILE_TYPE);
     }
 
     /**
@@ -259,8 +254,7 @@ public class MediaFile {
      */
     public static MediaFileType getFileType(String path) {
         int lastDot = path.lastIndexOf('.');
-        if (lastDot < 0)
-            return null;
+        if (lastDot < 0) return null;
         return sFileTypeMap.get(path.substring(lastDot + 1).toUpperCase(Locale.ROOT));
     }
 
@@ -272,10 +266,7 @@ public class MediaFile {
      */
     public static boolean isMimeTypeMedia(String mimeType) {
         int fileType = getFileTypeForMimeType(mimeType);
-        return isAudioFileType(fileType) ||
-                isVideoFileType(fileType) ||
-                isImageFileType(fileType) ||
-                isPlayListFileType(fileType);
+        return isAudioFileType(fileType) || isVideoFileType(fileType) || isImageFileType(fileType) || isPlayListFileType(fileType);
     }
 
     /**
@@ -325,34 +316,26 @@ public class MediaFile {
 
     public static boolean isImageFile(String fileName) {
         MediaFile.MediaFileType ft = MediaFile.getFileType(fileName);
-        if (ft == null)
-            return false;
-        else
-            return isImageFileType(ft.fileType);
+        if (ft == null) return false;
+        else return isImageFileType(ft.fileType);
     }
 
     public static boolean isVideoFile(String fileName) {
         MediaFile.MediaFileType ft = MediaFile.getFileType(fileName);
-        if (ft == null)
-            return false;
-        else
-            return isVideoFileType(ft.fileType);
+        if (ft == null) return false;
+        else return isVideoFileType(ft.fileType);
     }
 
     public static boolean isAudioFile(String fileName) {
         MediaFile.MediaFileType ft = MediaFile.getFileType(fileName);
-        if (ft == null)
-            return false;
-        else
-            return isAudioFileType(ft.fileType);
+        if (ft == null) return false;
+        else return isAudioFileType(ft.fileType);
     }
 
     public static boolean isMediaFile(String fileName) {
         MediaFile.MediaFileType ft = MediaFile.getFileType(fileName);
-        if (ft == null)
-            return false;
-        else
-            return isMimeTypeMedia(ft.mimeType);
+        if (ft == null) return false;
+        else return isMimeTypeMedia(ft.mimeType);
     }
 
     public static List<String> getMediaFiles(String FilePath, int fileType) {
@@ -371,17 +354,18 @@ public class MediaFile {
                 getMediaFileName(file.listFiles(), FileList, fileType);
             } else {
                 filePathName = file.getPath();// +"  "+ file.getName() ;
+                //MMLog.d(TAG,"filePathName="+filePathName);
                 MediaFile.MediaFileType mm = MediaFile.getFileType(filePathName);
                 if (mm != null) {
-                    if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == 100)) {
+                    if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == MEDIA_TYPE_ID_AllMEDIA)) {
                         FileList.add(filePathName);//所有的媒体文件
-                    } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == 101)) {
+                    } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == MEDIA_TYPE_ID_PIC)) {
                         FileList.add(filePathName);
-                    } else if (MediaFile.isAudioFileType(mm.fileType) && (fileType == 102)) {
+                    } else if (MediaFile.isAudioFileType(mm.fileType) && (fileType == MEDIA_TYPE_ID_AUDIO)) {
                         FileList.add(filePathName);
-                    } else if ((MediaFile.isVideoFileType(mm.fileType) || isPlayListFileType(mm.fileType)) && (fileType == 103)) {
+                    } else if (MediaFile.isAudioFileType(mm.fileType) && (fileType == MEDIA_TYPE_ID_VIDEO)) {
                         FileList.add(filePathName);
-                    } else if ((MediaFile.isVideoFileType(mm.fileType) || MediaFile.isAudioFileType(mm.fileType)) && (fileType == 104)) {
+                    } else if ((MediaFile.isVideoFileType(mm.fileType) || MediaFile.isAudioFileType(mm.fileType)) && (fileType == MEDIA_TYPE_ID_AUDIO_VIDEO)) {
                         FileList.add(filePathName);
                     } else if (fileType == 99) {
                         FileList.add(filePathName);//所有的文件
@@ -409,22 +393,19 @@ public class MediaFile {
                     filePathName = file.getPath();// +"  "+ file.getName() ;
                     MediaFile.MediaFileType mm = MediaFile.getFileType(filePathName);
                     if (mm != null) {
-                        if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == 100)) {
+                        if (MediaFile.isMimeTypeMedia(mm.mimeType) && (fileType == MEDIA_TYPE_ID_AllMEDIA)) {
                             //MLog.log("getMediaFileName--->",fileName);//所有的媒体文件
                             FileList.add(filePathName);
                             sendProgressMessage(context, filePathName);
-                        } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == 101)) {
+                        } else if (MediaFile.isImageFileType(mm.fileType) && (fileType == MEDIA_TYPE_ID_PIC)) {
                             //MLog.log("getMediaFileName--->",fileName);
                             FileList.add(filePathName);
                             sendProgressMessage(context, filePathName);
-                        } else if (MediaFile.isAudioFileType(mm.fileType) && (fileType == 102)) {
+                        } else if (MediaFile.isAudioFileType(mm.fileType) && (fileType == MEDIA_TYPE_ID_AUDIO)) {
                             //MLog.log("getMediaFileName--->",fileName);
                             FileList.add(filePathName);
                             sendProgressMessage(context, filePathName);
-                        } else if ((MediaFile.isVideoFileType(mm.fileType) || isPlayListFileType(mm.fileType)) && (fileType == 103)) {
-                            FileList.add(filePathName);
-                            sendProgressMessage(context, filePathName);
-                        } else if ((MediaFile.isVideoFileType(mm.fileType) || MediaFile.isAudioFileType(mm.fileType)) && (fileType == 104)) {
+                        } else if ((MediaFile.isVideoFileType(mm.fileType) || MediaFile.isAudioFileType(mm.fileType)) && (fileType == MEDIA_TYPE_ID_AUDIO_VIDEO)) {
                             //MLog.log("getMediaFileName--->",filePathName);
                             FileList.add(filePathName);
                             sendProgressMessage(context, filePathName);

@@ -3,7 +3,6 @@ package com.zhuchao.android.fbase;
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
-
 import com.zhuchao.android.fbase.eventinterface.FileFingerCallback;
 
 import java.io.File;
@@ -64,8 +63,7 @@ public class FilesFinger extends ObjectList {
 
     public void addFile(String filePathName) {
         File file = new File(filePathName);
-        if (file.exists())
-            addItem(filePathName, file);
+        if (file.exists()) addItem(filePathName, file);
     }
 
     public void addFile(String fileKey, File file) {
@@ -78,15 +76,13 @@ public class FilesFinger extends ObjectList {
 
     public File getFile(String fileKey) {
         Object obj = getObject(fileKey);
-        if (obj != null)
-            return (File) obj;
+        if (obj != null) return (File) obj;
         return null;
     }
 
     public File getFile(int Index) {
         Object obj = getObject(Index);
-        if (obj != null)
-            return (File) obj;
+        if (obj != null) return (File) obj;
         return null;
     }
 
@@ -144,15 +140,13 @@ public class FilesFinger extends ObjectList {
 
         for (String ext : fileTypes) {
             if (ext.equals(".*")) return true;
-            if (fileName.endsWith(ext))
-                return true;
+            if (fileName.endsWith(ext)) return true;
         }
         return false;
     }
 
     public void fingerFromDir(String dirPath) {
-        if (dirList.contains(dirPath))
-            return;
+        if (dirList.contains(dirPath)) return;
         //lStart = System.currentTimeMillis();
         searchDir(dirPath);
     }
@@ -180,8 +174,7 @@ public class FilesFinger extends ObjectList {
         File file = new File(FilePath);
         if (!file.exists()) return;
         File[] files = file.listFiles();
-        if (files != null)
-            getFileList(files);
+        if (files != null) getFileList(files);
     }
 
     private void getFileList(File[] files) {
@@ -197,10 +190,8 @@ public class FilesFinger extends ObjectList {
                 //e.printStackTrace();
             }
             if (file.isDirectory()) {
-                if (bMultiThread)
-                    searchDir(file.getAbsolutePath());
-                else
-                    getFileList(Objects.requireNonNull(file.listFiles()));
+                if (bMultiThread) searchDir(file.getAbsolutePath());
+                else getFileList(Objects.requireNonNull(file.listFiles()));
             } else //if(file.isFile())
             {
                 totalSize = totalSize + file.length();

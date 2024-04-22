@@ -303,8 +303,7 @@ public class FluentQuery {
             List<T> list = find(modelClass, isEager);
             mLimit = limitTemp; // Don't forget to change it back after finding operation.
             if (list.size() > 0) {
-                if (list.size() != 1)
-                    throw new LitePalSupportException("Found multiple records while only one record should be found at most.");
+                if (list.size() != 1) throw new LitePalSupportException("Found multiple records while only one record should be found at most.");
                 return list.get(0);
             }
             return null;

@@ -3,7 +3,6 @@ package com.zhuchao.android.fbase;
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.MD5;
 
-
 import com.zhuchao.android.fbase.eventinterface.TaskCallback;
 
 import java.util.Collection;
@@ -69,8 +68,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
     }
 
     public TTask getTaskByName(String tName) {
-        if (EmptyString(tName))
-            return null;
+        if (EmptyString(tName)) return null;
         return (TTask) getObject(MD5(tName));
     }
 
@@ -80,8 +78,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
     }
 
     public <T> T getObjectByName(String tName) {
-        if (EmptyString(tName))
-            return null;
+        if (EmptyString(tName)) return null;
         return (T) getObject(MD5(tName));
     }
 
@@ -190,17 +187,15 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
                     MMLog.log(TAG, "free anonymous task name = " + this.getTaskName());
                     freeFree();//释放线程资源
                     deleteTask(this);
-                } else if(this.isAutoFreeRemove())
-                {
+                } else if (this.isAutoFreeRemove()) {
                     MMLog.log(TAG, "auto Free " + this.getTaskName());
                     freeFree();//释放线程资源，释放资源导致前端无法获得异步任务的数据
                     deleteTask(this);
-                } else if (this.isAutoRemove())
-                {
+                } else if (this.isAutoRemove()) {
                     MMLog.log(TAG, "auto remove " + this.getTaskName());
                     deleteTask(this);
                 }
-                MMLog.log(TAG, "pTask finish tName = " + tName + " invoked:" + invokedCount+" pool:"+getTaskCounter()+"/"+getCount());
+                MMLog.log(TAG, "pTask finish tName = " + tName + " invoked:" + invokedCount + " pool:" + getTaskCounter() + "/" + getCount());
             } else {
                 MMLog.log(TAG, "not found PTask object in pool,break tag = " + tTag);
             }

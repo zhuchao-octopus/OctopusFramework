@@ -241,8 +241,7 @@ public abstract class AssociationUpdater extends Creator {
                 removeRelations.add(foreignKeyColumn);
             }
         }
-        LitePalLog.d(TAG, "findForeignKeyToRemove >> " + tableModel.getTableName() + " "
-                + removeRelations);
+        LitePalLog.d(TAG, "findForeignKeyToRemove >> " + tableModel.getTableName() + " " + removeRelations);
         return removeRelations;
     }
 
@@ -261,9 +260,7 @@ public abstract class AssociationUpdater extends Creator {
                 boolean dropIntermediateTable = true;
                 for (AssociationsModel associationModel : mAssociationModels) {
                     if (associationModel.getAssociationType() == Const.Model.MANY_TO_MANY) {
-                        String intermediateTableName = DBUtility.getIntermediateTableName(
-                                associationModel.getTableName(),
-                                associationModel.getAssociatedTableName());
+                        String intermediateTableName = DBUtility.getIntermediateTableName(associationModel.getTableName(), associationModel.getAssociatedTableName());
                         if (tableName.equalsIgnoreCase(intermediateTableName)) {
                             dropIntermediateTable = false;
                         }
@@ -315,8 +312,7 @@ public abstract class AssociationUpdater extends Creator {
      */
     protected String generateAlterToTempTableSQL(String tableName) {
         StringBuilder sql = new StringBuilder();
-        sql.append("alter table ").append(tableName).append(" rename to ")
-                .append(getTempTableName(tableName));
+        sql.append("alter table ").append(tableName).append(" rename to ").append(getTempTableName(tableName));
         return sql.toString();
     }
 
@@ -440,8 +436,7 @@ public abstract class AssociationUpdater extends Creator {
                         if (isRelationCorrect(associationModel, selfTableName, associatedTableName)) {
                             return false;
                         }
-                    } else if (associationModel.getAssociatedTableName().equalsIgnoreCase(
-                            selfTableName)) {
+                    } else if (associationModel.getAssociatedTableName().equalsIgnoreCase(selfTableName)) {
                         if (isRelationCorrect(associationModel, associatedTableName, selfTableName)) {
                             return false;
                         }
@@ -467,10 +462,8 @@ public abstract class AssociationUpdater extends Creator {
      *                         model.
      * @return Return true if the description is true, otherwise return false.
      */
-    private boolean isRelationCorrect(AssociationsModel associationModel, String tableName1,
-                                      String tableName2) {
-        return associationModel.getTableName().equalsIgnoreCase(tableName1)
-                && associationModel.getAssociatedTableName().equalsIgnoreCase(tableName2);
+    private boolean isRelationCorrect(AssociationsModel associationModel, String tableName1, String tableName2) {
+        return associationModel.getTableName().equalsIgnoreCase(tableName1) && associationModel.getAssociatedTableName().equalsIgnoreCase(tableName2);
     }
 
 }

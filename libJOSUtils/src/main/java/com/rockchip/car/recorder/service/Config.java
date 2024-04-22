@@ -8,7 +8,7 @@ import android.os.Environment;
  */
 public class Config {
     //================ Storage Config ================
-//    public static final String EXTENAL_SD = Environment.getExternalStorageDirectory().toString();
+    //    public static final String EXTENAL_SD = Environment.getExternalStorageDirectory().toString();
     public static final String DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
     public static final String DIRECTORY = DCIM + "/Camera";
     public static String DISK_SD_ID = "";
@@ -20,7 +20,7 @@ public class Config {
     public static String JPEG_DIRECTORY = EXTERNAL_DCIM + "/PIC";
     public static final String JPEG_POSTFIX = ".jpg";
 
-    public static long LOW_STORAGE_THRESHOLD_BYTES = 500*1024*1024L;
+    public static long LOW_STORAGE_THRESHOLD_BYTES = 500 * 1024 * 1024L;
 
 
     public static int mMaxRecordTime;
@@ -62,7 +62,7 @@ public class Config {
     public static final String KEY_PIC_IN_PIC = "pref_pic_in_pic";
     public static final String KEY_RECORD_AUDIO_ENABLE = "pref_record_audio_enable";
     public static final String KEY_MISFIRE_RECORD = "pref_misfire_record";
-    public static final String KEY_INFRARED_RED= "pref_infrared_led";
+    public static final String KEY_INFRARED_RED = "pref_infrared_led";
     public static final String KEY_TTS_VOICE = "pref_tts_voice";
     public static final String KEY_WATER_MARK = "pref_water_mark";
     public static final String KEY_GSENSOR_LEVEL = "pref_gsensor_level";

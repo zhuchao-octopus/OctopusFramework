@@ -4,18 +4,24 @@
 package org.opencv.objdetect;
 
 
-
 // C++: class Params
 
 public class QRCodeDetectorAruco_Params {
 
     protected final long nativeObj;
-    protected QRCodeDetectorAruco_Params(long addr) { nativeObj = addr; }
 
-    public long getNativeObjAddr() { return nativeObj; }
+    protected QRCodeDetectorAruco_Params(long addr) {
+        nativeObj = addr;
+    }
+
+    public long getNativeObjAddr() {
+        return nativeObj;
+    }
 
     // internal usage only
-    public static QRCodeDetectorAruco_Params __fromPtr__(long addr) { return new QRCodeDetectorAruco_Params(addr); }
+    public static QRCodeDetectorAruco_Params __fromPtr__(long addr) {
+        return new QRCodeDetectorAruco_Params(addr);
+    }
 
     //
     // C++:   cv::QRCodeDetectorAruco::Params::Params()
@@ -156,7 +162,6 @@ public class QRCodeDetectorAruco_Params {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
 
 
     // C++:   cv::QRCodeDetectorAruco::Params::Params()

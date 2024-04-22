@@ -1,10 +1,5 @@
 package com.rockchip.gl;
 
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Locale;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -16,10 +11,15 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Surface;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Locale;
 
 //import com.rockchip.car.recorder.activity.VideoUI;
 //import com.rockchip.car.recorder.render.GLFrameSurface;
@@ -142,7 +142,8 @@ public class GLSurfaceView {
     private boolean startPreviewVehicleAD(boolean start, int x, int y, int width, int height) {
         if (isAndroidR()) mHandler.sendEmptyMessageDelayed(MSG_REFRESH_ADCAMERA_UI, 200);
         String cmd;
-        if (x == -1 && y == -1 && width == -1 && height == -1) cmd = String.format(Locale.ENGLISH, "%s %d %d %d %d", start ? "11" : "10", screenX, screenY, screenWidth, screenHeight);
+        if (x == -1 && y == -1 && width == -1 && height == -1)
+            cmd = String.format(Locale.ENGLISH, "%s %d %d %d %d", start ? "11" : "10", screenX, screenY, screenWidth, screenHeight);
         else cmd = String.format(Locale.ENGLISH, "%s %d %d %d %d", start ? "11" : "10", x, y, width, height);
         boolean result = setFileValue("/dev/vehicle", cmd);
         Log.d("GLSufaceView", "send:" + cmd + ", result=" + result);

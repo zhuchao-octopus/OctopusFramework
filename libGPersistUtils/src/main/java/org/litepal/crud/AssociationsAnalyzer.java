@@ -50,11 +50,8 @@ abstract class AssociationsAnalyzer extends DataHandler {
      * @throws java.lang.reflect.InvocationTargetException
      */
     @SuppressWarnings("unchecked")
-    protected Collection<LitePalSupport> getReverseAssociatedModels(LitePalSupport associatedModel,
-                                                                    AssociationsInfo associationInfo) throws SecurityException, IllegalArgumentException,
-            NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        return (Collection<LitePalSupport>) getFieldValue(associatedModel,
-                associationInfo.getAssociateSelfFromOtherModel());
+    protected Collection<LitePalSupport> getReverseAssociatedModels(LitePalSupport associatedModel, AssociationsInfo associationInfo) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        return (Collection<LitePalSupport>) getFieldValue(associatedModel, associationInfo.getAssociateSelfFromOtherModel());
     }
 
     /**
@@ -71,12 +68,8 @@ abstract class AssociationsAnalyzer extends DataHandler {
      * @throws IllegalAccessException
      * @throws java.lang.reflect.InvocationTargetException
      */
-    protected void setReverseAssociatedModels(LitePalSupport associatedModel,
-                                              AssociationsInfo associationInfo, Collection<LitePalSupport> associatedModelCollection)
-            throws SecurityException, IllegalArgumentException, NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException {
-        setFieldValue(associatedModel, associationInfo.getAssociateSelfFromOtherModel(),
-                associatedModelCollection);
+    protected void setReverseAssociatedModels(LitePalSupport associatedModel, AssociationsInfo associationInfo, Collection<LitePalSupport> associatedModelCollection) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        setFieldValue(associatedModel, associationInfo.getAssociateSelfFromOtherModel(), associatedModelCollection);
     }
 
     /**
@@ -93,8 +86,7 @@ abstract class AssociationsAnalyzer extends DataHandler {
      *                                  model collection.
      * @throws LitePalSupportException
      */
-    protected Collection<LitePalSupport> checkAssociatedModelCollection(
-            Collection<LitePalSupport> associatedModelCollection, Field associatedField) {
+    protected Collection<LitePalSupport> checkAssociatedModelCollection(Collection<LitePalSupport> associatedModelCollection, Field associatedField) {
         Collection<LitePalSupport> collection = null;
         if (isList(associatedField.getType())) {
             collection = new ArrayList<LitePalSupport>();
@@ -122,11 +114,8 @@ abstract class AssociationsAnalyzer extends DataHandler {
      * @throws IllegalAccessException
      * @throws java.lang.reflect.InvocationTargetException
      */
-    protected void buildBidirectionalAssociations(LitePalSupport baseObj, LitePalSupport associatedModel,
-                                                  AssociationsInfo associationInfo) throws SecurityException, IllegalArgumentException,
-            NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        setFieldValue(associatedModel, associationInfo.getAssociateSelfFromOtherModel(),
-                baseObj);
+    protected void buildBidirectionalAssociations(LitePalSupport baseObj, LitePalSupport associatedModel, AssociationsInfo associationInfo) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        setFieldValue(associatedModel, associationInfo.getAssociateSelfFromOtherModel(), baseObj);
     }
 
     /**
@@ -138,16 +127,13 @@ abstract class AssociationsAnalyzer extends DataHandler {
      * @param baseObj         The baseObj currently want to persist.
      * @param associatedModel The associated model.
      */
-    protected void dealsAssociationsOnTheSideWithoutFK(LitePalSupport baseObj,
-                                                       LitePalSupport associatedModel) {
+    protected void dealsAssociationsOnTheSideWithoutFK(LitePalSupport baseObj, LitePalSupport associatedModel) {
         if (associatedModel != null) {
             if (associatedModel.isSaved()) {
-                baseObj.addAssociatedModelWithFK(associatedModel.getTableName(),
-                        associatedModel.getBaseObjId());
+                baseObj.addAssociatedModelWithFK(associatedModel.getTableName(), associatedModel.getBaseObjId());
             } else {
                 if (baseObj.isSaved()) {
-                    associatedModel.addAssociatedModelWithoutFK(baseObj.getTableName(),
-                            baseObj.getBaseObjId());
+                    associatedModel.addAssociatedModelWithoutFK(baseObj.getTableName(), baseObj.getBaseObjId());
                 }
             }
         }
@@ -172,7 +158,6 @@ abstract class AssociationsAnalyzer extends DataHandler {
      * @return The foreign key name.
      */
     private String getForeignKeyName(AssociationsInfo associationInfo) {
-        return getForeignKeyColumnName(DBUtility.getTableNameByClassName(associationInfo
-                .getAssociatedClassName()));
+        return getForeignKeyColumnName(DBUtility.getTableNameByClassName(associationInfo.getAssociatedClassName()));
     }
 }

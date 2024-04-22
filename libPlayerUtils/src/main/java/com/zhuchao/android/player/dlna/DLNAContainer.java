@@ -21,8 +21,7 @@ public class DLNAContainer {
     }
 
     public synchronized void addDevice(Device d) {
-        if (!DLNAUtil.isMediaRenderDevice(d))
-            return;
+        if (!DLNAUtil.isMediaRenderDevice(d)) return;
         int size = mDevices.size();
         for (int i = 0; i < size; i++) {
             String udnString = mDevices.get(i).getUDN();
@@ -50,8 +49,7 @@ public class DLNAContainer {
                 //LogUtil.d(TAG, "Devices remove a device");
                 boolean ret = false;
                 if (mSelectedDevice != null) {
-                    ret = mSelectedDevice.getUDN().equalsIgnoreCase(
-                            device.getUDN());
+                    ret = mSelectedDevice.getUDN().equalsIgnoreCase(device.getUDN());
                 }
                 if (ret) {
                     mSelectedDevice = null;
@@ -79,8 +77,7 @@ public class DLNAContainer {
         this.mSelectedDevice = mSelectedDevice;
     }
 
-    public void setDeviceChangeListener(
-            DeviceChangeListener deviceChangeListener) {
+    public void setDeviceChangeListener(DeviceChangeListener deviceChangeListener) {
         mDeviceChangeListener = deviceChangeListener;
     }
 

@@ -1,10 +1,8 @@
 package com.rockchip.car.recorder.service;
 
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
-import android.os.IBinder;
 import android.os.SystemClock;
 
 import com.rockchip.car.recorder.camera2.CameraHolder;
@@ -26,9 +24,9 @@ public class CameraService extends ServiceImpl {
         super.onCreate(c);
     }
 
-//    public IBinder onBind(Intent intent) {
-//        return super.onBind(intent);
-//    }
+    //    public IBinder onBind(Intent intent) {
+    //        return super.onBind(intent);
+    //    }
 
     @Override
     public void afterOpenedBeforePreview() {
@@ -59,22 +57,19 @@ public class CameraService extends ServiceImpl {
         SLog.d(TAG, "CameraService::setPreviewCallback. id:" + id);
         if (mCameraInfos != null && mCameraInfos.get(id) != null && mCameraInfos.get(id).getCameraManager() != null) {
             Camera.Parameters parameters = mCameraInfos.get(id).getCameraManager().getParameters();
-            if (parameters == null)
-                return;
+            if (parameters == null) return;
             CameraPreviewCallback cpc = getCameraInfos().get(id).getCameraPreviewCallback();
             if (mCameraCallback != null) {
-                mCameraCallback.setRenderSize(false && !false ? (int) getSurfaceToCamera().get((int) getCameraToSurface().get(id) == 0 ? 1 : 0) : id,
-                        parameters.getPreviewSize().width, parameters.getPreviewSize().height);
-                mCameraCallback.setPreviewFormat(false && !false ? (int) getSurfaceToCamera().get((int) getCameraToSurface().get(id) == 0 ? 1 : 0) : id,
-                        false && false ? ImageFormat.RGB_565 : parameters.getPreviewFormat());
+                mCameraCallback.setRenderSize(false && !false ? (int) getSurfaceToCamera().get((int) getCameraToSurface().get(id) == 0 ? 1 : 0) : id, parameters.getPreviewSize().width, parameters.getPreviewSize().height);
+                mCameraCallback.setPreviewFormat(false && !false ? (int) getSurfaceToCamera().get((int) getCameraToSurface().get(id) == 0 ? 1 : 0) : id, false && false ? ImageFormat.RGB_565 : parameters.getPreviewFormat());
             }
             if (cpc == null) {
                 Camera.Size size = parameters.getPreviewSize();
                 int buffer = size.width * size.height * ImageFormat.getBitsPerPixel(parameters.getPreviewFormat()) / 8;
-               
-                SLog.d(TAG,"new CameraPreviewCallback " + id + " buffer = " + buffer);
+
+                SLog.d(TAG, "new CameraPreviewCallback " + id + " buffer = " + buffer);
                 CameraPreviewCallback callback = new CameraPreviewCallback(id, buffer);
-//                getCameraInfos().get(id).setCameraPreviewCallback(callback);
+                //                getCameraInfos().get(id).setCameraPreviewCallback(callback);
                 callback.addAll();
                 mCameraInfos.get(id).getCameraManager().setPreviewCallbackWithBuffer(null, callback);//.setPreviewCallbackWithBuffer(callback);//new  CameraPreviewCallback(id, buffer));
             } else {
@@ -93,15 +88,16 @@ public class CameraService extends ServiceImpl {
         private int mTimes;
 
         private byte[] mTmp;
-        public  CameraPreviewCallback(int id, int buffer) {
+
+        public CameraPreviewCallback(int id, int buffer) {
             SLog.d(TAG, "CameraService.CameraPreviewCallback::CameraPreviewCallback. id:" + id + "; buffer:" + buffer);
             this.mId = id;
             this.mBuffer = buffer;
             mBuffers = new LinkedList<byte[]>();
-            mBytes = new byte[][]{new byte[mBuffer], new byte[mBuffer],new byte[mBuffer]};
-//            mBuffers.offer(mBytes[0]);
-//            mBuffers.offer(mBytes[1]);
-//            mBuffers.offer(mBytes[2]);
+            mBytes = new byte[][]{new byte[mBuffer], new byte[mBuffer], new byte[mBuffer]};
+            //            mBuffers.offer(mBytes[0]);
+            //            mBuffers.offer(mBytes[1]);
+            //            mBuffers.offer(mBytes[2]);
         }
 
         @Override
@@ -136,8 +132,7 @@ public class CameraService extends ServiceImpl {
         }
 
         public void addCallbackBuffer() {
-            if (mCameraInfos.get(mId) == null || mCameraInfos.get(mId).getCameraManager() == null)
-                return;
+            if (mCameraInfos.get(mId) == null || mCameraInfos.get(mId).getCameraManager() == null) return;
             mTmp = mBuffers.poll();
             if (mTmp != null) {
                 mCameraInfos.get(mId).getCameraManager().addCallbackBuffer(mTmp);
@@ -145,8 +140,7 @@ public class CameraService extends ServiceImpl {
         }
 
         public void addCallbackBuffers() {
-            if (mCameraInfos.get(mId) == null || mCameraInfos.get(mId).getCameraManager() == null)
-                return;
+            if (mCameraInfos.get(mId) == null || mCameraInfos.get(mId).getCameraManager() == null) return;
             int size = mBuffers.size();
             if (size > 0) {
                 for (int i = 0; i < size; i++) {
@@ -166,7 +160,7 @@ public class CameraService extends ServiceImpl {
 
         public void addAll() {
             mBuffers.clear();
-            for (int i=0; i<mBytes.length; i++) {
+            for (int i = 0; i < mBytes.length; i++) {
                 mTmp = mBytes[i];
                 if (mTmp != null) {
                     mCameraInfos.get(mId).getCameraManager().addCallbackBuffer(mTmp);
@@ -176,6 +170,7 @@ public class CameraService extends ServiceImpl {
 
         private long mLastPreviewTime;
         private int mPreviewCount;
+
         private void frameRate(byte[] data) {
             if (mLastPreviewTime == 0) {
                 mLastPreviewTime = SystemClock.uptimeMillis();

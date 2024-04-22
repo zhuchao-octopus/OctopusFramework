@@ -24,18 +24,14 @@ public class TDeviceManager {
         TUartFile tUartFile = (TUartFile) deviceList.getObject(devicePath);
         if (tUartFile == null) {
             tUartFile = new TUartFile(devicePath, baudrate);
-            if (tUartFile != null)
-                deviceList.addItem(devicePath, tUartFile);
-            else
-                MMLog.log(TAG, "open device failed " + devicePath);
+            deviceList.addItem(devicePath, tUartFile);
         }
         return tUartFile;
     }
 
     public synchronized TUartFile getDevice(String devicePath) {
         TUartFile tUartFile = null;
-        if (deviceList.getCount() > 0 && NotEmptyString(devicePath))
-            tUartFile = (TUartFile) deviceList.getObject(devicePath);
+        if (deviceList.getCount() > 0 && NotEmptyString(devicePath)) tUartFile = (TUartFile) deviceList.getObject(devicePath);
         return tUartFile;
     }
 
@@ -47,8 +43,7 @@ public class TDeviceManager {
         TUartFile tUartFile = getDevice(devicePath, baudrate);
         if (tUartFile != null) {
             tUartFile.startPollingRead();
-        } else
-            MMLog.log(TAG, "get device failed " + devicePath);
+        } else MMLog.log(TAG, "get device failed " + devicePath);
         return tUartFile;
     }
 

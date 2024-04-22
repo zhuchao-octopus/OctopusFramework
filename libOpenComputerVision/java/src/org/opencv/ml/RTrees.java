@@ -5,21 +5,24 @@ package org.opencv.ml;
 
 import org.opencv.core.Mat;
 import org.opencv.core.TermCriteria;
-import org.opencv.ml.DTrees;
-import org.opencv.ml.RTrees;
 
 // C++: class RTrees
+
 /**
  * The class implements the random forest predictor.
- *
+ * <p>
  * SEE: REF: ml_intro_rtrees
  */
 public class RTrees extends DTrees {
 
-    protected RTrees(long addr) { super(addr); }
+    protected RTrees(long addr) {
+        super(addr);
+    }
 
     // internal usage only
-    public static RTrees __fromPtr__(long addr) { return new RTrees(addr); }
+    public static RTrees __fromPtr__(long addr) {
+        return new RTrees(addr);
+    }
 
     //
     // C++:  bool cv::ml::RTrees::getCalculateVarImportance()
@@ -27,6 +30,7 @@ public class RTrees extends DTrees {
 
     /**
      * SEE: setCalculateVarImportance
+     *
      * @return automatically generated
      */
     public boolean getCalculateVarImportance() {
@@ -39,7 +43,8 @@ public class RTrees extends DTrees {
     //
 
     /**
-     *  getCalculateVarImportance SEE: getCalculateVarImportance
+     * getCalculateVarImportance SEE: getCalculateVarImportance
+     *
      * @param val automatically generated
      */
     public void setCalculateVarImportance(boolean val) {
@@ -53,6 +58,7 @@ public class RTrees extends DTrees {
 
     /**
      * SEE: setActiveVarCount
+     *
      * @return automatically generated
      */
     public int getActiveVarCount() {
@@ -65,7 +71,8 @@ public class RTrees extends DTrees {
     //
 
     /**
-     *  getActiveVarCount SEE: getActiveVarCount
+     * getActiveVarCount SEE: getActiveVarCount
+     *
      * @param val automatically generated
      */
     public void setActiveVarCount(int val) {
@@ -79,6 +86,7 @@ public class RTrees extends DTrees {
 
     /**
      * SEE: setTermCriteria
+     *
      * @return automatically generated
      */
     public TermCriteria getTermCriteria() {
@@ -91,7 +99,8 @@ public class RTrees extends DTrees {
     //
 
     /**
-     *  getTermCriteria SEE: getTermCriteria
+     * getTermCriteria SEE: getTermCriteria
+     *
      * @param val automatically generated
      */
     public void setTermCriteria(TermCriteria val) {
@@ -105,9 +114,10 @@ public class RTrees extends DTrees {
 
     /**
      * Returns the variable importance array.
-     *     The method returns the variable importance vector, computed at the training stage when
-     *     CalculateVarImportance is set to true. If this flag was set to false, the empty matrix is
-     *     returned.
+     * The method returns the variable importance vector, computed at the training stage when
+     * CalculateVarImportance is set to true. If this flag was set to false, the empty matrix is
+     * returned.
+     *
      * @return automatically generated
      */
     public Mat getVarImportance() {
@@ -121,13 +131,14 @@ public class RTrees extends DTrees {
 
     /**
      * Returns the result of each individual tree in the forest.
-     *     In case the model is a regression problem, the method will return each of the trees'
-     *     results for each of the sample cases. If the model is a classifier, it will return
-     *     a Mat with samples + 1 rows, where the first row gives the class number and the
-     *     following rows return the votes each class had for each sample.
-     *         @param samples Array containing the samples for which votes will be calculated.
-     *         @param results Array where the result of the calculation will be written.
-     *         @param flags Flags for defining the type of RTrees.
+     * In case the model is a regression problem, the method will return each of the trees'
+     * results for each of the sample cases. If the model is a classifier, it will return
+     * a Mat with samples + 1 rows, where the first row gives the class number and the
+     * following rows return the votes each class had for each sample.
+     *
+     * @param samples Array containing the samples for which votes will be calculated.
+     * @param results Array where the result of the calculation will be written.
+     * @param flags   Flags for defining the type of RTrees.
      */
     public void getVotes(Mat samples, Mat results, int flags) {
         getVotes_0(nativeObj, samples.nativeObj, results.nativeObj, flags);
@@ -141,6 +152,7 @@ public class RTrees extends DTrees {
     /**
      * Returns the OOB error value, computed at the training stage when calcOOBError is set to true.
      * If this flag was set to false, 0 is returned. The OOB error is also scaled by sample weighting.
+     *
      * @return automatically generated
      */
     public double getOOBError() {
@@ -154,8 +166,9 @@ public class RTrees extends DTrees {
 
     /**
      * Creates the empty model.
-     *     Use StatModel::train to train the model, StatModel::train to create and train the model,
-     *     Algorithm::load to load the pre-trained model.
+     * Use StatModel::train to train the model, StatModel::train to create and train the model,
+     * Algorithm::load to load the pre-trained model.
+     *
      * @return automatically generated
      */
     public static RTrees create() {
@@ -169,7 +182,7 @@ public class RTrees extends DTrees {
 
     /**
      * Loads and creates a serialized RTree from a file
-     *
+     * <p>
      * Use RTree::save to serialize and store an RTree to disk.
      * Load the RTree from this file again, by calling this function with the path to the file.
      * Optionally specify the node for the file containing the classifier
@@ -184,7 +197,7 @@ public class RTrees extends DTrees {
 
     /**
      * Loads and creates a serialized RTree from a file
-     *
+     * <p>
      * Use RTree::save to serialize and store an RTree to disk.
      * Load the RTree from this file again, by calling this function with the path to the file.
      * Optionally specify the node for the file containing the classifier
@@ -201,7 +214,6 @@ public class RTrees extends DTrees {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
 
 
     // C++:  bool cv::ml::RTrees::getCalculateVarImportance()
@@ -236,6 +248,7 @@ public class RTrees extends DTrees {
 
     // C++: static Ptr_RTrees cv::ml::RTrees::load(String filepath, String nodeName = String())
     private static native long load_0(String filepath, String nodeName);
+
     private static native long load_1(String filepath);
 
     // native support for java finalize()

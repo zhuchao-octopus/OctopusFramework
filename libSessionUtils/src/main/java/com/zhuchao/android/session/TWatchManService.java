@@ -17,11 +17,8 @@ import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.KeyEvent;
 
 import com.zhuchao.android.TPlatform;
-import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
-import com.zhuchao.android.fbase.eventinterface.TRequestEventInterface;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
@@ -29,6 +26,8 @@ import com.zhuchao.android.fbase.TAppUtils;
 import com.zhuchao.android.fbase.TTask;
 import com.zhuchao.android.fbase.TTaskInterface;
 import com.zhuchao.android.fbase.ThreadUtils;
+import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
+import com.zhuchao.android.fbase.eventinterface.TRequestEventInterface;
 import com.zhuchao.android.net.NetworkInformation;
 import com.zhuchao.android.net.TNetUtils;
 
@@ -260,11 +259,9 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             switch (action) {
                 case Action_HELLO:
                     MMLog.setLogOnOff(true);
-                    MMLog.log(TAG, "Hello it is ready! version:" + VERSION_NAME + ", " + getFWVersionName()+" SwitchOnOff="+watchManSwitchOnOff);
-                    if (networkInformation != null)
-                        MMLog.d(TAG, "HOST:" + networkInformation.toString());
-                    else
-                        MMLog.d(TAG, "sorry!! networkInformation = null");
+                    MMLog.log(TAG, "Hello it is ready! version:" + VERSION_NAME + ", " + getFWVersionName() + " SwitchOnOff=" + watchManSwitchOnOff);
+                    if (networkInformation != null) MMLog.d(TAG, "HOST:" + networkInformation.toString());
+                    else MMLog.d(TAG, "sorry!! networkInformation = null");
 
                     tTaskQueue.printQueue();
 
@@ -277,10 +274,8 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                     break;
                 case Action_UPDATE_NET_STATUS://
                     //checkAndUpdateDevice(true);
-                    if (networkInformation != null)
-                        MMLog.d(TAG, "HOST:" + networkInformation.toString());
-                    else
-                        MMLog.d(TAG, "sorry!! networkInformation = null");
+                    if (networkInformation != null) MMLog.d(TAG, "HOST:" + networkInformation.toString());
+                    else MMLog.d(TAG, "sorry!! networkInformation = null");
                     session_jhz_test_update_session(true);
                     break;
                 case Action_GET_RUNNING_TASK:
@@ -365,19 +360,15 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                     if (intent.getExtras() != null) {
                         String packageName = intent.getExtras().getString("packageName");
                         String packageName2 = intent.getExtras().getString("uninstall_pkg");
-                        if (NotEmptyString(packageName))
-                            Action_SilentUnInstallAction(packageName);
-                        else if (NotEmptyString(packageName2))
-                            Action_SilentUnInstallAction(packageName2);
-                        else
-                            MMLog.log(TAG, "uninstall package name = null");
+                        if (NotEmptyString(packageName)) Action_SilentUnInstallAction(packageName);
+                        else if (NotEmptyString(packageName2)) Action_SilentUnInstallAction(packageName2);
+                        else MMLog.log(TAG, "uninstall package name = null");
                     }
                     break;
                 case Action_SilentClose:
                     if (intent.getExtras() != null) {
                         String packageName = intent.getExtras().getString("packageName");
-                        if (EmptyString(packageName))
-                            packageName = intent.getExtras().getString("close_pkg");
+                        if (EmptyString(packageName)) packageName = intent.getExtras().getString("close_pkg");
                         Action_SilentCLOSEAction(packageName);
                     }
                     break;
@@ -408,10 +399,8 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
 
         if (installedDeleteFile) {
             boolean b = FileUtils.deleteFile(apkFilePath);
-            if (b)
-                MMLog.i(TAG, "delete file successfully! ---> " + apkFilePath);
-            else
-                MMLog.i(TAG, "delete file failed! ---> " + apkFilePath);
+            if (b) MMLog.i(TAG, "delete file successfully! ---> " + apkFilePath);
+            else MMLog.i(TAG, "delete file failed! ---> " + apkFilePath);
         }
 
         //MMLog.i(TAG, "Silent install installedReboot=" + installedReboot);
@@ -450,8 +439,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         try {
             method = Class.forName("android.app.ActivityManager").getMethod("forceStopPackage", String.class);
             method.invoke(mActivityManager, packageName);
-        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException |
-                 InvocationTargetException e) {
+        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
             //e.printStackTrace();
             MMLog.e(TAG, e.toString());
         }
@@ -486,15 +474,12 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         }
 
         boolean b = TAppUtils.installSilent(this, filePath);
-        if (!b)
-            MMLog.log(TAG, "Silent install failed! ->" + filePath);
-        else
-            MMLog.log(TAG, "Silent install successfully! ->" + filePath);
+        if (!b) MMLog.log(TAG, "Silent install failed! ->" + filePath);
+        else MMLog.log(TAG, "Silent install successfully! ->" + filePath);
 
         if (autostart) {
             PackageInfo packageInfo = TAppUtils.getPackageInfo(this, filePath);
-            if (packageInfo != null)
-                TAppUtils.startApp(this, packageInfo.packageName);
+            if (packageInfo != null) TAppUtils.startApp(this, packageInfo.packageName);
         }
     }
 
@@ -502,8 +487,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         TPlatform.ExecConsoleCommand("pm install -r " + filePath);
         if (autostart) {
             PackageInfo packageInfo = TAppUtils.getPackageInfo(this, filePath);
-            if (packageInfo != null)
-                TAppUtils.startApp(this, packageInfo.packageName);
+            if (packageInfo != null) TAppUtils.startApp(this, packageInfo.packageName);
         }
     }
 
@@ -512,8 +496,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         MMLog.log(TAG, ret);
         if (autostart) {
             PackageInfo packageInfo = TAppUtils.getPackageInfo(this, filePath);
-            if (packageInfo != null)
-                TAppUtils.startApp(this, packageInfo.packageName);
+            if (packageInfo != null) TAppUtils.startApp(this, packageInfo.packageName);
         }
     }
 
@@ -691,13 +674,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
 
     private String getFWVersionName() {
         //读取固件的MODEL 那么getString("ro.product.model");
-        return Build.MODEL + ","
-                + Build.MANUFACTURER + ","
-                + Build.BRAND + ","
-                + Build.DEVICE + ","
-                + Build.VERSION.SDK_INT + ","
-                + Build.VERSION.RELEASE + ","
-                + VERSION_NAME; //wms version
+        return Build.MODEL + "," + Build.MANUFACTURER + "," + Build.BRAND + "," + Build.DEVICE + "," + Build.VERSION.SDK_INT + "," + Build.VERSION.RELEASE + "," + VERSION_NAME; //wms version
     }
 
     private String getRequestJSON() {
@@ -734,10 +711,8 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         }
         if (!tTask.isBusy()) {
             ((TNetTask) (tTask)).setRequestParameter(getRequestJSON());
-            if (startAgainFlag)
-                ((TNetTask) (tTask)).startAgain();
-            else
-                ((TNetTask) (tTask)).start();
+            if (startAgainFlag) ((TNetTask) (tTask)).startAgain();
+            else ((TNetTask) (tTask)).start();
         }
     }
 
@@ -750,10 +725,8 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         //if (EmptyString(properties.getString("product_name", null))) return;
         if (!tTask.isWorking()) {
             ((TRequestEventInterface) (tTask)).setRequestParameter(getRequestJSON());
-            if (startAgainFlag || tTask.isTimeOut(24 * 60 * 60 * 1000))
-                ((TTaskInterface) (tTask)).startAgain();
-            else
-                ((TTaskInterface) (tTask)).start();
+            if (startAgainFlag || tTask.isTimeOut(24 * 60 * 60 * 1000)) ((TTaskInterface) (tTask)).startAgain();
+            else ((TTaskInterface) (tTask)).start();
         }
     }
 
@@ -772,13 +745,11 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         */
         if (tNetUtils != null && tNetUtils.isAvailable()) {
             this.networkInformation = networkInformation;
-            if (networkInformation.getAction() == NetworkInformation.NetworkInformation_onCONNECTIVITY)
-                doNetStatusChangedFunction();
+            if (networkInformation.getAction() == NetworkInformation.NetworkInformation_onCONNECTIVITY) doNetStatusChangedFunction();
         }
     }
 
-    public void test()
-    {
+    public void test() {
         //KeyEvent.KEYCODE_Z
     }
 }

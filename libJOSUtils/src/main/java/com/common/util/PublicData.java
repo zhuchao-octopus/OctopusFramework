@@ -2,13 +2,13 @@ package com.common.util;
 
 import static com.common.util.MachineConfig.VENDOR_DIR;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Properties;
-
-import android.util.Log;
 
 public class PublicData {
     private final static String TAG = "PublicData";

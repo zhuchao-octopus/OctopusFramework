@@ -73,8 +73,7 @@ public abstract class LitePalBase {
     /**
      * All the supporting mapping types currently in the array.
      */
-    private OrmChange[] typeChangeRules = {new NumericOrm(), new TextOrm(), new BooleanOrm(),
-            new DecimalOrm(), new DateOrm(), new BlobOrm()};
+    private OrmChange[] typeChangeRules = {new NumericOrm(), new TextOrm(), new BooleanOrm(), new DecimalOrm(), new DateOrm(), new BlobOrm()};
 
     /**
      * This is map of class name to fields list. Indicates that each class has which supported fields.
@@ -446,11 +445,9 @@ public abstract class LitePalBase {
                     // associations.
                     if (className.equals(reverseFieldTypeClass.getName())) {
                         if (action == GET_ASSOCIATIONS_ACTION) {
-                            addIntoAssociationModelCollection(className, fieldTypeClass.getName(),
-                                    fieldTypeClass.getName(), Const.Model.ONE_TO_ONE);
+                            addIntoAssociationModelCollection(className, fieldTypeClass.getName(), fieldTypeClass.getName(), Const.Model.ONE_TO_ONE);
                         } else if (action == GET_ASSOCIATION_INFO_ACTION) {
-                            addIntoAssociationInfoCollection(className, fieldTypeClass.getName(),
-                                    fieldTypeClass.getName(), field, reverseField, Const.Model.ONE_TO_ONE);
+                            addIntoAssociationInfoCollection(className, fieldTypeClass.getName(), fieldTypeClass.getName(), field, reverseField, Const.Model.ONE_TO_ONE);
                         }
                         reverseAssociations = true;
                     }
@@ -461,11 +458,9 @@ public abstract class LitePalBase {
                         String genericTypeName = getGenericTypeName(reverseField);
                         if (className.equals(genericTypeName)) {
                             if (action == GET_ASSOCIATIONS_ACTION) {
-                                addIntoAssociationModelCollection(className, fieldTypeClass.getName(),
-                                        className, Const.Model.MANY_TO_ONE);
+                                addIntoAssociationModelCollection(className, fieldTypeClass.getName(), className, Const.Model.MANY_TO_ONE);
                             } else if (action == GET_ASSOCIATION_INFO_ACTION) {
-                                addIntoAssociationInfoCollection(className, fieldTypeClass.getName(),
-                                        className, field, reverseField, Const.Model.MANY_TO_ONE);
+                                addIntoAssociationInfoCollection(className, fieldTypeClass.getName(), className, field, reverseField, Const.Model.MANY_TO_ONE);
                             }
                             reverseAssociations = true;
                         }
@@ -476,11 +471,9 @@ public abstract class LitePalBase {
             // one2one unidirectional associations.
             if (!reverseAssociations) {
                 if (action == GET_ASSOCIATIONS_ACTION) {
-                    addIntoAssociationModelCollection(className, fieldTypeClass.getName(),
-                            fieldTypeClass.getName(), Const.Model.ONE_TO_ONE);
+                    addIntoAssociationModelCollection(className, fieldTypeClass.getName(), fieldTypeClass.getName(), Const.Model.ONE_TO_ONE);
                 } else if (action == GET_ASSOCIATION_INFO_ACTION) {
-                    addIntoAssociationInfoCollection(className, fieldTypeClass.getName(),
-                            fieldTypeClass.getName(), field, null, Const.Model.ONE_TO_ONE);
+                    addIntoAssociationInfoCollection(className, fieldTypeClass.getName(), fieldTypeClass.getName(), field, null, Const.Model.ONE_TO_ONE);
                 }
             }
         }
@@ -527,11 +520,9 @@ public abstract class LitePalBase {
                         // associations.
                         if (className.equals(reverseFieldTypeClass.getName())) {
                             if (action == GET_ASSOCIATIONS_ACTION) {
-                                addIntoAssociationModelCollection(className, genericTypeName,
-                                        genericTypeName, Const.Model.MANY_TO_ONE);
+                                addIntoAssociationModelCollection(className, genericTypeName, genericTypeName, Const.Model.MANY_TO_ONE);
                             } else if (action == GET_ASSOCIATION_INFO_ACTION) {
-                                addIntoAssociationInfoCollection(className, genericTypeName, genericTypeName,
-                                        field, reverseField, Const.Model.MANY_TO_ONE);
+                                addIntoAssociationInfoCollection(className, genericTypeName, genericTypeName, field, reverseField, Const.Model.MANY_TO_ONE);
                             }
                             reverseAssociations = true;
                         }
@@ -551,13 +542,11 @@ public abstract class LitePalBase {
                                         genericModel.setValueIdColumnName(DBUtility.getGenericValueIdColumnName(className));
                                         mGenericModels.add(genericModel);
                                     } else {
-                                        addIntoAssociationModelCollection(className, genericTypeName, null,
-                                                Const.Model.MANY_TO_MANY);
+                                        addIntoAssociationModelCollection(className, genericTypeName, null, Const.Model.MANY_TO_MANY);
                                     }
                                 } else if (action == GET_ASSOCIATION_INFO_ACTION) {
                                     if (!className.equalsIgnoreCase(genericTypeName)) {
-                                        addIntoAssociationInfoCollection(className, genericTypeName, null, field,
-                                                reverseField, Const.Model.MANY_TO_MANY);
+                                        addIntoAssociationInfoCollection(className, genericTypeName, null, field, reverseField, Const.Model.MANY_TO_MANY);
                                     }
                                 }
                                 reverseAssociations = true;
@@ -569,11 +558,9 @@ public abstract class LitePalBase {
                 // are many2one unidirectional associations.
                 if (!reverseAssociations) {
                     if (action == GET_ASSOCIATIONS_ACTION) {
-                        addIntoAssociationModelCollection(className, genericTypeName,
-                                genericTypeName, Const.Model.MANY_TO_ONE);
+                        addIntoAssociationModelCollection(className, genericTypeName, genericTypeName, Const.Model.MANY_TO_ONE);
                     } else if (action == GET_ASSOCIATION_INFO_ACTION) {
-                        addIntoAssociationInfoCollection(className, genericTypeName, genericTypeName,
-                                field, null, Const.Model.MANY_TO_ONE);
+                        addIntoAssociationInfoCollection(className, genericTypeName, genericTypeName, field, null, Const.Model.MANY_TO_ONE);
                     }
                 }
             } else if (BaseUtility.isGenericTypeSupported(genericTypeName) && action == GET_ASSOCIATIONS_ACTION) {
@@ -596,8 +583,7 @@ public abstract class LitePalBase {
      * @param classHoldsForeignKey The class which holds foreign key.
      * @param associationType      The association type for {@link org.litepal.tablemanager.model.AssociationsModel}.
      */
-    private void addIntoAssociationModelCollection(String className, String associatedClassName,
-                                                   String classHoldsForeignKey, int associationType) {
+    private void addIntoAssociationModelCollection(String className, String associatedClassName, String classHoldsForeignKey, int associationType) {
         AssociationsModel associationModel = new AssociationsModel();
         associationModel.setTableName(DBUtility.getTableNameByClassName(className));
         associationModel.setAssociatedTableName(DBUtility.getTableNameByClassName(associatedClassName));
@@ -619,9 +605,7 @@ public abstract class LitePalBase {
      *                                    with self class.
      * @param associationType             The association type.
      */
-    private void addIntoAssociationInfoCollection(String selfClassName, String associatedClassName,
-                                                  String classHoldsForeignKey, Field associateOtherModelFromSelf,
-                                                  Field associateSelfFromOtherModel, int associationType) {
+    private void addIntoAssociationInfoCollection(String selfClassName, String associatedClassName, String classHoldsForeignKey, Field associateOtherModelFromSelf, Field associateSelfFromOtherModel, int associationType) {
         AssociationsInfo associationInfo = new AssociationsInfo();
         associationInfo.setSelfClassName(selfClassName);
         associationInfo.setAssociatedClassName(associatedClassName);

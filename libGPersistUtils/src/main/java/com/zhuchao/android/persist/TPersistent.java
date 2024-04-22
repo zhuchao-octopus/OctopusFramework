@@ -123,12 +123,11 @@ public class TPersistent implements SharedPreferences, SharedPreferences.Editor 
         editor.apply();
     }
 
-    public void loadFromMap(HashMap<String, Object> HashMap)
-    {
+    public void loadFromMap(HashMap<String, Object> HashMap) {
         Set<Map.Entry<String, Object>> set = HashMap.entrySet();
         for (Map.Entry<String, Object> stringObjectEntry : set) {
-          //((Map.Entry<?, ?>) stringObjectEntry).getKey().toString(),
-          //((Map.Entry<?, ?>) stringObjectEntry).getValue()
+            //((Map.Entry<?, ?>) stringObjectEntry).getKey().toString(),
+            //((Map.Entry<?, ?>) stringObjectEntry).getValue()
             try {
                 putString(((Map.Entry<?, ?>) stringObjectEntry).getKey().toString(), (String) ((Map.Entry<?, ?>) stringObjectEntry).getValue());
             } catch (Exception e) {

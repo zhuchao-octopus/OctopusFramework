@@ -632,7 +632,7 @@ public class TAppUtils {
             return (Application) Class.forName("android.app.ActivityThread").getMethod("currentApplication").invoke(null, (Object[]) null);
         } catch (Exception e) {
             //e.printStackTrace();
-            MMLog.d(TAG, "Exception:"+e);
+            MMLog.d(TAG, "Exception:" + e);
         }
         return null;
     }

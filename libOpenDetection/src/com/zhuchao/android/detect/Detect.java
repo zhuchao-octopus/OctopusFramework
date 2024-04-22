@@ -1,7 +1,6 @@
 package com.zhuchao.android.detect;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.zhuchao.android.fbase.MMLog;
 
@@ -10,12 +9,6 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
-import org.opencv.objdetect.CascadeClassifier;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class Detect implements CameraBridgeViewBase.CvCameraViewListener2 {
     private final String TAG = "Detect";

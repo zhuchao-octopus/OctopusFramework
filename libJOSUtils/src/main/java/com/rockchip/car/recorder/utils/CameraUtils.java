@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.UserHandle;
-
 
 import java.util.HashMap;
 
@@ -16,8 +14,9 @@ import java.util.HashMap;
  */
 public class CameraUtils {
     private static final String TAG = "CameraUtils";
-//    public static ServiceImpl.CameraBinder sService = null;
+    //    public static ServiceImpl.CameraBinder sService = null;
     private static HashMap<Context, ServiceBinder> sConnectionMap = new HashMap<Context, ServiceBinder>();
+
     public static ServiceToken bindToService(Activity context, ServiceConnection callback, Class cla) {
         Activity realActivity = context.getParent();
         if (realActivity == null) {
@@ -25,7 +24,7 @@ public class CameraUtils {
         }
         ContextWrapper cw = new ContextWrapper(realActivity);
         cw.startService(new Intent(cw, cla));
-//        cw.startServiceAsUser(new Intent(cw, cla), UserHandle.CURRENT);
+        //        cw.startServiceAsUser(new Intent(cw, cla), UserHandle.CURRENT);
         ServiceBinder sb = new ServiceBinder(callback);
         if (cw.bindService((new Intent()).setClass(cw, cla), sb, 0)) {
             sConnectionMap.put(cw, sb);
@@ -46,9 +45,9 @@ public class CameraUtils {
             return;
         }
         cw.unbindService(sb);
-//        if (sConnectionMap.isEmpty()) {
-//            sService = null;
-//        }
+        //        if (sConnectionMap.isEmpty()) {
+        //            sService = null;
+        //        }
     }
 
     public static class ServiceToken {
@@ -66,8 +65,7 @@ public class CameraUtils {
             mCallback = callback;
         }
 
-        public void onServiceConnected(ComponentName className,
-                                       android.os.IBinder service) {
+        public void onServiceConnected(ComponentName className, android.os.IBinder service) {
             if (mCallback != null) {
                 mCallback.onServiceConnected(className, service);
             }
@@ -77,7 +75,7 @@ public class CameraUtils {
             if (mCallback != null) {
                 mCallback.onServiceDisconnected(className);
             }
-//            sService = null;
+            //            sService = null;
         }
     }
 }

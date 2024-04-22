@@ -29,6 +29,6 @@ tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
 
-ext{
+ext {
     GITHUB_REPO_PATH = "\\\\192.168.1.82\\smb\\OctopusFrameworkLibs"
 }

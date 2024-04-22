@@ -98,8 +98,7 @@ public class TProtocol_Package {
     }
 
     public static int getIntVale(int start, int count, byte[] buffer) {
-        if (start < 0 || start >= buffer.length)
-            return -1;
+        if (start < 0 || start >= buffer.length) return -1;
         switch (count) {
             case 1:
                 return buffer[start];
@@ -126,10 +125,10 @@ public class TProtocol_Package {
 
         if (buffer.length >= 9) {
             this.msgHead = getIntVale(0, 2, buffer);
-            if(this.msgHead != DEFAULT_HEAD) return;
+            if (this.msgHead != DEFAULT_HEAD) return;
 
             this.msgEnd = getIntVale(buffer.length - 1, 1, buffer);
-            if(this.msgEnd != DEFAULT_END) return;
+            if (this.msgEnd != DEFAULT_END) return;
 
             this.msgID = getIntVale(2, 2, buffer);
             this.msgIndex = getIntVale(4, 1, buffer);

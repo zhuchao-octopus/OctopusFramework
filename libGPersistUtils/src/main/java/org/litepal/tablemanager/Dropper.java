@@ -80,10 +80,8 @@ public class Dropper extends AssociationUpdater {
             cursor = mDb.query(Const.TableSchema.TABLE_NAME, null, null, null, null, null, null);
             if (cursor.moveToFirst()) {
                 do {
-                    String tableName = cursor.getString(cursor
-                            .getColumnIndexOrThrow(Const.TableSchema.COLUMN_NAME));
-                    int tableType = cursor.getInt(cursor
-                            .getColumnIndexOrThrow(Const.TableSchema.COLUMN_TYPE));
+                    String tableName = cursor.getString(cursor.getColumnIndexOrThrow(Const.TableSchema.COLUMN_NAME));
+                    int tableType = cursor.getInt(cursor.getColumnIndexOrThrow(Const.TableSchema.COLUMN_TYPE));
                     if (shouldDropThisTable(tableName, tableType)) {
                         // need to drop tableNameDB
                         LitePalLog.d(TAG, "need to drop " + tableName);
@@ -127,7 +125,6 @@ public class Dropper extends AssociationUpdater {
      * false.
      */
     private boolean shouldDropThisTable(String tableName, int tableType) {
-        return !BaseUtility.containsIgnoreCases(pickTableNamesFromTableModels(), tableName)
-                && tableType == Const.TableSchema.NORMAL_TABLE;
+        return !BaseUtility.containsIgnoreCases(pickTableNamesFromTableModels(), tableName) && tableType == Const.TableSchema.NORMAL_TABLE;
     }
 }

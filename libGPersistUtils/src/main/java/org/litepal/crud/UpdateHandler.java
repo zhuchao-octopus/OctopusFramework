@@ -71,8 +71,7 @@ public class UpdateHandler extends DataHandler {
      * @throws IllegalArgumentException
      * @throws SecurityException
      */
-    int onUpdate(LitePalSupport baseObj, long id) throws SecurityException, IllegalArgumentException,
-            NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    int onUpdate(LitePalSupport baseObj, long id) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         List<Field> supportedFields = getSupportedFields(baseObj.getClassName());
         List<Field> supportedGenericFields = getSupportedGenericFields(baseObj.getClassName());
         updateGenericTables(baseObj, supportedGenericFields, id);
@@ -121,9 +120,7 @@ public class UpdateHandler extends DataHandler {
      * @throws SecurityException
      */
     @SuppressWarnings("unchecked")
-    int onUpdateAll(LitePalSupport baseObj, String... conditions) throws SecurityException,
-            IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
+    int onUpdateAll(LitePalSupport baseObj, String... conditions) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         BaseUtility.checkConditionsCorrect(conditions);
         if (conditions != null && conditions.length > 0) {
             conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
@@ -185,8 +182,7 @@ public class UpdateHandler extends DataHandler {
     private int doUpdateAllAction(String tableName, ContentValues values, String... conditions) {
         BaseUtility.checkConditionsCorrect(conditions);
         if (values.size() > 0) {
-            return mDatabase.update(tableName, values, getWhereClause(conditions),
-                    getWhereArgs(conditions));
+            return mDatabase.update(tableName, values, getWhereClause(conditions), getWhereArgs(conditions));
         }
         return 0;
     }
@@ -232,8 +228,7 @@ public class UpdateHandler extends DataHandler {
                 }
             }
         } catch (NoSuchFieldException e) {
-            throw new LitePalSupportException(LitePalSupportException.noSuchFieldExceptioin(
-                    baseObj.getClassName(), fieldName), e);
+            throw new LitePalSupportException(LitePalSupportException.noSuchFieldExceptioin(baseObj.getClassName(), fieldName), e);
         } catch (Exception e) {
             throw new LitePalSupportException(e.getMessage(), e);
         }
@@ -260,8 +255,7 @@ public class UpdateHandler extends DataHandler {
      */
     private void analyzeAssociations(LitePalSupport baseObj) {
         try {
-            Collection<AssociationsInfo> associationInfos = getAssociationInfo(baseObj
-                    .getClassName());
+            Collection<AssociationsInfo> associationInfos = getAssociationInfo(baseObj.getClassName());
             analyzeAssociatedModels(baseObj, associationInfos);
         } catch (Exception e) {
             throw new LitePalSupportException(e.getMessage(), e);
@@ -309,8 +303,7 @@ public class UpdateHandler extends DataHandler {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    private void updateGenericTables(LitePalSupport baseObj, List<Field> supportedGenericFields,
-                                     long... ids) throws IllegalAccessException, InvocationTargetException {
+    private void updateGenericTables(LitePalSupport baseObj, List<Field> supportedGenericFields, long... ids) throws IllegalAccessException, InvocationTargetException {
         if (ids != null && ids.length > 0) {
             for (Field field : supportedGenericFields) {
                 Encrypt annotation = field.getAnnotation(Encrypt.class);

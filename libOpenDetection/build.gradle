@@ -96,8 +96,8 @@ android {
         exclude 'META-INF/native-image/linux-arm64/jnijavacpp/reflect-config.json'
     }
     //packagingOptions {
-        //exclude 'META-INF/native-image/android-arm/jnijavacpp/jni-config.json'
-        //exclude 'META-INF/native-image/ios-x86_64/jnijavacpp/reflect-config.json'
+    //exclude 'META-INF/native-image/android-arm/jnijavacpp/jni-config.json'
+    //exclude 'META-INF/native-image/ios-x86_64/jnijavacpp/reflect-config.json'
     //}
 }
 

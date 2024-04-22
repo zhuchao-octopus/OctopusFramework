@@ -15,8 +15,8 @@ import java.nio.ByteOrder;
  * 3. buildTextures()<br/>
  * 4. drawFrame()<br/>
  */
-public class GLProgramJava implements GLProgram{
-	private String TAG = "CAM_GLProgramJava";
+public class GLProgramJava implements GLProgram {
+    private String TAG = "CAM_GLProgramJava";
     // program id
     private int _program;
     // window position
@@ -65,52 +65,52 @@ public class GLProgramJava implements GLProgram{
      */
     public void setup(int position) {
         switch (mWinPosition) {
-        case 1:
-            _vertices = GLProgram.squareVertices1;
-            _textureI = GLES20.GL_TEXTURE0;
-            _textureII = GLES20.GL_TEXTURE1;
-            _textureIII = GLES20.GL_TEXTURE2;
-            _tIindex = 0;
-            _tIIindex = 1;
-            _tIIIindex = 2;
-            break;
-        case 2:
-            _vertices = squareVertices2;
-            _textureI = GLES20.GL_TEXTURE3;
-            _textureII = GLES20.GL_TEXTURE4;
-            _textureIII = GLES20.GL_TEXTURE5;
-            _tIindex = 3;
-            _tIIindex = 4;
-            _tIIIindex = 5;
-            break;
-        case 3:
-            _vertices = squareVertices3;
-            _textureI = GLES20.GL_TEXTURE6;
-            _textureII = GLES20.GL_TEXTURE7;
-            _textureIII = GLES20.GL_TEXTURE8;
-            _tIindex = 6;
-            _tIIindex = 7;
-            _tIIIindex = 8;
-            break;
-        case 4:
-            _vertices = squareVertices4;
-            _textureI = GLES20.GL_TEXTURE9;
-            _textureII = GLES20.GL_TEXTURE10;
-            _textureIII = GLES20.GL_TEXTURE11;
-            _tIindex = 9;
-            _tIIindex = 10;
-            _tIIIindex = 11;
-            break;
-        case 0:
-        default:
-            _vertices = squareVertices;
-            _textureI = GLES20.GL_TEXTURE0;
-            _textureII = GLES20.GL_TEXTURE1;
-            _textureIII = GLES20.GL_TEXTURE2;
-            _tIindex = 0;
-            _tIIindex = 1;
-            _tIIIindex = 2;
-            break;
+            case 1:
+                _vertices = GLProgram.squareVertices1;
+                _textureI = GLES20.GL_TEXTURE0;
+                _textureII = GLES20.GL_TEXTURE1;
+                _textureIII = GLES20.GL_TEXTURE2;
+                _tIindex = 0;
+                _tIIindex = 1;
+                _tIIIindex = 2;
+                break;
+            case 2:
+                _vertices = squareVertices2;
+                _textureI = GLES20.GL_TEXTURE3;
+                _textureII = GLES20.GL_TEXTURE4;
+                _textureIII = GLES20.GL_TEXTURE5;
+                _tIindex = 3;
+                _tIIindex = 4;
+                _tIIIindex = 5;
+                break;
+            case 3:
+                _vertices = squareVertices3;
+                _textureI = GLES20.GL_TEXTURE6;
+                _textureII = GLES20.GL_TEXTURE7;
+                _textureIII = GLES20.GL_TEXTURE8;
+                _tIindex = 6;
+                _tIIindex = 7;
+                _tIIIindex = 8;
+                break;
+            case 4:
+                _vertices = squareVertices4;
+                _textureI = GLES20.GL_TEXTURE9;
+                _textureII = GLES20.GL_TEXTURE10;
+                _textureIII = GLES20.GL_TEXTURE11;
+                _tIindex = 9;
+                _tIIindex = 10;
+                _tIIIindex = 11;
+                break;
+            case 0:
+            default:
+                _vertices = squareVertices;
+                _textureI = GLES20.GL_TEXTURE0;
+                _textureII = GLES20.GL_TEXTURE1;
+                _textureIII = GLES20.GL_TEXTURE2;
+                _tIindex = 0;
+                _tIIindex = 1;
+                _tIIIindex = 2;
+                break;
         }
     }
 
@@ -118,18 +118,18 @@ public class GLProgramJava implements GLProgram{
         return isProgBuilt;
     }
 
-	public void SetViewport(int width, int height) {
+    public void SetViewport(int width, int height) {
         GLES20.glViewport(0, 0, width, height);
-	}
-	
+    }
+
     public void buildProgram() {
         // TODO createBuffers(_vertices, coordVertices);
         if (_program <= 0) {
-        	if (Constant.BIND_UV_DATA) {
-        		_program = createProgram(VERTEX_SHADER, FRAGMENT_BIND_UV_SHADER);
-        	} else {
-        		_program = createProgram(VERTEX_SHADER, FRAGMENT_SHADER);
-        	}
+            if (Constant.BIND_UV_DATA) {
+                _program = createProgram(VERTEX_SHADER, FRAGMENT_BIND_UV_SHADER);
+            } else {
+                _program = createProgram(VERTEX_SHADER, FRAGMENT_SHADER);
+            }
         }
         SLog.d(TAG, "_program = " + _program);
 
@@ -159,39 +159,38 @@ public class GLProgramJava implements GLProgram{
             throw new RuntimeException("Could not get uniform location for tex_y");
         }
         if (Constant.BIND_UV_DATA) {
-	        _uvhandle = GLES20.glGetUniformLocation(_program, "tex_uv");
-	        SLog.d(TAG, "_uvhandle = " + _uvhandle);
-	        checkGlError("glGetUniformLocation tex_uv");
-	        if (_uvhandle == -1) {
-	            throw new RuntimeException("Could not get uniform location for tex_uv");
-	        }
+            _uvhandle = GLES20.glGetUniformLocation(_program, "tex_uv");
+            SLog.d(TAG, "_uvhandle = " + _uvhandle);
+            checkGlError("glGetUniformLocation tex_uv");
+            if (_uvhandle == -1) {
+                throw new RuntimeException("Could not get uniform location for tex_uv");
+            }
         } else {
-	        _uhandle = GLES20.glGetUniformLocation(_program, "tex_u");
-	        SLog.d(TAG, "_uhandle = " + _uhandle);
-	        checkGlError("glGetUniformLocation tex_u");
-	        if (_uhandle == -1) {
-	            throw new RuntimeException("Could not get uniform location for tex_u");
-	        }
-	        _vhandle = GLES20.glGetUniformLocation(_program, "tex_v");
-	        SLog.d("_vhandle = " + _vhandle);
-	        checkGlError("glGetUniformLocation tex_v");
-	        if (_vhandle == -1) {
-	            throw new RuntimeException("Could not get uniform location for tex_v");
-	        }
+            _uhandle = GLES20.glGetUniformLocation(_program, "tex_u");
+            SLog.d(TAG, "_uhandle = " + _uhandle);
+            checkGlError("glGetUniformLocation tex_u");
+            if (_uhandle == -1) {
+                throw new RuntimeException("Could not get uniform location for tex_u");
+            }
+            _vhandle = GLES20.glGetUniformLocation(_program, "tex_v");
+            SLog.d("_vhandle = " + _vhandle);
+            checkGlError("glGetUniformLocation tex_v");
+            if (_vhandle == -1) {
+                throw new RuntimeException("Could not get uniform location for tex_v");
+            }
         }
         isProgBuilt = true;
     }
 
 
-	@Override
-	public boolean buildTextures(byte[] y, byte[] u, byte[] v, byte[] uv,
-			int width, int height, int format) {
-		if (y == null || width == 0 || height == 0) {
-			SLog.d( "texture data is null.");
-			return false;
-		}
-		
-		boolean videoSizeChanged = (width != _video_width || height != _video_height);
+    @Override
+    public boolean buildTextures(byte[] y, byte[] u, byte[] v, byte[] uv, int width, int height, int format) {
+        if (y == null || width == 0 || height == 0) {
+            SLog.d("texture data is null.");
+            return false;
+        }
+
+        boolean videoSizeChanged = (width != _video_width || height != _video_height);
         if (videoSizeChanged) {
             _video_width = width;
             _video_height = height;
@@ -202,7 +201,7 @@ public class GLProgramJava implements GLProgram{
         if (_ytid < 0 || videoSizeChanged) {
             if (_ytid >= 0) {
                 SLog.d(TAG, "glDeleteTextures Y");
-                GLES20.glDeleteTextures(1, new int[] { _ytid }, 0);
+                GLES20.glDeleteTextures(1, new int[]{_ytid}, 0);
                 checkGlError("glDeleteTextures");
             }
             // GLES20.glPixelStorei(GLES20.GL_UNPACK_ALIGNMENT, 1);
@@ -214,8 +213,7 @@ public class GLProgramJava implements GLProgram{
         }
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _ytid);
         checkGlError("glBindTexture");
-        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, _video_width, _video_height, 0,
-                GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(y));
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, _video_width, _video_height, 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(y));
         checkGlError("glTexImage2D");
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
@@ -223,80 +221,77 @@ public class GLProgramJava implements GLProgram{
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
         if (Constant.BIND_UV_DATA) {
-	        // building texture for UV data
-	        if (_uvtid < 0 || videoSizeChanged) {
-	            if (_uvtid >= 0) {
-	                SLog.d(TAG, "glDeleteTextures U");
-	                GLES20.glDeleteTextures(1, new int[] { _uvtid }, 0);
-	                checkGlError("glDeleteTextures");
-	            }
-	            int[] textures = new int[1];
-	            GLES20.glGenTextures(1, textures, 0);
-	            checkGlError("glGenTextures");
-	            _uvtid = textures[0];
-	            SLog.d(TAG, "glGenTextures UV = " + _uvtid);
-	        }
-	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _uvtid);
-	        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE_ALPHA, _video_width / 2, _video_height / 2, 0,
-	                GLES20.GL_LUMINANCE_ALPHA, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(uv));
-	        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-	        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+            // building texture for UV data
+            if (_uvtid < 0 || videoSizeChanged) {
+                if (_uvtid >= 0) {
+                    SLog.d(TAG, "glDeleteTextures U");
+                    GLES20.glDeleteTextures(1, new int[]{_uvtid}, 0);
+                    checkGlError("glDeleteTextures");
+                }
+                int[] textures = new int[1];
+                GLES20.glGenTextures(1, textures, 0);
+                checkGlError("glGenTextures");
+                _uvtid = textures[0];
+                SLog.d(TAG, "glGenTextures UV = " + _uvtid);
+            }
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _uvtid);
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE_ALPHA, _video_width / 2, _video_height / 2, 0, GLES20.GL_LUMINANCE_ALPHA, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(uv));
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
         } else {
-	        // building texture for U data
-	        if (_utid < 0 || videoSizeChanged) {
-	            if (_utid >= 0) {
-	                SLog.d(TAG, "glDeleteTextures U");
-	                GLES20.glDeleteTextures(1, new int[] { _utid }, 0);
-	                checkGlError("glDeleteTextures");
-	            }
-	            int[] textures = new int[1];
-	            GLES20.glGenTextures(1, textures, 0);
-	            checkGlError("glGenTextures");
-	            _utid = textures[0];
-	            SLog.d(TAG, "glGenTextures U = " + _utid);
-	        }
-	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _utid);
-	        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, _video_width / 2, _video_height / 2, 0,
-	                GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(u));
-	        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-	        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-	
-	        // building texture for V data
-	        if (_vtid < 0 || videoSizeChanged) {
-	            if (_vtid >= 0) {
-	                SLog.d(TAG, "glDeleteTextures V");
-	                GLES20.glDeleteTextures(1, new int[] { _vtid }, 0);
-	                checkGlError("glDeleteTextures");
-	            }
-	            int[] textures = new int[1];
-	            GLES20.glGenTextures(1, textures, 0);
-	            checkGlError("glGenTextures");
-	            _vtid = textures[0];
-	            SLog.d(TAG, "glGenTextures V = " + _vtid);
-	        }
-	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _vtid);
-	        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, _video_width / 2, _video_height / 2, 0,
-	                GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(v));
-	        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-	        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-        }		
+            // building texture for U data
+            if (_utid < 0 || videoSizeChanged) {
+                if (_utid >= 0) {
+                    SLog.d(TAG, "glDeleteTextures U");
+                    GLES20.glDeleteTextures(1, new int[]{_utid}, 0);
+                    checkGlError("glDeleteTextures");
+                }
+                int[] textures = new int[1];
+                GLES20.glGenTextures(1, textures, 0);
+                checkGlError("glGenTextures");
+                _utid = textures[0];
+                SLog.d(TAG, "glGenTextures U = " + _utid);
+            }
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _utid);
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, _video_width / 2, _video_height / 2, 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(u));
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+
+            // building texture for V data
+            if (_vtid < 0 || videoSizeChanged) {
+                if (_vtid >= 0) {
+                    SLog.d(TAG, "glDeleteTextures V");
+                    GLES20.glDeleteTextures(1, new int[]{_vtid}, 0);
+                    checkGlError("glDeleteTextures");
+                }
+                int[] textures = new int[1];
+                GLES20.glGenTextures(1, textures, 0);
+                checkGlError("glGenTextures");
+                _vtid = textures[0];
+                SLog.d(TAG, "glGenTextures V = " + _vtid);
+            }
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _vtid);
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, _video_width / 2, _video_height / 2, 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, ByteBuffer.wrap(v));
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+        }
         return true;
-	}
-    
+    }
+
     /**
      * build a set of textures, one for R, one for G, and one for B.
      */
     public boolean buildTextures(Buffer y, Buffer u, Buffer v, Buffer uv, int width, int height, int format) {
-		if (y == null || width == 0 || height == 0) {
-    		SLog.d(TAG, "buildTextures videoSize cannot be set to zero.");
-			return false;
-    	}
+        if (y == null || width == 0 || height == 0) {
+            SLog.d(TAG, "buildTextures videoSize cannot be set to zero.");
+            return false;
+        }
         boolean videoSizeChanged = (width != _video_width || height != _video_height);
         if (videoSizeChanged) {
             _video_width = width;
@@ -308,7 +303,7 @@ public class GLProgramJava implements GLProgram{
         if (_ytid < 0 || videoSizeChanged) {
             if (_ytid >= 0) {
                 SLog.d(TAG, "glDeleteTextures Y");
-                GLES20.glDeleteTextures(1, new int[] { _ytid }, 0);
+                GLES20.glDeleteTextures(1, new int[]{_ytid}, 0);
                 checkGlError("glDeleteTextures");
             }
             // GLES20.glPixelStorei(GLES20.GL_UNPACK_ALIGNMENT, 1);
@@ -320,8 +315,7 @@ public class GLProgramJava implements GLProgram{
         }
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _ytid);
         checkGlError("glBindTexture");
-        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, _video_width, _video_height, 0,
-                GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, y);
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, _video_width, _video_height, 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, y);
         checkGlError("glTexImage2D");
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
@@ -329,68 +323,65 @@ public class GLProgramJava implements GLProgram{
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
         if (Constant.BIND_UV_DATA) {
-	        // building texture for UV data
-	        if (_uvtid < 0 || videoSizeChanged) {
-	            if (_uvtid >= 0) {
-	                SLog.d(TAG, "glDeleteTextures U");
-	                GLES20.glDeleteTextures(1, new int[] { _uvtid }, 0);
-	                checkGlError("glDeleteTextures");
-	            }
-	            int[] textures = new int[1];
-	            GLES20.glGenTextures(1, textures, 0);
-	            checkGlError("glGenTextures");
-	            _uvtid = textures[0];
-	            SLog.d(TAG, "glGenTextures U = " + _uvtid);
-	        }
-	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _uvtid);
-	        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE_ALPHA, _video_width / 2, _video_height / 2, 0,
-	                GLES20.GL_LUMINANCE_ALPHA, GLES20.GL_UNSIGNED_BYTE, uv);
-	        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-	        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+            // building texture for UV data
+            if (_uvtid < 0 || videoSizeChanged) {
+                if (_uvtid >= 0) {
+                    SLog.d(TAG, "glDeleteTextures U");
+                    GLES20.glDeleteTextures(1, new int[]{_uvtid}, 0);
+                    checkGlError("glDeleteTextures");
+                }
+                int[] textures = new int[1];
+                GLES20.glGenTextures(1, textures, 0);
+                checkGlError("glGenTextures");
+                _uvtid = textures[0];
+                SLog.d(TAG, "glGenTextures U = " + _uvtid);
+            }
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _uvtid);
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE_ALPHA, _video_width / 2, _video_height / 2, 0, GLES20.GL_LUMINANCE_ALPHA, GLES20.GL_UNSIGNED_BYTE, uv);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
         } else {
-	        // building texture for U data
-	        if (_utid < 0 || videoSizeChanged) {
-	            if (_utid >= 0) {
-	                SLog.d(TAG, "glDeleteTextures U");
-	                GLES20.glDeleteTextures(1, new int[] { _utid }, 0);
-	                checkGlError("glDeleteTextures");
-	            }
-	            int[] textures = new int[1];
-	            GLES20.glGenTextures(1, textures, 0);
-	            checkGlError("glGenTextures");
-	            _utid = textures[0];
-	            SLog.d(TAG, "glGenTextures U = " + _utid);
-	        }
-	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _utid);
-	        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, _video_width / 2, _video_height / 2, 0,
-	                GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, u);
-	        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-	        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-	
-	        // building texture for V data
-	        if (_vtid < 0 || videoSizeChanged) {
-	            if (_vtid >= 0) {
-	                SLog.d(TAG, "glDeleteTextures V");
-	                GLES20.glDeleteTextures(1, new int[] { _vtid }, 0);
-	                checkGlError("glDeleteTextures");
-	            }
-	            int[] textures = new int[1];
-	            GLES20.glGenTextures(1, textures, 0);
-	            checkGlError("glGenTextures");
-	            _vtid = textures[0];
-	            SLog.d(TAG, "glGenTextures V = " + _vtid);
-	        }
-	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _vtid);
-	        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, _video_width / 2, _video_height / 2, 0,
-	                GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, v);
-	        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-	        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+            // building texture for U data
+            if (_utid < 0 || videoSizeChanged) {
+                if (_utid >= 0) {
+                    SLog.d(TAG, "glDeleteTextures U");
+                    GLES20.glDeleteTextures(1, new int[]{_utid}, 0);
+                    checkGlError("glDeleteTextures");
+                }
+                int[] textures = new int[1];
+                GLES20.glGenTextures(1, textures, 0);
+                checkGlError("glGenTextures");
+                _utid = textures[0];
+                SLog.d(TAG, "glGenTextures U = " + _utid);
+            }
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _utid);
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, _video_width / 2, _video_height / 2, 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, u);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+
+            // building texture for V data
+            if (_vtid < 0 || videoSizeChanged) {
+                if (_vtid >= 0) {
+                    SLog.d(TAG, "glDeleteTextures V");
+                    GLES20.glDeleteTextures(1, new int[]{_vtid}, 0);
+                    checkGlError("glDeleteTextures");
+                }
+                int[] textures = new int[1];
+                GLES20.glGenTextures(1, textures, 0);
+                checkGlError("glGenTextures");
+                _vtid = textures[0];
+                SLog.d(TAG, "glGenTextures V = " + _vtid);
+            }
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _vtid);
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, _video_width / 2, _video_height / 2, 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, v);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
         }
         return true;
     }
@@ -402,7 +393,7 @@ public class GLProgramJava implements GLProgram{
     public void drawFrame() {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-        
+
         GLES20.glUseProgram(_program);
         checkGlError("glUseProgram");
 
@@ -420,17 +411,17 @@ public class GLProgramJava implements GLProgram{
         GLES20.glUniform1i(_yhandle, _tIindex);
 
         if (Constant.BIND_UV_DATA) {
-	        GLES20.glActiveTexture(_textureII);
-	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _uvtid);
-	        GLES20.glUniform1i(_uvhandle, _tIIindex);
+            GLES20.glActiveTexture(_textureII);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _uvtid);
+            GLES20.glUniform1i(_uvhandle, _tIIindex);
         } else {
-	        GLES20.glActiveTexture(_textureII);
-	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _utid);
-	        GLES20.glUniform1i(_uhandle, _tIIindex);
-	
-	        GLES20.glActiveTexture(_textureIII);
-	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _vtid);
-	        GLES20.glUniform1i(_vhandle, _tIIIindex);
+            GLES20.glActiveTexture(_textureII);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _utid);
+            GLES20.glUniform1i(_uhandle, _tIIindex);
+
+            GLES20.glActiveTexture(_textureIII);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _vtid);
+            GLES20.glUniform1i(_vhandle, _tIIIindex);
         }
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
         GLES20.glFinish();
@@ -505,22 +496,22 @@ public class GLProgramJava implements GLProgram{
             _coord_buffer.position(0);
         }
     }
-    
-	@Override
-	public void destroyGL() {
+
+    @Override
+    public void destroyGL() {
         if (_ytid >= 0) {
-            GLES20.glDeleteTextures(1, new int[] { _uvtid }, 0);
+            GLES20.glDeleteTextures(1, new int[]{_uvtid}, 0);
         }
         if (_utid >= 0) {
-            GLES20.glDeleteTextures(1, new int[] { _uvtid }, 0);
+            GLES20.glDeleteTextures(1, new int[]{_uvtid}, 0);
         }
         if (_vtid >= 0) {
-            GLES20.glDeleteTextures(1, new int[] { _uvtid }, 0);
+            GLES20.glDeleteTextures(1, new int[]{_uvtid}, 0);
         }
         if (_uvtid >= 0) {
-            GLES20.glDeleteTextures(1, new int[] { _uvtid }, 0);
+            GLES20.glDeleteTextures(1, new int[]{_uvtid}, 0);
         }
-	}
+    }
 
     private void checkGlError(String op) {
         int error;
@@ -529,37 +520,11 @@ public class GLProgramJava implements GLProgram{
             throw new RuntimeException(op + ": glError " + error);
         }
     }
-    
-    private static final String VERTEX_SHADER = 
-    		"attribute vec4 vPosition;\n" + 
-    		"attribute vec2 a_texCoord;\n" +
-    		"varying vec2 tc;\n" +
-    		"void main() {\n" +
-    			"gl_Position = vPosition;\n" +
-    			"tc = a_texCoord;\n" +
-    		"}\n";
 
-    private static final String FRAGMENT_SHADER = 
-    		"precision mediump float;\n" + 
-    		"uniform sampler2D tex_y;\n" +
-    		"uniform sampler2D tex_u;\n" +
-    		"uniform sampler2D tex_v;\n" +
-    		"varying vec2 tc;\n" +
-    		"void main() {\n" +
-    			"vec4 c = vec4((texture2D(tex_y, tc).r - 16./255.) * 1.164);\n" +
-    			"vec4 U = vec4(texture2D(tex_u, tc).r - 128./255.);\n" +
-    			"vec4 V = vec4(texture2D(tex_v, tc).r - 128./255.);\n" +
-    			"c += V * vec4(1.596, -0.813, 0, 0);\n" +
-    			"c += U * vec4(0, -0.392, 2.017, 0);\n" + 
-    			"c.a = 1.0;\n" +
-    			"gl_FragColor = c;\n" +
-    		"}\n";
-    private static final String FRAGMENT_BIND_UV_SHADER = 
-    		"precision mediump float;\n" + 
-    		"uniform sampler2D tex_y;\n" +
-    		"uniform sampler2D tex_uv;\n" +
-    		"varying vec2 tc;\n" +
-    		"void main() {\n" +
+    private static final String VERTEX_SHADER = "attribute vec4 vPosition;\n" + "attribute vec2 a_texCoord;\n" + "varying vec2 tc;\n" + "void main() {\n" + "gl_Position = vPosition;\n" + "tc = a_texCoord;\n" + "}\n";
+
+    private static final String FRAGMENT_SHADER = "precision mediump float;\n" + "uniform sampler2D tex_y;\n" + "uniform sampler2D tex_u;\n" + "uniform sampler2D tex_v;\n" + "varying vec2 tc;\n" + "void main() {\n" + "vec4 c = vec4((texture2D(tex_y, tc).r - 16./255.) * 1.164);\n" + "vec4 U = vec4(texture2D(tex_u, tc).r - 128./255.);\n" + "vec4 V = vec4(texture2D(tex_v, tc).r - 128./255.);\n" + "c += V * vec4(1.596, -0.813, 0, 0);\n" + "c += U * vec4(0, -0.392, 2.017, 0);\n" + "c.a = 1.0;\n" + "gl_FragColor = c;\n" + "}\n";
+    private static final String FRAGMENT_BIND_UV_SHADER = "precision mediump float;\n" + "uniform sampler2D tex_y;\n" + "uniform sampler2D tex_uv;\n" + "varying vec2 tc;\n" + "void main() {\n" +
     			/*
     			"vec4 c = vec4((texture2D(tex_y, tc).r - 16./255.) * 1.164);\n" +
     			"vec4 U = vec4(texture2D(tex_uv, tc).r - 128./255.);\n" +
@@ -568,15 +533,6 @@ public class GLProgramJava implements GLProgram{
     			"c += U * vec4(0, -0.392, 2.017, 0);\n" + 
     			"c.a = 1.0;\n" +
     			*/
-    		    "vec3 yuv;\n" +
-    	    	"vec3 rgb;\n" +
-    	        "yuv.x = texture2D(tex_y, tc).r;\n" +
-	            "yuv.y = texture2D(tex_uv, tc).r - 0.5;\n" +
-	            "yuv.z = texture2D(tex_uv, tc).a - 0.5;\n" +
-			    "rgb = mat3( 1,       1,         1,\n" +
-			    "        0,     -0.344,  1.772,\n" +
-			    "        1.402, -0.714,   0) * yuv;\n" +
-    			"gl_FragColor = vec4(rgb.z, rgb.y, rgb.x, 1);\n" +
-    		"}\n";
+            "vec3 yuv;\n" + "vec3 rgb;\n" + "yuv.x = texture2D(tex_y, tc).r;\n" + "yuv.y = texture2D(tex_uv, tc).r - 0.5;\n" + "yuv.z = texture2D(tex_uv, tc).a - 0.5;\n" + "rgb = mat3( 1,       1,         1,\n" + "        0,     -0.344,  1.772,\n" + "        1.402, -0.714,   0) * yuv;\n" + "gl_FragColor = vec4(rgb.z, rgb.y, rgb.x, 1);\n" + "}\n";
 
 }

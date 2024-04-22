@@ -78,8 +78,7 @@ public class DeleteHandler extends DataHandler {
             deleteGenericData(baseObj.getClass(), supportedGenericFields, baseObj.getBaseObjId());
             Collection<AssociationsInfo> associationInfos = analyzeAssociations(baseObj);
             int rowsAffected = deleteCascade(baseObj);
-            rowsAffected += mDatabase.delete(baseObj.getTableName(), "id = "
-                    + baseObj.getBaseObjId(), null);
+            rowsAffected += mDatabase.delete(baseObj.getTableName(), "id = " + baseObj.getBaseObjId(), null);
             clearAssociatedModelSaveState(baseObj, associationInfos);
             return rowsAffected;
         }
@@ -102,8 +101,7 @@ public class DeleteHandler extends DataHandler {
         deleteGenericData(modelClass, supportedGenericFields, id);
         analyzeAssociations(modelClass);
         int rowsAffected = deleteCascade(modelClass, id);
-        rowsAffected += mDatabase.delete(getTableName(modelClass),
-                "id = " + id, null);
+        rowsAffected += mDatabase.delete(getTableName(modelClass), "id = " + id, null);
         getForeignKeyTableToDelete().clear();
         return rowsAffected;
     }
@@ -123,8 +121,7 @@ public class DeleteHandler extends DataHandler {
         if (conditions != null && conditions.length > 0) {
             conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
         }
-        return mDatabase.delete(tableName, getWhereClause(conditions),
-                getWhereArgs(conditions));
+        return mDatabase.delete(tableName, getWhereClause(conditions), getWhereArgs(conditions));
     }
 
     @SuppressWarnings("unchecked")
@@ -147,8 +144,7 @@ public class DeleteHandler extends DataHandler {
         }
         analyzeAssociations(modelClass);
         int rowsAffected = deleteAllCascade(modelClass, conditions);
-        rowsAffected += mDatabase.delete(getTableName(modelClass), getWhereClause(conditions),
-                getWhereArgs(conditions));
+        rowsAffected += mDatabase.delete(getTableName(modelClass), getWhereClause(conditions), getWhereArgs(conditions));
         getForeignKeyTableToDelete().clear();
         return rowsAffected;
     }
@@ -161,22 +157,16 @@ public class DeleteHandler extends DataHandler {
      * @param modelClass To get associations of this class.
      */
     private void analyzeAssociations(Class<?> modelClass) {
-        Collection<AssociationsInfo> associationInfos = getAssociationInfo(modelClass
-                .getName());
+        Collection<AssociationsInfo> associationInfos = getAssociationInfo(modelClass.getName());
         for (AssociationsInfo associationInfo : associationInfos) {
-            String associatedTableName = DBUtility
-                    .getTableNameByClassName(associationInfo
-                            .getAssociatedClassName());
-            if (associationInfo.getAssociationType() == Const.Model.MANY_TO_ONE
-                    || associationInfo.getAssociationType() == Const.Model.ONE_TO_ONE) {
-                String classHoldsForeignKey = associationInfo
-                        .getClassHoldsForeignKey();
+            String associatedTableName = DBUtility.getTableNameByClassName(associationInfo.getAssociatedClassName());
+            if (associationInfo.getAssociationType() == Const.Model.MANY_TO_ONE || associationInfo.getAssociationType() == Const.Model.ONE_TO_ONE) {
+                String classHoldsForeignKey = associationInfo.getClassHoldsForeignKey();
                 if (!modelClass.getName().equals(classHoldsForeignKey)) {
                     getForeignKeyTableToDelete().add(associatedTableName);
                 }
             } else if (associationInfo.getAssociationType() == Const.Model.MANY_TO_MANY) {
-                String joinTableName = DBUtility.getIntermediateTableName(
-                        getTableName(modelClass), associatedTableName);
+                String joinTableName = DBUtility.getIntermediateTableName(getTableName(modelClass), associatedTableName);
                 joinTableName = BaseUtility.changeCase(joinTableName);
                 getForeignKeyTableToDelete().add(joinTableName);
             }
@@ -199,8 +189,7 @@ public class DeleteHandler extends DataHandler {
         int rowsAffected = 0;
         for (String associatedTableName : getForeignKeyTableToDelete()) {
             String fkName = getForeignKeyColumnName(getTableName(modelClass));
-            rowsAffected += mDatabase.delete(associatedTableName, fkName
-                    + " = " + id, null);
+            rowsAffected += mDatabase.delete(associatedTableName, fkName + " = " + id, null);
         }
         return rowsAffected;
     }
@@ -217,8 +206,7 @@ public class DeleteHandler extends DataHandler {
                 whereClause.append(" where ").append(buildConditionString(conditions));
             }
             whereClause.append(")");
-            rowsAffected += mDatabase.delete(associatedTableName,
-                    BaseUtility.changeCase(whereClause.toString()), null);
+            rowsAffected += mDatabase.delete(associatedTableName, BaseUtility.changeCase(whereClause.toString()), null);
         }
         return rowsAffected;
     }
@@ -240,8 +228,7 @@ public class DeleteHandler extends DataHandler {
      */
     private Collection<AssociationsInfo> analyzeAssociations(LitePalSupport baseObj) {
         try {
-            Collection<AssociationsInfo> associationInfos = getAssociationInfo(baseObj
-                    .getClassName());
+            Collection<AssociationsInfo> associationInfos = getAssociationInfo(baseObj.getClassName());
             analyzeAssociatedModels(baseObj, associationInfos);
             return associationInfos;
         } catch (Exception e) {
@@ -257,15 +244,11 @@ public class DeleteHandler extends DataHandler {
      * @param baseObj          The record to delete.
      * @param associationInfos The associated info.
      */
-    private void clearAssociatedModelSaveState(LitePalSupport baseObj,
-                                               Collection<AssociationsInfo> associationInfos) {
+    private void clearAssociatedModelSaveState(LitePalSupport baseObj, Collection<AssociationsInfo> associationInfos) {
         try {
             for (AssociationsInfo associationInfo : associationInfos) {
-                if (associationInfo.getAssociationType() == Const.Model.MANY_TO_ONE
-                        && !baseObj.getClassName().equals(
-                        associationInfo.getClassHoldsForeignKey())) {
-                    Collection<LitePalSupport> associatedModels = getAssociatedModels(
-                            baseObj, associationInfo);
+                if (associationInfo.getAssociationType() == Const.Model.MANY_TO_ONE && !baseObj.getClassName().equals(associationInfo.getClassHoldsForeignKey())) {
+                    Collection<LitePalSupport> associatedModels = getAssociatedModels(baseObj, associationInfo);
                     if (associatedModels != null && !associatedModels.isEmpty()) {
                         for (LitePalSupport model : associatedModels) {
                             if (model != null) {
@@ -274,8 +257,7 @@ public class DeleteHandler extends DataHandler {
                         }
                     }
                 } else if (associationInfo.getAssociationType() == Const.Model.ONE_TO_ONE) {
-                    LitePalSupport model = getAssociatedModel(baseObj,
-                            associationInfo);
+                    LitePalSupport model = getAssociatedModel(baseObj, associationInfo);
                     if (model != null) {
                         model.clearSavedState();
                     }
@@ -313,12 +295,10 @@ public class DeleteHandler extends DataHandler {
      */
     private int deleteAssociatedForeignKeyRows(LitePalSupport baseObj) {
         int rowsAffected = 0;
-        Map<String, Set<Long>> associatedModelMap = baseObj
-                .getAssociatedModelsMapWithFK();
+        Map<String, Set<Long>> associatedModelMap = baseObj.getAssociatedModelsMapWithFK();
         for (String associatedTableName : associatedModelMap.keySet()) {
             String fkName = getForeignKeyColumnName(baseObj.getTableName());
-            rowsAffected += mDatabase.delete(associatedTableName, fkName
-                    + " = " + baseObj.getBaseObjId(), null);
+            rowsAffected += mDatabase.delete(associatedTableName, fkName + " = " + baseObj.getBaseObjId(), null);
         }
         return rowsAffected;
     }
@@ -332,14 +312,11 @@ public class DeleteHandler extends DataHandler {
      */
     private int deleteAssociatedJoinTableRows(LitePalSupport baseObj) {
         int rowsAffected = 0;
-        Set<String> associatedTableNames = baseObj
-                .getAssociatedModelsMapForJoinTable().keySet();
+        Set<String> associatedTableNames = baseObj.getAssociatedModelsMapForJoinTable().keySet();
         for (String associatedTableName : associatedTableNames) {
-            String joinTableName = DBUtility.getIntermediateTableName(
-                    baseObj.getTableName(), associatedTableName);
+            String joinTableName = DBUtility.getIntermediateTableName(baseObj.getTableName(), associatedTableName);
             String fkName = getForeignKeyColumnName(baseObj.getTableName());
-            rowsAffected += mDatabase.delete(joinTableName, fkName + " = "
-                    + baseObj.getBaseObjId(), null);
+            rowsAffected += mDatabase.delete(joinTableName, fkName + " = " + baseObj.getBaseObjId(), null);
         }
         return rowsAffected;
     }

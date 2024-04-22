@@ -43,8 +43,7 @@ public class FileItem {
         this.fileModifiedTime = fileModifiedTime;
     }
 
-    public FileItem(int filePic, String fileName, String filePath,
-                    String fileModifiedTime) {
+    public FileItem(int filePic, String fileName, String filePath, String fileModifiedTime) {
         super();
         this.filePic = filePic;
         this.fileName = fileName;
@@ -54,9 +53,7 @@ public class FileItem {
 
     @Override
     public String toString() {
-        return "FileItem [filePic=" + filePic + ", fileName=" + fileName
-                + ", filePath=" + filePath + ", fileModifiedTime="
-                + fileModifiedTime + "]";
+        return "FileItem [filePic=" + filePic + ", fileName=" + fileName + ", filePath=" + filePath + ", fileModifiedTime=" + fileModifiedTime + "]";
     }
 
 }

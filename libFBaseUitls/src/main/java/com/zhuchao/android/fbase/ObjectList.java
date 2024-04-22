@@ -297,8 +297,7 @@ public class ObjectList {
         }
     }
 
-    public void saveAsPersistent()
-    {
+    public void saveAsPersistent() {
         Set<Map.Entry<String, Object>> set = FHashMap.entrySet();
         for (Map.Entry<String, Object> stringObjectEntry : set) {
             //stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
@@ -360,8 +359,7 @@ public class ObjectList {
 
             for (Map.Entry<String, Object> stringObjectEntry : set) {
                 //stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
-                jsonObject.put(((Map.Entry<?, ?>) stringObjectEntry).getKey().toString(),
-                        ((Map.Entry<?, ?>) stringObjectEntry).getValue());
+                jsonObject.put(((Map.Entry<?, ?>) stringObjectEntry).getKey().toString(), ((Map.Entry<?, ?>) stringObjectEntry).getValue());
             }
             stringBuffer.append(jsonObject.toString());
             fw.write(stringBuffer.toString());

@@ -105,19 +105,15 @@ public abstract class CameraController {
          * Returns whether any of the supplied sizes support the requested fps.
          */
         public static boolean supportsFrameRate(List<Size> sizes, int fps) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "supportsFrameRate: " + fps);
-            if (sizes == null)
-                return false;
+            if (MyDebug.LOG) Log.d(TAG, "supportsFrameRate: " + fps);
+            if (sizes == null) return false;
             for (Size size : sizes) {
                 if (size.supportsFrameRate(fps)) {
-                    if (MyDebug.LOG)
-                        Log.d(TAG, "fps is supported");
+                    if (MyDebug.LOG) Log.d(TAG, "fps is supported");
                     return true;
                 }
             }
-            if (MyDebug.LOG)
-                Log.d(TAG, "fps is NOT supported");
+            if (MyDebug.LOG) Log.d(TAG, "fps is NOT supported");
             return false;
         }
 
@@ -184,16 +180,14 @@ public abstract class CameraController {
 
         boolean supportsFrameRate(double fps) {
             for (int[] f : this.fps_ranges) {
-                if (f[0] <= fps && fps <= f[1])
-                    return true;
+                if (f[0] <= fps && fps <= f[1]) return true;
             }
             return false;
         }
 
         @Override
         public boolean equals(Object o) {
-            if (!(o instanceof Size))
-                return false;
+            if (!(o instanceof Size)) return false;
             Size that = (Size) o;
             return this.width == that.width && this.height == that.height;
         }
@@ -551,14 +545,7 @@ public abstract class CameraController {
     public abstract boolean getVideoStabilization();
 
     public enum TonemapProfile {
-        TONEMAPPROFILE_OFF,
-        TONEMAPPROFILE_REC709,
-        TONEMAPPROFILE_SRGB,
-        TONEMAPPROFILE_LOG,
-        TONEMAPPROFILE_GAMMA,
-        TONEMAPPROFILE_JTVIDEO,
-        TONEMAPPROFILE_JTLOG,
-        TONEMAPPROFILE_JTLOG2
+        TONEMAPPROFILE_OFF, TONEMAPPROFILE_REC709, TONEMAPPROFILE_SRGB, TONEMAPPROFILE_LOG, TONEMAPPROFILE_GAMMA, TONEMAPPROFILE_JTVIDEO, TONEMAPPROFILE_JTLOG, TONEMAPPROFILE_JTLOG2
     }
 
     /**
@@ -713,10 +700,7 @@ public abstract class CameraController {
     public abstract int getCameraOrientation();
 
     public enum Facing {
-        FACING_BACK,
-        FACING_FRONT,
-        FACING_EXTERNAL,
-        FACING_UNKNOWN // returned if the Camera API returned an error or an unknown type
+        FACING_BACK, FACING_FRONT, FACING_EXTERNAL, FACING_UNKNOWN // returned if the Camera API returned an error or an unknown type
     }
 
     /**
@@ -820,14 +804,10 @@ public abstract class CameraController {
             }
             // make sure result is valid
             if (!values.contains(value)) {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "value not valid!");
-                if (values.contains(default_value))
-                    value = default_value;
-                else
-                    value = values.get(0);
-                if (MyDebug.LOG)
-                    Log.d(TAG, "value is now: " + value);
+                if (MyDebug.LOG) Log.d(TAG, "value not valid!");
+                if (values.contains(default_value)) value = default_value;
+                else value = values.get(0);
+                if (MyDebug.LOG) Log.d(TAG, "value is now: " + value);
             }
             return new SupportedValues(values, value);
         }

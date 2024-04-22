@@ -4,20 +4,27 @@
 package org.opencv.objdetect;
 
 
-
 // C++: class DetectorParameters
+
 /**
  * struct DetectorParameters is used by ArucoDetector
  */
 public class DetectorParameters {
 
     protected final long nativeObj;
-    protected DetectorParameters(long addr) { nativeObj = addr; }
 
-    public long getNativeObjAddr() { return nativeObj; }
+    protected DetectorParameters(long addr) {
+        nativeObj = addr;
+    }
+
+    public long getNativeObjAddr() {
+        return nativeObj;
+    }
 
     // internal usage only
-    public static DetectorParameters __fromPtr__(long addr) { return new DetectorParameters(addr); }
+    public static DetectorParameters __fromPtr__(long addr) {
+        return new DetectorParameters(addr);
+    }
 
     //
     // C++:   cv::aruco::DetectorParameters::DetectorParameters()
@@ -622,7 +629,6 @@ public class DetectorParameters {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
 
 
     // C++:   cv::aruco::DetectorParameters::DetectorParameters()

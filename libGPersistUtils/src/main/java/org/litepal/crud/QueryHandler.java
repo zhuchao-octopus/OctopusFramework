@@ -52,8 +52,7 @@ public class QueryHandler extends DataHandler {
      * @return An object with found data from database, or null.
      */
     public <T> T onFind(Class<T> modelClass, long id, boolean isEager) {
-        List<T> dataList = query(modelClass, null, "id = ?", new String[]{String.valueOf(id)},
-                null, null, null, null, getForeignKeyAssociations(modelClass.getName(), isEager));
+        List<T> dataList = query(modelClass, null, "id = ?", new String[]{String.valueOf(id)}, null, null, null, null, getForeignKeyAssociations(modelClass.getName(), isEager));
         if (dataList.size() > 0) {
             return dataList.get(0);
         }
@@ -69,8 +68,7 @@ public class QueryHandler extends DataHandler {
      * @return An object with data of first row, or null.
      */
     public <T> T onFindFirst(Class<T> modelClass, boolean isEager) {
-        List<T> dataList = query(modelClass, null, null, null, null, null, "id", "1",
-                getForeignKeyAssociations(modelClass.getName(), isEager));
+        List<T> dataList = query(modelClass, null, null, null, null, null, "id", "1", getForeignKeyAssociations(modelClass.getName(), isEager));
         if (dataList.size() > 0) {
             return dataList.get(0);
         }
@@ -86,8 +84,7 @@ public class QueryHandler extends DataHandler {
      * @return An object with data of last row, or null.
      */
     public <T> T onFindLast(Class<T> modelClass, boolean isEager) {
-        List<T> dataList = query(modelClass, null, null, null, null, null, "id desc", "1",
-                getForeignKeyAssociations(modelClass.getName(), isEager));
+        List<T> dataList = query(modelClass, null, null, null, null, null, "id desc", "1", getForeignKeyAssociations(modelClass.getName(), isEager));
         if (dataList.size() > 0) {
             return dataList.get(0);
         }
@@ -106,11 +103,9 @@ public class QueryHandler extends DataHandler {
     public <T> List<T> onFindAll(Class<T> modelClass, boolean isEager, long... ids) {
         List<T> dataList;
         if (isAffectAllLines(ids)) {
-            dataList = query(modelClass, null, null, null, null, null, "id", null,
-                    getForeignKeyAssociations(modelClass.getName(), isEager));
+            dataList = query(modelClass, null, null, null, null, null, "id", null, getForeignKeyAssociations(modelClass.getName(), isEager));
         } else {
-            dataList = query(modelClass, null, getWhereOfIdsWithOr(ids), null, null, null, "id",
-                    null, getForeignKeyAssociations(modelClass.getName(), isEager));
+            dataList = query(modelClass, null, getWhereOfIdsWithOr(ids), null, null, null, "id", null, getForeignKeyAssociations(modelClass.getName(), isEager));
         }
         return dataList;
     }
@@ -132,16 +127,13 @@ public class QueryHandler extends DataHandler {
      * @param isEager    True to load the associated models, false not.
      * @return An object list with found data from database, or an empty list.
      */
-    public <T> List<T> onFind(Class<T> modelClass, String[] columns, String[] conditions, String orderBy,
-                              String limit, boolean isEager) {
+    public <T> List<T> onFind(Class<T> modelClass, String[] columns, String[] conditions, String orderBy, String limit, boolean isEager) {
         BaseUtility.checkConditionsCorrect(conditions);
         if (conditions != null && conditions.length > 0) {
             conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
         }
         orderBy = DBUtility.convertOrderByClauseToValidName(orderBy);
-        return query(modelClass, columns, getWhereClause(conditions),
-                getWhereArgs(conditions), null, null, orderBy, limit,
-                getForeignKeyAssociations(modelClass.getName(), isEager));
+        return query(modelClass, columns, getWhereClause(conditions), getWhereArgs(conditions), null, null, orderBy, limit, getForeignKeyAssociations(modelClass.getName(), isEager));
     }
 
     /**
@@ -176,8 +168,7 @@ public class QueryHandler extends DataHandler {
         if (conditions != null && conditions.length > 0) {
             conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
         }
-        return mathQuery(tableName, new String[]{"avg(" + column + ")"}, conditions,
-                double.class);
+        return mathQuery(tableName, new String[]{"avg(" + column + ")"}, conditions, double.class);
     }
 
     /**

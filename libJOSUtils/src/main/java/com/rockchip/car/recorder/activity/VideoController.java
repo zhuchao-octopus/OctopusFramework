@@ -16,9 +16,9 @@
 
 package com.rockchip.car.recorder.activity;
 
-import com.rockchip.car.recorder.model.CameraInfo;
-
 import android.view.View;
+
+import com.rockchip.car.recorder.model.CameraInfo;
 
 
 public interface VideoController {
@@ -29,26 +29,34 @@ public interface VideoController {
     public static final int SNAPSHOT_IN_PROGRESS = 3;
     // Switching between cameras.
     public static final int SWITCHING_CAMERA = 4;
+
     public void onReviewDoneClicked(View view);
+
     public void onReviewCancelClicked(View viwe);
+
     public void onReviewPlayClicked(View view);
 
     public boolean isVideoCaptureIntent();
+
     public boolean isInReviewMode();
+
     public int onZoomChanged(int index);
 
     public void onSingleTapUp(View view, int x, int y);
 
     public void startPreview(int cameraId);
+
     public void stopPreview(int cameraId);
 
     public void updateCameraOrientation();
 
     // Callbacks for camera_surfaceview preview UI events.
     public void onPreviewUIReady(int cameraId);
+
     public void onPreviewUIDestroyed(int cameraId);
 
     public void onShutterButtonClick();
+
     public void onRecordButtonClick();
 
     public boolean isRecording();

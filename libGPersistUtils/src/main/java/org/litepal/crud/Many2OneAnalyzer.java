@@ -51,9 +51,7 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
      * @throws IllegalAccessException
      * @throws java.lang.reflect.InvocationTargetException
      */
-    void analyze(LitePalSupport baseObj, AssociationsInfo associationInfo) throws SecurityException,
-            IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
+    void analyze(LitePalSupport baseObj, AssociationsInfo associationInfo) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         if (baseObj.getClassName().equals(associationInfo.getClassHoldsForeignKey())) {
             analyzeManySide(baseObj, associationInfo);
         } else {
@@ -79,16 +77,12 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
      * @throws IllegalAccessException
      * @throws java.lang.reflect.InvocationTargetException
      */
-    private void analyzeManySide(LitePalSupport baseObj, AssociationsInfo associationInfo)
-            throws SecurityException, IllegalArgumentException, NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException {
+    private void analyzeManySide(LitePalSupport baseObj, AssociationsInfo associationInfo) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         LitePalSupport associatedModel = getAssociatedModel(baseObj, associationInfo);
         if (associatedModel != null) {
             // now it's m2o bidirectional association.
-            Collection<LitePalSupport> tempCollection = getReverseAssociatedModels(associatedModel,
-                    associationInfo);
-            Collection<LitePalSupport> reverseAssociatedModels = checkAssociatedModelCollection(
-                    tempCollection, associationInfo.getAssociateSelfFromOtherModel());
+            Collection<LitePalSupport> tempCollection = getReverseAssociatedModels(associatedModel, associationInfo);
+            Collection<LitePalSupport> reverseAssociatedModels = checkAssociatedModelCollection(tempCollection, associationInfo.getAssociateSelfFromOtherModel());
             setReverseAssociatedModels(associatedModel, associationInfo, reverseAssociatedModels);
             dealAssociatedModelOnManySide(reverseAssociatedModels, baseObj, associatedModel);
         } else {
@@ -113,13 +107,10 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
      * @throws IllegalAccessException
      * @throws java.lang.reflect.InvocationTargetException
      */
-    private void analyzeOneSide(LitePalSupport baseObj, AssociationsInfo associationInfo)
-            throws SecurityException, IllegalArgumentException, NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException {
+    private void analyzeOneSide(LitePalSupport baseObj, AssociationsInfo associationInfo) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Collection<LitePalSupport> associatedModels = getAssociatedModels(baseObj, associationInfo);
         if (associatedModels == null || associatedModels.isEmpty()) {
-            String tableName = DBUtility.getTableNameByClassName(associationInfo
-                    .getAssociatedClassName());
+            String tableName = DBUtility.getTableNameByClassName(associationInfo.getAssociatedClassName());
             baseObj.addAssociatedTableNameToClearFK(tableName);
             return;
         }
@@ -140,14 +131,12 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
      * @param associatedModel  The associated info analyzed by
      *                         {@link LitePalBase#getAssociationInfo(String)}.
      */
-    private void dealAssociatedModelOnManySide(Collection<LitePalSupport> associatedModels,
-                                               LitePalSupport baseObj, LitePalSupport associatedModel) {
+    private void dealAssociatedModelOnManySide(Collection<LitePalSupport> associatedModels, LitePalSupport baseObj, LitePalSupport associatedModel) {
         if (!associatedModels.contains(baseObj)) {
             associatedModels.add(baseObj);
         }
         if (associatedModel.isSaved()) {
-            baseObj.addAssociatedModelWithoutFK(associatedModel.getTableName(),
-                    associatedModel.getBaseObjId());
+            baseObj.addAssociatedModelWithoutFK(associatedModel.getTableName(), associatedModel.getBaseObjId());
         }
     }
 

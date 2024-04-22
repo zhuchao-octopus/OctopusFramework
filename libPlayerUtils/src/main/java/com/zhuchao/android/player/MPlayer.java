@@ -14,6 +14,7 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 
 import androidx.annotation.NonNull;
+
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.eventinterface.PlaybackEvent;
 import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
@@ -26,12 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionListener,
-        MediaPlayer.OnSeekCompleteListener,
-        MediaPlayer.OnErrorListener,
-        MediaPlayer.OnBufferingUpdateListener,
-        MediaPlayer.OnVideoSizeChangedListener,
-        SurfaceHolder.Callback {
+public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionListener, MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnErrorListener, MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnVideoSizeChangedListener, SurfaceHolder.Callback {
 
     private final String TAG = "MPlayer";
     private MediaPlayer mediaPlayer = null;
@@ -59,7 +55,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             playerStatusInfo.setEventType(PlaybackEvent.Status_Opening);
             //MMLog.i(TAG, "CallbackProgress()");
             CallbackProgress();
-            MMLog.i(TAG, "setSource source = "+filePath);
+            MMLog.i(TAG, "setSource source = " + filePath);
             mediaPlayer.setDataSource(filePath);
             MMLog.i(TAG, "setSource end");
         } catch (IllegalArgumentException e) {
@@ -119,8 +115,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     public void setSurfaceView(@NotNull SurfaceView surfaceView) {
         mSurfaceView = surfaceView;
         mTextureView = null;
-        if (mediaPlayer == null)
-            mediaPlayer = new MediaPlayer();
+        if (mediaPlayer == null) mediaPlayer = new MediaPlayer();
         if (mSurfaceView == null || mSurfaceView.getHolder() == null) {
             MMLog.log(TAG, "setSurfaceView() mSurfaceView / Holder = null");
             return;
@@ -139,18 +134,15 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                     if (mSurfaceView.getHolder().getSurface().isValid()) {
                         mediaPlayer.setDisplay(mSurfaceView.getHolder());
                         MMLog.d(TAG, "setSurfaceView().setDisplay  to " + surfaceView.toString());
-                    }
-                    else {
+                    } else {
                         MMLog.d(TAG, "setSurfaceView().setDisplay failed,is invalid");
                     }
-                } else
-                    MMLog.d(TAG, "setSurfaceView().getHolder is not created ,is invalid");
+                } else MMLog.d(TAG, "setSurfaceView().getHolder is not created ,is invalid");
             } catch (Exception e) {
                 //e.printStackTrace();
                 MMLog.d(TAG, "setSurfaceView().setDisplay " + e.toString());
             }
-        } else
-            MMLog.d(TAG, "setSurfaceView().mediaPlayer is null");
+        } else MMLog.d(TAG, "setSurfaceView().mediaPlayer is null");
     }
 
     @Override
@@ -278,10 +270,8 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public Boolean isPlaying() {
         if (mediaPlayer != null) {
-            if (playerStatusInfo.getEventType() == PlaybackEvent.Status_Playing)
-                return true;
-            else
-                return mediaPlayer.isPlaying();
+            if (playerStatusInfo.getEventType() == PlaybackEvent.Status_Playing) return true;
+            else return mediaPlayer.isPlaying();
         } else {
             return false;
         }
@@ -335,8 +325,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public float getPosition() {
         try {
-            if ((mediaPlayer != null) && (mediaPlayer.isPlaying()))
-                playerStatusInfo.setPositionChanged(mediaPlayer.getCurrentPosition());
+            if ((mediaPlayer != null) && (mediaPlayer.isPlaying())) playerStatusInfo.setPositionChanged(mediaPlayer.getCurrentPosition());
         } catch (Exception e) {
             MMLog.e(TAG, "getPosition() " + e.toString());
         }
@@ -387,8 +376,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void setScale(float scale) {
         try {
-            if (mediaPlayer != null)
-                mediaPlayer.setVideoScalingMode((int) scale);
+            if (mediaPlayer != null) mediaPlayer.setVideoScalingMode((int) scale);
         } catch (Exception e) {
             MMLog.e(TAG, "setScale() " + e.toString());
         }
@@ -420,8 +408,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             }
             assert trackInfo != null;
             return trackInfo.length;
-        } else
-            return 0;
+        } else return 0;
     }
 
     @Override
@@ -447,8 +434,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public int getAudioTrack() {
         try {
-            if (mediaPlayer != null)
-                return mediaPlayer.getSelectedTrack(MEDIA_TRACK_TYPE_AUDIO);
+            if (mediaPlayer != null) return mediaPlayer.getSelectedTrack(MEDIA_TRACK_TYPE_AUDIO);
         } catch (IllegalStateException e) {
             MMLog.e(TAG, "getAudioTrack() " + e.toString());
         }
@@ -541,8 +527,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         MMLog.log(TAG, "surfaceCreated," + surfaceHolder.toString());
         playerStatusInfo.setSurfacePrepared(true);
-        if (mediaPlayer == null)
-            mediaPlayer = new MediaPlayer();
+        if (mediaPlayer == null) mediaPlayer = new MediaPlayer();
         mediaPlayer.setDisplay(surfaceHolder);
         //surfaceHolder.setSizeFromLayout();
         //surfaceHolder.setFixedSize(w,h);
@@ -580,11 +565,9 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
             CallbackProgress();//通知doNothing
 
-            if (progressThread != null)
-                progressThread.finish();
+            if (progressThread != null) progressThread.finish();
             progressThread = null;
-            if (mediaPlayer.isPlaying())
-                mediaPlayer.stop();
+            if (mediaPlayer.isPlaying()) mediaPlayer.stop();
             mediaPlayer.reset();
             mediaPlayer.setOnCompletionListener(null);
             mediaPlayer.setOnSeekCompleteListener(null);
@@ -593,8 +576,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             mediaPlayer.release();
             mediaPlayer = null;
 
-            if (playerStatusInfo != null)
-                playerStatusInfo.setEventType(PlaybackEvent.Status_NothingIdle);
+            if (playerStatusInfo != null) playerStatusInfo.setEventType(PlaybackEvent.Status_NothingIdle);
 
             freeSurfaceView();
             MMLog.d(TAG, "call free() to release all player context");
@@ -614,12 +596,10 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    private  void PreparePlayerComponent() {
+    private void PreparePlayerComponent() {
         //MMLog.d(TAG, "prepare player context,playStatus = " + playerStatusInfo.getEventType());
-        try
-        {
-            if (mediaPlayer == null)
-                mediaPlayer = new MediaPlayer();
+        try {
+            if (mediaPlayer == null) mediaPlayer = new MediaPlayer();
 
             MMLog.d(TAG, "prepare player component,playStatus = " + playerStatusInfo.getEventType());
             mediaPlayer.reset();//必须调用mediaPlayer.prepareAsync();
@@ -730,8 +710,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                 break;
         }
 
-        if (playerEventCallBack != null && playerStatusInfo != null)
-            playerEventCallBack.onEventPlayerStatus(playerStatusInfo);
+        if (playerEventCallBack != null && playerStatusInfo != null) playerEventCallBack.onEventPlayerStatus(playerStatusInfo);
     }
 
     private void StartPlayProgressThread() {   //创建进度状态线程
@@ -750,6 +729,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     private class ProgressThread extends Thread {
         private boolean isActive = true;
+
         @Override
         public void run() {
             super.run();

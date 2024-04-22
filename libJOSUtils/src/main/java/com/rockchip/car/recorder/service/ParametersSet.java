@@ -6,7 +6,6 @@ import android.media.CameraProfile;
 
 import com.rockchip.car.recorder.camera2.CameraHolder;
 import com.rockchip.car.recorder.utils.SLog;
-import com.rockchip.car.recorder.utils.SystemProperties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +23,7 @@ public class ParametersSet {
     private static Map<Integer, Integer> mIndexToQualities = new HashMap<Integer, Integer>();
     private static int mMin;
     private static int mMax;
+
     static {
         mMin = 0;
         int tmp = mMin;
@@ -55,8 +55,7 @@ public class ParametersSet {
     }
 
     public static CamcorderProfile getCamcorderProfile(Camera.Parameters parameters, int id, int quality, boolean adjustable, boolean down) {
-        if (parameters == null)
-            return null;
+        if (parameters == null) return null;
         if (isSupportedCamcorderProfile(parameters, id, quality)) {
             return CamcorderProfile.get(id, quality);
         } else if (adjustable) {
@@ -144,21 +143,20 @@ public class ParametersSet {
         }
         try {
             Camera.Parameters parameters = CameraHolder.instance().getParameters(id);
-            if (parameters == null)
-                return false;
+            if (parameters == null) return false;
             //================ Set Preview Parameters ================
-//            String strPreviewSize = SystemProperties.get("sys.camera.recorder.preview_" + id, "");
-//            int iSize[] = strToSize(strPreviewSize);
-//            if (strPreviewSize.equals("") || iSize == null) {
-                Camera.Size size = getSupportedHightestPreviewSize(id);
-                if (size != null) {
-                    parameters.setPreviewSize(size.width, size.height);
-                }
-//            } else {
-//                parameters.setPreviewSize(iSize[0], iSize[1]);
-//            }
-            if (id == CameraHolder.instance().getBackCameraId() ) {
-               
+            //            String strPreviewSize = SystemProperties.get("sys.camera.recorder.preview_" + id, "");
+            //            int iSize[] = strToSize(strPreviewSize);
+            //            if (strPreviewSize.equals("") || iSize == null) {
+            Camera.Size size = getSupportedHightestPreviewSize(id);
+            if (size != null) {
+                parameters.setPreviewSize(size.width, size.height);
+            }
+            //            } else {
+            //                parameters.setPreviewSize(iSize[0], iSize[1]);
+            //            }
+            if (id == CameraHolder.instance().getBackCameraId()) {
+
             }
             int defaultPreviewFrameRate = parameters.getPreviewFrameRate();
             SLog.d(TAG, "ParameterSet::initParameters. id:" + id + "; defaultPreviewFrameRate:" + defaultPreviewFrameRate);
@@ -171,45 +169,45 @@ public class ParametersSet {
             //================ Set Picture Parameters ================
             int jpegQuality = CameraProfile.getJpegEncodingQualityParameter(id, CameraProfile.QUALITY_HIGH);
             parameters.setJpegQuality(jpegQuality);
-//            String strPictureSize = SharedPreference.getString(getPrefKey(Config.KEY_PICTURE_SIZE, id), id == 0 ? "1920x1280" : "640*480");
- //           String strPictureSize = "";//CameraSettings.getPictureSize(id);
- //           iSize = strToSize(strPictureSize);
- //           parameters.setPictureSize(iSize[0], iSize[1]);
+            //            String strPictureSize = SharedPreference.getString(getPrefKey(Config.KEY_PICTURE_SIZE, id), id == 0 ? "1920x1280" : "640*480");
+            //           String strPictureSize = "";//CameraSettings.getPictureSize(id);
+            //           iSize = strToSize(strPictureSize);
+            //           parameters.setPictureSize(iSize[0], iSize[1]);
 
             //================ Set Record Parameters ================
 
 
             //================ Camera Effect ================
-//            if (id == getMainCameraId()) {
-//                // Set WhiteBalance
-//                String balance = CameraSettings.getWhiteBlance();
-//                List<String> balences = parameters.getSupportedWhiteBalance();
-//                if (balences != null && balance != null && balences.indexOf(balance) > 0) {
-//                    parameters.setWhiteBalance(balance);
-//                }
-//
-//                // Set Exposure
-//                int exposure = Integer.parseInt(CameraSettings.getExposure());
-//                int maxExposure = parameters.getMaxExposureCompensation();
-//                int minExposure = parameters.getMinExposureCompensation();
-//                if (exposure >= minExposure && exposure <= maxExposure) {
-//                    parameters.setExposureCompensation(exposure);
-//                }
-//
-//                // Set ColorEffect
-//                String effect = CameraSettings.getColorEffect();
-//                List<String> effects = parameters.getSupportedColorEffects();
-//                if (effects != null && effect != null && effects.indexOf(effect) > 0) {
-//                    parameters.setColorEffect(effect);
-//                }
-//            }
-//            parameters.set("watermark-en", "" + CameraSettings.isWaterMark());
+            //            if (id == getMainCameraId()) {
+            //                // Set WhiteBalance
+            //                String balance = CameraSettings.getWhiteBlance();
+            //                List<String> balences = parameters.getSupportedWhiteBalance();
+            //                if (balences != null && balance != null && balences.indexOf(balance) > 0) {
+            //                    parameters.setWhiteBalance(balance);
+            //                }
+            //
+            //                // Set Exposure
+            //                int exposure = Integer.parseInt(CameraSettings.getExposure());
+            //                int maxExposure = parameters.getMaxExposureCompensation();
+            //                int minExposure = parameters.getMinExposureCompensation();
+            //                if (exposure >= minExposure && exposure <= maxExposure) {
+            //                    parameters.setExposureCompensation(exposure);
+            //                }
+            //
+            //                // Set ColorEffect
+            //                String effect = CameraSettings.getColorEffect();
+            //                List<String> effects = parameters.getSupportedColorEffects();
+            //                if (effects != null && effect != null && effects.indexOf(effect) > 0) {
+            //                    parameters.setColorEffect(effect);
+            //                }
+            //            }
+            //            parameters.set("watermark-en", "" + CameraSettings.isWaterMark());
 
 
-			parameters.set("soc_camera_channel", mChannel); //px5 we dont use this . but it must>0
-			if(mMirror!=0){
-				parameters.set("mirror-preview", "true");
-			}
+            parameters.set("soc_camera_channel", mChannel); //px5 we dont use this . but it must>0
+            if (mMirror != 0) {
+                parameters.set("mirror-preview", "true");
+            }
             CameraHolder.instance().setParameters(id, parameters);
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -218,10 +216,10 @@ public class ParametersSet {
         }
         return true;
     }
-    
+
     public static int mMirror = 0;
     public static int mChannel = 1;
-    
+
 
     private static String getSuffix(int id) {
         switch (id) {
@@ -285,12 +283,12 @@ public class ParametersSet {
     }
 
     public static List<int[]> getSupportedPreviewFpsRange(int id) {
-        if (CameraHolder.instance().getParameters(id) == null)  return null;
+        if (CameraHolder.instance().getParameters(id) == null) return null;
         return CameraHolder.instance().getParameters(id).getSupportedPreviewFpsRange();
     }
 
     public static List<Integer> getSupportedPreviewFps(int id) {
-        if (CameraHolder.instance().getParameters(id) == null)  return null;
+        if (CameraHolder.instance().getParameters(id) == null) return null;
         return CameraHolder.instance().getParameters(id).getSupportedPreviewFrameRates();
     }
 
@@ -318,7 +316,7 @@ public class ParametersSet {
         if (profiles == null || profiles.size() < 1) return null;
         CamcorderProfile result = profiles.get(0);
         for (CamcorderProfile profile : profiles) {
-            if (profile.videoFrameWidth*profile.videoFrameHeight > result.videoFrameWidth*result.videoFrameHeight) {
+            if (profile.videoFrameWidth * profile.videoFrameHeight > result.videoFrameWidth * result.videoFrameHeight) {
                 result = profile;
             }
         }
@@ -326,11 +324,11 @@ public class ParametersSet {
     }
 
     public static Camera.Size getSupportedHightestPictureSize(List<Camera.Size> supported) {
-        if (supported == null || supported.size() <= 0)   return null;
+        if (supported == null || supported.size() <= 0) return null;
         Camera.Size mMax = supported.get(0);
         for (int i = 0; i < supported.size(); i++) {
             Camera.Size size = supported.get(i);
-            if (size.width * size.height > mMax.width*mMax.height) {
+            if (size.width * size.height > mMax.width * mMax.height) {
                 mMax = supported.get(i);
             }
         }
@@ -343,7 +341,7 @@ public class ParametersSet {
     }
 
     public static Camera.Size getSupportedHightestPreviewSize(int id) {
-        if (CameraHolder.instance().getParameters(id) == null)  return null;
+        if (CameraHolder.instance().getParameters(id) == null) return null;
         List<Camera.Size> sizes = CameraHolder.instance().getParameters(id).getSupportedPreviewSizes();
         if (sizes == null || sizes.size() <= 0) return null;
         Camera.Size mMax = sizes.get(0);
@@ -351,7 +349,7 @@ public class ParametersSet {
         for (int i = 0; i < length; i++) {
             Camera.Size size = sizes.get(i);
             SLog.d(TAG, "The Preview size length is " + sizes.size() + ", is support:" + size.width + "x" + size.height);
-            if (size.width * size.height > mMax.width*mMax.height) {
+            if (size.width * size.height > mMax.width * mMax.height) {
                 mMax = size;
             }
         }
@@ -360,7 +358,7 @@ public class ParametersSet {
     }
 
     public static boolean isPreviewSizeSupported(int id, Camera.Size size) {
-        if (CameraHolder.instance().getParameters(id) == null)  return false;
+        if (CameraHolder.instance().getParameters(id) == null) return false;
         List<Camera.Size> sizes = CameraHolder.instance().getParameters(id).getSupportedPreviewSizes();
         if (sizes == null || sizes.size() <= 0) return false;
         for (int i = 0; i < sizes.size(); i++) {
@@ -388,76 +386,76 @@ public class ParametersSet {
     }
 
     public static void setPictureSize(int id) {
-//        Camera.Parameters parameters = CameraHolder.instance().getParameters(id);
-//        if (parameters != null) {
-//            String strPictureSize = CameraSettings.getPictureSize(id);
-//            int[] iSize = strToSize(strPictureSize);
-//            parameters.setPictureSize(iSize[0], iSize[1]);
-//            Camera camera = CameraHolder.instance().getCamera(id);
-//            if (camera != null) {
-//                camera.setParameters(parameters);
-//            }
-//        }
+        //        Camera.Parameters parameters = CameraHolder.instance().getParameters(id);
+        //        if (parameters != null) {
+        //            String strPictureSize = CameraSettings.getPictureSize(id);
+        //            int[] iSize = strToSize(strPictureSize);
+        //            parameters.setPictureSize(iSize[0], iSize[1]);
+        //            Camera camera = CameraHolder.instance().getCamera(id);
+        //            if (camera != null) {
+        //                camera.setParameters(parameters);
+        //            }
+        //        }
     }
 
     public static void setWhiteBlance(int id) {
-//        Camera.Parameters parameters = CameraHolder.instance().getParameters(id);
-//        if (parameters != null) {
-//            String balance = CameraSettings.getWhiteBlance();
-//            List<String> balences = parameters.getSupportedWhiteBalance();
-//            if (balences != null && balance != null && balences.size() > 0 && balences.indexOf(balance) >= 0) {
-//                parameters.setWhiteBalance(balance);
-//                Camera camera = CameraHolder.instance().getCamera(id);
-//                if (camera != null) {
-//                    camera.setParameters(parameters);
-//                }
-//            }
-//        }
+        //        Camera.Parameters parameters = CameraHolder.instance().getParameters(id);
+        //        if (parameters != null) {
+        //            String balance = CameraSettings.getWhiteBlance();
+        //            List<String> balences = parameters.getSupportedWhiteBalance();
+        //            if (balences != null && balance != null && balences.size() > 0 && balences.indexOf(balance) >= 0) {
+        //                parameters.setWhiteBalance(balance);
+        //                Camera camera = CameraHolder.instance().getCamera(id);
+        //                if (camera != null) {
+        //                    camera.setParameters(parameters);
+        //                }
+        //            }
+        //        }
     }
 
     public static void setExposure(int id) {
-//        Camera.Parameters parameters = CameraHolder.instance().getParameters(id);
-//        if (parameters != null) {
-//            int exposure = Integer.parseInt(CameraSettings.getExposure());
-//            int maxExposure = parameters.getMaxExposureCompensation();
-//            int minExposure = parameters.getMinExposureCompensation();
-//            if (exposure >= minExposure && exposure <= maxExposure) {
-//                parameters.setExposureCompensation(exposure);
-//                Camera camera = CameraHolder.instance().getCamera(id);
-//                if (camera != null) {
-//                    camera.setParameters(parameters);
-//                }
-//            }
-//        }
+        //        Camera.Parameters parameters = CameraHolder.instance().getParameters(id);
+        //        if (parameters != null) {
+        //            int exposure = Integer.parseInt(CameraSettings.getExposure());
+        //            int maxExposure = parameters.getMaxExposureCompensation();
+        //            int minExposure = parameters.getMinExposureCompensation();
+        //            if (exposure >= minExposure && exposure <= maxExposure) {
+        //                parameters.setExposureCompensation(exposure);
+        //                Camera camera = CameraHolder.instance().getCamera(id);
+        //                if (camera != null) {
+        //                    camera.setParameters(parameters);
+        //                }
+        //            }
+        //        }
     }
 
     public static void setColorEffect(int id) {
-//        Camera.Parameters parameters = CameraHolder.instance().getParameters(id);
-//        if (parameters != null) {
-//            String effect = CameraSettings.getColorEffect();
-//            List<String> effects = parameters.getSupportedColorEffects();
-//            if (effects != null && effect != null && effects.size() > 0 && effects.indexOf(effect) >= 0) {
-//                parameters.setColorEffect(effect);
-//                Camera camera = CameraHolder.instance().getCamera(id);
-//                if (camera != null) {
-//                    camera.setParameters(parameters);
-//                }
-//            }
-//        }
+        //        Camera.Parameters parameters = CameraHolder.instance().getParameters(id);
+        //        if (parameters != null) {
+        //            String effect = CameraSettings.getColorEffect();
+        //            List<String> effects = parameters.getSupportedColorEffects();
+        //            if (effects != null && effect != null && effects.size() > 0 && effects.indexOf(effect) >= 0) {
+        //                parameters.setColorEffect(effect);
+        //                Camera camera = CameraHolder.instance().getCamera(id);
+        //                if (camera != null) {
+        //                    camera.setParameters(parameters);
+        //                }
+        //            }
+        //        }
     }
 
     public static void setWaterMark(int id, String info) {
-//        SLog.d(TAG, "ParametersSet::setWaterMark. id:" + id + "; WaterMark:" + CameraSettings.isWaterMark());
-//        Camera.Parameters parameters = CameraHolder.instance().getParameters(id);
-//        if (parameters != null) {
-//            parameters.set("watermark-en", "" + CameraSettings.isWaterMark());
-//            if (info != null) {
-//                parameters.set("watermark-info", info);
-//            }
-//            Camera camera = CameraHolder.instance().getCamera(id);
-//            if (camera != null) {
-//                camera.setParameters(parameters);
-//            }
-//        }
+        //        SLog.d(TAG, "ParametersSet::setWaterMark. id:" + id + "; WaterMark:" + CameraSettings.isWaterMark());
+        //        Camera.Parameters parameters = CameraHolder.instance().getParameters(id);
+        //        if (parameters != null) {
+        //            parameters.set("watermark-en", "" + CameraSettings.isWaterMark());
+        //            if (info != null) {
+        //                parameters.set("watermark-info", info);
+        //            }
+        //            Camera camera = CameraHolder.instance().getCamera(id);
+        //            if (camera != null) {
+        //                camera.setParameters(parameters);
+        //            }
+        //        }
     }
 }

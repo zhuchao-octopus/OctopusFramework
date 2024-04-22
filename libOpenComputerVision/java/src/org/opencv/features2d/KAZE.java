@@ -3,10 +3,8 @@
 //
 package org.opencv.features2d;
 
-import org.opencv.features2d.Feature2D;
-import org.opencv.features2d.KAZE;
-
 // C++: class KAZE
+
 /**
  * Class implementing the KAZE keypoint detector and descriptor extractor, described in CITE: ABD12 .
  *
@@ -16,17 +14,17 @@ import org.opencv.features2d.KAZE;
  */
 public class KAZE extends Feature2D {
 
-    protected KAZE(long addr) { super(addr); }
+    protected KAZE(long addr) {
+        super(addr);
+    }
 
     // internal usage only
-    public static KAZE __fromPtr__(long addr) { return new KAZE(addr); }
+    public static KAZE __fromPtr__(long addr) {
+        return new KAZE(addr);
+    }
 
     // C++: enum DiffusivityType (cv.KAZE.DiffusivityType)
-    public static final int
-            DIFF_PM_G1 = 0,
-            DIFF_PM_G2 = 1,
-            DIFF_WEICKERT = 2,
-            DIFF_CHARBONNIER = 3;
+    public static final int DIFF_PM_G1 = 0, DIFF_PM_G2 = 1, DIFF_WEICKERT = 2, DIFF_CHARBONNIER = 3;
 
 
     //
@@ -36,13 +34,13 @@ public class KAZE extends Feature2D {
     /**
      * The KAZE constructor
      *
-     *     @param extended Set to enable extraction of extended (128-byte) descriptor.
-     *     @param upright Set to enable use of upright descriptors (non rotation-invariant).
-     *     @param threshold Detector response threshold to accept point
-     *     @param nOctaves Maximum octave evolution of the image
-     *     @param nOctaveLayers Default number of sublevels per scale level
-     *     @param diffusivity Diffusivity type. DIFF_PM_G1, DIFF_PM_G2, DIFF_WEICKERT or
-     *     DIFF_CHARBONNIER
+     * @param extended      Set to enable extraction of extended (128-byte) descriptor.
+     * @param upright       Set to enable use of upright descriptors (non rotation-invariant).
+     * @param threshold     Detector response threshold to accept point
+     * @param nOctaves      Maximum octave evolution of the image
+     * @param nOctaveLayers Default number of sublevels per scale level
+     * @param diffusivity   Diffusivity type. DIFF_PM_G1, DIFF_PM_G2, DIFF_WEICKERT or
+     *                      DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static KAZE create(boolean extended, boolean upright, float threshold, int nOctaves, int nOctaveLayers, int diffusivity) {
@@ -52,12 +50,12 @@ public class KAZE extends Feature2D {
     /**
      * The KAZE constructor
      *
-     *     @param extended Set to enable extraction of extended (128-byte) descriptor.
-     *     @param upright Set to enable use of upright descriptors (non rotation-invariant).
-     *     @param threshold Detector response threshold to accept point
-     *     @param nOctaves Maximum octave evolution of the image
-     *     @param nOctaveLayers Default number of sublevels per scale level
-     *     DIFF_CHARBONNIER
+     * @param extended      Set to enable extraction of extended (128-byte) descriptor.
+     * @param upright       Set to enable use of upright descriptors (non rotation-invariant).
+     * @param threshold     Detector response threshold to accept point
+     * @param nOctaves      Maximum octave evolution of the image
+     * @param nOctaveLayers Default number of sublevels per scale level
+     *                      DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static KAZE create(boolean extended, boolean upright, float threshold, int nOctaves, int nOctaveLayers) {
@@ -67,11 +65,11 @@ public class KAZE extends Feature2D {
     /**
      * The KAZE constructor
      *
-     *     @param extended Set to enable extraction of extended (128-byte) descriptor.
-     *     @param upright Set to enable use of upright descriptors (non rotation-invariant).
-     *     @param threshold Detector response threshold to accept point
-     *     @param nOctaves Maximum octave evolution of the image
-     *     DIFF_CHARBONNIER
+     * @param extended  Set to enable extraction of extended (128-byte) descriptor.
+     * @param upright   Set to enable use of upright descriptors (non rotation-invariant).
+     * @param threshold Detector response threshold to accept point
+     * @param nOctaves  Maximum octave evolution of the image
+     *                  DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static KAZE create(boolean extended, boolean upright, float threshold, int nOctaves) {
@@ -81,10 +79,10 @@ public class KAZE extends Feature2D {
     /**
      * The KAZE constructor
      *
-     *     @param extended Set to enable extraction of extended (128-byte) descriptor.
-     *     @param upright Set to enable use of upright descriptors (non rotation-invariant).
-     *     @param threshold Detector response threshold to accept point
-     *     DIFF_CHARBONNIER
+     * @param extended  Set to enable extraction of extended (128-byte) descriptor.
+     * @param upright   Set to enable use of upright descriptors (non rotation-invariant).
+     * @param threshold Detector response threshold to accept point
+     *                  DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static KAZE create(boolean extended, boolean upright, float threshold) {
@@ -94,9 +92,9 @@ public class KAZE extends Feature2D {
     /**
      * The KAZE constructor
      *
-     *     @param extended Set to enable extraction of extended (128-byte) descriptor.
-     *     @param upright Set to enable use of upright descriptors (non rotation-invariant).
-     *     DIFF_CHARBONNIER
+     * @param extended Set to enable extraction of extended (128-byte) descriptor.
+     * @param upright  Set to enable use of upright descriptors (non rotation-invariant).
+     *                 DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static KAZE create(boolean extended, boolean upright) {
@@ -106,8 +104,8 @@ public class KAZE extends Feature2D {
     /**
      * The KAZE constructor
      *
-     *     @param extended Set to enable extraction of extended (128-byte) descriptor.
-     *     DIFF_CHARBONNIER
+     * @param extended Set to enable extraction of extended (128-byte) descriptor.
+     *                 DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static KAZE create(boolean extended) {
@@ -116,8 +114,9 @@ public class KAZE extends Feature2D {
 
     /**
      * The KAZE constructor
+     * <p>
+     * DIFF_CHARBONNIER
      *
-     *     DIFF_CHARBONNIER
      * @return automatically generated
      */
     public static KAZE create() {
@@ -248,14 +247,19 @@ public class KAZE extends Feature2D {
     }
 
 
-
     // C++: static Ptr_KAZE cv::KAZE::create(bool extended = false, bool upright = false, float threshold = 0.001f, int nOctaves = 4, int nOctaveLayers = 4, KAZE_DiffusivityType diffusivity = KAZE::DIFF_PM_G2)
     private static native long create_0(boolean extended, boolean upright, float threshold, int nOctaves, int nOctaveLayers, int diffusivity);
+
     private static native long create_1(boolean extended, boolean upright, float threshold, int nOctaves, int nOctaveLayers);
+
     private static native long create_2(boolean extended, boolean upright, float threshold, int nOctaves);
+
     private static native long create_3(boolean extended, boolean upright, float threshold);
+
     private static native long create_4(boolean extended, boolean upright);
+
     private static native long create_5(boolean extended);
+
     private static native long create_6();
 
     // C++:  void cv::KAZE::setExtended(bool extended)

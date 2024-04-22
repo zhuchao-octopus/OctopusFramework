@@ -74,7 +74,7 @@ public class GLFrameRenderer implements Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-    	Log.w("dddd", " onDrawFrame!");
+        Log.w("dddd", " onDrawFrame!");
         synchronized (RENDER_LOCK) {
             if (mRequestRenderDestroy) {
                 Log.w("CAM_GLFrameRender", mId + " request destroy!");
@@ -83,7 +83,7 @@ public class GLFrameRenderer implements Renderer {
                 prog.destroyGL();
                 return;
             }
-            if(!mRenderCreated) {
+            if (!mRenderCreated) {
                 Log.w("CAM_GLFrameRender", mId + " wanted onDrawFrame, but render was already destroied");
                 if (!prog.isProgramBuilt()) {
                     prog.buildProgram();
@@ -93,34 +93,28 @@ public class GLFrameRenderer implements Renderer {
                 }
                 //return;
             }
-//            if (!mReadyToRender || !mSurfaceReady) {
-//                gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-//                gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-//                gl.glFlush();
-//                return;
-//            }
-        	if (Constant.SPLIT_RAW_DATA) {
-        		byte[] data = mRawDataCallback.fetchYData();
-        		renderState = prog.buildTextures(data,
-            			mRawDataCallback.fetchUData(),
-            			mRawDataCallback.fetchVData(),
-            			mRawDataCallback.fetchUVData(),
-            			mVideoWidth, mVideoHeight, mFormat);
-        		mRawDataCallback.notifyTextureUpdated(data);
-        		if (!renderState) {
-        			return;
-        		}
+            //            if (!mReadyToRender || !mSurfaceReady) {
+            //                gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            //                gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+            //                gl.glFlush();
+            //                return;
+            //            }
+            if (Constant.SPLIT_RAW_DATA) {
+                byte[] data = mRawDataCallback.fetchYData();
+                renderState = prog.buildTextures(data, mRawDataCallback.fetchUData(), mRawDataCallback.fetchVData(), mRawDataCallback.fetchUVData(), mVideoWidth, mVideoHeight, mFormat);
+                mRawDataCallback.notifyTextureUpdated(data);
+                if (!renderState) {
+                    return;
+                }
                 prog.drawFrame();
-        	} else {
+            } else {
                 byte[] data = mRawDataCallback.fetchRawData();
                 if (data == null || mVideoWidth == 0 || mVideoHeight == 0) {
-                    SLog.d(TAG, "Camera " +  mId + " texture data is null. data:" + (data == null ? null : data.length) + "; mVideoWidth:" + mVideoWidth + "; mVideoHeight:" + mVideoHeight);
+                    SLog.d(TAG, "Camera " + mId + " texture data is null. data:" + (data == null ? null : data.length) + "; mVideoWidth:" + mVideoWidth + "; mVideoHeight:" + mVideoHeight);
                     return;
                 }
                 if (data.length != (mVideoWidth * mVideoHeight * mRatio)) {
-                    SLog.d(TAG, "Camera " + mId + " data object = " + data + ",data length = " + data.length
-                            + ", w = " + mVideoWidth + ", h = " + mVideoHeight
-                            + ", mRatio = " + mRatio);
+                    SLog.d(TAG, "Camera " + mId + " data object = " + data + ",data length = " + data.length + ", w = " + mVideoWidth + ", h = " + mVideoHeight + ", mRatio = " + mRatio);
                     SLog.d(TAG, "render " + mId + " with wrong preview data size!");
                     data = null;
                     if (mCallbackRender != null) {
@@ -129,17 +123,13 @@ public class GLFrameRenderer implements Renderer {
                     }
                     return;
                 }
-        		renderState = prog.buildTextures(data,
-            			mRawDataCallback.fetchUData(),
-            			mRawDataCallback.fetchVData(),
-            			mRawDataCallback.fetchUVData(),
-            			mVideoWidth, mVideoHeight, mFormat);
-        		mRawDataCallback.notifyTextureUpdated(data);
-        		if (!renderState) {
-        			return;
-        		}
+                renderState = prog.buildTextures(data, mRawDataCallback.fetchUData(), mRawDataCallback.fetchVData(), mRawDataCallback.fetchUVData(), mVideoWidth, mVideoHeight, mFormat);
+                mRawDataCallback.notifyTextureUpdated(data);
+                if (!renderState) {
+                    return;
+                }
                 prog.drawFrame();
-        	}
+            }
         }
         frameRate0();
     }
@@ -155,8 +145,7 @@ public class GLFrameRenderer implements Renderer {
                 mFormat = GLProgram.FORMAT_RGB;
             }
             mRatio = 3 / 2.0f;
-            if (mFormat == GLProgram.FORMAT_RGB)
-                mRatio = 3.0f;
+            if (mFormat == GLProgram.FORMAT_RGB) mRatio = 3.0f;
         }
     }
 
@@ -197,12 +186,10 @@ public class GLFrameRenderer implements Renderer {
                         prog.createBuffers(GLProgram.squareVertices);
                     } else if (f1 < f2) {
                         float widScale = 1.0f;//f1 / f2;
-                        prog.createBuffers(new float[] { -widScale, -1.0f, widScale, -1.0f, -widScale, 1.0f, widScale,
-                                1.0f, });
+                        prog.createBuffers(new float[]{-widScale, -1.0f, widScale, -1.0f, -widScale, 1.0f, widScale, 1.0f,});
                     } else {
                         float heightScale = 1.0f;//f2 / f1;
-                        prog.createBuffers(new float[] { -1.0f, -heightScale, 1.0f, -heightScale, -1.0f, heightScale, 1.0f,
-                                heightScale, });
+                        prog.createBuffers(new float[]{-1.0f, -heightScale, 1.0f, -heightScale, -1.0f, heightScale, 1.0f, heightScale,});
                     }
                 }
                 if (w != mVideoWidth || h != mVideoHeight) {
@@ -211,8 +198,7 @@ public class GLFrameRenderer implements Renderer {
                 }
             }
 
-            if (mParentAct != null)
-                mParentAct.onPlayStart();
+            if (mParentAct != null) mParentAct.onPlayStart();
             SLog.d(TAG, "INIT X");
             mSurfaceReady = true;
         }
@@ -257,23 +243,26 @@ public class GLFrameRenderer implements Renderer {
             prog.destroyGL();
         }
     }
+
     public void requestDestroy() {
         synchronized (RENDER_LOCK) {
             mRequestRenderDestroy = true;
         }
     }
+
     public long oldTime0;
     public int frameCount0;
+
     public void frameRate0() {
         double rate;
         if (oldTime0 == 0) {
             oldTime0 = System.currentTimeMillis();
         } else {
             if ((System.currentTimeMillis() - oldTime0) >= 3000) {
-                rate = frameCount0 / ((System.currentTimeMillis() - oldTime0)*1.0/1000);
+                rate = frameCount0 / ((System.currentTimeMillis() - oldTime0) * 1.0 / 1000);
                 oldTime0 = System.currentTimeMillis();
                 frameCount0 = 0;
-//                Utils.LOGD(this + " frame rate=" + rate);
+                //                Utils.LOGD(this + " frame rate=" + rate);
             } else {
                 frameCount0++;
             }

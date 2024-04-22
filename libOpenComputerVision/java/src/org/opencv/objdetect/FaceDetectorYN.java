@@ -5,23 +5,30 @@ package org.opencv.objdetect;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
-import org.opencv.objdetect.FaceDetectorYN;
 
 // C++: class FaceDetectorYN
+
 /**
  * DNN-based face detector
- *
+ * <p>
  * model download link: https://github.com/opencv/opencv_zoo/tree/master/models/face_detection_yunet
  */
 public class FaceDetectorYN {
 
     protected final long nativeObj;
-    protected FaceDetectorYN(long addr) { nativeObj = addr; }
 
-    public long getNativeObjAddr() { return nativeObj; }
+    protected FaceDetectorYN(long addr) {
+        nativeObj = addr;
+    }
+
+    public long getNativeObjAddr() {
+        return nativeObj;
+    }
 
     // internal usage only
-    public static FaceDetectorYN __fromPtr__(long addr) { return new FaceDetectorYN(addr); }
+    public static FaceDetectorYN __fromPtr__(long addr) {
+        return new FaceDetectorYN(addr);
+    }
 
     //
     // C++:  void cv::FaceDetectorYN::setInputSize(Size input_size)
@@ -121,19 +128,19 @@ public class FaceDetectorYN {
 
     /**
      * Detects faces in the input image. Following is an example output.
-     *
+     * <p>
      * ![image](pics/lena-face-detection.jpg)
      *
      * @param image an image to detect
      * @param faces detection results stored in a 2D cv::Mat of shape [num_faces, 15]
-     * - 0-1: x, y of bbox top left corner
-     * - 2-3: width, height of bbox
-     * - 4-5: x, y of right eye (blue point in the example image)
-     * - 6-7: x, y of left eye (red point in the example image)
-     * - 8-9: x, y of nose tip (green point in the example image)
-     * - 10-11: x, y of right corner of mouth (pink point in the example image)
-     * - 12-13: x, y of left corner of mouth (yellow point in the example image)
-     * - 14: face score
+     *              - 0-1: x, y of bbox top left corner
+     *              - 2-3: width, height of bbox
+     *              - 4-5: x, y of right eye (blue point in the example image)
+     *              - 6-7: x, y of left eye (red point in the example image)
+     *              - 8-9: x, y of nose tip (green point in the example image)
+     *              - 10-11: x, y of right corner of mouth (pink point in the example image)
+     *              - 12-13: x, y of left corner of mouth (yellow point in the example image)
+     *              - 14: face score
      * @return automatically generated
      */
     public int detect(Mat image, Mat faces) {
@@ -148,14 +155,14 @@ public class FaceDetectorYN {
     /**
      * Creates an instance of this class with given parameters
      *
-     * @param model the path to the requested model
-     * @param config the path to the config file for compability, which is not requested for ONNX models
-     * @param input_size the size of the input image
+     * @param model           the path to the requested model
+     * @param config          the path to the config file for compability, which is not requested for ONNX models
+     * @param input_size      the size of the input image
      * @param score_threshold the threshold to filter out bounding boxes of score smaller than the given value
-     * @param nms_threshold the threshold to suppress bounding boxes of IoU bigger than the given value
-     * @param top_k keep top K bboxes before NMS
-     * @param backend_id the id of backend
-     * @param target_id the id of target device
+     * @param nms_threshold   the threshold to suppress bounding boxes of IoU bigger than the given value
+     * @param top_k           keep top K bboxes before NMS
+     * @param backend_id      the id of backend
+     * @param target_id       the id of target device
      * @return automatically generated
      */
     public static FaceDetectorYN create(String model, String config, Size input_size, float score_threshold, float nms_threshold, int top_k, int backend_id, int target_id) {
@@ -165,13 +172,13 @@ public class FaceDetectorYN {
     /**
      * Creates an instance of this class with given parameters
      *
-     * @param model the path to the requested model
-     * @param config the path to the config file for compability, which is not requested for ONNX models
-     * @param input_size the size of the input image
+     * @param model           the path to the requested model
+     * @param config          the path to the config file for compability, which is not requested for ONNX models
+     * @param input_size      the size of the input image
      * @param score_threshold the threshold to filter out bounding boxes of score smaller than the given value
-     * @param nms_threshold the threshold to suppress bounding boxes of IoU bigger than the given value
-     * @param top_k keep top K bboxes before NMS
-     * @param backend_id the id of backend
+     * @param nms_threshold   the threshold to suppress bounding boxes of IoU bigger than the given value
+     * @param top_k           keep top K bboxes before NMS
+     * @param backend_id      the id of backend
      * @return automatically generated
      */
     public static FaceDetectorYN create(String model, String config, Size input_size, float score_threshold, float nms_threshold, int top_k, int backend_id) {
@@ -181,12 +188,12 @@ public class FaceDetectorYN {
     /**
      * Creates an instance of this class with given parameters
      *
-     * @param model the path to the requested model
-     * @param config the path to the config file for compability, which is not requested for ONNX models
-     * @param input_size the size of the input image
+     * @param model           the path to the requested model
+     * @param config          the path to the config file for compability, which is not requested for ONNX models
+     * @param input_size      the size of the input image
      * @param score_threshold the threshold to filter out bounding boxes of score smaller than the given value
-     * @param nms_threshold the threshold to suppress bounding boxes of IoU bigger than the given value
-     * @param top_k keep top K bboxes before NMS
+     * @param nms_threshold   the threshold to suppress bounding boxes of IoU bigger than the given value
+     * @param top_k           keep top K bboxes before NMS
      * @return automatically generated
      */
     public static FaceDetectorYN create(String model, String config, Size input_size, float score_threshold, float nms_threshold, int top_k) {
@@ -196,11 +203,11 @@ public class FaceDetectorYN {
     /**
      * Creates an instance of this class with given parameters
      *
-     * @param model the path to the requested model
-     * @param config the path to the config file for compability, which is not requested for ONNX models
-     * @param input_size the size of the input image
+     * @param model           the path to the requested model
+     * @param config          the path to the config file for compability, which is not requested for ONNX models
+     * @param input_size      the size of the input image
      * @param score_threshold the threshold to filter out bounding boxes of score smaller than the given value
-     * @param nms_threshold the threshold to suppress bounding boxes of IoU bigger than the given value
+     * @param nms_threshold   the threshold to suppress bounding boxes of IoU bigger than the given value
      * @return automatically generated
      */
     public static FaceDetectorYN create(String model, String config, Size input_size, float score_threshold, float nms_threshold) {
@@ -210,9 +217,9 @@ public class FaceDetectorYN {
     /**
      * Creates an instance of this class with given parameters
      *
-     * @param model the path to the requested model
-     * @param config the path to the config file for compability, which is not requested for ONNX models
-     * @param input_size the size of the input image
+     * @param model           the path to the requested model
+     * @param config          the path to the config file for compability, which is not requested for ONNX models
+     * @param input_size      the size of the input image
      * @param score_threshold the threshold to filter out bounding boxes of score smaller than the given value
      * @return automatically generated
      */
@@ -223,8 +230,8 @@ public class FaceDetectorYN {
     /**
      * Creates an instance of this class with given parameters
      *
-     * @param model the path to the requested model
-     * @param config the path to the config file for compability, which is not requested for ONNX models
+     * @param model      the path to the requested model
+     * @param config     the path to the config file for compability, which is not requested for ONNX models
      * @param input_size the size of the input image
      * @return automatically generated
      */
@@ -237,7 +244,6 @@ public class FaceDetectorYN {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
 
 
     // C++:  void cv::FaceDetectorYN::setInputSize(Size input_size)
@@ -269,10 +275,15 @@ public class FaceDetectorYN {
 
     // C++: static Ptr_FaceDetectorYN cv::FaceDetectorYN::create(String model, String config, Size input_size, float score_threshold = 0.9f, float nms_threshold = 0.3f, int top_k = 5000, int backend_id = 0, int target_id = 0)
     private static native long create_0(String model, String config, double input_size_width, double input_size_height, float score_threshold, float nms_threshold, int top_k, int backend_id, int target_id);
+
     private static native long create_1(String model, String config, double input_size_width, double input_size_height, float score_threshold, float nms_threshold, int top_k, int backend_id);
+
     private static native long create_2(String model, String config, double input_size_width, double input_size_height, float score_threshold, float nms_threshold, int top_k);
+
     private static native long create_3(String model, String config, double input_size_width, double input_size_height, float score_threshold, float nms_threshold);
+
     private static native long create_4(String model, String config, double input_size_width, double input_size_height, float score_threshold);
+
     private static native long create_5(String model, String config, double input_size_width, double input_size_height);
 
     // native support for java finalize()

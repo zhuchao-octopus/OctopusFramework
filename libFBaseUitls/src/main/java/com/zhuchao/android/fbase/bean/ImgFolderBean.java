@@ -65,11 +65,6 @@ public class ImgFolderBean {
 
     @Override
     public String toString() {
-        return "ImgFolderBean{" +
-                "dir='" + dir + '\'' +
-                ", fistImgPath='" + fistImgPath + '\'' +
-                ", name='" + name + '\'' +
-                ", count=" + count +
-                '}';
+        return "ImgFolderBean{" + "dir='" + dir + '\'' + ", fistImgPath='" + fistImgPath + '\'' + ", name='" + name + '\'' + ", count=" + count + '}';
     }
 }

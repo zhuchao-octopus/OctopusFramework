@@ -194,29 +194,23 @@ public final class LitePalAttr {
         if (TextUtils.isEmpty(dbName)) {
             loadLitePalXMLConfiguration();
             if (TextUtils.isEmpty(dbName)) {
-                throw new InvalidAttributesException(
-                        InvalidAttributesException.DBNAME_IS_EMPTY_OR_NOT_DEFINED);
+                throw new InvalidAttributesException(InvalidAttributesException.DBNAME_IS_EMPTY_OR_NOT_DEFINED);
             }
         }
         if (!dbName.endsWith(Const.Config.DB_NAME_SUFFIX)) {
             dbName = dbName + Const.Config.DB_NAME_SUFFIX;
         }
         if (version < 1) {
-            throw new InvalidAttributesException(
-                    InvalidAttributesException.VERSION_OF_DATABASE_LESS_THAN_ONE);
+            throw new InvalidAttributesException(InvalidAttributesException.VERSION_OF_DATABASE_LESS_THAN_ONE);
         }
         if (version < SharedUtil.getLastVersion(extraKeyName)) {
-            throw new InvalidAttributesException(
-                    InvalidAttributesException.VERSION_IS_EARLIER_THAN_CURRENT);
+            throw new InvalidAttributesException(InvalidAttributesException.VERSION_IS_EARLIER_THAN_CURRENT);
         }
         if (TextUtils.isEmpty(cases)) {
             cases = Const.Config.CASES_LOWER;
         } else {
-            if (!cases.equals(Const.Config.CASES_UPPER)
-                    && !cases.equals(Const.Config.CASES_LOWER)
-                    && !cases.equals(Const.Config.CASES_KEEP)) {
-                throw new InvalidAttributesException(cases
-                        + InvalidAttributesException.CASES_VALUE_IS_INVALID);
+            if (!cases.equals(Const.Config.CASES_UPPER) && !cases.equals(Const.Config.CASES_LOWER) && !cases.equals(Const.Config.CASES_KEEP)) {
+                throw new InvalidAttributesException(cases + InvalidAttributesException.CASES_VALUE_IS_INVALID);
             }
         }
     }

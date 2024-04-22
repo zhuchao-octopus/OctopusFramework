@@ -53,9 +53,7 @@ class DynamicExecutor {
      * @throws IllegalAccessException
      * @throws java.lang.reflect.InvocationTargetException
      */
-    static Object send(Object object, String methodName, Object[] parameters, Class<?> objectClass,
-                       Class<?>[] parameterTypes) throws SecurityException, IllegalArgumentException,
-            IllegalAccessException, InvocationTargetException {
+    static Object send(Object object, String methodName, Object[] parameters, Class<?> objectClass, Class<?>[] parameterTypes) throws SecurityException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         try {
             if (parameters == null) {
                 parameters = new Object[]{};
@@ -67,13 +65,11 @@ class DynamicExecutor {
             method.setAccessible(true);
             return method.invoke(object, parameters);
         } catch (NoSuchMethodException e) {
-            throw new LitePalSupportException(LitePalSupportException.noSuchMethodException(
-                    objectClass.getSimpleName(), methodName), e);
+            throw new LitePalSupportException(LitePalSupportException.noSuchMethodException(objectClass.getSimpleName(), methodName), e);
         }
     }
 
-    static void set(Object object, String fieldName, Object value, Class<?> objectClass)
-            throws SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException {
+    static void set(Object object, String fieldName, Object value, Class<?> objectClass) throws SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException {
         Field objectField = objectClass.getDeclaredField(fieldName);
         objectField.setAccessible(true);
         objectField.set(object, value);
@@ -92,11 +88,9 @@ class DynamicExecutor {
      * @throws IllegalArgumentException
      * @throws IllegalAccessException
      */
-    static void setField(Object object, String fieldName, Object value, Class<?> objectClass)
-            throws SecurityException, IllegalArgumentException, IllegalAccessException {
+    static void setField(Object object, String fieldName, Object value, Class<?> objectClass) throws SecurityException, IllegalArgumentException, IllegalAccessException {
         if (objectClass == LitePalSupport.class || objectClass == Object.class) {
-            throw new LitePalSupportException(LitePalSupportException.noSuchFieldExceptioin(
-                    objectClass.getSimpleName(), fieldName));
+            throw new LitePalSupportException(LitePalSupportException.noSuchFieldExceptioin(objectClass.getSimpleName(), fieldName));
         }
         try {
             set(object, fieldName, value, objectClass);
@@ -117,11 +111,9 @@ class DynamicExecutor {
      * @throws IllegalArgumentException
      * @throws IllegalAccessException
      */
-    static Object getField(Object object, String fieldName, Class<?> objectClass)
-            throws IllegalArgumentException, IllegalAccessException {
+    static Object getField(Object object, String fieldName, Class<?> objectClass) throws IllegalArgumentException, IllegalAccessException {
         if (objectClass == LitePalSupport.class || objectClass == Object.class) {
-            throw new LitePalSupportException(LitePalSupportException.noSuchFieldExceptioin(
-                    objectClass.getSimpleName(), fieldName));
+            throw new LitePalSupportException(LitePalSupportException.noSuchFieldExceptioin(objectClass.getSimpleName(), fieldName));
         }
         try {
             Field objectField = objectClass.getDeclaredField(fieldName);

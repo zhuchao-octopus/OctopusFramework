@@ -120,14 +120,11 @@ public class LitePalParser {
             xmlReader.setContentHandler(handler);
             xmlReader.parse(new InputSource(getConfigInputStream()));
         } catch (NotFoundException e) {
-            throw new ParseConfigurationFileException(
-                    ParseConfigurationFileException.CAN_NOT_FIND_LITEPAL_FILE);
+            throw new ParseConfigurationFileException(ParseConfigurationFileException.CAN_NOT_FIND_LITEPAL_FILE);
         } catch (SAXException e) {
-            throw new ParseConfigurationFileException(
-                    ParseConfigurationFileException.FILE_FORMAT_IS_NOT_CORRECT);
+            throw new ParseConfigurationFileException(ParseConfigurationFileException.FILE_FORMAT_IS_NOT_CORRECT);
         } catch (ParserConfigurationException e) {
-            throw new ParseConfigurationFileException(
-                    ParseConfigurationFileException.PARSE_CONFIG_FAILED);
+            throw new ParseConfigurationFileException(ParseConfigurationFileException.PARSE_CONFIG_FAILED);
         } catch (IOException e) {
             throw new ParseConfigurationFileException(ParseConfigurationFileException.IO_EXCEPTION);
         }
@@ -177,8 +174,7 @@ public class LitePalParser {
             }
             return litePalConfig;
         } catch (XmlPullParserException e) {
-            throw new ParseConfigurationFileException(
-                    ParseConfigurationFileException.FILE_FORMAT_IS_NOT_CORRECT);
+            throw new ParseConfigurationFileException(ParseConfigurationFileException.FILE_FORMAT_IS_NOT_CORRECT);
         } catch (IOException e) {
             throw new ParseConfigurationFileException(ParseConfigurationFileException.IO_EXCEPTION);
         }
@@ -202,7 +198,6 @@ public class LitePalParser {
                 }
             }
         }
-        throw new ParseConfigurationFileException(
-                ParseConfigurationFileException.CAN_NOT_FIND_LITEPAL_FILE);
+        throw new ParseConfigurationFileException(ParseConfigurationFileException.CAN_NOT_FIND_LITEPAL_FILE);
     }
 }

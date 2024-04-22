@@ -4,20 +4,27 @@
 package org.opencv.objdetect;
 
 
-
 // C++: class RefineParameters
+
 /**
  * struct RefineParameters is used by ArucoDetector
  */
 public class RefineParameters {
 
     protected final long nativeObj;
-    protected RefineParameters(long addr) { nativeObj = addr; }
 
-    public long getNativeObjAddr() { return nativeObj; }
+    protected RefineParameters(long addr) {
+        nativeObj = addr;
+    }
+
+    public long getNativeObjAddr() {
+        return nativeObj;
+    }
 
     // internal usage only
-    public static RefineParameters __fromPtr__(long addr) { return new RefineParameters(addr); }
+    public static RefineParameters __fromPtr__(long addr) {
+        return new RefineParameters(addr);
+    }
 
     //
     // C++:   cv::aruco::RefineParameters::RefineParameters(float minRepDistance = 10.f, float errorCorrectionRate = 3.f, bool checkAllOrders = true)
@@ -114,11 +121,13 @@ public class RefineParameters {
     }
 
 
-
     // C++:   cv::aruco::RefineParameters::RefineParameters(float minRepDistance = 10.f, float errorCorrectionRate = 3.f, bool checkAllOrders = true)
     private static native long RefineParameters_0(float minRepDistance, float errorCorrectionRate, boolean checkAllOrders);
+
     private static native long RefineParameters_1(float minRepDistance, float errorCorrectionRate);
+
     private static native long RefineParameters_2(float minRepDistance);
+
     private static native long RefineParameters_3();
 
     // C++: float RefineParameters::minRepDistance

@@ -82,8 +82,7 @@ public class Upgrader extends AssociationUpdater {
             // add foreign keys of the table.
             Collection<AssociationsInfo> associationsInfo = getAssociationInfo(mTableModel.getClassName());
             for (AssociationsInfo info : associationsInfo) {
-                if (info.getAssociationType() == Const.Model.MANY_TO_ONE
-                        || info.getAssociationType() == Const.Model.ONE_TO_ONE) {
+                if (info.getAssociationType() == Const.Model.MANY_TO_ONE || info.getAssociationType() == Const.Model.ONE_TO_ONE) {
                     if (info.getClassHoldsForeignKey().equalsIgnoreCase(mTableModel.getClassName())) {
                         String associatedTableName = DBUtility.getTableNameByClassName(info.getAssociatedClassName());
                         addForeignKeyColumn(mTableModel.getTableName(), associatedTableName, mTableModel.getTableName(), mDb);
@@ -107,8 +106,7 @@ public class Upgrader extends AssociationUpdater {
     private boolean hasNewUniqueOrNotNullColumn() {
         Collection<ColumnModel> columnModels = mTableModel.getColumnModels();
         for (ColumnModel columnModel : columnModels) {
-            if (columnModel.isIdColumn())
-                continue; // id don't check unique or nullable, we never upgrade it.
+            if (columnModel.isIdColumn()) continue; // id don't check unique or nullable, we never upgrade it.
             ColumnModel columnModelDB = mTableModelDB.getColumnModelByName(columnModel.getColumnName());
             if (columnModel.isUnique()) {
                 if (columnModelDB == null || !columnModelDB.isUnique()) {
@@ -190,10 +188,7 @@ public class Upgrader extends AssociationUpdater {
                     if (!hasConstraintChanged) {
                         // for reducing loops, check column constraints change here.
                         LitePalLog.d(TAG, "default value db is:" + columnModelDB.getDefaultValue() + ", default value is:" + columnModel.getDefaultValue());
-                        if (columnModelDB.isNullable() != columnModel.isNullable() ||
-                                !columnModelDB.getDefaultValue().equalsIgnoreCase(columnModel.getDefaultValue()) ||
-                                columnModelDB.hasIndex() != columnModel.hasIndex() ||
-                                (columnModelDB.isUnique() && !columnModel.isUnique())) { // unique constraint can not be added
+                        if (columnModelDB.isNullable() != columnModel.isNullable() || !columnModelDB.getDefaultValue().equalsIgnoreCase(columnModel.getDefaultValue()) || columnModelDB.hasIndex() != columnModel.hasIndex() || (columnModelDB.isUnique() && !columnModel.isUnique())) { // unique constraint can not be added
                             hasConstraintChanged = true;
                         }
                     }
@@ -214,8 +209,7 @@ public class Upgrader extends AssociationUpdater {
      * @return Need to remove return true, otherwise return false.
      */
     private boolean isNeedToRemove(String columnName) {
-        return isRemovedFromClass(columnName) && !isIdColumn(columnName)
-                && !isForeignKeyColumn(mTableModel, columnName);
+        return isRemovedFromClass(columnName) && !isIdColumn(columnName) && !isForeignKeyColumn(mTableModel, columnName);
     }
 
     /**

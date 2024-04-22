@@ -39,10 +39,10 @@ void NeuralNetStartTrainning(TPNeuralNet PNeuralNetCNN) {
         return;
     }
     if (!PNeuralNetCNN->trainning.one_by_one) {
-        #ifdef PLATFORM_WINDOWS
+#ifdef PLATFORM_WINDOWS
         CONSOLE_CURSOR_INFO CursorInfo = { 1, 0 };
                     SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &CursorInfo);
-        #endif
+#endif
         hide_cursor = true;
     }
     elapsed_time_ms = GetTimestamp();

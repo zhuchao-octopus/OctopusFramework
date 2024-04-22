@@ -13,9 +13,9 @@ import android.view.View;
  * Created by Administrator on 2016/8/12.
  */
 public class PathView extends View {
-    private Path p=new Path();
+    private Path p = new Path();
 
-    Region re=new Region();
+    Region re = new Region();
 
     public PathView(Context context) {
         super(context);
@@ -34,12 +34,12 @@ public class PathView extends View {
         p.quadTo(200, 120, 150, 100);
         p.close();
         //构造一个区域对象，左闭右开的。
-        RectF r=new RectF();
+        RectF r = new RectF();
         //计算控制点的边界
         p.computeBounds(r, true);
         //设置区域路径和剪辑描述的区域
-        re.setPath(p, new Region((int)r.left,(int)r.top,(int)r.right,(int)r.bottom));
-        Paint paint=new Paint();
+        re.setPath(p, new Region((int) r.left, (int) r.top, (int) r.right, (int) r.bottom));
+        Paint paint = new Paint();
         paint.setColor(Color.RED);
         paint.setStrokeWidth(1);
         paint.setStyle(Paint.Style.FILL);

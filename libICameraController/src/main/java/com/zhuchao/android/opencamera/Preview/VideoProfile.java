@@ -58,21 +58,7 @@ public class VideoProfile {
 
     @NonNull
     public String toString() {
-        return ("\nAudioSource:        " + this.audioSource +
-                "\nVideoSource:        " + this.videoSource +
-                "\nFileFormat:         " + this.fileFormat +
-                "\nFileExtension:         " + this.fileExtension +
-                "\nAudioCodec:         " + this.audioCodec +
-                "\nAudioChannels:      " + this.audioChannels +
-                "\nAudioBitrate:       " + this.audioBitRate +
-                "\nAudioSampleRate:    " + this.audioSampleRate +
-                "\nVideoCodec:         " + this.videoCodec +
-                "\nVideoFrameRate:     " + this.videoFrameRate +
-                "\nVideoCaptureRate:   " + this.videoCaptureRate +
-                "\nVideoBitRate:       " + this.videoBitRate +
-                "\nVideoWidth:         " + this.videoFrameWidth +
-                "\nVideoHeight:        " + this.videoFrameHeight
-        );
+        return ("\nAudioSource:        " + this.audioSource + "\nVideoSource:        " + this.videoSource + "\nFileFormat:         " + this.fileFormat + "\nFileExtension:         " + this.fileExtension + "\nAudioCodec:         " + this.audioCodec + "\nAudioChannels:      " + this.audioChannels + "\nAudioBitrate:       " + this.audioBitRate + "\nAudioSampleRate:    " + this.audioSampleRate + "\nVideoCodec:         " + this.videoCodec + "\nVideoFrameRate:     " + this.videoFrameRate + "\nVideoCaptureRate:   " + this.videoCaptureRate + "\nVideoBitRate:       " + this.videoBitRate + "\nVideoWidth:         " + this.videoFrameWidth + "\nVideoHeight:        " + this.videoFrameHeight);
     }
 
     /**

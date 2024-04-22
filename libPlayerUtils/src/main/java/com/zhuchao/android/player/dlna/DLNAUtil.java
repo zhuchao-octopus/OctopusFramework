@@ -19,8 +19,7 @@ public class DLNAUtil {
      * @return
      */
     public static boolean isMediaRenderDevice(Device device) {
-        if (device != null
-                && MEDIARENDER.equalsIgnoreCase(device.getDeviceType())) {
+        if (device != null && MEDIARENDER.equalsIgnoreCase(device.getDeviceType())) {
             return true;
         }
 

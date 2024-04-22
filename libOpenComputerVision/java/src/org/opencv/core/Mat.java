@@ -9,8 +9,7 @@ public class Mat {
     public final long nativeObj;
 
     public Mat(long addr) {
-        if (addr == 0)
-            throw new UnsupportedOperationException("Native object address is NULL");
+        if (addr == 0) throw new UnsupportedOperationException("Native object address is NULL");
         nativeObj = addr;
     }
 
@@ -468,7 +467,8 @@ public class Mat {
 
     /**
      * Element-wise multiplication with scale factor
-     * @param m operand with with which to perform element-wise multiplication
+     *
+     * @param m     operand with with which to perform element-wise multiplication
      * @param scale scale factor
      * @return reference to a new Mat object
      */
@@ -477,20 +477,22 @@ public class Mat {
     }
 
     /**
-    * Element-wise multiplication
-    * @param m operand with with which to perform element-wise multiplication
-    * @return reference to a new Mat object
-    */
+     * Element-wise multiplication
+     *
+     * @param m operand with with which to perform element-wise multiplication
+     * @return reference to a new Mat object
+     */
     public Mat mul(Mat m) {
         return new Mat(n_mul(nativeObj, m.nativeObj));
     }
 
     /**
-    * Matrix multiplication
-    * @param m operand with with which to perform matrix multiplication
-    * @see Core#gemm(Mat, Mat, double, Mat, double, Mat, int)
-    * @return reference to a new Mat object
-    */
+     * Matrix multiplication
+     *
+     * @param m operand with with which to perform matrix multiplication
+     * @return reference to a new Mat object
+     * @see Core#gemm(Mat, Mat, double, Mat, double, Mat, int)
+     */
     public Mat matMul(Mat m) {
         return new Mat(n_matMul(nativeObj, m.nativeObj));
     }
@@ -764,14 +766,10 @@ public class Mat {
     @Override
     public String toString() {
         String _dims = (dims() > 0) ? "" : "-1*-1*";
-        for (int i=0; i<dims(); i++) {
+        for (int i = 0; i < dims(); i++) {
             _dims += size(i) + "*";
         }
-        return "Mat [ " + _dims + CvType.typeToString(type()) +
-                ", isCont=" + isContinuous() + ", isSubmat=" + isSubmatrix() +
-                ", nativeObj=0x" + Long.toHexString(nativeObj) +
-                ", dataAddr=0x" + Long.toHexString(dataAddr()) +
-                " ]";
+        return "Mat [ " + _dims + CvType.typeToString(type()) + ", isCont=" + isContinuous() + ", isSubmat=" + isSubmatrix() + ", nativeObj=0x" + Long.toHexString(nativeObj) + ", dataAddr=0x" + Long.toHexString(dataAddr()) + " ]";
     }
 
     // javadoc:Mat::dump()
@@ -783,11 +781,7 @@ public class Mat {
     public int put(int row, int col, double... data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
         return nPutD(nativeObj, row, col, data.length, data);
     }
 
@@ -795,13 +789,8 @@ public class Mat {
     public int put(int[] idx, double... data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
-        if (idx.length != dims())
-            throw new IllegalArgumentException("Incorrect number of indices");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+        if (idx.length != dims()) throw new IllegalArgumentException("Incorrect number of indices");
         return nPutDIdx(nativeObj, idx, data.length, data);
     }
 
@@ -809,11 +798,7 @@ public class Mat {
     public int put(int row, int col, float[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_32F) {
             return nPutF(nativeObj, row, col, data.length, data);
         }
@@ -824,13 +809,8 @@ public class Mat {
     public int put(int[] idx, float[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
-        if (idx.length != dims())
-            throw new IllegalArgumentException("Incorrect number of indices");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+        if (idx.length != dims()) throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_32F) {
             return nPutFIdx(nativeObj, idx, data.length, data);
         }
@@ -841,11 +821,7 @@ public class Mat {
     public int put(int row, int col, int[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_32S) {
             return nPutI(nativeObj, row, col, data.length, data);
         }
@@ -856,13 +832,8 @@ public class Mat {
     public int put(int[] idx, int[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
-        if (idx.length != dims())
-            throw new IllegalArgumentException("Incorrect number of indices");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+        if (idx.length != dims()) throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_32S) {
             return nPutIIdx(nativeObj, idx, data.length, data);
         }
@@ -873,11 +844,7 @@ public class Mat {
     public int put(int row, int col, short[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_16U || CvType.depth(t) == CvType.CV_16S) {
             return nPutS(nativeObj, row, col, data.length, data);
         }
@@ -888,13 +855,8 @@ public class Mat {
     public int put(int[] idx, short[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
-        if (idx.length != dims())
-            throw new IllegalArgumentException("Incorrect number of indices");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+        if (idx.length != dims()) throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_16U || CvType.depth(t) == CvType.CV_16S) {
             return nPutSIdx(nativeObj, idx, data.length, data);
         }
@@ -905,11 +867,7 @@ public class Mat {
     public int put(int row, int col, byte[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
             return nPutB(nativeObj, row, col, data.length, data);
         }
@@ -920,13 +878,8 @@ public class Mat {
     public int put(int[] idx, byte[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
-        if (idx.length != dims())
-            throw new IllegalArgumentException("Incorrect number of indices");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+        if (idx.length != dims()) throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
             return nPutBIdx(nativeObj, idx, data.length, data);
         }
@@ -937,11 +890,7 @@ public class Mat {
     public int put(int row, int col, byte[] data, int offset, int length) {
         int t = type();
         if (data == null || length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
             return nPutBwOffset(nativeObj, row, col, length, offset, data);
         }
@@ -952,13 +901,8 @@ public class Mat {
     public int put(int[] idx, byte[] data, int offset, int length) {
         int t = type();
         if (data == null || length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
-        if (idx.length != dims())
-            throw new IllegalArgumentException("Incorrect number of indices");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+        if (idx.length != dims()) throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
             return nPutBwIdxOffset(nativeObj, idx, length, offset, data);
         }
@@ -969,11 +913,7 @@ public class Mat {
     public int get(int row, int col, byte[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
             return nGetB(nativeObj, row, col, data.length, data);
         }
@@ -984,13 +924,8 @@ public class Mat {
     public int get(int[] idx, byte[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
-        if (idx.length != dims())
-            throw new IllegalArgumentException("Incorrect number of indices");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+        if (idx.length != dims()) throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
             return nGetBIdx(nativeObj, idx, data.length, data);
         }
@@ -1001,11 +936,7 @@ public class Mat {
     public int get(int row, int col, short[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_16U || CvType.depth(t) == CvType.CV_16S) {
             return nGetS(nativeObj, row, col, data.length, data);
         }
@@ -1016,13 +947,8 @@ public class Mat {
     public int get(int[] idx, short[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
-        if (idx.length != dims())
-            throw new IllegalArgumentException("Incorrect number of indices");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+        if (idx.length != dims()) throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_16U || CvType.depth(t) == CvType.CV_16S) {
             return nGetSIdx(nativeObj, idx, data.length, data);
         }
@@ -1033,11 +959,7 @@ public class Mat {
     public int get(int row, int col, int[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_32S) {
             return nGetI(nativeObj, row, col, data.length, data);
         }
@@ -1048,13 +970,8 @@ public class Mat {
     public int get(int[] idx, int[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
-        if (idx.length != dims())
-            throw new IllegalArgumentException("Incorrect number of indices");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+        if (idx.length != dims()) throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_32S) {
             return nGetIIdx(nativeObj, idx, data.length, data);
         }
@@ -1065,11 +982,7 @@ public class Mat {
     public int get(int row, int col, float[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_32F) {
             return nGetF(nativeObj, row, col, data.length, data);
         }
@@ -1080,13 +993,8 @@ public class Mat {
     public int get(int[] idx, float[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
-        if (idx.length != dims())
-            throw new IllegalArgumentException("Incorrect number of indices");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+        if (idx.length != dims()) throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_32F) {
             return nGetFIdx(nativeObj, idx, data.length, data);
         }
@@ -1097,11 +1005,7 @@ public class Mat {
     public int get(int row, int col, double[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_64F) {
             return nGetD(nativeObj, row, col, data.length, data);
         }
@@ -1112,13 +1016,8 @@ public class Mat {
     public int get(int[] idx, double[] data) {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
-            throw new UnsupportedOperationException(
-                    "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
-                            ") should be multiple of the Mat channels count (" +
-                            CvType.channels(t) + ")");
-        if (idx.length != dims())
-            throw new IllegalArgumentException("Incorrect number of indices");
+            throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length) + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+        if (idx.length != dims()) throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_64F) {
             return nGetDIdx(nativeObj, idx, data.length, data);
         }
@@ -1132,8 +1031,7 @@ public class Mat {
 
     // javadoc:Mat::get(idx)
     public double[] get(int[] idx) {
-        if (idx.length != dims())
-            throw new IllegalArgumentException("Incorrect number of indices");
+        if (idx.length != dims()) throw new IllegalArgumentException("Incorrect number of indices");
         return nGetIdx(nativeObj, idx);
     }
 
@@ -1151,15 +1049,15 @@ public class Mat {
     @SuppressWarnings("unchecked")
     public <T> Atable<T> at(Class<T> clazz, int row, int col) {
         if (clazz == Byte.class || clazz == byte.class) {
-            return (Atable<T>)new AtableByte(this, row, col);
+            return (Atable<T>) new AtableByte(this, row, col);
         } else if (clazz == Double.class || clazz == double.class) {
-            return (Atable<T>)new AtableDouble(this, row, col);
+            return (Atable<T>) new AtableDouble(this, row, col);
         } else if (clazz == Float.class || clazz == float.class) {
-            return (Atable<T>)new AtableFloat(this, row, col);
+            return (Atable<T>) new AtableFloat(this, row, col);
         } else if (clazz == Integer.class || clazz == int.class) {
-            return (Atable<T>)new AtableInteger(this, row, col);
+            return (Atable<T>) new AtableInteger(this, row, col);
         } else if (clazz == Short.class || clazz == short.class) {
-            return (Atable<T>)new AtableShort(this, row, col);
+            return (Atable<T>) new AtableShort(this, row, col);
         } else {
             throw new RuntimeException("Unsupported class type");
         }
@@ -1169,15 +1067,15 @@ public class Mat {
     @SuppressWarnings("unchecked")
     public <T> Atable<T> at(Class<T> clazz, int[] idx) {
         if (clazz == Byte.class || clazz == byte.class) {
-            return (Atable<T>)new AtableByte(this, idx);
+            return (Atable<T>) new AtableByte(this, idx);
         } else if (clazz == Double.class || clazz == double.class) {
-            return (Atable<T>)new AtableDouble(this, idx);
+            return (Atable<T>) new AtableDouble(this, idx);
         } else if (clazz == Float.class || clazz == float.class) {
-            return (Atable<T>)new AtableFloat(this, idx);
+            return (Atable<T>) new AtableFloat(this, idx);
         } else if (clazz == Integer.class || clazz == int.class) {
-            return (Atable<T>)new AtableInteger(this, idx);
+            return (Atable<T>) new AtableInteger(this, idx);
         } else if (clazz == Short.class || clazz == short.class) {
-            return (Atable<T>)new AtableShort(this, idx);
+            return (Atable<T>) new AtableShort(this, idx);
         } else {
             throw new RuntimeException("Unsupported class parameter");
         }
@@ -1257,12 +1155,19 @@ public class Mat {
 
     public interface Atable<T> {
         T getV();
+
         void setV(T v);
+
         Tuple2<T> getV2c();
+
         void setV2c(Tuple2<T> v);
+
         Tuple3<T> getV3c();
+
         void setV3c(Tuple3<T> v);
+
         Tuple4<T> getV4c();
+
         void setV4c(Tuple4<T> v);
     }
 
@@ -1303,7 +1208,7 @@ public class Mat {
 
         @Override
         public void setV(Byte v) {
-            byte[] data = new byte[] { v };
+            byte[] data = new byte[]{v};
             mat.put(indices, data);
         }
 
@@ -1316,7 +1221,7 @@ public class Mat {
 
         @Override
         public void setV2c(Tuple2<Byte> v) {
-            byte[] data = new byte[] { v._0, v._1 };
+            byte[] data = new byte[]{v._0, v._1};
             mat.put(indices, data);
         }
 
@@ -1329,7 +1234,7 @@ public class Mat {
 
         @Override
         public void setV3c(Tuple3<Byte> v) {
-            byte[] data = new byte[] { v._0, v._1, v._2 };
+            byte[] data = new byte[]{v._0, v._1, v._2};
             mat.put(indices, data);
         }
 
@@ -1342,7 +1247,7 @@ public class Mat {
 
         @Override
         public void setV4c(Tuple4<Byte> v) {
-            byte[] data = new byte[] { v._0, v._1, v._2, v._3 };
+            byte[] data = new byte[]{v._0, v._1, v._2, v._3};
             mat.put(indices, data);
         }
     }
@@ -1366,7 +1271,7 @@ public class Mat {
 
         @Override
         public void setV(Double v) {
-            double[] data = new double[] { v };
+            double[] data = new double[]{v};
             mat.put(indices, data);
         }
 
@@ -1379,7 +1284,7 @@ public class Mat {
 
         @Override
         public void setV2c(Tuple2<Double> v) {
-            double[] data = new double[] { v._0, v._1 };
+            double[] data = new double[]{v._0, v._1};
             mat.put(indices, data);
         }
 
@@ -1392,7 +1297,7 @@ public class Mat {
 
         @Override
         public void setV3c(Tuple3<Double> v) {
-            double[] data = new double[] { v._0, v._1, v._2 };
+            double[] data = new double[]{v._0, v._1, v._2};
             mat.put(indices, data);
         }
 
@@ -1405,7 +1310,7 @@ public class Mat {
 
         @Override
         public void setV4c(Tuple4<Double> v) {
-            double[] data = new double[] { v._0, v._1, v._2, v._3 };
+            double[] data = new double[]{v._0, v._1, v._2, v._3};
             mat.put(indices, data);
         }
     }
@@ -1429,7 +1334,7 @@ public class Mat {
 
         @Override
         public void setV(Float v) {
-            float[] data = new float[] { v };
+            float[] data = new float[]{v};
             mat.put(indices, data);
         }
 
@@ -1442,7 +1347,7 @@ public class Mat {
 
         @Override
         public void setV2c(Tuple2<Float> v) {
-            float[] data = new float[] { v._0, v._1 };
+            float[] data = new float[]{v._0, v._1};
             mat.put(indices, data);
         }
 
@@ -1455,7 +1360,7 @@ public class Mat {
 
         @Override
         public void setV3c(Tuple3<Float> v) {
-            float[] data = new float[] { v._0, v._1, v._2 };
+            float[] data = new float[]{v._0, v._1, v._2};
             mat.put(indices, data);
         }
 
@@ -1468,7 +1373,7 @@ public class Mat {
 
         @Override
         public void setV4c(Tuple4<Float> v) {
-            double[] data = new double[] { v._0, v._1, v._2, v._3 };
+            double[] data = new double[]{v._0, v._1, v._2, v._3};
             mat.put(indices, data);
         }
     }
@@ -1492,7 +1397,7 @@ public class Mat {
 
         @Override
         public void setV(Integer v) {
-            int[] data = new int[] { v };
+            int[] data = new int[]{v};
             mat.put(indices, data);
         }
 
@@ -1505,7 +1410,7 @@ public class Mat {
 
         @Override
         public void setV2c(Tuple2<Integer> v) {
-            int[] data = new int[] { v._0, v._1 };
+            int[] data = new int[]{v._0, v._1};
             mat.put(indices, data);
         }
 
@@ -1518,7 +1423,7 @@ public class Mat {
 
         @Override
         public void setV3c(Tuple3<Integer> v) {
-            int[] data = new int[] { v._0, v._1, v._2 };
+            int[] data = new int[]{v._0, v._1, v._2};
             mat.put(indices, data);
         }
 
@@ -1531,7 +1436,7 @@ public class Mat {
 
         @Override
         public void setV4c(Tuple4<Integer> v) {
-            int[] data = new int[] { v._0, v._1, v._2, v._3 };
+            int[] data = new int[]{v._0, v._1, v._2, v._3};
             mat.put(indices, data);
         }
     }
@@ -1555,7 +1460,7 @@ public class Mat {
 
         @Override
         public void setV(Short v) {
-            short[] data = new short[] { v };
+            short[] data = new short[]{v};
             mat.put(indices, data);
         }
 
@@ -1568,7 +1473,7 @@ public class Mat {
 
         @Override
         public void setV2c(Tuple2<Short> v) {
-            short[] data = new short[] { v._0, v._1 };
+            short[] data = new short[]{v._0, v._1};
             mat.put(indices, data);
         }
 
@@ -1581,7 +1486,7 @@ public class Mat {
 
         @Override
         public void setV3c(Tuple3<Short> v) {
-            short[] data = new short[] { v._0, v._1, v._2 };
+            short[] data = new short[]{v._0, v._1, v._2};
             mat.put(indices, data);
         }
 
@@ -1594,7 +1499,7 @@ public class Mat {
 
         @Override
         public void setV4c(Tuple4<Short> v) {
-            short[] data = new short[] { v._0, v._1, v._2, v._3 };
+            short[] data = new short[]{v._0, v._1, v._2, v._3};
             mat.put(indices, data);
         }
     }

@@ -161,10 +161,7 @@ public final class LoggingInterceptor implements Interceptor {
         boolean hasRequestBody = requestBody != null;
 
         Connection connection = chain.connection();
-        String requestStartMessage = "--> "
-                + request.method()
-                + ' ' + request.url()
-                + (connection != null ? " " + connection.protocol() : "");
+        String requestStartMessage = "--> " + request.method() + ' ' + request.url() + (connection != null ? " " + connection.protocol() : "");
         if (!logHeaders && hasRequestBody) {
             requestStartMessage += " (" + requestBody.contentLength() + "-byte body)";
         }
@@ -208,11 +205,9 @@ public final class LoggingInterceptor implements Interceptor {
                 logger.log("");
                 if (isPlaintext(buffer)) {
                     logger.log(buffer.readString(charset));
-                    logger.log("--> END " + request.method()
-                            + " (" + requestBody.contentLength() + "-byte body)");
+                    logger.log("--> END " + request.method() + " (" + requestBody.contentLength() + "-byte body)");
                 } else {
-                    logger.log("--> END " + request.method() + " (binary "
-                            + requestBody.contentLength() + "-byte body omitted)");
+                    logger.log("--> END " + request.method() + " (binary " + requestBody.contentLength() + "-byte body omitted)");
                 }
             }
         }
@@ -230,11 +225,7 @@ public final class LoggingInterceptor implements Interceptor {
         ResponseBody responseBody = response.body();
         long contentLength = responseBody.contentLength();
         String bodySize = contentLength != -1 ? contentLength + "-byte" : "unknown-length";
-        logger.log("<-- "
-                + response.code()
-                + (response.message().isEmpty() ? "" : ' ' + response.message())
-                + ' ' + response.request().url()
-                + " (" + tookMs + "ms" + (!logHeaders ? ", " + bodySize + " body" : "") + ')');
+        logger.log("<-- " + response.code() + (response.message().isEmpty() ? "" : ' ' + response.message()) + ' ' + response.request().url() + " (" + tookMs + "ms" + (!logHeaders ? ", " + bodySize + " body" : "") + ')');
 
         if (logHeaders) {
             Headers headers = response.headers();

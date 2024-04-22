@@ -3,7 +3,6 @@ package com.zhuchao.android.fbase;
 import static com.zhuchao.android.fbase.FileUtils.MD5;
 import static java.lang.Thread.NORM_PRIORITY;
 
-
 import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
 import com.zhuchao.android.fbase.eventinterface.TaskCallback;
 
@@ -125,10 +124,8 @@ public class TTask implements TTaskInterface {
 
     public TaskCallback getCallBackHandler() {
         Object obj = properties.get(TASK_CALLBACK + 0);
-        if (obj != null)
-            return (TaskCallback) obj;
-        else
-            return null;
+        if (obj != null) return (TaskCallback) obj;
+        else return null;
     }
 
     public String getTaskTag() {
@@ -234,14 +231,12 @@ public class TTask implements TTaskInterface {
 
     @Override
     public void unPark() {
-        if (ttThread != null)
-            LockSupport.unpark(ttThread);
+        if (ttThread != null) LockSupport.unpark(ttThread);
     }
 
     @Override
     public void pack() {
-        if (ttThread != null)
-            LockSupport.park(ttThread);
+        if (ttThread != null) LockSupport.park(ttThread);
     }
 
     @Override
@@ -304,18 +299,15 @@ public class TTask implements TTaskInterface {
             int result_status = properties.getInt("result_status", DataID.TASK_STATUS_FINISHED_STOP);
             doCallBackHandle(result_status);//任务完成回调用户接口
 
-            if (threadPoolCallback != null)
-            {
+            if (threadPoolCallback != null) {
                 //内部使用，当前任务已经完成，宿主任务终止
                 //（内部使用）任务结束、终止、停止不再需要运行，305
                 threadPoolCallback.onEventTask(TTask.this, DataID.TASK_STATUS_FINISHED_STOP);
-            }
-            else
-            {
+            } else {
                 //打印任务完成log
                 MMLog.log(TTask.this.TAG, "Ttask finish tName = " + tName + " invoked = " + invokedCount);
                 if (isAutoFreeRemove())//没有threadPool
-                   freeFree();
+                    freeFree();
             }
             ttThread = null;
         }

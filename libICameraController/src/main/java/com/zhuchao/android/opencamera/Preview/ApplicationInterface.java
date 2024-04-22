@@ -40,8 +40,7 @@ public interface ApplicationInterface {
 
         boolean satisfies(CameraController.Size size) {
             if (this.has_max_mp && size.width * size.height > this.max_mp) {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "size index larger than max_mp: " + this.max_mp);
+                if (MyDebug.LOG) Log.d(TAG, "size index larger than max_mp: " + this.max_mp);
                 return false;
             }
             return true;
@@ -70,8 +69,7 @@ public interface ApplicationInterface {
      *                    resolution that does.
      */
     enum NRModePref {
-        NRMODE_NORMAL,
-        NRMODE_LOW_LIGHT
+        NRMODE_NORMAL, NRMODE_LOW_LIGHT
     }
 
     enum RawPref {

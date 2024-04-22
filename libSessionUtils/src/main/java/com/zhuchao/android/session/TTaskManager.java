@@ -15,14 +15,12 @@ import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.FilesFinger;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.ObjectList;
-import com.zhuchao.android.fbase.TCourierEventBus;
 import com.zhuchao.android.fbase.TTask;
 import com.zhuchao.android.fbase.TTaskInterface;
 import com.zhuchao.android.fbase.TTaskThreadPool;
 import com.zhuchao.android.fbase.eventinterface.HttpCallback;
 import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
 import com.zhuchao.android.net.HttpUtils;
-import com.zhuchao.android.persist.TPersistent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,8 +33,7 @@ import java.util.concurrent.locks.LockSupport;
 public class TTaskManager {
     private final String TAG = "TTaskManager";
     private TTaskThreadPool tTaskThreadPool = null;
-    private TPersistent tPersistent = null;
-    private static final TCourierEventBus tCourierEventBus = new TCourierEventBus();
+
     ///private boolean stopContinue = true;
     ///private boolean reDownload = true;
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,17 +68,7 @@ public class TTaskManager {
     public TTaskManager(Context context) {
         tTaskThreadPool = new TTaskThreadPool();
         //TTaskThreadPool_SESSION_UPDATE_TEST_INIT();
-        tPersistent = new TPersistent(context, context.getPackageName());
         tTaskManagerTTaskPoolInit();
-    }
-
-    public synchronized TPersistent getPersistent(Context context) {
-        if (tPersistent == null) return new TPersistent(context, context.getPackageName());
-        else return tPersistent;
-    }
-
-    public static synchronized TCourierEventBus getEventBus() {
-        return tCourierEventBus;
     }
 
     public <T> T getTask(String tName) {

@@ -194,15 +194,12 @@ public class DBUtility {
             if (tableName.matches("[0-9a-zA-Z]+_[0-9a-zA-Z]+")) {
                 Cursor cursor = null;
                 try {
-                    cursor = db.query(Const.TableSchema.TABLE_NAME, null, null, null, null, null,
-                            null);
+                    cursor = db.query(Const.TableSchema.TABLE_NAME, null, null, null, null, null, null);
                     if (cursor.moveToFirst()) {
                         do {
-                            String tableNameDB = cursor.getString(cursor
-                                    .getColumnIndexOrThrow(Const.TableSchema.COLUMN_NAME));
+                            String tableNameDB = cursor.getString(cursor.getColumnIndexOrThrow(Const.TableSchema.COLUMN_NAME));
                             if (tableName.equalsIgnoreCase(tableNameDB)) {
-                                int tableType = cursor.getInt(cursor
-                                        .getColumnIndexOrThrow(Const.TableSchema.COLUMN_TYPE));
+                                int tableType = cursor.getInt(cursor.getColumnIndexOrThrow(Const.TableSchema.COLUMN_TYPE));
                                 if (tableType == Const.TableSchema.INTERMEDIATE_JOIN_TABLE) {
                                     return true;
                                 }
@@ -234,15 +231,12 @@ public class DBUtility {
             if (tableName.matches("[0-9a-zA-Z]+_[0-9a-zA-Z]+")) {
                 Cursor cursor = null;
                 try {
-                    cursor = db.query(Const.TableSchema.TABLE_NAME, null, null, null, null, null,
-                            null);
+                    cursor = db.query(Const.TableSchema.TABLE_NAME, null, null, null, null, null, null);
                     if (cursor.moveToFirst()) {
                         do {
-                            String tableNameDB = cursor.getString(cursor
-                                    .getColumnIndexOrThrow(Const.TableSchema.COLUMN_NAME));
+                            String tableNameDB = cursor.getString(cursor.getColumnIndexOrThrow(Const.TableSchema.COLUMN_NAME));
                             if (tableName.equalsIgnoreCase(tableNameDB)) {
-                                int tableType = cursor.getInt(cursor
-                                        .getColumnIndexOrThrow(Const.TableSchema.COLUMN_TYPE));
+                                int tableType = cursor.getInt(cursor.getColumnIndexOrThrow(Const.TableSchema.COLUMN_TYPE));
                                 if (tableType == Const.TableSchema.GENERIC_TABLE) {
                                     return true;
                                 }
@@ -407,8 +401,7 @@ public class DBUtility {
             }
             return tableModelDB;
         } else {
-            throw new DatabaseGenerateException(
-                    DatabaseGenerateException.TABLE_DOES_NOT_EXIST_WHEN_EXECUTING + tableName);
+            throw new DatabaseGenerateException(DatabaseGenerateException.TABLE_DOES_NOT_EXIST_WHEN_EXECUTING + tableName);
         }
     }
 

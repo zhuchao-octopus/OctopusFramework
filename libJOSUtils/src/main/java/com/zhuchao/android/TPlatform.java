@@ -52,10 +52,9 @@ public class TPlatform {
             @SuppressLint("PrivateApi") Class<?> c = Class.forName("android.os.SystemProperties");
             Method get = c.getMethod("get", String.class);
             result = (String) get.invoke(c, key);
-        } catch (ClassNotFoundException | InvocationTargetException | IllegalArgumentException |
-                 IllegalAccessException | NoSuchMethodException e) {
+        } catch (ClassNotFoundException | InvocationTargetException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException e) {
             //e.printStackTrace();
-            MMLog.e(TAG,"Exception:"+e);
+            MMLog.e(TAG, "Exception:" + e);
         }
         return result;
     }
@@ -65,10 +64,9 @@ public class TPlatform {
             @SuppressLint("PrivateApi") Class<?> c = Class.forName("android.os.SystemProperties");
             Method set = c.getMethod("set", String.class, String.class);
             set.invoke(c, key, val);
-        } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException |
-                 InvocationTargetException | NoSuchMethodException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException e) {
             //e.printStackTrace();
-            MMLog.e(TAG,"Exception:"+e);
+            MMLog.e(TAG, "Exception:" + e);
         }
     }
 
@@ -138,10 +136,8 @@ public class TPlatform {
     public static boolean t507IsUSBMicAudioInput() {
         String str = GetAudioInputPolicy();
         if (EmptyString(str)) return false;
-        if (str.startsWith(INPUT_USB))
-            return true;
-        else
-            return false;
+        if (str.startsWith(INPUT_USB)) return true;
+        else return false;
     }
 
     public static boolean t507IsCodecMicAudioInput() {
@@ -346,8 +342,7 @@ public class TPlatform {
 
     public static boolean isServiceRunning(Context mContext, String className) {
         boolean isRunning = false;
-        ActivityManager activityManager = (ActivityManager)
-                mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningServiceInfo> serviceList = activityManager.getRunningServices(30);
         if (!(serviceList.size() > 0)) {
             return false;

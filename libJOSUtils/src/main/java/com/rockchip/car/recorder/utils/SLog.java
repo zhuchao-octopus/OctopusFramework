@@ -81,8 +81,7 @@ public class SLog {
         String tag = "%s.%s(Line:%d)"; // ռλ��
         String callerClazzName = caller.getClassName(); // ��ȡ������
         callerClazzName = callerClazzName.substring(callerClazzName.lastIndexOf(".") + 1);
-        tag = String.format(tag, callerClazzName, caller.getMethodName(),
-                caller.getLineNumber()); // �滻
+        tag = String.format(tag, callerClazzName, caller.getMethodName(), caller.getLineNumber()); // �滻
         tag = TextUtils.isEmpty(TAG_PREFIX) ? tag : TAG_PREFIX + tag;
         tag = TextUtils.isEmpty(TAG_POSTFIX) ? tag : tag + TAG_POSTFIX;
         return tag;
@@ -147,8 +146,7 @@ public class SLog {
     }
 
     public static void d(String content) {
-        if (!checkNeedLog(Log.DEBUG))
-            return;
+        if (!checkNeedLog(Log.DEBUG)) return;
         StackTraceElement caller = getCallerStackTraceElement();
         String tag = generateTag(caller);
         content = generateMsg(content);
@@ -161,8 +159,7 @@ public class SLog {
     }
 
     public static void d(String content, Throwable tr) {
-        if (!checkNeedLog(Log.DEBUG))
-            return;
+        if (!checkNeedLog(Log.DEBUG)) return;
         StackTraceElement caller = getCallerStackTraceElement();
         String tag = generateTag(caller);
         content = generateMsg(content);
@@ -175,8 +172,7 @@ public class SLog {
     }
 
     public static void d(String tag, String content) {
-        if (!checkNeedLog(Log.DEBUG))
-            return;
+        if (!checkNeedLog(Log.DEBUG)) return;
         if (customLogger != null) {
             customLogger.d(tag, content);
         } else {
@@ -185,8 +181,7 @@ public class SLog {
     }
 
     public static void e(String content) {
-        if (!checkNeedLog(Log.ERROR))
-            return;
+        if (!checkNeedLog(Log.ERROR)) return;
         StackTraceElement caller = getCallerStackTraceElement();
         String tag = generateTag(caller);
         content = generateMsg(content);
@@ -202,8 +197,7 @@ public class SLog {
     }
 
     public static void e(String content, Throwable tr) {
-        if (!checkNeedLog(Log.ERROR))
-            return;
+        if (!checkNeedLog(Log.ERROR)) return;
         StackTraceElement caller = getCallerStackTraceElement();
         String tag = generateTag(caller);
         content = generateMsg(content);
@@ -219,8 +213,7 @@ public class SLog {
     }
 
     public static void e(String tag, String content) {
-        if (!checkNeedLog(Log.ERROR))
-            return;
+        if (!checkNeedLog(Log.ERROR)) return;
         if (customLogger != null) {
             customLogger.e(tag, content);
         } else {
@@ -229,8 +222,7 @@ public class SLog {
     }
 
     public static void e(String tag, String content, Throwable tr) {
-        if (!checkNeedLog(Log.ERROR))
-            return;
+        if (!checkNeedLog(Log.ERROR)) return;
         if (customLogger != null) {
             customLogger.e(tag, content, tr);
         } else {
@@ -239,10 +231,8 @@ public class SLog {
     }
 
 
-
     public static void i(String content) {
-        if (!checkNeedLog(Log.INFO))
-            return;
+        if (!checkNeedLog(Log.INFO)) return;
         StackTraceElement caller = getCallerStackTraceElement();
         String tag = generateTag(caller);
         content = generateMsg(content);
@@ -256,8 +246,7 @@ public class SLog {
     }
 
     public static void i(String content, Throwable tr) {
-        if (!checkNeedLog(Log.INFO))
-            return;
+        if (!checkNeedLog(Log.INFO)) return;
         StackTraceElement caller = getCallerStackTraceElement();
         String tag = generateTag(caller);
         content = generateMsg(content);
@@ -271,8 +260,7 @@ public class SLog {
     }
 
     public static void i(String tag, String content) {
-        if (!checkNeedLog(Log.INFO))
-            return;
+        if (!checkNeedLog(Log.INFO)) return;
         if (customLogger != null) {
             customLogger.i(tag, content);
         } else {
@@ -281,8 +269,7 @@ public class SLog {
     }
 
     public static void v(String content) {
-        if (!checkNeedLog(Log.VERBOSE))
-            return;
+        if (!checkNeedLog(Log.VERBOSE)) return;
         StackTraceElement caller = getCallerStackTraceElement();
         String tag = generateTag(caller);
         content = generateMsg(content);
@@ -295,8 +282,7 @@ public class SLog {
     }
 
     public static void v(String content, Throwable tr) {
-        if (!checkNeedLog(Log.VERBOSE))
-            return;
+        if (!checkNeedLog(Log.VERBOSE)) return;
         StackTraceElement caller = getCallerStackTraceElement();
         String tag = generateTag(caller);
         content = generateMsg(content);
@@ -309,8 +295,7 @@ public class SLog {
     }
 
     public static void v(String tag, String content) {
-        if (!checkNeedLog(Log.VERBOSE))
-            return;
+        if (!checkNeedLog(Log.VERBOSE)) return;
         if (customLogger != null) {
             customLogger.v(tag, content);
         } else {
@@ -319,8 +304,7 @@ public class SLog {
     }
 
     public static void w(String content) {
-        if (!checkNeedLog(Log.WARN))
-            return;
+        if (!checkNeedLog(Log.WARN)) return;
         StackTraceElement caller = getCallerStackTraceElement();
         String tag = generateTag(caller);
         content = generateMsg(content);
@@ -333,8 +317,7 @@ public class SLog {
     }
 
     public static void w(String content, Throwable tr) {
-        if (!checkNeedLog(Log.WARN))
-            return;
+        if (!checkNeedLog(Log.WARN)) return;
         StackTraceElement caller = getCallerStackTraceElement();
         String tag = generateTag(caller);
         content = generateMsg(content);
@@ -347,8 +330,7 @@ public class SLog {
     }
 
     public static void w(Throwable tr) {
-        if (!checkNeedLog(Log.WARN))
-            return;
+        if (!checkNeedLog(Log.WARN)) return;
         StackTraceElement caller = getCallerStackTraceElement();
         String tag = generateTag(caller);
 
@@ -360,8 +342,7 @@ public class SLog {
     }
 
     public static void w(String tag, String content) {
-        if (!checkNeedLog(Log.WARN))
-            return;
+        if (!checkNeedLog(Log.WARN)) return;
         if (customLogger != null) {
             customLogger.w(tag, content);
         } else {
@@ -411,8 +392,7 @@ public class SLog {
     public static void point(String path, String tag, String msg) {
         if (isStorageAvailable()) {
             Date date = new Date();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("",
-                    Locale.SIMPLIFIED_CHINESE);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("", Locale.SIMPLIFIED_CHINESE);
             dateFormat.applyPattern("yyyy");
             path = path + dateFormat.format(date) + "/";
             dateFormat.applyPattern("MM");
@@ -427,8 +407,7 @@ public class SLog {
             }
             BufferedWriter out = null;
             try {
-                out = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(file, true)));
+                out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true)));
                 out.write(time + tag + msg);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -446,7 +425,7 @@ public class SLog {
 
     /**
      * �����ļ�·�� �ݹ鴴���ļ�
-     * 
+     *
      * @param file
      */
     public static void createDipPath(String file) {
@@ -497,9 +476,7 @@ public class SLog {
     // }
 
     public static boolean isStorageAvailable() {
-        if (Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED)
-                || Environment.getExternalStorageDirectory().exists()) {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) || Environment.getExternalStorageDirectory().exists()) {
             return true;
         } else {
             return false;
@@ -509,11 +486,9 @@ public class SLog {
     /**
      * Return a String describing the calling method and location at a
      * particular stack depth.
-     * 
-     * @param callStack
-     *            the Thread stack
-     * @param depth
-     *            the depth of stack to return information for.
+     *
+     * @param callStack the Thread stack
+     * @param depth     the depth of stack to return information for.
      * @return the String describing the caller at that depth.
      */
     private static String getCaller(StackTraceElement callStack[], int depth) {
@@ -522,22 +497,19 @@ public class SLog {
             return "<bottom of call stack>";
         }
         StackTraceElement caller = callStack[4 + depth];
-        return caller.getClassName() + "." + caller.getMethodName() + ":"
-                + caller.getLineNumber();
+        return caller.getClassName() + "." + caller.getMethodName() + ":" + caller.getLineNumber();
     }
 
     /**
      * Return a string consisting of methods and locations at multiple call
      * stack levels.
-     * 
-     * @param depth
-     *            the number of levels to return, starting with the immediate
-     *            caller.
+     *
+     * @param depth the number of levels to return, starting with the immediate
+     *              caller.
      * @return a string describing the call stack. {@hide}
      */
     public static String getCallers(final int depth) {
-        final StackTraceElement[] callStack = Thread.currentThread()
-                .getStackTrace();
+        final StackTraceElement[] callStack = Thread.currentThread().getStackTrace();
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < depth; i++) {
             sb.append(getCaller(callStack, i)).append(" ");
@@ -548,15 +520,13 @@ public class SLog {
     /**
      * Return a string consisting of methods and locations at multiple call
      * stack levels.
-     * 
-     * @param depth
-     *            the number of levels to return, starting with the immediate
-     *            caller.
+     *
+     * @param depth the number of levels to return, starting with the immediate
+     *              caller.
      * @return a string describing the call stack. {@hide}
      */
     public static String getCallers(final int start, int depth) {
-        final StackTraceElement[] callStack = Thread.currentThread()
-                .getStackTrace();
+        final StackTraceElement[] callStack = Thread.currentThread().getStackTrace();
         StringBuffer sb = new StringBuffer();
         depth += start;
         for (int i = start; i < depth; i++) {
@@ -568,17 +538,14 @@ public class SLog {
     /**
      * Like {@link #getCallers(int)}, but each location is append to the string
      * as a new line with <var>linePrefix</var> in front of it.
-     * 
-     * @param depth
-     *            the number of levels to return, starting with the immediate
-     *            caller.
-     * @param linePrefix
-     *            prefix to put in front of each location.
+     *
+     * @param depth      the number of levels to return, starting with the immediate
+     *                   caller.
+     * @param linePrefix prefix to put in front of each location.
      * @return a string describing the call stack. {@hide}
      */
     public static String getCallers(final int depth, String linePrefix) {
-        final StackTraceElement[] callStack = Thread.currentThread()
-                .getStackTrace();
+        final StackTraceElement[] callStack = Thread.currentThread().getStackTrace();
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < depth; i++) {
             sb.append(linePrefix).append(getCaller(callStack, i)).append("\n");
@@ -587,7 +554,6 @@ public class SLog {
     }
 
     /**
-     * 
      * @return a String describing the immediate caller of the calling method.
      */
     public static String getCaller() {

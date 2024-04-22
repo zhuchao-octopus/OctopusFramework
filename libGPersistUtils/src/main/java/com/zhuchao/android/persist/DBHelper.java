@@ -35,20 +35,14 @@ public class DBHelper extends SQLiteOpenHelper {
         DefaultDatabaseName = databaseName;
         DefaultTableName = tableName;
 
-        if (DefaultDatabaseName == null)
-            DefaultDatabaseName = "CommonDB.db";
-        if (DefaultTableName == null)
-            DefaultTableName = "MyTable";
+        if (DefaultDatabaseName == null) DefaultDatabaseName = "CommonDB.db";
+        if (DefaultTableName == null) DefaultTableName = "MyTable";
 
         String path = context.getCacheDir().getPath() + "/" + DefaultDatabaseName;
 
         db = SQLiteDatabase.openOrCreateDatabase(path, null);
 
-        String sql = "create table if not exists " + DefaultTableName +
-                "(id integer primary key autoincrement," +
-                "name text(50),p1 text(50),p2 text(50)," +
-                "p3 text(50),p4 text(50),p5 text(50),p6 text(50)," +
-                "p7 text(50),p8 text(50),p9 text(50),p10 text(50),p11 text(50),p12 text(50),p13 text(50),p14 text(50))";
+        String sql = "create table if not exists " + DefaultTableName + "(id integer primary key autoincrement," + "name text(50),p1 text(50),p2 text(50)," + "p3 text(50),p4 text(50),p5 text(50),p6 text(50)," + "p7 text(50),p8 text(50),p9 text(50),p10 text(50),p11 text(50),p12 text(50),p13 text(50),p14 text(50))";
 
         db.execSQL(sql);//创建表
     }
@@ -300,17 +294,13 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void updateData(String tableName, String name, String p1, String p2, String p3, String p4, String p5, String p6, String p7, String p8, String p9, String p10, String p11, String p12, String p13, String p14) {
-        if (existsData(tableName, name))
-            modifyData(tableName, name, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14);
-        else
-            insertData(tableName, name, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14);
+        if (existsData(tableName, name)) modifyData(tableName, name, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14);
+        else insertData(tableName, name, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14);
     }
 
     public void updateData2(String tableName, String name, String p1, String p2, String p3, String p4, String p5, String p6, String p7, String p8, String p9, String p10, String p11, String p12, String p13, String p14) {
-        if (existsDataNameP1(tableName, name, p1))
-            modifyDataByNameP1(tableName, name, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14);
-        else
-            insertData(tableName, name, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14);
+        if (existsDataNameP1(tableName, name, p1)) modifyDataByNameP1(tableName, name, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14);
+        else insertData(tableName, name, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14);
     }
 
     /*

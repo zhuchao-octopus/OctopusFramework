@@ -635,8 +635,7 @@ public class LitePalSupport {
      * @param associatedId        The id of associated model.
      */
     void addAssociatedModelForJoinTable(String associatedModelName, long associatedId) {
-        List<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(
-                associatedModelName);
+        List<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(associatedModelName);
         if (associatedIdsM2MSet == null) {
             associatedIdsM2MSet = new ArrayList<Long>();
             associatedIdsM2MSet.add(associatedId);
@@ -654,8 +653,7 @@ public class LitePalSupport {
      * @param associatedModelName The name of associated model.
      */
     void addEmptyModelForJoinTable(String associatedModelName) {
-        List<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(
-                associatedModelName);
+        List<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(associatedModelName);
         if (associatedIdsM2MSet == null) {
             associatedIdsM2MSet = new ArrayList<Long>();
             associatedModelsMapForJoinTable.put(associatedModelName, associatedIdsM2MSet);

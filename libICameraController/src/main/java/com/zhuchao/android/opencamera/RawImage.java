@@ -28,8 +28,7 @@ public class RawImage {
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void writeImage(OutputStream dngOutput) throws IOException {
-        if (MyDebug.LOG)
-            Log.d(TAG, "writeImage");
+        if (MyDebug.LOG) Log.d(TAG, "writeImage");
         try {
             dngCreator.writeImage(dngOutput, image);
         } catch (AssertionError e) {
@@ -51,8 +50,7 @@ public class RawImage {
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void close() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "close");
+        if (MyDebug.LOG) Log.d(TAG, "close");
         image.close();
         dngCreator.close();
     }

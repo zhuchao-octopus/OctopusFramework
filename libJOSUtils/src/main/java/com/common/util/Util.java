@@ -2,6 +2,22 @@ package com.common.util;
 
 import static com.common.util.MachineConfig.VENDOR_DIR;
 
+import android.app.Instrumentation;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.Build;
+import android.util.Log;
+import android.view.KeyEvent;
+
+import com.zhuchao.android.fbase.MMLog;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -12,40 +28,17 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import java.nio.channels.FileChannel;
-import java.nio.ByteBuffer;
-
-import android.app.Instrumentation;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.os.Build;
-import android.os.storage.StorageManager;
-import android.util.Log;
-import android.view.KeyEvent;
-
-import com.zhuchao.android.fbase.MMLog;
 
 public class Util {
     private final static String tag = "Util";

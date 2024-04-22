@@ -30,20 +30,19 @@ char DataSetName[][10] = {"cifar-10", "cifar-10", ""};
 FILE *PCifarFile_Trainning = NULL;
 FILE *PCifarFile_Testing = NULL;
 
-void CloseTrainningDataset()
-{
+void CloseTrainningDataset() {
     if (PCifarFile_Trainning != NULL)
         fclose(PCifarFile_Trainning);
     PCifarFile_Trainning = NULL;
 }
-void CloseTestingDataset()
-{
+
+void CloseTestingDataset() {
     if (PCifarFile_Testing != NULL)
         fclose(PCifarFile_Testing);
     PCifarFile_Testing = NULL;
 }
-char *GetDataSetName(uint16_t DsType)
-{
+
+char *GetDataSetName(uint16_t DsType) {
     return DataSetName[DsType];
 }
 
@@ -51,17 +50,12 @@ char *GetDataSetName(uint16_t DsType)
 /// @param TestingIndex
 /// @param DataSetType
 /// @return
-TPPicture Dataset_GetTestingPic(uint32_t TestingIndex, uint16_t DataSetType)
-{
-    if (PCifarFile_Testing == NULL)
-    {
-        if (DataSetType == Cifar10)
-        {
+TPPicture Dataset_GetTestingPic(uint32_t TestingIndex, uint16_t DataSetType) {
+    if (PCifarFile_Testing == NULL) {
+        if (DataSetType == Cifar10) {
             PCifarFile_Testing = fopen(Cifar10FilePathName6, "rb");
             LOGINFOR("load testing set from %s", Cifar10FilePathName6);
-        }
-        else if (DataSetType == Cifar100)
-        {
+        } else if (DataSetType == Cifar100) {
             PCifarFile_Testing = fopen(Cifar100FilePathName_test, "rb");
             LOGINFOR("load testing set from %s", Cifar100FilePathName_test);
         }
@@ -76,47 +70,33 @@ TPPicture Dataset_GetTestingPic(uint32_t TestingIndex, uint16_t DataSetType)
 /// @param TrainningIndex
 /// @param DataSetType
 /// @return
-TPPicture Dataset_GetTrainningPic(uint32_t TrainningIndex, uint16_t DataSetType)
-{
+TPPicture Dataset_GetTrainningPic(uint32_t TrainningIndex, uint16_t DataSetType) {
     uint32_t image_index = TrainningIndex;
-    if (DataSetType == Cifar10)
-    {
-        if (TrainningIndex >= CIFAR_TRAINNING_IMAGE_COUNT || TrainningIndex <= 0)
-        {
+    if (DataSetType == Cifar10) {
+        if (TrainningIndex >= CIFAR_TRAINNING_IMAGE_COUNT || TrainningIndex <= 0) {
             CloseTrainningDataset();
             PCifarFile_Trainning = fopen(Cifar10FilePathName1, "rb");
             LOGINFOR("load trainning set from %s", Cifar10FilePathName1);
-        }
-        else if (TrainningIndex == CIFAR10_TRAINNING_IMAGE_BATCH_COUNT)
-        {
+        } else if (TrainningIndex == CIFAR10_TRAINNING_IMAGE_BATCH_COUNT) {
             CloseTrainningDataset();
             PCifarFile_Trainning = fopen(Cifar10FilePathName2, "rb");
             LOGINFOR("load trainning set from %s", Cifar10FilePathName2);
-        }
-        else if (TrainningIndex == CIFAR10_TRAINNING_IMAGE_BATCH_COUNT * 2)
-        {
+        } else if (TrainningIndex == CIFAR10_TRAINNING_IMAGE_BATCH_COUNT * 2) {
             CloseTrainningDataset();
             PCifarFile_Trainning = fopen(Cifar10FilePathName3, "rb");
             LOGINFOR("load trainning set from %s", Cifar10FilePathName3);
-        }
-        else if (TrainningIndex == CIFAR10_TRAINNING_IMAGE_BATCH_COUNT * 3)
-        {
+        } else if (TrainningIndex == CIFAR10_TRAINNING_IMAGE_BATCH_COUNT * 3) {
             CloseTrainningDataset();
             PCifarFile_Trainning = fopen(Cifar10FilePathName4, "rb");
             LOGINFOR("load trainning set from %s", Cifar10FilePathName4);
-        }
-        else if (TrainningIndex == CIFAR10_TRAINNING_IMAGE_BATCH_COUNT * 4)
-        {
+        } else if (TrainningIndex == CIFAR10_TRAINNING_IMAGE_BATCH_COUNT * 4) {
             CloseTrainningDataset();
             PCifarFile_Trainning = fopen(Cifar10FilePathName5, "rb");
             LOGINFOR("load trainning set from %s", Cifar10FilePathName5);
         }
         image_index = TrainningIndex % CIFAR10_TRAINNING_IMAGE_BATCH_COUNT;
-    }
-    else if (DataSetType == Cifar100)
-    {
-        if (PCifarFile_Trainning == NULL)
-        {
+    } else if (DataSetType == Cifar100) {
+        if (PCifarFile_Trainning == NULL) {
             PCifarFile_Trainning = fopen(Cifar100FilePathName_train, "rb");
             LOGINFOR("load trainning set from %s", Cifar100FilePathName_train);
         }
@@ -126,18 +106,17 @@ TPPicture Dataset_GetTrainningPic(uint32_t TrainningIndex, uint16_t DataSetType)
     else
         return NULL;
 }
+
 /// @brief /////////////////////////////////////////////////////////////////////////
 /// @param PFile
 /// @param ImageIndex
 /// @param DataSetType
 /// @return
-TPPicture Dataset_GetPic(FILE *PFile, uint32_t ImageIndex, uint16_t DataSetType)
-{
+TPPicture Dataset_GetPic(FILE *PFile, uint32_t ImageIndex, uint16_t DataSetType) {
     uint32_t iSize = 0;
     TPPicture pPic = NULL;
 
-    if (DataSetType == Cifar10)
-    {
+    if (DataSetType == Cifar10) {
         iSize = Cifar10ReadImage(PFile, CifarBuffer, ImageIndex);
         if (iSize != CIFAR10_IMAGE_SIZE)
             return pPic;
@@ -147,10 +126,8 @@ TPPicture Dataset_GetPic(FILE *PFile, uint32_t ImageIndex, uint16_t DataSetType)
         pPic->detailIndex = pPic->labelIndex;
         pPic->volume = MakeVolume(CIFAR_IMAGE_WIDTH, CIFAR_IMAGE_HEIGHT, 3);
         pPic->volume->init(pPic->volume, CIFAR_IMAGE_WIDTH, CIFAR_IMAGE_HEIGHT, 3, 0);
-        for (uint16_t y = 0; y < CIFAR_IMAGE_HEIGHT; y++)
-        {
-            for (uint16_t x = 0; x < CIFAR_IMAGE_WIDTH; x++)
-            {
+        for (uint16_t y = 0; y < CIFAR_IMAGE_HEIGHT; y++) {
+            for (uint16_t x = 0; x < CIFAR_IMAGE_WIDTH; x++) {
                 //// 前1024个条目包含红色通道值，后1024个条目包含绿色通道值，最后1024个条目包含蓝色通道值。
                 uint8_t r = CifarBuffer[y * CIFAR_IMAGE_WIDTH + x + 1];
                 uint8_t g = CifarBuffer[y * CIFAR_IMAGE_WIDTH + CIFAR_IMAGE_WIDTH * CIFAR_IMAGE_HEIGHT + x + 1];
@@ -163,10 +140,7 @@ TPPicture Dataset_GetPic(FILE *PFile, uint32_t ImageIndex, uint16_t DataSetType)
                 pPic->volume->setValue(pPic->volume, x, y, 2, fb);
             }
         }
-    }
-
-    else if (DataSetType == Cifar100)
-    {
+    } else if (DataSetType == Cifar100) {
         iSize = Cifar100ReadImage(PFile, CifarBuffer, ImageIndex);
         if (iSize != CIFAR100_IMAGE_SIZE)
             return pPic;
@@ -177,10 +151,8 @@ TPPicture Dataset_GetPic(FILE *PFile, uint32_t ImageIndex, uint16_t DataSetType)
         pPic->detailIndex = CifarBuffer[1];
         pPic->volume = MakeVolume(CIFAR_IMAGE_WIDTH, CIFAR_IMAGE_HEIGHT, 3);
         pPic->volume->init(pPic->volume, CIFAR_IMAGE_WIDTH, CIFAR_IMAGE_HEIGHT, 3, 0);
-        for (uint16_t y = 0; y < CIFAR_IMAGE_HEIGHT; y++)
-        {
-            for (uint16_t x = 0; x < CIFAR_IMAGE_WIDTH; x++)
-            {
+        for (uint16_t y = 0; y < CIFAR_IMAGE_HEIGHT; y++) {
+            for (uint16_t x = 0; x < CIFAR_IMAGE_WIDTH; x++) {
                 uint8_t r = CifarBuffer[y * CIFAR_IMAGE_WIDTH + 0000 + x + 2];
                 uint8_t g = CifarBuffer[y * CIFAR_IMAGE_WIDTH + 1024 + x + 2];
                 uint8_t b = CifarBuffer[y * CIFAR_IMAGE_WIDTH + 2048 + x + 2];
@@ -192,9 +164,7 @@ TPPicture Dataset_GetPic(FILE *PFile, uint32_t ImageIndex, uint16_t DataSetType)
                 pPic->volume->setValue(pPic->volume, x, y, 2, fb - 0.5);
             }
         }
-    }
-    else
-    {
+    } else {
         // LOGINFOR("Read data failed from %s TrainningIndex=%d DataSetType = %d\n", PFile->_tmpfname, ImageIndex, DataSetType);
     }
     return pPic;
@@ -205,50 +175,46 @@ TPPicture Dataset_GetPic(FILE *PFile, uint32_t ImageIndex, uint16_t DataSetType)
 /// @param Buffer
 /// @param ImageIndex
 /// @return
-uint32_t CifarReadImage(const char *FileName, uint8_t *Buffer, uint32_t ImageIndex)
-{
+uint32_t CifarReadImage(const char *FileName, uint8_t *Buffer, uint32_t ImageIndex) {
     uint32_t offset = CIFAR10_IMAGE_SIZE * ImageIndex;
     return ReadFileToBuffer(FileName, Buffer, CIFAR10_IMAGE_SIZE, offset);
 }
+
 /// @brief ////////////////////////////////////////////////////////////////////////
 /// @param PFile
 /// @param Buffer
 /// @param ImageIndex
 /// @return
-uint32_t Cifar10ReadImage(FILE *PFile, uint8_t *Buffer, uint32_t ImageIndex)
-{
+uint32_t Cifar10ReadImage(FILE *PFile, uint8_t *Buffer, uint32_t ImageIndex) {
     uint32_t offset = CIFAR10_IMAGE_SIZE * ImageIndex;
     return ReadFileToBuffer2(PFile, Buffer, CIFAR10_IMAGE_SIZE, offset);
 }
-uint32_t Cifar100ReadImage(FILE *PFile, uint8_t *Buffer, uint32_t ImageIndex)
-{
+
+uint32_t Cifar100ReadImage(FILE *PFile, uint8_t *Buffer, uint32_t ImageIndex) {
     uint32_t offset = CIFAR100_IMAGE_SIZE * ImageIndex;
     return ReadFileToBuffer2(PFile, Buffer, CIFAR100_IMAGE_SIZE, offset);
 }
+
 /// @brief ////////////////////////////////////////////////////////////////////////
 /// @param FileName
 /// @param Buffer
 /// @param ReadSize
 /// @return
-uint32_t ReadFileToBuffer(const char *FileName, uint8_t *Buffer, uint32_t ReadSize, uint32_t OffSet)
-{
+uint32_t ReadFileToBuffer(const char *FileName, uint8_t *Buffer, uint32_t ReadSize, uint32_t OffSet) {
     FILE *pFile = fopen(FileName, "rb");
     uint32_t readLength = 0;
     uint32_t fileSize = 0;
 
-    if (pFile != NULL)
-    {
+    if (pFile != NULL) {
         fseek(pFile, 0, SEEK_END);
         fileSize = ftell(pFile);
-        if (OffSet + ReadSize > fileSize)
-        {
+        if (OffSet + ReadSize > fileSize) {
             LOG("out of file size %d > %d", OffSet + ReadSize, fileSize);
             return 0;
         }
         fseek(pFile, OffSet, SEEK_SET);
         memset(Buffer, 0, ReadSize);
-        while (!feof(pFile))
-        {
+        while (!feof(pFile)) {
             uint32_t len = fread(Buffer, sizeof(uint8_t), ReadSize, pFile);
             // LOG("\nBuffer: %d, len: %d \n", count, len);
             // for (uint32_t i = 0; i < len; i++)
@@ -258,39 +224,34 @@ uint32_t ReadFileToBuffer(const char *FileName, uint8_t *Buffer, uint32_t ReadSi
             readLength = readLength + len;
             break;
         }
-    }
-    else
-    {
+    } else {
         LOGERROR("Error opening file\n");
     }
     fclose(pFile);
     // LOG("\nreadLength =  %d\n", readLength);
     return (readLength);
 }
+
 /// @brief //////////////////////////////////////////////////////////////////////////
 /// @param PFile
 /// @param Buffer
 /// @param ReadSize
 /// @param OffSet
 /// @return
-uint32_t ReadFileToBuffer2(FILE *PFile, uint8_t *Buffer, uint32_t ReadSize, uint32_t OffSet)
-{
+uint32_t ReadFileToBuffer2(FILE *PFile, uint8_t *Buffer, uint32_t ReadSize, uint32_t OffSet) {
     uint32_t readLength = 0;
     uint32_t fileSize = 0;
 
-    if (PFile != NULL)
-    {
+    if (PFile != NULL) {
         fseek(PFile, 0, SEEK_END);
         fileSize = ftell(PFile);
-        if (OffSet + ReadSize > fileSize)
-        {
+        if (OffSet + ReadSize > fileSize) {
             LOG("out of file size %d > %d", OffSet + ReadSize, fileSize);
             return 0;
         }
         fseek(PFile, OffSet, SEEK_SET);
         memset(Buffer, 0, ReadSize);
-        while (!feof(PFile))
-        {
+        while (!feof(PFile)) {
             uint32_t len = fread(Buffer, sizeof(uint8_t), ReadSize, PFile);
             // LOG("\nBuffer: %d, len: %d \n", count, len);
             // for (uint32_t i = 0; i < len; i++)
@@ -300,24 +261,21 @@ uint32_t ReadFileToBuffer2(FILE *PFile, uint8_t *Buffer, uint32_t ReadSize, uint
             readLength = readLength + len;
             break;
         }
-    }
-    else
-    {
+    } else {
         LOGERROR("Error file not open!\n");
     }
     // LOG("\nreadLength =  %d\n", readLength);
     return (readLength);
 }
+
 /// @brief //////////////////////////////////////////////////////////////////
 /// @param FileName
 /// @param Buffer
 /// @param WriteSize
 /// @return /
-uint32_t WriteBufferToFile(const char *FileName, float32_t *Buffer, uint32_t WriteSize)
-{
+uint32_t WriteBufferToFile(const char *FileName, float32_t *Buffer, uint32_t WriteSize) {
     FILE *pFile = fopen(FileName, "wb");
-    if (pFile == NULL)
-    {
+    if (pFile == NULL) {
         LOG("Error opening file");
         return 0;
     }
@@ -325,6 +283,7 @@ uint32_t WriteBufferToFile(const char *FileName, float32_t *Buffer, uint32_t Wri
     fclose(pFile);
     return 0;
 }
+
 #ifdef PLATFORM_WINDOWS
 // 从BMP文件加载数据到Volume结构体
 TPVolume LoadBmpFileToVolume(const char *FileName)

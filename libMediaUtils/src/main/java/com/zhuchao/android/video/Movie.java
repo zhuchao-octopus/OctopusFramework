@@ -50,7 +50,7 @@ public class Movie implements Serializable {
         this.name = this.srcUrl.substring(this.srcUrl.lastIndexOf("/") + 1);
     }
 
-    public Movie(int movieId, int sourceId, String movieName, String movieType, String year, String region, String actor, String language, String sharpness, String description, String studio, String bgImageUrl, String cardImageUrl,String sourceUrl, String category, String date, int status) {
+    public Movie(int movieId, int sourceId, String movieName, String movieType, String year, String region, String actor, String language, String sharpness, String description, String studio, String bgImageUrl, String cardImageUrl, String sourceUrl, String category, String date, int status) {
         this.mid = movieId;
         this.sid = sourceId;
         this.name = movieName;

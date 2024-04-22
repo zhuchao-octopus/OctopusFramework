@@ -22,9 +22,6 @@ public class FileBean {
 
     @Override
     public String toString() {
-        return "FileBean{" +
-                "path='" + path + '\'' +
-                ", iconId=" + iconId +
-                '}';
+        return "FileBean{" + "path='" + path + '\'' + ", iconId=" + iconId + '}';
     }
 }

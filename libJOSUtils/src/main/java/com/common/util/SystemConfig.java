@@ -1,22 +1,9 @@
 package com.common.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.List;
-
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.provider.Settings;
-import android.provider.Settings.SettingNotFoundException;
-import android.util.Log;
-import android.view.WindowManager;
-import android.widget.Toast;
 
 public class SystemConfig {
 
@@ -106,7 +93,7 @@ public class SystemConfig {
     public final static String PATH_DEFAULT_CE_WALLPAPER = "default_ce_screen.jpg";
     public final static String PATH_DARK_MODE_WALLPAPER = "dark_mode.jpg";
     @SuppressLint("SdCardPath")
-	public final static String PATH_CE_WALLPAPER = "/sdcard/.wallpaper/";
+    public final static String PATH_CE_WALLPAPER = "/sdcard/.wallpaper/";
 
 
     public final static String KEY_DARK_MODE_SWITCH = "car_dark_mode_switch";

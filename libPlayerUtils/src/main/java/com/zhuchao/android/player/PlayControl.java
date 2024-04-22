@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.view.SurfaceView;
 import android.view.TextureView;
 
-
 import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
 import com.zhuchao.android.fbase.eventinterface.PlayerStatusInfo;
 
@@ -79,6 +78,7 @@ public abstract class PlayControl {
     public abstract void playPause();
 
     public abstract void stop();
+
     public abstract void stopFree();
 
     public abstract void resume();

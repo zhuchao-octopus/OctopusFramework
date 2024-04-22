@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application>
+        <receiver
+            android:name="com.zhuchao.android.session.MultimediaBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="WrongManifestParent">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.octopus.android.action.OCTOPUS_HELLO" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.zhuchao.android.session.MultimediaService"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="ExportedService,WrongManifestParent" />
+    </application>
 </manifest>
 

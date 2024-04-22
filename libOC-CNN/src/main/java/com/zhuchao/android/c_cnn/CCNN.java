@@ -6,10 +6,10 @@ public class CCNN {
     }
 
     public static native void CreateNeuralNetInit_C_CNN_9(String NetName);
+
     public native void StartNeuralNetInit_C_CNN_9(String NetName);
 
-    public static void  CreateNeuralNetInit_C_CNN_9()
-    {
+    public static void CreateNeuralNetInit_C_CNN_9() {
         CreateNeuralNetInit_C_CNN_9("");
     }
 }

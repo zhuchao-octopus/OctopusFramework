@@ -89,8 +89,7 @@ public class DLNAService extends Service {
     private void registerWifiStateReceiver() {
         if (mWifiStateReceiver == null) {
             mWifiStateReceiver = new WifiStateReceiver();
-            registerReceiver(mWifiStateReceiver, new IntentFilter(
-                    ConnectivityManager.CONNECTIVITY_ACTION));
+            registerReceiver(mWifiStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         }
     }
 

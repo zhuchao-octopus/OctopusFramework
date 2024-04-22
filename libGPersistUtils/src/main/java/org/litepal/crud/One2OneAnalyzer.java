@@ -50,16 +50,13 @@ public class One2OneAnalyzer extends AssociationsAnalyzer {
      * @throws IllegalAccessException
      * @throws java.lang.reflect.InvocationTargetException
      */
-    void analyze(LitePalSupport baseObj, AssociationsInfo associationInfo) throws SecurityException,
-            IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
+    void analyze(LitePalSupport baseObj, AssociationsInfo associationInfo) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         LitePalSupport associatedModel = getAssociatedModel(baseObj, associationInfo);
         if (associatedModel != null) {
             buildBidirectionalAssociations(baseObj, associatedModel, associationInfo);
             dealAssociatedModel(baseObj, associatedModel, associationInfo);
         } else {
-            String tableName = DBUtility.getTableNameByClassName(associationInfo
-                    .getAssociatedClassName());
+            String tableName = DBUtility.getTableNameByClassName(associationInfo.getAssociatedClassName());
             baseObj.addAssociatedTableNameToClearFK(tableName);
         }
     }
@@ -75,8 +72,7 @@ public class One2OneAnalyzer extends AssociationsAnalyzer {
      * @param associationInfo The associated info analyzed by
      *                        {@link LitePalBase#getAssociationInfo(String)}.
      */
-    private void dealAssociatedModel(LitePalSupport baseObj, LitePalSupport associatedModel,
-                                     AssociationsInfo associationInfo) {
+    private void dealAssociatedModel(LitePalSupport baseObj, LitePalSupport associatedModel, AssociationsInfo associationInfo) {
         if (associationInfo.getAssociateSelfFromOtherModel() != null) {
             bidirectionalCondition(baseObj, associatedModel);
         } else {
@@ -97,11 +93,9 @@ public class One2OneAnalyzer extends AssociationsAnalyzer {
     private void bidirectionalCondition(LitePalSupport baseObj, LitePalSupport associatedModel) {
         if (associatedModel.isSaved()) {
             // use to update associated table after saving
-            baseObj.addAssociatedModelWithFK(associatedModel.getTableName(),
-                    associatedModel.getBaseObjId());
+            baseObj.addAssociatedModelWithFK(associatedModel.getTableName(), associatedModel.getBaseObjId());
             // use to add foreign key value while saving
-            baseObj.addAssociatedModelWithoutFK(associatedModel.getTableName(),
-                    associatedModel.getBaseObjId());
+            baseObj.addAssociatedModelWithoutFK(associatedModel.getTableName(), associatedModel.getBaseObjId());
         }
     }
 

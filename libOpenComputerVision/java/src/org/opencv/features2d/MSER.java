@@ -3,19 +3,18 @@
 //
 package org.opencv.features2d;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfRect;
-import org.opencv.features2d.Feature2D;
-import org.opencv.features2d.MSER;
 import org.opencv.utils.Converters;
 
+import java.util.List;
+
 // C++: class MSER
+
 /**
  * Maximally stable extremal region extractor
- *
+ * <p>
  * The class encapsulates all the parameters of the %MSER extraction algorithm (see [wiki
  * article](http://en.wikipedia.org/wiki/Maximally_stable_extremal_regions)).
  *
@@ -47,10 +46,14 @@ import org.opencv.utils.Converters;
  */
 public class MSER extends Feature2D {
 
-    protected MSER(long addr) { super(addr); }
+    protected MSER(long addr) {
+        super(addr);
+    }
 
     // internal usage only
-    public static MSER __fromPtr__(long addr) { return new MSER(addr); }
+    public static MSER __fromPtr__(long addr) {
+        return new MSER(addr);
+    }
 
     //
     // C++: static Ptr_MSER cv::MSER::create(int delta = 5, int min_area = 60, int max_area = 14400, double max_variation = 0.25, double min_diversity = .2, int max_evolution = 200, double area_threshold = 1.01, double min_margin = 0.003, int edge_blur_size = 5)
@@ -59,15 +62,15 @@ public class MSER extends Feature2D {
     /**
      * Full constructor for %MSER detector
      *
-     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param min_area prune the area which smaller than minArea
-     *     @param max_area prune the area which bigger than maxArea
-     *     @param max_variation prune the area have similar size to its children
-     *     @param min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
-     *     @param max_evolution  for color image, the evolution steps
-     *     @param area_threshold for color image, the area threshold to cause re-initialize
-     *     @param min_margin for color image, ignore too small margin
-     *     @param edge_blur_size for color image, the aperture size for edge blur
+     * @param delta          it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     * @param min_area       prune the area which smaller than minArea
+     * @param max_area       prune the area which bigger than maxArea
+     * @param max_variation  prune the area have similar size to its children
+     * @param min_diversity  for color image, trace back to cut off mser with diversity less than min_diversity
+     * @param max_evolution  for color image, the evolution steps
+     * @param area_threshold for color image, the area threshold to cause re-initialize
+     * @param min_margin     for color image, ignore too small margin
+     * @param edge_blur_size for color image, the aperture size for edge blur
      * @return automatically generated
      */
     public static MSER create(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution, double area_threshold, double min_margin, int edge_blur_size) {
@@ -77,14 +80,14 @@ public class MSER extends Feature2D {
     /**
      * Full constructor for %MSER detector
      *
-     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param min_area prune the area which smaller than minArea
-     *     @param max_area prune the area which bigger than maxArea
-     *     @param max_variation prune the area have similar size to its children
-     *     @param min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
-     *     @param max_evolution  for color image, the evolution steps
-     *     @param area_threshold for color image, the area threshold to cause re-initialize
-     *     @param min_margin for color image, ignore too small margin
+     * @param delta          it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     * @param min_area       prune the area which smaller than minArea
+     * @param max_area       prune the area which bigger than maxArea
+     * @param max_variation  prune the area have similar size to its children
+     * @param min_diversity  for color image, trace back to cut off mser with diversity less than min_diversity
+     * @param max_evolution  for color image, the evolution steps
+     * @param area_threshold for color image, the area threshold to cause re-initialize
+     * @param min_margin     for color image, ignore too small margin
      * @return automatically generated
      */
     public static MSER create(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution, double area_threshold, double min_margin) {
@@ -94,13 +97,13 @@ public class MSER extends Feature2D {
     /**
      * Full constructor for %MSER detector
      *
-     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param min_area prune the area which smaller than minArea
-     *     @param max_area prune the area which bigger than maxArea
-     *     @param max_variation prune the area have similar size to its children
-     *     @param min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
-     *     @param max_evolution  for color image, the evolution steps
-     *     @param area_threshold for color image, the area threshold to cause re-initialize
+     * @param delta          it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     * @param min_area       prune the area which smaller than minArea
+     * @param max_area       prune the area which bigger than maxArea
+     * @param max_variation  prune the area have similar size to its children
+     * @param min_diversity  for color image, trace back to cut off mser with diversity less than min_diversity
+     * @param max_evolution  for color image, the evolution steps
+     * @param area_threshold for color image, the area threshold to cause re-initialize
      * @return automatically generated
      */
     public static MSER create(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution, double area_threshold) {
@@ -110,12 +113,12 @@ public class MSER extends Feature2D {
     /**
      * Full constructor for %MSER detector
      *
-     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param min_area prune the area which smaller than minArea
-     *     @param max_area prune the area which bigger than maxArea
-     *     @param max_variation prune the area have similar size to its children
-     *     @param min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
-     *     @param max_evolution  for color image, the evolution steps
+     * @param delta         it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     * @param min_area      prune the area which smaller than minArea
+     * @param max_area      prune the area which bigger than maxArea
+     * @param max_variation prune the area have similar size to its children
+     * @param min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
+     * @param max_evolution for color image, the evolution steps
      * @return automatically generated
      */
     public static MSER create(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution) {
@@ -125,11 +128,11 @@ public class MSER extends Feature2D {
     /**
      * Full constructor for %MSER detector
      *
-     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param min_area prune the area which smaller than minArea
-     *     @param max_area prune the area which bigger than maxArea
-     *     @param max_variation prune the area have similar size to its children
-     *     @param min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
+     * @param delta         it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     * @param min_area      prune the area which smaller than minArea
+     * @param max_area      prune the area which bigger than maxArea
+     * @param max_variation prune the area have similar size to its children
+     * @param min_diversity for color image, trace back to cut off mser with diversity less than min_diversity
      * @return automatically generated
      */
     public static MSER create(int delta, int min_area, int max_area, double max_variation, double min_diversity) {
@@ -139,10 +142,10 @@ public class MSER extends Feature2D {
     /**
      * Full constructor for %MSER detector
      *
-     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param min_area prune the area which smaller than minArea
-     *     @param max_area prune the area which bigger than maxArea
-     *     @param max_variation prune the area have similar size to its children
+     * @param delta         it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     * @param min_area      prune the area which smaller than minArea
+     * @param max_area      prune the area which bigger than maxArea
+     * @param max_variation prune the area have similar size to its children
      * @return automatically generated
      */
     public static MSER create(int delta, int min_area, int max_area, double max_variation) {
@@ -152,9 +155,9 @@ public class MSER extends Feature2D {
     /**
      * Full constructor for %MSER detector
      *
-     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param min_area prune the area which smaller than minArea
-     *     @param max_area prune the area which bigger than maxArea
+     * @param delta    it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     * @param min_area prune the area which smaller than minArea
+     * @param max_area prune the area which bigger than maxArea
      * @return automatically generated
      */
     public static MSER create(int delta, int min_area, int max_area) {
@@ -164,8 +167,8 @@ public class MSER extends Feature2D {
     /**
      * Full constructor for %MSER detector
      *
-     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
-     *     @param min_area prune the area which smaller than minArea
+     * @param delta    it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     * @param min_area prune the area which smaller than minArea
      * @return automatically generated
      */
     public static MSER create(int delta, int min_area) {
@@ -175,7 +178,7 @@ public class MSER extends Feature2D {
     /**
      * Full constructor for %MSER detector
      *
-     *     @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
+     * @param delta it compares \((size_{i}-size_{i-delta})/size_{i-delta}\)
      * @return automatically generated
      */
     public static MSER create(int delta) {
@@ -199,9 +202,9 @@ public class MSER extends Feature2D {
     /**
      * Detect %MSER regions
      *
-     *     @param image input image (8UC1, 8UC3 or 8UC4, must be greater or equal than 3x3)
-     *     @param msers resulting list of point sets
-     *     @param bboxes resulting bounding boxes
+     * @param image  input image (8UC1, 8UC3 or 8UC4, must be greater or equal than 3x3)
+     * @param msers  resulting list of point sets
+     * @param bboxes resulting bounding boxes
      */
     public void detectRegions(Mat image, List<MatOfPoint> msers, MatOfRect bboxes) {
         Mat msers_mat = new Mat();
@@ -407,17 +410,25 @@ public class MSER extends Feature2D {
     }
 
 
-
     // C++: static Ptr_MSER cv::MSER::create(int delta = 5, int min_area = 60, int max_area = 14400, double max_variation = 0.25, double min_diversity = .2, int max_evolution = 200, double area_threshold = 1.01, double min_margin = 0.003, int edge_blur_size = 5)
     private static native long create_0(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution, double area_threshold, double min_margin, int edge_blur_size);
+
     private static native long create_1(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution, double area_threshold, double min_margin);
+
     private static native long create_2(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution, double area_threshold);
+
     private static native long create_3(int delta, int min_area, int max_area, double max_variation, double min_diversity, int max_evolution);
+
     private static native long create_4(int delta, int min_area, int max_area, double max_variation, double min_diversity);
+
     private static native long create_5(int delta, int min_area, int max_area, double max_variation);
+
     private static native long create_6(int delta, int min_area, int max_area);
+
     private static native long create_7(int delta, int min_area);
+
     private static native long create_8(int delta);
+
     private static native long create_9();
 
     // C++:  void cv::MSER::detectRegions(Mat image, vector_vector_Point& msers, vector_Rect& bboxes)

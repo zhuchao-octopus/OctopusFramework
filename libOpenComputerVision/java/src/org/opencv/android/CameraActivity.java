@@ -1,17 +1,14 @@
 package org.opencv.android;
 
+import static android.Manifest.permission.CAMERA;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.util.AttributeSet;
-import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.Manifest.permission.CAMERA;
 
 public class CameraActivity extends Activity {
 
@@ -26,7 +23,7 @@ public class CameraActivity extends Activity {
         if (cameraViews == null) {
             return;
         }
-        for (CameraBridgeViewBase cameraBridgeViewBase: cameraViews) {
+        for (CameraBridgeViewBase cameraBridgeViewBase : cameraViews) {
             if (cameraBridgeViewBase != null) {
                 cameraBridgeViewBase.setCameraPermissionGranted();
             }
@@ -51,8 +48,7 @@ public class CameraActivity extends Activity {
     @Override
     @TargetApi(Build.VERSION_CODES.M)
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE && grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             onCameraPermissionGranted();
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

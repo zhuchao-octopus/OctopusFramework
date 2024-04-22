@@ -18,27 +18,32 @@ public interface IService {
     public static final int I_CAMERA_RECORDING = 3;
 
     public int getNumberOfCameras();
+
     /**
      * this will open all camera_surfaceview
+     *
      * @return
      */
     public boolean[] open();
 
     /**
      * Open the specified id camera_surfaceview
+     *
      * @param id
      * @return
-    */
+     */
     public boolean open(int id);
 
     /**
      * this will start preview for all camera_surfaceview
+     *
      * @return
      */
     public boolean[] startPreview();
 
     /**
      * startpreview for the specified id camera_surfaceview
+     *
      * @param id
      * @return
      */
@@ -50,12 +55,14 @@ public interface IService {
 
     /**
      * this will stop preview for all camera_surfaceview
+     *
      * @return
      */
     public boolean[] stopPreview();
 
     /**
      * stop preview for the specified id camera_surfaceview
+     *
      * @param id
      * @return
      */
@@ -63,12 +70,14 @@ public interface IService {
 
     /**
      * this will release for all camera_surfaceview
+     *
      * @return
      */
     public boolean[] release();
 
     /**
      * release camera_surfaceview for the specified id camera_surfaceview
+     *
      * @param id
      * @return
      */
@@ -81,6 +90,7 @@ public interface IService {
 
     /**
      * take Picture for the specified id camera_surfaceview
+     *
      * @param id
      */
     public void takePicture(int id);
@@ -88,14 +98,17 @@ public interface IService {
     public boolean[] initRecorder();
 
     public boolean initRecorder(int id);
+
     /**
      * start record for all Camera
+     *
      * @return
      */
     public void startRecord();
 
     /**
      * start record for the specified id camera_surfaceview
+     *
      * @param id
      * @return
      */

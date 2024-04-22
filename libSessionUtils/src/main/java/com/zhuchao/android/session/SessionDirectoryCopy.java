@@ -3,9 +3,6 @@ package com.zhuchao.android.session;
 import android.os.Build;
 
 import com.zhuchao.android.fbase.DataID;
-import com.zhuchao.android.fbase.eventinterface.FileFingerCallback;
-import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
-import com.zhuchao.android.fbase.eventinterface.TaskCallback;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.FilesFinder;
 import com.zhuchao.android.fbase.MMLog;
@@ -13,6 +10,9 @@ import com.zhuchao.android.fbase.ObjectList;
 import com.zhuchao.android.fbase.TTask;
 import com.zhuchao.android.fbase.TTaskInterface;
 import com.zhuchao.android.fbase.TTaskThreadPool;
+import com.zhuchao.android.fbase.eventinterface.FileFingerCallback;
+import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
+import com.zhuchao.android.fbase.eventinterface.TaskCallback;
 
 import java.util.Objects;
 import java.util.concurrent.locks.LockSupport;
@@ -37,8 +37,7 @@ public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
                 tMainTask.getProperties().putString("finderStatus", "finderEnd");
                 tMainTask.unPark();
             }
-            if (tMainTask.getCallBackHandler() != null)
-                tMainTask.getCallBackHandler().onEventTask(tMainTask, Index);
+            if (tMainTask.getCallBackHandler() != null) tMainTask.getCallBackHandler().onEventTask(tMainTask, Index);
         }
     });
 
@@ -254,8 +253,7 @@ public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
         MMLog.i(TAG, "start to copy files ...");
         startCopyDirectory();
 
-        if (tMainTask.getCallBackHandler() != null)
-            tMainTask.getCallBackHandler().onEventTask(tMainTask, DataID.TASK_STATUS_FINISHED_ALL);
+        if (tMainTask.getCallBackHandler() != null) tMainTask.getCallBackHandler().onEventTask(tMainTask, DataID.TASK_STATUS_FINISHED_ALL);
     }
 
     private void startCopyDirectory() {
@@ -291,14 +289,10 @@ public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
                     String tf = fTask.getProperties().getString("toFile");
                     fTask.getProperties().putLong("startTick", System.currentTimeMillis());
                     if (copyMethod == 1) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                            bRet = FileUtils.pathCopy(ff, tf);
-                    } else if (copyMethod == 2)
-                        bRet = FileUtils.bufferCopyFile(ff, tf);
-                    else if (copyMethod == 3)
-                        bRet = FileUtils.streamCopy(ff, tf);
-                    else
-                        bRet = FileUtils.channelTransferTo(ff, tf);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) bRet = FileUtils.pathCopy(ff, tf);
+                    } else if (copyMethod == 2) bRet = FileUtils.bufferCopyFile(ff, tf);
+                    else if (copyMethod == 3) bRet = FileUtils.streamCopy(ff, tf);
+                    else bRet = FileUtils.channelTransferTo(ff, tf);
 
                     if (!bRet) {
                         MMLog.log(TAG, "tTaskCopyFile copy file failed -->" + ff + " to " + tf);
@@ -312,9 +306,8 @@ public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
                 @Override
                 public void onEventTask(Object obj, int status) {
                     synchronized (tTaskThreadPool) {
-                        if (tMainTask.getCallBackHandler() != null)
-                            tMainTask.getCallBackHandler().onEventTask(obj, status);
-                        tTaskThreadPool.deleteTask((TTask)obj);
+                        if (tMainTask.getCallBackHandler() != null) tMainTask.getCallBackHandler().onEventTask(obj, status);
+                        tTaskThreadPool.deleteTask((TTask) obj);
                     }
                     ///LockSupport.unpark(tMainTask);
                 }

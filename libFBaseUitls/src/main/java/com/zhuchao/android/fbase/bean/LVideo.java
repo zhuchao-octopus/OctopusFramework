@@ -84,8 +84,7 @@ public class LVideo {
 
     @Override
     public String toString() {
-        return "LVideo [id=" + id + ", path=" + path + ", name=" + name + ", resolution=" + resolution + ", size=" + size + ", date=" + date
-                + ", duration=" + duration + "]";
+        return "LVideo [id=" + id + ", path=" + path + ", name=" + name + ", resolution=" + resolution + ", size=" + size + ", date=" + date + ", duration=" + duration + "]";
     }
 
 }

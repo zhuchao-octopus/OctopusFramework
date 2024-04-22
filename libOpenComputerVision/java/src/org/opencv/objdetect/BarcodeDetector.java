@@ -3,19 +3,22 @@
 //
 package org.opencv.objdetect;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.opencv.core.Mat;
-import org.opencv.utils.Converters;
+
+import java.util.List;
 
 // C++: class BarcodeDetector
 
 public class BarcodeDetector extends GraphicalCodeDetector {
 
-    protected BarcodeDetector(long addr) { super(addr); }
+    protected BarcodeDetector(long addr) {
+        super(addr);
+    }
 
     // internal usage only
-    public static BarcodeDetector __fromPtr__(long addr) { return new BarcodeDetector(addr); }
+    public static BarcodeDetector __fromPtr__(long addr) {
+        return new BarcodeDetector(addr);
+    }
 
     //
     // C++:   cv::barcode::BarcodeDetector::BarcodeDetector()
@@ -35,10 +38,11 @@ public class BarcodeDetector extends GraphicalCodeDetector {
 
     /**
      * Initialize the BarcodeDetector.
-     *
+     * <p>
      * Parameters allow to load _optional_ Super Resolution DNN model for better quality.
+     *
      * @param prototxt_path prototxt file path for the super resolution model
-     * @param model_path model file path for the super resolution model
+     * @param model_path    model file path for the super resolution model
      */
     public BarcodeDetector(String prototxt_path, String model_path) {
         super(BarcodeDetector_1(prototxt_path, model_path));
@@ -52,10 +56,10 @@ public class BarcodeDetector extends GraphicalCodeDetector {
     /**
      * Decodes barcode in image once it's found by the detect() method.
      *
-     * @param img grayscale or color (BGR) image containing bar code.
-     * @param points vector of rotated rectangle vertices found by detect() method (or some other algorithm).
-     * For N detected barcodes, the dimensions of this array should be [N][4].
-     * Order of four points in vector&lt;Point2f&gt; is bottomLeft, topLeft, topRight, bottomRight.
+     * @param img          grayscale or color (BGR) image containing bar code.
+     * @param points       vector of rotated rectangle vertices found by detect() method (or some other algorithm).
+     *                     For N detected barcodes, the dimensions of this array should be [N][4].
+     *                     Order of four points in vector&lt;Point2f&gt; is bottomLeft, topLeft, topRight, bottomRight.
      * @param decoded_info UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
      * @param decoded_type vector strings, specifies the type of these barcodes
      * @return true if at least one valid barcode have been found
@@ -72,10 +76,10 @@ public class BarcodeDetector extends GraphicalCodeDetector {
     /**
      * Both detects and decodes barcode
      *
-     * @param img grayscale or color (BGR) image containing barcode.
+     * @param img          grayscale or color (BGR) image containing barcode.
      * @param decoded_info UTF8-encoded output vector of string(s) or empty vector of string if the codes cannot be decoded.
      * @param decoded_type vector of strings, specifies the type of these barcodes
-     * @param points optional output vector of vertices of the found  barcode rectangle. Will be empty if not found.
+     * @param points       optional output vector of vertices of the found  barcode rectangle. Will be empty if not found.
      * @return true if at least one valid barcode have been found
      */
     public boolean detectAndDecodeWithType(Mat img, List<String> decoded_info, List<String> decoded_type, Mat points) {
@@ -85,7 +89,7 @@ public class BarcodeDetector extends GraphicalCodeDetector {
     /**
      * Both detects and decodes barcode
      *
-     * @param img grayscale or color (BGR) image containing barcode.
+     * @param img          grayscale or color (BGR) image containing barcode.
      * @param decoded_info UTF8-encoded output vector of string(s) or empty vector of string if the codes cannot be decoded.
      * @param decoded_type vector of strings, specifies the type of these barcodes
      * @return true if at least one valid barcode have been found
@@ -101,7 +105,6 @@ public class BarcodeDetector extends GraphicalCodeDetector {
     }
 
 
-
     // C++:   cv::barcode::BarcodeDetector::BarcodeDetector()
     private static native long BarcodeDetector_0();
 
@@ -113,6 +116,7 @@ public class BarcodeDetector extends GraphicalCodeDetector {
 
     // C++:  bool cv::barcode::BarcodeDetector::detectAndDecodeWithType(Mat img, vector_string& decoded_info, vector_string& decoded_type, Mat& points = Mat())
     private static native boolean detectAndDecodeWithType_0(long nativeObj, long img_nativeObj, List<String> decoded_info, List<String> decoded_type, long points_nativeObj);
+
     private static native boolean detectAndDecodeWithType_1(long nativeObj, long img_nativeObj, List<String> decoded_info, List<String> decoded_type);
 
     // native support for java finalize()

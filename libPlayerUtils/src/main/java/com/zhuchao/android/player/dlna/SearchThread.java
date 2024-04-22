@@ -25,8 +25,7 @@ public class SearchThread extends Thread {
     public void run() {
         //while (flag)
         {
-            if (mControlPoint != null)
-                searchDevices();
+            if (mControlPoint != null) searchDevices();
         }
     }
 

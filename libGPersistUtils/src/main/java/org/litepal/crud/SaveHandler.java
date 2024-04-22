@@ -70,8 +70,7 @@ public class SaveHandler extends DataHandler {
      *
      * @param baseObj Current model to persist.
      */
-    void onSave(LitePalSupport baseObj) throws SecurityException, IllegalArgumentException,
-            NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    void onSave(LitePalSupport baseObj) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         String className = baseObj.getClassName();
         List<Field> supportedFields = getSupportedFields(className);
         List<Field> supportedGenericFields = getSupportedGenericFields(className);
@@ -96,9 +95,7 @@ public class SaveHandler extends DataHandler {
      *
      * @param collection Holds all models to persist.
      */
-    public <T extends LitePalSupport> void onSaveAll(Collection<T> collection) throws SecurityException,
-            IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
+    public <T extends LitePalSupport> void onSaveAll(Collection<T> collection) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         if (collection != null && collection.size() > 0) {
             LitePalSupport[] array = collection.toArray(new LitePalSupport[0]);
             LitePalSupport firstObj = array[0];
@@ -133,9 +130,7 @@ public class SaveHandler extends DataHandler {
      * @param supportedFields        List of all supported fields.
      * @param supportedGenericFields List of all supported generic fields.
      */
-    private void doSaveAction(LitePalSupport baseObj, List<Field> supportedFields, List<Field> supportedGenericFields)
-            throws SecurityException, IllegalArgumentException, NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException {
+    private void doSaveAction(LitePalSupport baseObj, List<Field> supportedFields, List<Field> supportedGenericFields) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         values.clear();
         beforeSave(baseObj, supportedFields, values);
         long id = saving(baseObj, values);
@@ -151,9 +146,7 @@ public class SaveHandler extends DataHandler {
      * @param supportedFields List of all supported fields.
      * @param values          To store data of current model for persisting.
      */
-    private void beforeSave(LitePalSupport baseObj, List<Field> supportedFields, ContentValues values)
-            throws SecurityException, IllegalArgumentException, NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException {
+    private void beforeSave(LitePalSupport baseObj, List<Field> supportedFields, ContentValues values) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         putFieldsValue(baseObj, supportedFields, values);
         putForeignKeyValue(values, baseObj);
     }
@@ -181,8 +174,7 @@ public class SaveHandler extends DataHandler {
      * @param supportedGenericFields List of all supported generic fields.
      * @param id                     The current model's id.
      */
-    private void afterSave(LitePalSupport baseObj, List<Field> supportedFields,
-                           List<Field> supportedGenericFields, long id) throws IllegalAccessException, InvocationTargetException {
+    private void afterSave(LitePalSupport baseObj, List<Field> supportedFields, List<Field> supportedGenericFields, long id) throws IllegalAccessException, InvocationTargetException {
         throwIfSaveFailed(id);
         assignIdValue(baseObj, getIdField(supportedFields), id);
         updateGenericTables(baseObj, supportedGenericFields, id);
@@ -197,9 +189,7 @@ public class SaveHandler extends DataHandler {
      * @param supportedFields        List of all supported fields.
      * @param supportedGenericFields List of all supported generic fields.
      */
-    private void doUpdateAction(LitePalSupport baseObj, List<Field> supportedFields, List<Field> supportedGenericFields)
-            throws SecurityException, IllegalArgumentException, NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException {
+    private void doUpdateAction(LitePalSupport baseObj, List<Field> supportedFields, List<Field> supportedGenericFields) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         values.clear();
         beforeUpdate(baseObj, supportedFields, values);
         updating(baseObj, values);
@@ -216,9 +206,7 @@ public class SaveHandler extends DataHandler {
      * @param supportedFields List of all supported fields.
      * @param values          To store data of current model for updating.
      */
-    private void beforeUpdate(LitePalSupport baseObj, List<Field> supportedFields, ContentValues values)
-            throws SecurityException, IllegalArgumentException, NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException {
+    private void beforeUpdate(LitePalSupport baseObj, List<Field> supportedFields, ContentValues values) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         putFieldsValue(baseObj, supportedFields, values);
         putForeignKeyValue(values, baseObj);
         for (String fkName : baseObj.getListToClearSelfFK()) {
@@ -236,8 +224,7 @@ public class SaveHandler extends DataHandler {
      */
     private void updating(LitePalSupport baseObj, ContentValues values) {
         if (values.size() > 0) {
-            mDatabase.update(baseObj.getTableName(), values, "id = ?",
-                    new String[]{String.valueOf(baseObj.getBaseObjId())});
+            mDatabase.update(baseObj.getTableName(), values, "id = ?", new String[]{String.valueOf(baseObj.getBaseObjId())});
         }
     }
 
@@ -247,8 +234,7 @@ public class SaveHandler extends DataHandler {
      * @param baseObj                Current model that is updated.
      * @param supportedGenericFields List of all supported generic fields.
      */
-    private void afterUpdate(LitePalSupport baseObj, List<Field> supportedGenericFields)
-            throws InvocationTargetException, IllegalAccessException {
+    private void afterUpdate(LitePalSupport baseObj, List<Field> supportedGenericFields) throws InvocationTargetException, IllegalAccessException {
         updateGenericTables(baseObj, supportedGenericFields, baseObj.getBaseObjId());
         updateAssociatedTableWithFK(baseObj);
         insertIntermediateJoinTableValue(baseObj, true);
@@ -313,9 +299,7 @@ public class SaveHandler extends DataHandler {
      * @param idType  The type of id. Only int or long is valid.
      * @param id      The value of id.
      */
-    private void giveModelIdValue(LitePalSupport baseObj, String idName, Class<?> idType, long id)
-            throws SecurityException, IllegalArgumentException,
-            IllegalAccessException {
+    private void giveModelIdValue(LitePalSupport baseObj, String idName, Class<?> idType, long id) throws SecurityException, IllegalArgumentException, IllegalAccessException {
         if (shouldGiveModelIdValue(idName, idType, id)) {
             Object value;
             if (idType == int.class || idType == Integer.class) {
@@ -338,8 +322,7 @@ public class SaveHandler extends DataHandler {
     private void putForeignKeyValue(ContentValues values, LitePalSupport baseObj) {
         Map<String, Long> associatedModelMap = baseObj.getAssociatedModelsMapWithoutFK();
         for (String associatedTableName : associatedModelMap.keySet()) {
-            values.put(getForeignKeyColumnName(associatedTableName),
-                    associatedModelMap.get(associatedTableName));
+            values.put(getForeignKeyColumnName(associatedTableName), associatedModelMap.get(associatedTableName));
         }
     }
 
@@ -392,8 +375,7 @@ public class SaveHandler extends DataHandler {
         for (String associatedTableName : associatedIdsM2M.keySet()) {
             String joinTableName = getIntermediateTableName(baseObj, associatedTableName);
             if (isUpdate) {
-                mDatabase.delete(joinTableName, getWhereForJoinTableToDelete(baseObj),
-                        new String[]{String.valueOf(baseObj.getBaseObjId())});
+                mDatabase.delete(joinTableName, getWhereForJoinTableToDelete(baseObj), new String[]{String.valueOf(baseObj.getBaseObjId())});
             }
             List<Long> associatedIdsM2MSet = associatedIdsM2M.get(associatedTableName);
             if (associatedIdsM2MSet != null) {
@@ -444,8 +426,7 @@ public class SaveHandler extends DataHandler {
      * @param supportedGenericFields List of all supported generic fields.
      * @param id                     The id of current model.
      */
-    private void updateGenericTables(LitePalSupport baseObj, List<Field> supportedGenericFields,
-                                     long id) throws IllegalAccessException, InvocationTargetException {
+    private void updateGenericTables(LitePalSupport baseObj, List<Field> supportedGenericFields, long id) throws IllegalAccessException, InvocationTargetException {
         for (Field field : supportedGenericFields) {
             Encrypt annotation = field.getAnnotation(Encrypt.class);
             String algorithm = null;

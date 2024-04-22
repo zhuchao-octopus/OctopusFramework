@@ -1,32 +1,28 @@
 package com.common.util;
 
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
+import android.os.Environment;
+import android.os.storage.StorageManager;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
-
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
-import android.os.Environment;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
-import android.os.storage.StorageManager;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
 public class UtilSystem {
     private final static String TAG = "UtilSystem";

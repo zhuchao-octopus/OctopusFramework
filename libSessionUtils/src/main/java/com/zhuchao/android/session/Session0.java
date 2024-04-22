@@ -1,18 +1,15 @@
 package com.zhuchao.android.session;
 
-import android.widget.Toast;
-
 import com.zhuchao.android.TPlatform;
+import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
-import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.ObjectList;
+import com.zhuchao.android.fbase.TTask;
+import com.zhuchao.android.fbase.TTaskInterface;
 import com.zhuchao.android.fbase.eventinterface.HttpCallback;
 import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
 import com.zhuchao.android.fbase.eventinterface.TRequestEventInterface;
 import com.zhuchao.android.fbase.eventinterface.TaskCallback;
-import com.zhuchao.android.fbase.DataID;
-import com.zhuchao.android.fbase.ObjectList;
-import com.zhuchao.android.fbase.TTask;
-import com.zhuchao.android.fbase.TTaskInterface;
 import com.zhuchao.android.net.HttpUtils;
 
 //Session0 本身不是一个基于Thread的TTask，而是一个实现了指向TTask的接口，在这里最终指向内部一个TTask实例。
@@ -226,8 +223,7 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
             HttpUtils.requestPut(tag, requestURL, requestParameter, new HttpCallback() {
                 @Override
                 public void onEventHttpRequest(String tag, String fromUrl, String toUrl, long progress, long total, String result, int status) {
-                    if (status == DataID.TASK_STATUS_ERROR)
-                        reset();
+                    if (status == DataID.TASK_STATUS_ERROR) reset();
                     ///MMLog.i(TAG, status + "," + fromUrl + "?" + requestParameter);
                     ///MMLog.i(TAG, status + "," + result);
                     if (FileUtils.NotEmptyString(result)) {

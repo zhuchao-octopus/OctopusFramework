@@ -1,7 +1,6 @@
 package com.zhuchao.android.player;
 
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
-
 import static org.videolan.libvlc.interfaces.IMedia.Slave.Type.Audio;
 import static org.videolan.libvlc.interfaces.IMedia.Track.Type.Text;
 import static org.videolan.libvlc.interfaces.IMedia.Track.Type.Video;
@@ -72,17 +71,13 @@ public class OPlayer extends PlayControl {
             ///        return;//一秒回调一次
             ///    }
             ///}
-            if (mMediaPlayer == null)
-                return;
+            if (mMediaPlayer == null) return;
             playerStatusInfo.setEventCode(event.type);
             int status = mMediaPlayer.getPlayerState();
 
-            if (status == Media.State.Ended)
-                playerStatusInfo.setEventType(PlaybackEvent.Status_Ended);
-            else if (status == Media.State.Error)
-                playerStatusInfo.setEventType(PlaybackEvent.Status_Error);
-            else
-                playerStatusInfo.setEventType(status);
+            if (status == Media.State.Ended) playerStatusInfo.setEventType(PlaybackEvent.Status_Ended);
+            else if (status == Media.State.Error) playerStatusInfo.setEventType(PlaybackEvent.Status_Error);
+            else playerStatusInfo.setEventType(status);
 
             playerStatusInfo.setPosition(mMediaPlayer.getPosition());
             playerStatusInfo.setTimeChanged(event.getTimeChanged());
@@ -96,8 +91,7 @@ public class OPlayer extends PlayControl {
             playerStatusInfo.setLength(mMediaPlayer.getLength());
             ////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
-            if (playerEventCallBack != null)
-                playerEventCallBack.onEventPlayerStatus(playerStatusInfo);
+            if (playerEventCallBack != null) playerEventCallBack.onEventPlayerStatus(playerStatusInfo);
 
             ///if (status == PlaybackEvent.Status_Playing)
             ///    progressTick = System.currentTimeMillis();
@@ -183,10 +177,7 @@ public class OPlayer extends PlayControl {
             MMLog.log(TAG, "setSource source = " + filePath);
 
             if (EmptyString(filePath)) return;
-            if (filePath.startsWith("http") ||
-                    filePath.startsWith("rtsp") ||
-                    filePath.startsWith("ftp") ||
-                    filePath.startsWith("file")) {
+            if (filePath.startsWith("http") || filePath.startsWith("rtsp") || filePath.startsWith("ftp") || filePath.startsWith("file")) {
                 Uri uri = Uri.parse(filePath);
                 MMLog.log(TAG, "setSource protocol source = " + filePath);
                 setSource(uri);
@@ -305,8 +296,7 @@ public class OPlayer extends PlayControl {
         prepareMediaPlayer();
         try {
             vlcVout = mMediaPlayer.getVLCVout();
-            if (vlcVout.areViewsAttached())
-                vlcVout.detachViews();
+            if (vlcVout.areViewsAttached()) vlcVout.detachViews();
 
             vlcVout.setVideoView(surfaceView);
             vlcVout.attachViews();
@@ -322,8 +312,7 @@ public class OPlayer extends PlayControl {
 
     public void setTextureView(@NonNull TextureView textureView) {
         if (textureView.equals(mTextureView)) return;
-        if (vlcVout.areViewsAttached())
-            vlcVout.detachViews();
+        if (vlcVout.areViewsAttached()) vlcVout.detachViews();
 
         vlcVout.setVideoView(textureView);
         vlcVout.attachViews();
@@ -335,8 +324,7 @@ public class OPlayer extends PlayControl {
 
         if (surfaceView == null && mMediaPlayer != null) {
             vlcVout = mMediaPlayer.getVLCVout();
-            if (vlcVout.areViewsAttached())
-                vlcVout.detachViews();
+            if (vlcVout.areViewsAttached()) vlcVout.detachViews();
             MMLog.log(TAG, "reAttachSurfaceView surfaceView = null");
             return;
         }
@@ -347,8 +335,7 @@ public class OPlayer extends PlayControl {
     public void reAttachTextureView(TextureView textureView) {
         if (textureView == null) return;
         mTextureView = textureView;
-        if (vlcVout.areViewsAttached())
-            vlcVout.detachViews();
+        if (vlcVout.areViewsAttached()) vlcVout.detachViews();
 
         vlcVout.setVideoView(mTextureView);
         vlcVout.attachViews();
@@ -368,10 +355,8 @@ public class OPlayer extends PlayControl {
         ///media.addOption(":network-caching=10000");//网络缓存
         ///media.addOption(":live-caching=10000");//直播缓存
         ///media.addOption(":sout-mux-caching=10000");//输出缓存
-        if (duplicated)
-            media.addOption(new String(":sout=#duplicate{dst=rtp{sdp=rtsp://:8554/0},dst=display}"));//边推流边播放
-        else
-            media.addOption(new String(":sout=#rtp{sdp=rtsp://:8554/0}"));//只推流
+        if (duplicated) media.addOption(new String(":sout=#duplicate{dst=rtp{sdp=rtsp://:8554/0},dst=display}"));//边推流边播放
+        else media.addOption(new String(":sout=#rtp{sdp=rtsp://:8554/0}"));//只推流
 
         setHWDecoderEnabled(true);
         mMediaPlayer.setMedia(media);
@@ -425,8 +410,7 @@ public class OPlayer extends PlayControl {
     }
 
     public void playPause() {
-        if (mMediaPlayer == null)
-            return;
+        if (mMediaPlayer == null) return;
         if (isPlaying()) {
             pause();
         } else {
@@ -435,11 +419,9 @@ public class OPlayer extends PlayControl {
     }
 
     public void stop() {
-        if (mMediaPlayer == null)
-            return;
+        if (mMediaPlayer == null) return;
         try {
-            if (mMediaPlayer.getPlayerState() != Media.State.Stopped)
-                mMediaPlayer.stop();
+            if (mMediaPlayer.getPlayerState() != Media.State.Stopped) mMediaPlayer.stop();
         } catch (Exception e) {
             MMLog.log(TAG, "call stop() " + e.toString());
         }
@@ -458,8 +440,7 @@ public class OPlayer extends PlayControl {
     }
 
     public void resume() {
-        if (mMediaPlayer == null)
-            return;
+        if (mMediaPlayer == null) return;
         mMediaPlayer.play();
     }
 
@@ -494,8 +475,7 @@ public class OPlayer extends PlayControl {
                 media.release();
                 media = null;
             }
-            if (FLibVLC != null)
-                FLibVLC.release();
+            if (FLibVLC != null) FLibVLC.release();
             FLibVLC = null;
         } catch (Exception e) {
             e.printStackTrace();
@@ -504,89 +484,74 @@ public class OPlayer extends PlayControl {
     }
 
     public Boolean isPlaying() {
-        if (mMediaPlayer == null)
-            return false;
+        if (mMediaPlayer == null) return false;
         return mMediaPlayer.isPlaying();
     }
 
     public boolean isSeekable() {
-        if (mMediaPlayer == null)
-            return false;
+        if (mMediaPlayer == null) return false;
         return mMediaPlayer.isSeekable();
     }
 
     public void setPlayTime(long l) {
-        if (mMediaPlayer == null)
-            return;
+        if (mMediaPlayer == null) return;
         mMediaPlayer.setTime(l);
     }
 
     public void setVolume(int var1) {
-        if (mMediaPlayer == null)
-            return;
+        if (mMediaPlayer == null) return;
         DefaultVolumeValue = var1;
         mMediaPlayer.setVolume(DefaultVolumeValue);
     }
 
     public int getVolume() {
-        if (mMediaPlayer == null)
-            return DefaultVolumeValue;
+        if (mMediaPlayer == null) return DefaultVolumeValue;
         DefaultVolumeValue = mMediaPlayer.getVolume();
         return DefaultVolumeValue;
     }
 
     public Long getTime() {
-        if (mMediaPlayer == null)
-            return 0L;
+        if (mMediaPlayer == null) return 0L;
         return mMediaPlayer.getTime();
     }
 
     public float getPosition() {
-        if (mMediaPlayer == null)
-            return 0;
+        if (mMediaPlayer == null) return 0;
         return mMediaPlayer.getPosition();
     }
 
     public void setPosition(float f) {
-        if (mMediaPlayer == null)
-            return;
+        if (mMediaPlayer == null) return;
         mMediaPlayer.setPosition(f);
     }
 
     public long getLength() {
-        if (mMediaPlayer == null)
-            return 0;
+        if (mMediaPlayer == null) return 0;
         return mMediaPlayer.getLength();
     }
 
     public int getPlayerStatus() {
-        if (mMediaPlayer != null)
-            return mMediaPlayer.getPlayerState();
-        else
-            return PlaybackEvent.Status_Ended;
+        if (mMediaPlayer != null) return mMediaPlayer.getPlayerState();
+        else return PlaybackEvent.Status_Ended;
     }
 
     public void setRate(float v) {
-        if (mMediaPlayer == null)
-            return;
+        if (mMediaPlayer == null) return;
         mMediaPlayer.setRate(v);
     }
 
     public void setWindowSize(int width, int height) {
-        if (mMediaPlayer == null)
-            return;
+        if (mMediaPlayer == null) return;
         mMediaPlayer.getVLCVout().setWindowSize(width, height);
     }
 
     public void setAspectRatio(String aspect) {
-        if (mMediaPlayer == null)
-            return;
+        if (mMediaPlayer == null) return;
         mMediaPlayer.setAspectRatio(aspect);
     }
 
     public void setScale(float scale) {
-        if (mMediaPlayer == null)
-            return;
+        if (mMediaPlayer == null) return;
         mMediaPlayer.setScale(scale);
     }
 
@@ -656,8 +621,7 @@ public class OPlayer extends PlayControl {
     }
 
     public void setAudioTrack(int index) {
-        if (mMediaPlayer == null)
-            return;
+        if (mMediaPlayer == null) return;
         //mMediaPlayer.setAudioTrack(index);
         mMediaPlayer.selectTrack(String.valueOf(index));//.setAudioTrack(index);
     }
@@ -674,8 +638,7 @@ public class OPlayer extends PlayControl {
     class IVLCVoutCallBack implements IVLCVout.Callback, IVLCVout.OnNewVideoLayoutListener {
         @Override
         public void onNewVideoLayout(IVLCVout vlcVout, int width, int height, int visibleWidth, int visibleHeight, int sarNum, int sarDen) {
-            MMLog.log(TAG, "IVLCVout.width=" + width + ",height=" + height + ",visibleWidth=" + visibleWidth + ",visibleHeight=" + visibleHeight
-                    + ",sarNum=" + sarNum + ",sarDen=" + sarDen);
+            MMLog.log(TAG, "IVLCVout.width=" + width + ",height=" + height + ",visibleWidth=" + visibleWidth + ",visibleHeight=" + visibleHeight + ",sarNum=" + sarNum + ",sarDen=" + sarDen);
             playerStatusInfo.setVideoH(height);
             playerStatusInfo.setVideoW(width);
             playerStatusInfo.setSurfaceH(visibleHeight);

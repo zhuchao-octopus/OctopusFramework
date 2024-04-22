@@ -6,9 +6,9 @@ import android.os.Environment;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.zhuchao.android.fbase.eventinterface.SessionCallback;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
+import com.zhuchao.android.fbase.eventinterface.SessionCallback;
 import com.zhuchao.android.session.PaserBean.ScheduleVideoBean;
 import com.zhuchao.android.session.PaserBean.ScheduleVideoRootBean;
 import com.zhuchao.android.video.ScheduleMedia;
@@ -68,9 +68,9 @@ public class PlayScheduleManager implements SessionCallback {
     }
 
     @Override
-    public void OnSessionComplete(int sID, String result) {
+    public void OnSessionComplete(int session_id, String result, int count) {
         int Count = 0;
-        if (sID == DataID.TASK_STATUS_SUCCESS) {
+        if (session_id == DataID.TASK_STATUS_SUCCESS) {
             ScheduleVideoRootBean scheduleVideoRootBean = null;
             try {
                 scheduleVideoRootBean = new Gson().fromJson(result, ScheduleVideoRootBean.class);
@@ -78,16 +78,7 @@ public class PlayScheduleManager implements SessionCallback {
                     List<ScheduleVideoBean> data = scheduleVideoRootBean.getData();
 
                     for (ScheduleVideoBean scheduleVideoBean : data) {
-                        ScheduleMedia scheduleVideo = new ScheduleMedia(
-                                Count,
-                                scheduleVideoBean.getUrl(),
-                                scheduleVideoBean.getStart_date(),
-                                scheduleVideoBean.getEnd_date(),
-                                scheduleVideoBean.getPlay_time(),
-                                scheduleVideoBean.getStop_time(),
-                                scheduleVideoBean.getLast(),
-                                scheduleVideoBean.getStatus()
-                        );
+                        ScheduleMedia scheduleVideo = new ScheduleMedia(Count, scheduleVideoBean.getUrl(), scheduleVideoBean.getStart_date(), scheduleVideoBean.getEnd_date(), scheduleVideoBean.getPlay_time(), scheduleVideoBean.getStop_time(), scheduleVideoBean.getLast(), scheduleVideoBean.getStatus());
 
                         if (!videoList.contains(scheduleVideo)) {
                             //scheduleVideo.getmOPlayer().setPlayMode(1);
@@ -101,8 +92,7 @@ public class PlayScheduleManager implements SessionCallback {
 
                 }
 
-                if (userSessionCallback != null)
-                    userSessionCallback.OnSessionComplete(sID, result);
+                if (userSessionCallback != null) userSessionCallback.OnSessionComplete(session_id, result, videoList.size());
 
             } catch (JsonSyntaxException e) {
                 e.printStackTrace();
@@ -118,15 +108,12 @@ public class PlayScheduleManager implements SessionCallback {
         for (String str : opf) {
             String[] all = str.split(",");
             if (all.length >= 6) {
-                ScheduleMedia scheduleVideo = new ScheduleMedia(
-                        Count,
-                        path + all[0],//scheduleVideoBean.getUrl(),
+                ScheduleMedia scheduleVideo = new ScheduleMedia(Count, path + all[0],//scheduleVideoBean.getUrl(),
                         all[1],//scheduleVideoBean.getStart_date(),
                         all[2],//scheduleVideoBean.getEnd_date(),
                         all[3],//scheduleVideoBean.getPlay_time(),
                         all[4],//scheduleVideoBean.getStop_time(),
-                        all[5],
-                        1//scheduleVideoBean.getStatus(),
+                        all[5], 1//scheduleVideoBean.getStatus(),
                 );
                 if (!videoList.contains(scheduleVideo)) {
                     videoList.add(scheduleVideo);
@@ -135,15 +122,12 @@ public class PlayScheduleManager implements SessionCallback {
                 //        scheduleVideo.getmStopTime()+","+ scheduleVideo.getStatus()+ ","+ scheduleVideo.getMovie().getsUrl());
                 Count++;
             } else if (all.length == 5) {
-                ScheduleMedia scheduleVideo = new ScheduleMedia(
-                        Count,
-                        path + all[0],//scheduleVideoBean.getUrl(),
+                ScheduleMedia scheduleVideo = new ScheduleMedia(Count, path + all[0],//scheduleVideoBean.getUrl(),
                         all[1],//scheduleVideoBean.getStart_date(),
                         all[2],//scheduleVideoBean.getEnd_date(),
                         all[3],//scheduleVideoBean.getPlay_time(),
                         all[4],//scheduleVideoBean.getStop_time(),
-                        "0",
-                        1//scheduleVideoBean.getStatus(),
+                        "0", 1//scheduleVideoBean.getStatus(),
                 );
                 if (!videoList.contains(scheduleVideo)) {
                     videoList.add(scheduleVideo);
@@ -162,15 +146,12 @@ public class PlayScheduleManager implements SessionCallback {
         int Count = 0;
         for (String str : opf) {
             String[] all = str.split(",");
-            ScheduleMedia scheduleVideo = new ScheduleMedia(
-                    Count,
-                    path + all[0],//scheduleVideoBean.getUrl(),
+            ScheduleMedia scheduleVideo = new ScheduleMedia(Count, path + all[0],//scheduleVideoBean.getUrl(),
                     all[1],//scheduleVideoBean.getStart_date(),
                     all[2],//scheduleVideoBean.getEnd_date(),
                     all[3],//scheduleVideoBean.getPlay_time(),
                     all[4],//scheduleVideoBean.getStop_time(),
-                    all[5],
-                    1//scheduleVideoBean.getStatus(),
+                    all[5], 1//scheduleVideoBean.getStatus(),
             );
 
             if (!videoList.contains(scheduleVideo)) {
@@ -187,8 +168,7 @@ public class PlayScheduleManager implements SessionCallback {
     public void copySchedulePlay(String SourDir, String DesDir) {
         if (!FileUtils.existFile(SourDir + "/SchedulePlay.text")) return;
         File file = new File(DesDir);
-        if (!file.exists())
-            file.mkdir();
+        if (!file.exists()) file.mkdir();
 
         List<String> npf = FileUtils.ReadTxtFile(SourDir + "/SchedulePlay.text");
         FileUtils.streamCopy(SourDir + "/SchedulePlay.text", DesDir + "/SchedulePlay.text");

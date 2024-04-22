@@ -1,7 +1,5 @@
 package com.common.util;
 
-import com.common.util.MyCmd;
-
 public class ProtocolAk47 {
 
     // msg receive

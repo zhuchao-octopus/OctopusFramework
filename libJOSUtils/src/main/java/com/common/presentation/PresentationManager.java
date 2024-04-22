@@ -1,12 +1,11 @@
 package com.common.presentation;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
-import android.hardware.display.DisplayManager;
 import android.app.Presentation;
-
-import android.view.Display;
 import android.content.Context;
+import android.hardware.display.DisplayManager;
+import android.util.Log;
+import android.view.Display;
 import android.view.WindowManager;
 
 import com.zhuchao.android.fbase.MMLog;

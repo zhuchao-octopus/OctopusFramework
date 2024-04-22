@@ -72,8 +72,7 @@ public abstract class AssociationCreator extends Generator {
      *                        an auto increment id.
      * @return A generated create table SQL.
      */
-    protected String generateCreateTableSQL(String tableName, Collection<ColumnModel> columnModels,
-                                            boolean autoIncrementId) {
+    protected String generateCreateTableSQL(String tableName, Collection<ColumnModel> columnModels, boolean autoIncrementId) {
         StringBuilder createTableSQL = new StringBuilder("create table ");
         createTableSQL.append(tableName).append(" (");
         if (autoIncrementId) {
@@ -266,8 +265,7 @@ public abstract class AssociationCreator extends Generator {
         boolean exist = false;
         if (cursor.moveToFirst()) {
             do {
-                String name = cursor.getString(cursor
-                        .getColumnIndexOrThrow(Const.TableSchema.COLUMN_NAME));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(Const.TableSchema.COLUMN_NAME));
                 if (name.equalsIgnoreCase(tableName)) {
                     exist = true;
                     break;
@@ -300,17 +298,12 @@ public abstract class AssociationCreator extends Generator {
      * @param db               Instance of SQLiteDatabase.
      * @param force            Drop the table first if it already exists.
      */
-    private void addAssociations(Collection<AssociationsModel> associatedModels, SQLiteDatabase db,
-                                 boolean force) {
+    private void addAssociations(Collection<AssociationsModel> associatedModels, SQLiteDatabase db, boolean force) {
         for (AssociationsModel associationModel : associatedModels) {
-            if (Const.Model.MANY_TO_ONE == associationModel.getAssociationType()
-                    || Const.Model.ONE_TO_ONE == associationModel.getAssociationType()) {
-                addForeignKeyColumn(associationModel.getTableName(),
-                        associationModel.getAssociatedTableName(),
-                        associationModel.getTableHoldsForeignKey(), db);
+            if (Const.Model.MANY_TO_ONE == associationModel.getAssociationType() || Const.Model.ONE_TO_ONE == associationModel.getAssociationType()) {
+                addForeignKeyColumn(associationModel.getTableName(), associationModel.getAssociatedTableName(), associationModel.getTableHoldsForeignKey(), db);
             } else if (Const.Model.MANY_TO_MANY == associationModel.getAssociationType()) {
-                createIntermediateTable(associationModel.getTableName(),
-                        associationModel.getAssociatedTableName(), db, force);
+                createIntermediateTable(associationModel.getTableName(), associationModel.getAssociatedTableName(), db, force);
             }
         }
         for (GenericModel genericModel : getGenericModels()) {
@@ -329,8 +322,7 @@ public abstract class AssociationCreator extends Generator {
      * @param db                  Instance of SQLiteDatabase.
      * @param force               Drop the table first if it already exists.
      */
-    private void createIntermediateTable(String tableName, String associatedTableName,
-                                         SQLiteDatabase db, boolean force) {
+    private void createIntermediateTable(String tableName, String associatedTableName, SQLiteDatabase db, boolean force) {
         List<ColumnModel> columnModelList = new ArrayList<>();
         ColumnModel column1 = new ColumnModel();
         column1.setColumnName(tableName + "_id");
@@ -340,8 +332,7 @@ public abstract class AssociationCreator extends Generator {
         column2.setColumnType("integer");
         columnModelList.add(column1);
         columnModelList.add(column2);
-        String intermediateTableName = DBUtility.getIntermediateTableName(tableName,
-                associatedTableName);
+        String intermediateTableName = DBUtility.getIntermediateTableName(tableName, associatedTableName);
         List<String> sqls = new ArrayList<>();
         if (DBUtility.isTableExists(intermediateTableName, db)) {
             if (force) {
@@ -401,8 +392,7 @@ public abstract class AssociationCreator extends Generator {
      * @param tableHoldsForeignKey The table which holds the foreign key.
      * @param db                   Instance of SQLiteDatabase.
      */
-    protected void addForeignKeyColumn(String tableName, String associatedTableName,
-                                       String tableHoldsForeignKey, SQLiteDatabase db) {
+    protected void addForeignKeyColumn(String tableName, String associatedTableName, String tableHoldsForeignKey, SQLiteDatabase db) {
         if (DBUtility.isTableExists(tableName, db)) {
             if (DBUtility.isTableExists(associatedTableName, db)) {
                 String foreignKeyColumn = null;
@@ -419,16 +409,13 @@ public abstract class AssociationCreator extends Generator {
                     sqls.add(generateAddColumnSQL(tableHoldsForeignKey, columnModel));
                     execute(sqls, db);
                 } else {
-                    LitePalLog.d(TAG, "column " + foreignKeyColumn
-                            + " is already exist, no need to add one");
+                    LitePalLog.d(TAG, "column " + foreignKeyColumn + " is already exist, no need to add one");
                 }
             } else {
-                throw new DatabaseGenerateException(DatabaseGenerateException.TABLE_DOES_NOT_EXIST
-                        + associatedTableName);
+                throw new DatabaseGenerateException(DatabaseGenerateException.TABLE_DOES_NOT_EXIST + associatedTableName);
             }
         } else {
-            throw new DatabaseGenerateException(DatabaseGenerateException.TABLE_DOES_NOT_EXIST
-                    + tableName);
+            throw new DatabaseGenerateException(DatabaseGenerateException.TABLE_DOES_NOT_EXIST + tableName);
         }
     }
 

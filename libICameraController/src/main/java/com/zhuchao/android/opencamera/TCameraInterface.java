@@ -41,14 +41,11 @@ public class TCameraInterface extends BasicApplicationInterface {
 
     // note, okay to change the order of enums in future versions, as getPhotoMode() does not rely on the order for the saved photo mode
     public enum PhotoMode {
-        Standard,
-        DRO, // single image "fake" HDR
+        Standard, DRO, // single image "fake" HDR
         HDR, // HDR created from multiple (expo bracketing) images
         ExpoBracketing, // take multiple expo bracketed images, without combining to a single image
         FocusBracketing, // take multiple focus bracketed images, without combining to a single image
-        FastBurst,
-        NoiseReduction,
-        Panorama
+        FastBurst, NoiseReduction, Panorama
     }
 
     private final Context main_activity;
@@ -79,9 +76,7 @@ public class TCameraInterface extends BasicApplicationInterface {
     private final SharedPreferences sharedPreferences;
 
     private enum LastImagesType {
-        FILE,
-        SAF,
-        MEDIASTORE
+        FILE, SAF, MEDIASTORE
     }
 
     private LastImagesType last_images_type = LastImagesType.FILE; // whether the last images array are using File API, SAF or MediaStore
@@ -185,22 +180,17 @@ public class TCameraInterface extends BasicApplicationInterface {
      * the application (e.g., configuration change, or it's destroyed while in background).
      */
     void onSaveInstanceState(Bundle state) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "onSaveInstanceState");
-        if (MyDebug.LOG)
-            Log.d(TAG, "save cameraId: " + cameraId);
+        if (MyDebug.LOG) Log.d(TAG, "onSaveInstanceState");
+        if (MyDebug.LOG) Log.d(TAG, "save cameraId: " + cameraId);
         state.putInt("cameraId", cameraId);
-        if (MyDebug.LOG)
-            Log.d(TAG, "save nr_mode: " + nr_mode);
+        if (MyDebug.LOG) Log.d(TAG, "save nr_mode: " + nr_mode);
         state.putString("nr_mode", nr_mode);
-        if (MyDebug.LOG)
-            Log.d(TAG, "save aperture: " + aperture);
+        if (MyDebug.LOG) Log.d(TAG, "save aperture: " + aperture);
         state.putFloat("aperture", aperture);
     }
 
     void onDestroy() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "onDestroy");
+        if (MyDebug.LOG) Log.d(TAG, "onDestroy");
 
         if (imageSaver != null) {
             imageSaver.onDestroy();
@@ -250,40 +240,32 @@ public class TCameraInterface extends BasicApplicationInterface {
     }
 
     public Uri createOutputVideoMediaStore(String extension) throws IOException {
-        Uri folder = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ?
-                MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY) :
-                MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        Uri folder = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY) : MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
         ContentValues contentValues = new ContentValues();
         String filename = storageUtils.createMediaFilename(StorageUtils.MEDIA_TYPE_VIDEO, "", 0, "." + extension, new Date());
-        if (MyDebug.LOG)
-            Log.d(TAG, "filename: " + filename);
+        if (MyDebug.LOG) Log.d(TAG, "filename: " + filename);
         contentValues.put(MediaStore.Video.Media.DISPLAY_NAME, filename);
         String mime_type = storageUtils.getVideoMimeType(extension);
-        if (MyDebug.LOG)
-            Log.d(TAG, "mime_type: " + mime_type);
+        if (MyDebug.LOG) Log.d(TAG, "mime_type: " + mime_type);
         contentValues.put(MediaStore.Video.Media.MIME_TYPE, mime_type);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             String relative_path = storageUtils.getSaveRelativeFolder();
-            if (MyDebug.LOG)
-                Log.d(TAG, "relative_path: " + relative_path);
+            if (MyDebug.LOG) Log.d(TAG, "relative_path: " + relative_path);
             contentValues.put(MediaStore.Video.Media.RELATIVE_PATH, relative_path);
             contentValues.put(MediaStore.Video.Media.IS_PENDING, 1);
         }
 
         try {
             last_video_file_uri = main_activity.getContentResolver().insert(folder, contentValues);
-            if (MyDebug.LOG)
-                Log.d(TAG, "uri: " + last_video_file_uri);
+            if (MyDebug.LOG) Log.d(TAG, "uri: " + last_video_file_uri);
         } catch (IllegalArgumentException e) {
             // can happen for mediastore method if invalid ContentResolver.insert() call
-            if (MyDebug.LOG)
-                Log.e(TAG, "IllegalArgumentException writing video file: " + e.getMessage());
+            if (MyDebug.LOG) Log.e(TAG, "IllegalArgumentException writing video file: " + e.getMessage());
             e.printStackTrace();
             throw new IOException();
         } catch (IllegalStateException e) {
             // have received Google Play crashes from ContentResolver.insert() call for mediastore method
-            if (MyDebug.LOG)
-                Log.e(TAG, "IllegalStateException writing video file: " + e.getMessage());
+            if (MyDebug.LOG) Log.e(TAG, "IllegalStateException writing video file: " + e.getMessage());
             e.printStackTrace();
             throw new IOException();
         }
@@ -318,8 +300,7 @@ public class TCameraInterface extends BasicApplicationInterface {
         try {
             focus_assist = Integer.parseInt(focus_assist_value);
         } catch (NumberFormatException e) {
-            if (MyDebug.LOG)
-                Log.e(TAG, "failed to parse focus_assist_value: " + focus_assist_value);
+            if (MyDebug.LOG) Log.e(TAG, "failed to parse focus_assist_value: " + focus_assist_value);
             e.printStackTrace();
             focus_assist = 0;
         }
@@ -378,16 +359,13 @@ public class TCameraInterface extends BasicApplicationInterface {
 
     public int getExposureCompensationPref() {
         String value = sharedPreferences.getString(PreferenceKeys.ExposurePreferenceKey, "0");
-        if (MyDebug.LOG)
-            Log.d(TAG, "saved exposure value: " + value);
+        if (MyDebug.LOG) Log.d(TAG, "saved exposure value: " + value);
         int exposure = 0;
         try {
             exposure = Integer.parseInt(value);
-            if (MyDebug.LOG)
-                Log.d(TAG, "exposure: " + exposure);
+            if (MyDebug.LOG) Log.d(TAG, "exposure: " + exposure);
         } catch (NumberFormatException exception) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "exposure invalid format, can't parse to int");
+            if (MyDebug.LOG) Log.d(TAG, "exposure invalid format, can't parse to int");
         }
         return exposure;
     }
@@ -444,15 +422,13 @@ public class TCameraInterface extends BasicApplicationInterface {
         }*/
 
         String resolution_value = sharedPreferences.getString(PreferenceKeys.getResolutionPreferenceKey(cameraId), "");
-        if (MyDebug.LOG)
-            Log.d(TAG, "resolution_value: " + resolution_value);
+        if (MyDebug.LOG) Log.d(TAG, "resolution_value: " + resolution_value);
         Pair<Integer, Integer> result = null;
         if (resolution_value.length() > 0) {
             // parse the saved size, and make sure it is still valid
             int index = resolution_value.indexOf(' ');
             if (index == -1) {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "resolution_value invalid format, can't find space");
+                if (MyDebug.LOG) Log.d(TAG, "resolution_value invalid format, can't find space");
             } else {
                 String resolution_w_s = resolution_value.substring(0, index);
                 String resolution_h_s = resolution_value.substring(index + 1);
@@ -462,15 +438,12 @@ public class TCameraInterface extends BasicApplicationInterface {
                 }
                 try {
                     int resolution_w = Integer.parseInt(resolution_w_s);
-                    if (MyDebug.LOG)
-                        Log.d(TAG, "resolution_w: " + resolution_w);
+                    if (MyDebug.LOG) Log.d(TAG, "resolution_w: " + resolution_w);
                     int resolution_h = Integer.parseInt(resolution_h_s);
-                    if (MyDebug.LOG)
-                        Log.d(TAG, "resolution_h: " + resolution_h);
+                    if (MyDebug.LOG) Log.d(TAG, "resolution_h: " + resolution_h);
                     result = new Pair<>(resolution_w, resolution_h);
                 } catch (NumberFormatException exception) {
-                    if (MyDebug.LOG)
-                        Log.d(TAG, "resolution_value invalid format, can't parse w or h to int");
+                    if (MyDebug.LOG) Log.d(TAG, "resolution_value invalid format, can't parse w or h to int");
                 }
             }
         }
@@ -496,22 +469,19 @@ public class TCameraInterface extends BasicApplicationInterface {
      * saving the final image (as specified by the user).
      */
     private int getSaveImageQualityPref() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "getSaveImageQualityPref");
+        if (MyDebug.LOG) Log.d(TAG, "getSaveImageQualityPref");
         String image_quality_s = sharedPreferences.getString(PreferenceKeys.QualityPreferenceKey, "90");
         int image_quality;
         try {
             image_quality = Integer.parseInt(image_quality_s);
         } catch (NumberFormatException exception) {
-            if (MyDebug.LOG)
-                Log.e(TAG, "image_quality_s invalid format: " + image_quality_s);
+            if (MyDebug.LOG) Log.e(TAG, "image_quality_s invalid format: " + image_quality_s);
             image_quality = 90;
         }
         if (isRawOnly()) {
             // if raw only mode, we can set a lower quality for the JPEG, as it isn't going to be saved - only used for
             // the thumbnail and pause preview option
-            if (MyDebug.LOG)
-                Log.d(TAG, "set lower quality for raw_only mode");
+            if (MyDebug.LOG) Log.d(TAG, "set lower quality for raw_only mode");
             image_quality = Math.min(image_quality, 70);
         }
         return image_quality;
@@ -519,24 +489,18 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public int getImageQualityPref() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "getImageQualityPref");
+        if (MyDebug.LOG) Log.d(TAG, "getImageQualityPref");
         // see documentation for getSaveImageQualityPref(): in DRO mode we want to take the photo
         // at 100% quality for post-processing, the final image will then be saved at the user requested
         // setting
         PhotoMode photo_mode = getPhotoMode();
         //if( main_activity.getPreview().isVideo() )
-        if (property.getBoolean("isVideo"))
-            ; // for video photo snapshot mode, the photo modes for 100% quality won't be enabled
-        else if (photo_mode == PhotoMode.DRO)
-            return 100;
-        else if (photo_mode == PhotoMode.HDR)
-            return 100;
-        else if (photo_mode == PhotoMode.NoiseReduction)
-            return 100;
+        if (property.getBoolean("isVideo")) ; // for video photo snapshot mode, the photo modes for 100% quality won't be enabled
+        else if (photo_mode == PhotoMode.DRO) return 100;
+        else if (photo_mode == PhotoMode.HDR) return 100;
+        else if (photo_mode == PhotoMode.NoiseReduction) return 100;
 
-        if (getImageFormatPref() != ImageSaver.Request.ImageFormat.STD)
-            return 100;
+        if (getImageFormatPref() != ImageSaver.Request.ImageFormat.STD) return 100;
 
         return getSaveImageQualityPref();
     }
@@ -559,23 +523,19 @@ public class TCameraInterface extends BasicApplicationInterface {
     public String getVideoQualityPref() {
         //if( isVideoCaptureIntent() )
         {
-            if (MyDebug.LOG)
-                Log.d(TAG, "from video capture intent");
+            if (MyDebug.LOG) Log.d(TAG, "from video capture intent");
             //if( main_activity.getIntent().hasExtra(MediaStore.EXTRA_VIDEO_QUALITY) )
             if (property.getBoolean(MediaStore.EXTRA_VIDEO_QUALITY)) {
                 int intent_quality = property.getInt(MediaStore.EXTRA_VIDEO_QUALITY, 0); //main_activity.getIntent().getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-                if (MyDebug.LOG)
-                    Log.d(TAG, "intent_quality: " + intent_quality);
+                if (MyDebug.LOG) Log.d(TAG, "intent_quality: " + intent_quality);
                 if (intent_quality == 0 || intent_quality == 1) {
                     List<String> video_quality = video_quality_handler.getSupportedVideoQuality();
                     if (intent_quality == 0) {
-                        if (MyDebug.LOG)
-                            Log.d(TAG, "return lowest quality");
+                        if (MyDebug.LOG) Log.d(TAG, "return lowest quality");
                         // return lowest quality, video_quality is sorted high to low
                         return video_quality.get(video_quality.size() - 1);
                     } else {
-                        if (MyDebug.LOG)
-                            Log.d(TAG, "return highest quality");
+                        if (MyDebug.LOG) Log.d(TAG, "return highest quality");
                         // return highest quality, video_quality is sorted high to low
                         return video_quality.get(0);
                     }
@@ -595,8 +555,7 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public boolean getForce4KPref() {
-        return cameraId == 0 && sharedPreferences.getBoolean(PreferenceKeys.ForceVideo4KPreferenceKey, false) &&
-                property.getBoolean("supportsForceVideo4K");
+        return cameraId == 0 && sharedPreferences.getBoolean(PreferenceKeys.ForceVideo4KPreferenceKey, false) && property.getBoolean("supportsForceVideo4K");
     }
 
 
@@ -614,13 +573,11 @@ public class TCameraInterface extends BasicApplicationInterface {
         // if check for EXTRA_VIDEO_QUALITY, if set, best to fall back to default FPS - see corresponding code in getVideoQualityPref
         //if( isVideoCaptureIntent() )
         {
-            if (MyDebug.LOG)
-                Log.d(TAG, "from video capture intent");
+            if (MyDebug.LOG) Log.d(TAG, "from video capture intent");
             //if( main_activity.getIntent().hasExtra(MediaStore.EXTRA_VIDEO_QUALITY) )
             if (property.getBoolean(MediaStore.EXTRA_VIDEO_QUALITY)) {
                 int intent_quality = property.getInt(MediaStore.EXTRA_VIDEO_QUALITY, 0);// main_activity.getIntent().getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-                if (MyDebug.LOG)
-                    Log.d(TAG, "intent_quality: " + intent_quality);
+                if (MyDebug.LOG) Log.d(TAG, "intent_quality: " + intent_quality);
                 if (intent_quality == 0 || intent_quality == 1) {
                     return "default";
                 }
@@ -629,22 +586,17 @@ public class TCameraInterface extends BasicApplicationInterface {
 
         float capture_rate_factor = getVideoCaptureRateFactor(cameraId);
         if (capture_rate_factor < 1.0f - 1.0e-5f) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "set fps for slow motion, capture rate: " + capture_rate_factor);
+            if (MyDebug.LOG) Log.d(TAG, "set fps for slow motion, capture rate: " + capture_rate_factor);
             int preferred_fps = (int) (30.0 / capture_rate_factor + 0.5);
-            if (MyDebug.LOG)
-                Log.d(TAG, "preferred_fps: " + preferred_fps);
-            if (video_quality_handler.videoSupportsFrameRateHighSpeed(preferred_fps) ||
-                    video_quality_handler.videoSupportsFrameRate(preferred_fps))
+            if (MyDebug.LOG) Log.d(TAG, "preferred_fps: " + preferred_fps);
+            if (video_quality_handler.videoSupportsFrameRateHighSpeed(preferred_fps) || video_quality_handler.videoSupportsFrameRate(preferred_fps))
                 return "" + preferred_fps;
             // just in case say we support 120fps but NOT 60fps, getSupportedSlowMotionRates() will have returned that 2x slow
             // motion is supported, but we need to set 120fps instead of 60fps
             while (preferred_fps < 240) {
                 preferred_fps *= 2;
-                if (MyDebug.LOG)
-                    Log.d(TAG, "preferred_fps not supported, try: " + preferred_fps);
-                if (video_quality_handler.videoSupportsFrameRateHighSpeed(preferred_fps) ||
-                        video_quality_handler.videoSupportsFrameRate(preferred_fps))
+                if (MyDebug.LOG) Log.d(TAG, "preferred_fps not supported, try: " + preferred_fps);
+                if (video_quality_handler.videoSupportsFrameRateHighSpeed(preferred_fps) || video_quality_handler.videoSupportsFrameRate(preferred_fps))
                     return "" + preferred_fps;
             }
             // shouln't happen based on getSupportedSlowMotionRates()
@@ -657,15 +609,12 @@ public class TCameraInterface extends BasicApplicationInterface {
 
     public float getVideoCaptureRateFactor(int cameraId) {
         float capture_rate_factor = sharedPreferences.getFloat(PreferenceKeys.getVideoCaptureRatePreferenceKey(cameraId), 1.0f);
-        if (MyDebug.LOG)
-            Log.d(TAG, "capture_rate_factor: " + capture_rate_factor);
+        if (MyDebug.LOG) Log.d(TAG, "capture_rate_factor: " + capture_rate_factor);
         if (Math.abs(capture_rate_factor - 1.0f) > 1.0e-5) {
             // check stored capture rate is valid
-            if (MyDebug.LOG)
-                Log.d(TAG, "check stored capture rate is valid");
+            if (MyDebug.LOG) Log.d(TAG, "check stored capture rate is valid");
             List<Float> supported_capture_rates = getSupportedVideoCaptureRates();
-            if (MyDebug.LOG)
-                Log.d(TAG, "supported_capture_rates: " + supported_capture_rates);
+            if (MyDebug.LOG) Log.d(TAG, "supported_capture_rates: " + supported_capture_rates);
             boolean found = false;
             for (float this_capture_rate : supported_capture_rates) {
                 if (Math.abs(capture_rate_factor - this_capture_rate) < 1.0e-5) {
@@ -693,17 +642,14 @@ public class TCameraInterface extends BasicApplicationInterface {
             // We consider a slow motion rate supported if we can get at least 30fps in slow motion.
             // If this code is updated, see if we also need to update how slow motion fps is chosen
             // in getVideoFPSPref().
-            if (video_quality_handler.videoSupportsFrameRateHighSpeed(240) ||
-                    video_quality_handler.videoSupportsFrameRate(240)) {
+            if (video_quality_handler.videoSupportsFrameRateHighSpeed(240) || video_quality_handler.videoSupportsFrameRate(240)) {
                 rates.add(1.0f / 8.0f);
                 rates.add(1.0f / 4.0f);
                 rates.add(1.0f / 2.0f);
-            } else if (video_quality_handler.videoSupportsFrameRateHighSpeed(120) ||
-                    video_quality_handler.videoSupportsFrameRate(120)) {
+            } else if (video_quality_handler.videoSupportsFrameRateHighSpeed(120) || video_quality_handler.videoSupportsFrameRate(120)) {
                 rates.add(1.0f / 4.0f);
                 rates.add(1.0f / 2.0f);
-            } else if (video_quality_handler.videoSupportsFrameRateHighSpeed(60) ||
-                    video_quality_handler.videoSupportsFrameRate(60)) {
+            } else if (video_quality_handler.videoSupportsFrameRateHighSpeed(60) || video_quality_handler.videoSupportsFrameRate(60)) {
                 rates.add(1.0f / 2.0f);
             }
         }
@@ -800,11 +746,9 @@ public class TCameraInterface extends BasicApplicationInterface {
         float gamma = 0.0f;
         try {
             gamma = Float.parseFloat(gamma_value);
-            if (MyDebug.LOG)
-                Log.d(TAG, "gamma: " + gamma);
+            if (MyDebug.LOG) Log.d(TAG, "gamma: " + gamma);
         } catch (NumberFormatException e) {
-            if (MyDebug.LOG)
-                Log.e(TAG, "failed to parse gamma value: " + gamma_value);
+            if (MyDebug.LOG) Log.e(TAG, "failed to parse gamma value: " + gamma_value);
             e.printStackTrace();
         }
         return gamma;
@@ -814,13 +758,11 @@ public class TCameraInterface extends BasicApplicationInterface {
     public long getVideoMaxDurationPref() {
         //if( isVideoCaptureIntent() )
         {
-            if (MyDebug.LOG)
-                Log.d(TAG, "from video capture intent");
+            if (MyDebug.LOG) Log.d(TAG, "from video capture intent");
             //if( main_activity.getIntent().hasExtra(MediaStore.EXTRA_DURATION_LIMIT) )
             if (property.getBoolean(MediaStore.EXTRA_DURATION_LIMIT)) {
                 int intent_duration_limit = property.getInt(MediaStore.EXTRA_DURATION_LIMIT, 0);// main_activity.getIntent().getIntExtra(MediaStore.EXTRA_DURATION_LIMIT, 0);
-                if (MyDebug.LOG)
-                    Log.d(TAG, "intent_duration_limit: " + intent_duration_limit);
+                if (MyDebug.LOG) Log.d(TAG, "intent_duration_limit: " + intent_duration_limit);
                 return intent_duration_limit * 1000L;
             }
         }
@@ -830,8 +772,7 @@ public class TCameraInterface extends BasicApplicationInterface {
         try {
             video_max_duration = (long) Integer.parseInt(video_max_duration_value) * 1000;
         } catch (NumberFormatException e) {
-            if (MyDebug.LOG)
-                Log.e(TAG, "failed to parse preference_video_max_duration value: " + video_max_duration_value);
+            if (MyDebug.LOG) Log.e(TAG, "failed to parse preference_video_max_duration value: " + video_max_duration_value);
             e.printStackTrace();
             video_max_duration = 0;
         }
@@ -845,8 +786,7 @@ public class TCameraInterface extends BasicApplicationInterface {
         try {
             remaining_restart_video = Integer.parseInt(restart_value);
         } catch (NumberFormatException e) {
-            if (MyDebug.LOG)
-                Log.e(TAG, "failed to parse preference_video_restart value: " + restart_value);
+            if (MyDebug.LOG) Log.e(TAG, "failed to parse preference_video_restart value: " + restart_value);
             e.printStackTrace();
             remaining_restart_video = 0;
         }
@@ -854,18 +794,15 @@ public class TCameraInterface extends BasicApplicationInterface {
     }
 
     long getVideoMaxFileSizeUserPref() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "getVideoMaxFileSizeUserPref");
+        if (MyDebug.LOG) Log.d(TAG, "getVideoMaxFileSizeUserPref");
 
         //if( isVideoCaptureIntent() )
         {
-            if (MyDebug.LOG)
-                Log.d(TAG, "from video capture intent");
+            if (MyDebug.LOG) Log.d(TAG, "from video capture intent");
             //if( main_activity.getIntent().hasExtra(MediaStore.EXTRA_SIZE_LIMIT) )
             if (property.getBoolean(MediaStore.EXTRA_SIZE_LIMIT)) {
                 long intent_size_limit = property.getLong(MediaStore.EXTRA_SIZE_LIMIT, 0);// main_activity.getIntent().getLongExtra(MediaStore.EXTRA_SIZE_LIMIT, 0);
-                if (MyDebug.LOG)
-                    Log.d(TAG, "intent_size_limit: " + intent_size_limit);
+                if (MyDebug.LOG) Log.d(TAG, "intent_size_limit: " + intent_size_limit);
                 return intent_size_limit;
             }
         }
@@ -875,22 +812,19 @@ public class TCameraInterface extends BasicApplicationInterface {
         try {
             video_max_filesize = Long.parseLong(video_max_filesize_value);
         } catch (NumberFormatException e) {
-            if (MyDebug.LOG)
-                Log.e(TAG, "failed to parse preference_video_max_filesize value: " + video_max_filesize_value);
+            if (MyDebug.LOG) Log.e(TAG, "failed to parse preference_video_max_filesize value: " + video_max_filesize_value);
             e.printStackTrace();
             video_max_filesize = 0;
         }
         //video_max_filesize = 1024*1024; // test
-        if (MyDebug.LOG)
-            Log.d(TAG, "video_max_filesize: " + video_max_filesize);
+        if (MyDebug.LOG) Log.d(TAG, "video_max_filesize: " + video_max_filesize);
         return video_max_filesize;
     }
 
     private boolean getVideoRestartMaxFileSizeUserPref() {
         //if( isVideoCaptureIntent() )
         {
-            if (MyDebug.LOG)
-                Log.d(TAG, "from video capture intent");
+            if (MyDebug.LOG) Log.d(TAG, "from video capture intent");
             //if( main_activity.getIntent().hasExtra(MediaStore.EXTRA_SIZE_LIMIT) )
             if (property.getBoolean(MediaStore.EXTRA_SIZE_LIMIT)) {
                 // if called from a video capture intent that set a max file size, this will be expecting a single file with that maximum size
@@ -903,8 +837,7 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public VideoMaxFileSize getVideoMaxFileSizePref() throws NoFreeStorageException {
-        if (MyDebug.LOG)
-            Log.d(TAG, "getVideoMaxFileSizePref");
+        if (MyDebug.LOG) Log.d(TAG, "getVideoMaxFileSizePref");
         VideoMaxFileSize video_max_filesize = new VideoMaxFileSize();
         video_max_filesize.max_filesize = getVideoMaxFileSizeUserPref();
         video_max_filesize.auto_restart = getVideoRestartMaxFileSizeUserPref();
@@ -920,26 +853,21 @@ public class TCameraInterface extends BasicApplicationInterface {
             set_max_filesize = true;
         } else {
             String folder_name = storageUtils.getSaveLocation();
-            if (MyDebug.LOG)
-                Log.d(TAG, "saving to: " + folder_name);
+            if (MyDebug.LOG) Log.d(TAG, "saving to: " + folder_name);
             boolean is_internal = false;
             if (!StorageUtils.saveFolderIsFull(folder_name)) {
                 is_internal = true;
             } else {
                 // If save folder path is a full path, see if it matches the "external" storage (which actually means "primary", which typically isn't an SD card these days).
                 File storage = Environment.getExternalStorageDirectory();
-                if (MyDebug.LOG)
-                    Log.d(TAG, "compare to: " + storage.getAbsolutePath());
-                if (folder_name.startsWith(storage.getAbsolutePath()))
-                    is_internal = true;
+                if (MyDebug.LOG) Log.d(TAG, "compare to: " + storage.getAbsolutePath());
+                if (folder_name.startsWith(storage.getAbsolutePath())) is_internal = true;
             }
-            if (MyDebug.LOG)
-                Log.d(TAG, "using internal storage?" + is_internal);
+            if (MyDebug.LOG) Log.d(TAG, "using internal storage?" + is_internal);
             set_max_filesize = is_internal;
         }
         if (set_max_filesize) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "try setting max filesize");
+            if (MyDebug.LOG) Log.d(TAG, "try setting max filesize");
             long free_memory = storageUtils.freeMemory();
             if (free_memory >= 0) {
                 free_memory = free_memory * 1024 * 1024;
@@ -962,17 +890,14 @@ public class TCameraInterface extends BasicApplicationInterface {
                     if (video_max_filesize.max_filesize == 0 || video_max_filesize.max_filesize > available_memory) {
                         video_max_filesize.max_filesize = available_memory;
                         // still leave auto_restart set to true - because even if we set a max filesize for running out of storage, the video may still hit a maximum limit beforehand, if there's a device max limit set (typically ~2GB)
-                        if (MyDebug.LOG)
-                            Log.d(TAG, "set video_max_filesize to avoid running out of space: " + video_max_filesize);
+                        if (MyDebug.LOG) Log.d(TAG, "set video_max_filesize to avoid running out of space: " + video_max_filesize);
                     }
                 } else {
-                    if (MyDebug.LOG)
-                        Log.e(TAG, "not enough free storage to record video");
+                    if (MyDebug.LOG) Log.e(TAG, "not enough free storage to record video");
                     throw new NoFreeStorageException();
                 }
             } else {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "can't determine remaining free space");
+                if (MyDebug.LOG) Log.d(TAG, "can't determine remaining free space");
             }
         }
 
@@ -996,8 +921,7 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public String getLockOrientationPref() {
-        if (getPhotoMode() == PhotoMode.Panorama)
-            return "portrait"; // for now panorama only supports portrait
+        if (getPhotoMode() == PhotoMode.Panorama) return "portrait"; // for now panorama only supports portrait
         return sharedPreferences.getString(PreferenceKeys.LockOrientationPreferenceKey, "none");
     }
 
@@ -1043,8 +967,7 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public boolean getShutterSoundPref() {
-        if (getPhotoMode() == PhotoMode.Panorama)
-            return false;
+        if (getPhotoMode() == PhotoMode.Panorama) return false;
         return sharedPreferences.getBoolean(PreferenceKeys.ShutterSoundPreferenceKey, true);
     }
 
@@ -1055,15 +978,13 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public long getTimerPref() {
-        if (getPhotoMode() == PhotoMode.Panorama)
-            return 0; // don't support timer with panorama
+        if (getPhotoMode() == PhotoMode.Panorama) return 0; // don't support timer with panorama
         String timer_value = sharedPreferences.getString(PreferenceKeys.TimerPreferenceKey, "0");
         long timer_delay;
         try {
             timer_delay = (long) Integer.parseInt(timer_value) * 1000;
         } catch (NumberFormatException e) {
-            if (MyDebug.LOG)
-                Log.e(TAG, "failed to parse preference_timer value: " + timer_value);
+            if (MyDebug.LOG) Log.e(TAG, "failed to parse preference_timer value: " + timer_value);
             e.printStackTrace();
             timer_delay = 0;
         }
@@ -1072,8 +993,7 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public String getRepeatPref() {
-        if (getPhotoMode() == PhotoMode.Panorama)
-            return "1"; // don't support repeat with panorama
+        if (getPhotoMode() == PhotoMode.Panorama) return "1"; // don't support repeat with panorama
         return sharedPreferences.getString(PreferenceKeys.RepeatModePreferenceKey, "1");
     }
 
@@ -1083,12 +1003,10 @@ public class TCameraInterface extends BasicApplicationInterface {
         long timer_delay;
         try {
             float timer_delay_s = Float.parseFloat(timer_value);
-            if (MyDebug.LOG)
-                Log.d(TAG, "timer_delay_s: " + timer_delay_s);
+            if (MyDebug.LOG) Log.d(TAG, "timer_delay_s: " + timer_delay_s);
             timer_delay = (long) (timer_delay_s * 1000);
         } catch (NumberFormatException e) {
-            if (MyDebug.LOG)
-                Log.e(TAG, "failed to parse repeat interval value: " + timer_value);
+            if (MyDebug.LOG) Log.e(TAG, "failed to parse repeat interval value: " + timer_value);
             e.printStackTrace();
             timer_delay = 0;
         }
@@ -1139,8 +1057,7 @@ public class TCameraInterface extends BasicApplicationInterface {
         try {
             ghost_image_alpha = Integer.parseInt(ghost_image_alpha_value);
         } catch (NumberFormatException e) {
-            if (MyDebug.LOG)
-                Log.e(TAG, "failed to parse ghost_image_alpha_value: " + ghost_image_alpha_value);
+            if (MyDebug.LOG) Log.e(TAG, "failed to parse ghost_image_alpha_value: " + ghost_image_alpha_value);
             e.printStackTrace();
             ghost_image_alpha = 50;
         }
@@ -1179,15 +1096,12 @@ public class TCameraInterface extends BasicApplicationInterface {
     private int getTextStampFontSizePref() {
         int font_size = 12;
         String value = sharedPreferences.getString(PreferenceKeys.StampFontSizePreferenceKey, "12");
-        if (MyDebug.LOG)
-            Log.d(TAG, "saved font size: " + value);
+        if (MyDebug.LOG) Log.d(TAG, "saved font size: " + value);
         try {
             font_size = Integer.parseInt(value);
-            if (MyDebug.LOG)
-                Log.d(TAG, "font_size: " + font_size);
+            if (MyDebug.LOG) Log.d(TAG, "font_size: " + font_size);
         } catch (NumberFormatException exception) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "font size invalid format, can't parse to int");
+            if (MyDebug.LOG) Log.d(TAG, "font size invalid format, can't parse to int");
         }
         return font_size;
     }
@@ -1209,8 +1123,7 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public int getZoomPref() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "getZoomPref: " + zoom_factor);
+        if (MyDebug.LOG) Log.d(TAG, "getZoomPref: " + zoom_factor);
         return zoom_factor;
     }
 
@@ -1221,8 +1134,7 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public boolean canTakeNewPhoto() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "canTakeNewPhoto");
+        if (MyDebug.LOG) Log.d(TAG, "canTakeNewPhoto");
 
         int n_raw, n_jpegs;
         //if( main_activity.getPreview().isVideo() )
@@ -1264,8 +1176,7 @@ public class TCameraInterface extends BasicApplicationInterface {
 
         int photo_cost = imageSaver.computePhotoCost(n_raw, n_jpegs);
         if (imageSaver.queueWouldBlock(photo_cost)) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "canTakeNewPhoto: no, as queue would block");
+            if (MyDebug.LOG) Log.d(TAG, "canTakeNewPhoto: no, as queue would block");
             return false;
         }
 
@@ -1275,32 +1186,28 @@ public class TCameraInterface extends BasicApplicationInterface {
         if (photo_mode == PhotoMode.FastBurst || photo_mode == PhotoMode.Panorama) {
             // only allow one fast burst at a time, so require queue to be empty
             if (n_images_to_save > 0) {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "canTakeNewPhoto: no, as too many for fast burst");
+                if (MyDebug.LOG) Log.d(TAG, "canTakeNewPhoto: no, as too many for fast burst");
                 return false;
             }
         }
         if (photo_mode == PhotoMode.NoiseReduction) {
             // allow a max of 2 photos in memory when at max of 8 images
             if (n_images_to_save >= 2 * photo_cost) {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "canTakeNewPhoto: no, as too many for nr");
+                if (MyDebug.LOG) Log.d(TAG, "canTakeNewPhoto: no, as too many for nr");
                 return false;
             }
         }
         if (n_jpegs > 1) {
             // if in any other kind of burst mode (e.g., expo burst, HDR), allow a max of 3 photos in memory
             if (n_images_to_save >= 3 * photo_cost) {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "canTakeNewPhoto: no, as too many for burst");
+                if (MyDebug.LOG) Log.d(TAG, "canTakeNewPhoto: no, as too many for burst");
                 return false;
             }
         }
         if (n_raw > 0) {
             // if RAW mode, allow a max of 3 photos
             if (n_images_to_save >= 3 * photo_cost) {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "canTakeNewPhoto: no, as too many for raw");
+                if (MyDebug.LOG) Log.d(TAG, "canTakeNewPhoto: no, as too many for raw");
                 return false;
             }
         }
@@ -1310,8 +1217,7 @@ public class TCameraInterface extends BasicApplicationInterface {
                 // if we take a photo in NR mode, then switch to std mode, it doesn't make sense to suddenly block!
                 // so need to at least allow a new photo, if the number of photos is less than 1 NR photo
             } else {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "canTakeNewPhoto: no, as too many for regular");
+                if (MyDebug.LOG) Log.d(TAG, "canTakeNewPhoto: no, as too many for regular");
                 return false;
             }
         }
@@ -1321,8 +1227,7 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public boolean imageQueueWouldBlock(int n_raw, int n_jpegs) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "imageQueueWouldBlock");
+        if (MyDebug.LOG) Log.d(TAG, "imageQueueWouldBlock");
         return imageSaver.queueWouldBlock(n_raw, n_jpegs);
     }
 
@@ -1339,8 +1244,7 @@ public class TCameraInterface extends BasicApplicationInterface {
         int rotation = property.getInt("displayRotation");//main_activity.getDisplayRotation();
 
         String rotate_preview = sharedPreferences.getString(PreferenceKeys.RotatePreviewPreferenceKey, "0");
-        if (MyDebug.LOG)
-            Log.d(TAG, "    rotate_preview = " + rotate_preview);
+        if (MyDebug.LOG) Log.d(TAG, "    rotate_preview = " + rotate_preview);
         if (rotate_preview.equals("180")) {
             switch (rotation) {
                 case Surface.ROTATION_0:
@@ -1400,8 +1304,7 @@ public class TCameraInterface extends BasicApplicationInterface {
             try {
                 n_images = Integer.parseInt(n_images_value);
             } catch (NumberFormatException e) {
-                if (MyDebug.LOG)
-                    Log.e(TAG, "failed to parse FastBurstNImagesPreferenceKey value: " + n_images_value);
+                if (MyDebug.LOG) Log.e(TAG, "failed to parse FastBurstNImagesPreferenceKey value: " + n_images_value);
                 e.printStackTrace();
                 n_images = 5;
             }
@@ -1449,8 +1352,7 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public int getExpoBracketingNImagesPref() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "getExpoBracketingNImagesPref");
+        if (MyDebug.LOG) Log.d(TAG, "getExpoBracketingNImagesPref");
         int n_images;
         PhotoMode photo_mode = getPhotoMode();
         if (photo_mode == PhotoMode.HDR) {
@@ -1461,20 +1363,17 @@ public class TCameraInterface extends BasicApplicationInterface {
             try {
                 n_images = Integer.parseInt(n_images_s);
             } catch (NumberFormatException exception) {
-                if (MyDebug.LOG)
-                    Log.e(TAG, "n_images_s invalid format: " + n_images_s);
+                if (MyDebug.LOG) Log.e(TAG, "n_images_s invalid format: " + n_images_s);
                 n_images = 3;
             }
         }
-        if (MyDebug.LOG)
-            Log.d(TAG, "n_images = " + n_images);
+        if (MyDebug.LOG) Log.d(TAG, "n_images = " + n_images);
         return n_images;
     }
 
 
     public double getExpoBracketingStopsPref() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "getExpoBracketingStopsPref");
+        if (MyDebug.LOG) Log.d(TAG, "getExpoBracketingStopsPref");
         double n_stops;
         PhotoMode photo_mode = getPhotoMode();
         if (photo_mode == PhotoMode.HDR) {
@@ -1485,31 +1384,26 @@ public class TCameraInterface extends BasicApplicationInterface {
             try {
                 n_stops = Double.parseDouble(n_stops_s);
             } catch (NumberFormatException exception) {
-                if (MyDebug.LOG)
-                    Log.e(TAG, "n_stops_s invalid format: " + n_stops_s);
+                if (MyDebug.LOG) Log.e(TAG, "n_stops_s invalid format: " + n_stops_s);
                 n_stops = 2.0;
             }
         }
-        if (MyDebug.LOG)
-            Log.d(TAG, "n_stops = " + n_stops);
+        if (MyDebug.LOG) Log.d(TAG, "n_stops = " + n_stops);
         return n_stops;
     }
 
 
     public int getFocusBracketingNImagesPref() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "getFocusBracketingNImagesPref");
+        if (MyDebug.LOG) Log.d(TAG, "getFocusBracketingNImagesPref");
         int n_images;
         String n_images_s = sharedPreferences.getString(PreferenceKeys.FocusBracketingNImagesPreferenceKey, "3");
         try {
             n_images = Integer.parseInt(n_images_s);
         } catch (NumberFormatException exception) {
-            if (MyDebug.LOG)
-                Log.e(TAG, "n_images_s invalid format: " + n_images_s);
+            if (MyDebug.LOG) Log.e(TAG, "n_images_s invalid format: " + n_images_s);
             n_images = 3;
         }
-        if (MyDebug.LOG)
-            Log.d(TAG, "n_images = " + n_images);
+        if (MyDebug.LOG) Log.d(TAG, "n_images = " + n_images);
         return n_images;
     }
 
@@ -1529,26 +1423,19 @@ public class TCameraInterface extends BasicApplicationInterface {
 		/*if( MyDebug.LOG )
 			Log.d(TAG, "photo_mode_pref: " + photo_mode_pref);*/
         boolean dro = photo_mode_pref.equals("preference_photo_mode_dro");
-        if (dro && property.getBoolean("supportsDRO"))
-            return PhotoMode.DRO;
+        if (dro && property.getBoolean("supportsDRO")) return PhotoMode.DRO;
         boolean hdr = photo_mode_pref.equals("preference_photo_mode_hdr");
-        if (hdr && property.getBoolean("supportsHDR"))
-            return PhotoMode.HDR;
+        if (hdr && property.getBoolean("supportsHDR")) return PhotoMode.HDR;
         boolean expo_bracketing = photo_mode_pref.equals("preference_photo_mode_expo_bracketing");
-        if (expo_bracketing && property.getBoolean("supportsExpoBracketing"))
-            return PhotoMode.ExpoBracketing;
+        if (expo_bracketing && property.getBoolean("supportsExpoBracketing")) return PhotoMode.ExpoBracketing;
         boolean focus_bracketing = photo_mode_pref.equals("preference_photo_mode_focus_bracketing");
-        if (focus_bracketing && property.getBoolean("supportsFocusBracketing"))
-            return PhotoMode.FocusBracketing;
+        if (focus_bracketing && property.getBoolean("supportsFocusBracketing")) return PhotoMode.FocusBracketing;
         boolean fast_burst = photo_mode_pref.equals("preference_photo_mode_fast_burst");
-        if (fast_burst && property.getBoolean("supportsFastBurst"))
-            return PhotoMode.FastBurst;
+        if (fast_burst && property.getBoolean("supportsFastBurst")) return PhotoMode.FastBurst;
         boolean noise_reduction = photo_mode_pref.equals("preference_photo_mode_noise_reduction");
-        if (noise_reduction && property.getBoolean("supportsNoiseReduction"))
-            return PhotoMode.NoiseReduction;
+        if (noise_reduction && property.getBoolean("supportsNoiseReduction")) return PhotoMode.NoiseReduction;
         boolean panorama = photo_mode_pref.equals("preference_photo_mode_panorama");
-        if (panorama && !property.getBoolean("isVideo") && property.getBoolean("supportsPanorama"))
-            return PhotoMode.Panorama;
+        if (panorama && !property.getBoolean("isVideo") && property.getBoolean("supportsPanorama")) return PhotoMode.Panorama;
         return PhotoMode.Standard;
     }
 
@@ -1578,24 +1465,19 @@ public class TCameraInterface extends BasicApplicationInterface {
         //if( isImageCaptureIntent() )
         //   return false;
         //if( main_activity.getPreview().isVideo() )
-        if (property.getBoolean("isVideo"))
-            return false; // video snapshot mode
+        if (property.getBoolean("isVideo")) return false; // video snapshot mode
         //return photo_mode == PhotoMode.Standard || photo_mode == PhotoMode.DRO;
         if (photo_mode == PhotoMode.Standard || photo_mode == PhotoMode.DRO) {
             return true;
         } else if (photo_mode == PhotoMode.ExpoBracketing) {
-            return sharedPreferences.getBoolean(PreferenceKeys.AllowRawForExpoBracketingPreferenceKey, true) &&
-                    property.getBoolean("supportsBurstRaw");
+            return sharedPreferences.getBoolean(PreferenceKeys.AllowRawForExpoBracketingPreferenceKey, true) && property.getBoolean("supportsBurstRaw");
             //main_activity.supportsBurstRaw();
         } else if (photo_mode == PhotoMode.HDR) {
             // for HDR, RAW is only relevant if we're going to be saving the base expo images (otherwise there's nothing to save)
-            return sharedPreferences.getBoolean(PreferenceKeys.HDRSaveExpoPreferenceKey, false) &&
-                    sharedPreferences.getBoolean(PreferenceKeys.AllowRawForExpoBracketingPreferenceKey, true) &&
-                    property.getBoolean("supportsBurstRaw");
+            return sharedPreferences.getBoolean(PreferenceKeys.HDRSaveExpoPreferenceKey, false) && sharedPreferences.getBoolean(PreferenceKeys.AllowRawForExpoBracketingPreferenceKey, true) && property.getBoolean("supportsBurstRaw");
             //main_activity.supportsBurstRaw();
         } else if (photo_mode == PhotoMode.FocusBracketing) {
-            return sharedPreferences.getBoolean(PreferenceKeys.AllowRawForFocusBracketingPreferenceKey, true) &&
-                    property.getBoolean("supportsBurstRaw");
+            return sharedPreferences.getBoolean(PreferenceKeys.AllowRawForFocusBracketingPreferenceKey, true) && property.getBoolean("supportsBurstRaw");
             //main_activity.supportsBurstRaw();
         }
         // not supported for panorama mode
@@ -1662,8 +1544,7 @@ public class TCameraInterface extends BasicApplicationInterface {
 
     public boolean usePhotoVideoRecording() {
         // we only show the preference for Camera2 API (since there's no point disabling the feature for old API)
-        if (!useCamera2())
-            return true;
+        if (!useCamera2()) return true;
         return sharedPreferences.getBoolean(PreferenceKeys.Camera2PhotoVideoRecordingPreferenceKey, true);
     }
 
@@ -1708,8 +1589,7 @@ public class TCameraInterface extends BasicApplicationInterface {
     }
 
     void startPanorama() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "startPanorama");
+        if (MyDebug.LOG) Log.d(TAG, "startPanorama");
         gyroSensor.startRecording();
         n_panorama_pics = 0;
         panorama_pic_accepted = false;
@@ -1726,8 +1606,7 @@ public class TCameraInterface extends BasicApplicationInterface {
      * Ends panorama and submits the panoramic images to be processed.
      */
     void finishPanorama() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "finishPanorama");
+        if (MyDebug.LOG) Log.d(TAG, "finishPanorama");
 
         //imageSaver.getImageBatchRequest().panorama_dir_left_to_right = this.panorama_dir_left_to_right;
 
@@ -1744,11 +1623,9 @@ public class TCameraInterface extends BasicApplicationInterface {
      * @param is_cancelled Whether the panorama has been cancelled.
      */
     void stopPanorama(boolean is_cancelled) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "stopPanorama");
+        if (MyDebug.LOG) Log.d(TAG, "stopPanorama");
         if (!gyroSensor.isRecording()) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "...nothing to stop");
+            if (MyDebug.LOG) Log.d(TAG, "...nothing to stop");
             return;
         }
         gyroSensor.stopRecording();
@@ -1795,8 +1672,7 @@ public class TCameraInterface extends BasicApplicationInterface {
     }
 
     private void setNextPanoramaPoint(float x, float y, float z) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "setNextPanoramaPoint : " + x + " , " + y + " , " + z);
+        if (MyDebug.LOG) Log.d(TAG, "setNextPanoramaPoint : " + x + " , " + y + " , " + z);
 
         @SuppressWarnings("PointlessArithmeticExpression") final float target_angle = 1.0f * 0.01745329252f;
         //final float target_angle = 0.5f * 0.01745329252f;
@@ -1820,16 +1696,14 @@ public class TCameraInterface extends BasicApplicationInterface {
                 gyroSensor.disableTargetCallback();
                 if (n_panorama_pics == 1) {
                     panorama_dir_left_to_right = indx == 0;
-                    if (MyDebug.LOG)
-                        Log.d(TAG, "set panorama_dir_left_to_right to " + panorama_dir_left_to_right);
+                    if (MyDebug.LOG) Log.d(TAG, "set panorama_dir_left_to_right to " + panorama_dir_left_to_right);
                 }
                 //main_activity.takePicturePressed(false, false);
             }
 
 
             public void onTooFar() {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "TargetCallback.onTooFar");
+                if (MyDebug.LOG) Log.d(TAG, "TargetCallback.onTooFar");
 
                 //if( !main_activity.is_test ) {
                 //main_activity.getPreview().showToast(null, R.string.panorama_cancelled);
@@ -1842,8 +1716,7 @@ public class TCameraInterface extends BasicApplicationInterface {
     }
 
     private void clearPanoramaPoint() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "clearPanoramaPoint");
+        if (MyDebug.LOG) Log.d(TAG, "clearPanoramaPoint");
         gyroSensor.clearTarget();
         //drawPreview.clearGyroDirectionMarker();
     }
@@ -1891,8 +1764,7 @@ public class TCameraInterface extends BasicApplicationInterface {
         }
         if (done) {
             test_n_videos_scanned++;
-            if (MyDebug.LOG)
-                Log.d(TAG, "test_n_videos_scanned is now: " + test_n_videos_scanned);
+            if (MyDebug.LOG) Log.d(TAG, "test_n_videos_scanned is now: " + test_n_videos_scanned);
         }
 
         //if( video_method == VideoMethod.MEDIASTORE && isVideoCaptureIntent() ) {
@@ -1905,13 +1777,11 @@ public class TCameraInterface extends BasicApplicationInterface {
     public void onVideoInfo(int what, int extra) {
         // we don't show a toast for MEDIA_RECORDER_INFO_MAX_DURATION_REACHED - conflicts with "n repeats to go" toast from Preview
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && what == MediaRecorder.MEDIA_RECORDER_INFO_NEXT_OUTPUT_FILE_STARTED) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "next output file started");
+            if (MyDebug.LOG) Log.d(TAG, "next output file started");
             int message_id = R.string.video_max_filesize;
             //main_activity.getPreview().showToast(null, message_id);
         } else if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "max filesize reached");
+            if (MyDebug.LOG) Log.d(TAG, "max filesize reached");
             int message_id = R.string.video_max_filesize;
             //main_activity.getPreview().showToast(null, message_id);
         }
@@ -1945,8 +1815,7 @@ public class TCameraInterface extends BasicApplicationInterface {
         }
         int message_id = R.string.video_error_unknown;
         if (what == MediaRecorder.MEDIA_ERROR_SERVER_DIED) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "error: server died");
+            if (MyDebug.LOG) Log.d(TAG, "error: server died");
             message_id = R.string.video_error_server_died;
         }
         //main_activity.getPreview().showToast(null, message_id);
@@ -1960,8 +1829,7 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public void onVideoRecordStartError(VideoProfile profile) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "onVideoRecordStartError");
+        if (MyDebug.LOG) Log.d(TAG, "onVideoRecordStartError");
         /*String error_message;
         String features = main_activity.getPreview().getErrorFeatures(profile);
         if( features.length() > 0 ) {
@@ -1975,8 +1843,7 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public void onVideoRecordStopError(VideoProfile profile) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "onVideoRecordStopError");
+        if (MyDebug.LOG) Log.d(TAG, "onVideoRecordStopError");
         //main_activity.getPreview().showToast(null, R.string.failed_to_record_video);
         //String features = main_activity.getPreview().getErrorFeatures(profile);
         //String error_message = getContext().getResources().getString(R.string.video_may_be_corrupted);
@@ -2192,22 +2059,19 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public void setZoomPref(int zoom) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "setZoomPref: " + zoom);
+        if (MyDebug.LOG) Log.d(TAG, "setZoomPref: " + zoom);
         this.zoom_factor = zoom;
     }
 
 
     public void requestCameraPermission() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "requestCameraPermission");
+        if (MyDebug.LOG) Log.d(TAG, "requestCameraPermission");
         //main_activity.getPermissionHandler().requestCameraPermission();
     }
 
 
     public boolean needsStoragePermission() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "needsStoragePermission");
+        if (MyDebug.LOG) Log.d(TAG, "needsStoragePermission");
         //if( MainActivity.useScopedStorage() )
         //    return false; // no longer need storage permission with scoped storage - and shouldn't request it either
         return true;
@@ -2215,15 +2079,13 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public void requestStoragePermission() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "requestStoragePermission");
+        if (MyDebug.LOG) Log.d(TAG, "requestStoragePermission");
         //main_activity.getPermissionHandler().requestStoragePermission();
     }
 
 
     public void requestRecordAudioPermission() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "requestRecordAudioPermission");
+        if (MyDebug.LOG) Log.d(TAG, "requestRecordAudioPermission");
         //main_activity.getPermissionHandler().requestRecordAudioPermission();
     }
 
@@ -2258,8 +2120,7 @@ public class TCameraInterface extends BasicApplicationInterface {
      * when switching between photo/video modes, or switching cameras).
      */
     void reset(boolean switched_camera) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "reset");
+        if (MyDebug.LOG) Log.d(TAG, "reset");
         if (switched_camera) {
             // aperture is reset when switching camera, but not when application is paused or switching between photo/video etc
             this.aperture = aperture_default;
@@ -2276,15 +2137,11 @@ public class TCameraInterface extends BasicApplicationInterface {
     }
 
     public enum Alignment {
-        ALIGNMENT_TOP,
-        ALIGNMENT_CENTRE,
-        ALIGNMENT_BOTTOM
+        ALIGNMENT_TOP, ALIGNMENT_CENTRE, ALIGNMENT_BOTTOM
     }
 
     public enum Shadow {
-        SHADOW_NONE,
-        SHADOW_OUTLINE,
-        SHADOW_BACKGROUND
+        SHADOW_NONE, SHADOW_OUTLINE, SHADOW_BACKGROUND
     }
 
     public int drawTextWithBackground(Canvas canvas, Paint paint, String text, int foreground, int background, int location_x, int location_y) {
@@ -2322,8 +2179,7 @@ public class TCameraInterface extends BasicApplicationInterface {
             float width = paint.measureText(text); // n.b., need to use measureText rather than getTextBounds here
 			/*if( MyDebug.LOG )
 				Log.d(TAG, "width: " + width);*/
-            if (paint.getTextAlign() == Paint.Align.CENTER)
-                width /= 2.0f;
+            if (paint.getTextAlign() == Paint.Align.CENTER) width /= 2.0f;
             text_bounds.left -= width;
             text_bounds.right -= width;
         }
@@ -2373,10 +2229,8 @@ public class TCameraInterface extends BasicApplicationInterface {
 		/*if( !sharedPreferences.getBoolean(PreferenceKeys.BackgroundPhotoSavingPreferenceKey, true) )
 			do_in_background = false;
 		else*/
-        if (image_capture_intent)
-            do_in_background = false;
-        else if (getPausePreviewPref())
-            do_in_background = false;
+        if (image_capture_intent) do_in_background = false;
+        else if (getPausePreviewPref()) do_in_background = false;
         return do_in_background;
     }
 /*
@@ -2426,8 +2280,7 @@ public class TCameraInterface extends BasicApplicationInterface {
      * @return Whether saving was successful.
      */
     private boolean saveImage(boolean save_expo, List<byte[]> images, Date current_date) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "saveImage");
+        if (MyDebug.LOG) Log.d(TAG, "saveImage");
 
         System.gc();
 
@@ -2457,8 +2310,7 @@ public class TCameraInterface extends BasicApplicationInterface {
         //    Log.d(TAG, "has geo direction: " + main_activity.getPreview().hasGeoDirection());
         //}
         int image_quality = getSaveImageQualityPref();
-        if (MyDebug.LOG)
-            Log.d(TAG, "image_quality: " + image_quality);
+        if (MyDebug.LOG) Log.d(TAG, "image_quality: " + image_quality);
         //boolean do_auto_stabilise = getAutoStabilisePref() && main_activity.getPreview().hasLevelAngleStable();
         //double level_angle = (main_activity.getPreview().hasLevelAngle()) ? main_activity.getPreview().getLevelAngle() : 0.0;
         //double pitch_angle = (main_activity.getPreview().hasPitchAngle()) ? main_activity.getPreview().getPitchAngle() : 0.0;
@@ -2531,22 +2383,19 @@ public class TCameraInterface extends BasicApplicationInterface {
                 sample_factor *= 4;
             }
         }
-        if (MyDebug.LOG)
-            Log.d(TAG, "sample_factor: " + sample_factor);
+        if (MyDebug.LOG) Log.d(TAG, "sample_factor: " + sample_factor);
 
         boolean success;
         PhotoMode photo_mode = getPhotoMode();
         //if( main_activity.getPreview().isVideo() )
         if (property.getBoolean("isVideo")) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "snapshot mode");
+            if (MyDebug.LOG) Log.d(TAG, "snapshot mode");
             // must be in photo snapshot while recording video mode, only support standard photo mode
             photo_mode = PhotoMode.Standard;
         }
 
         if (photo_mode == PhotoMode.Panorama && gyroSensor.isRecording() && gyroSensor.hasTarget() && !gyroSensor.isTargetAchieved()) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "ignore panorama image as target no longer achieved!");
+            if (MyDebug.LOG) Log.d(TAG, "ignore panorama image as target no longer achieved!");
             // n.b., gyroSensor.hasTarget() will be false if this is the first picture in the panorama series
             panorama_pic_accepted = false;
             success = true; // still treat as success
@@ -2555,8 +2404,7 @@ public class TCameraInterface extends BasicApplicationInterface {
             if (photo_mode == PhotoMode.Panorama) {
                 panorama_pic_accepted = true;
                 first_image = n_panorama_pics == 0;
-            } else
-                first_image = n_capture_images == 1;
+            } else first_image = n_capture_images == 1;
             if (first_image) {
                 ImageSaver.Request.SaveBase save_base = ImageSaver.Request.SaveBase.SAVEBASE_NONE;
                 if (photo_mode == PhotoMode.NoiseReduction) {
@@ -2581,25 +2429,7 @@ public class TCameraInterface extends BasicApplicationInterface {
                     }
                 }
 
-                imageSaver.startImageBatch(true,
-                        photo_mode == PhotoMode.NoiseReduction ? ImageSaver.Request.ProcessType.AVERAGE : ImageSaver.Request.ProcessType.PANORAMA,
-                        save_base,
-                        image_capture_intent, image_capture_intent_uri,
-                        using_camera2,
-                        image_format, image_quality,
-                        do_auto_stabilise, level_angle, photo_mode == PhotoMode.Panorama,
-                        is_front_facing,
-                        mirror,
-                        current_date,
-                        iso,
-                        exposure_time,
-                        zoom_factor,
-                        preference_stamp, preference_textstamp, font_size, color, pref_style, preference_stamp_dateformat, preference_stamp_timeformat, preference_stamp_gpsformat, preference_stamp_geo_address, preference_units_distance,
-                        panorama_crop,
-                        store_location, location, store_geo_direction, geo_direction,
-                        pitch_angle, store_ypr,
-                        custom_tag_artist, custom_tag_copyright,
-                        sample_factor);
+                imageSaver.startImageBatch(true, photo_mode == PhotoMode.NoiseReduction ? ImageSaver.Request.ProcessType.AVERAGE : ImageSaver.Request.ProcessType.PANORAMA, save_base, image_capture_intent, image_capture_intent_uri, using_camera2, image_format, image_quality, do_auto_stabilise, level_angle, photo_mode == PhotoMode.Panorama, is_front_facing, mirror, current_date, iso, exposure_time, zoom_factor, preference_stamp, preference_textstamp, font_size, color, pref_style, preference_stamp_dateformat, preference_stamp_timeformat, preference_stamp_gpsformat, preference_stamp_geo_address, preference_units_distance, panorama_crop, store_location, location, store_geo_direction, geo_direction, pitch_angle, store_ypr, custom_tag_artist, custom_tag_copyright, sample_factor);
 
                 if (photo_mode == PhotoMode.Panorama) {
                     //imageSaver.getImageBatchRequest().camera_view_angle_x = main_activity.getPreview().getViewAngleX(false);
@@ -2618,78 +2448,52 @@ public class TCameraInterface extends BasicApplicationInterface {
         } else {
             boolean is_hdr = photo_mode == PhotoMode.DRO || photo_mode == PhotoMode.HDR;
             boolean force_suffix = forceSuffix(photo_mode);
-            success = imageSaver.saveImageJpeg(do_in_background, is_hdr,
-                    force_suffix,
+            success = imageSaver.saveImageJpeg(do_in_background, is_hdr, force_suffix,
                     // N.B., n_capture_images will be 1 for first image, not 0, so subtract 1 so we start off from _0.
                     // (It wouldn't be a huge problem if we did start from _1, but it would be inconsistent with the naming
                     // of images where images.size() > 1 (e.g., expo bracketing mode) where we also start from _0.)
-                    force_suffix ? (n_capture_images - 1) : 0,
-                    save_expo, images,
-                    image_capture_intent, image_capture_intent_uri,
-                    using_camera2,
-                    image_format, image_quality,
-                    do_auto_stabilise, level_angle,
-                    is_front_facing,
-                    mirror,
-                    current_date,
-                    preference_hdr_contrast_enhancement,
-                    iso,
-                    exposure_time,
-                    zoom_factor,
-                    preference_stamp, preference_textstamp, font_size, color, pref_style, preference_stamp_dateformat, preference_stamp_timeformat, preference_stamp_gpsformat, preference_stamp_geo_address, preference_units_distance,
-                    false, // panorama doesn't use this codepath
-                    store_location, location, store_geo_direction, geo_direction,
-                    pitch_angle, store_ypr,
-                    custom_tag_artist, custom_tag_copyright,
-                    sample_factor);
+                    force_suffix ? (n_capture_images - 1) : 0, save_expo, images, image_capture_intent, image_capture_intent_uri, using_camera2, image_format, image_quality, do_auto_stabilise, level_angle, is_front_facing, mirror, current_date, preference_hdr_contrast_enhancement, iso, exposure_time, zoom_factor, preference_stamp, preference_textstamp, font_size, color, pref_style, preference_stamp_dateformat, preference_stamp_timeformat, preference_stamp_gpsformat, preference_stamp_geo_address, preference_units_distance, false, // panorama doesn't use this codepath
+                    store_location, location, store_geo_direction, geo_direction, pitch_angle, store_ypr, custom_tag_artist, custom_tag_copyright, sample_factor);
         }
 
-        if (MyDebug.LOG)
-            Log.d(TAG, "saveImage complete, success: " + success);
+        if (MyDebug.LOG) Log.d(TAG, "saveImage complete, success: " + success);
 
         return success;
     }
 
 
     public boolean onPictureTaken(byte[] data, Date current_date) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "onPictureTaken");
+        if (MyDebug.LOG) Log.d(TAG, "onPictureTaken");
 
         n_capture_images++;
-        if (MyDebug.LOG)
-            Log.d(TAG, "n_capture_images is now " + n_capture_images);
+        if (MyDebug.LOG) Log.d(TAG, "n_capture_images is now " + n_capture_images);
 
         List<byte[]> images = new ArrayList<>();
         images.add(data);
 
         boolean success = saveImage(false, images, current_date);
 
-        if (MyDebug.LOG)
-            Log.d(TAG, "onPictureTaken complete, success: " + success);
+        if (MyDebug.LOG) Log.d(TAG, "onPictureTaken complete, success: " + success);
 
         return success;
     }
 
 
     public boolean onBurstPictureTaken(List<byte[]> images, Date current_date) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "onBurstPictureTaken: received " + images.size() + " images");
+        if (MyDebug.LOG) Log.d(TAG, "onBurstPictureTaken: received " + images.size() + " images");
 
         boolean success;
         PhotoMode photo_mode = getPhotoMode();
         //if( main_activity.getPreview().isVideo() )
         if (property.getBoolean("isVideo")) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "snapshot mode");
+            if (MyDebug.LOG) Log.d(TAG, "snapshot mode");
             // must be in photo snapshot while recording video mode, only support standard photo mode
             photo_mode = PhotoMode.Standard;
         }
         if (photo_mode == PhotoMode.HDR) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "HDR mode");
+            if (MyDebug.LOG) Log.d(TAG, "HDR mode");
             boolean save_expo = sharedPreferences.getBoolean(PreferenceKeys.HDRSaveExpoPreferenceKey, false);
-            if (MyDebug.LOG)
-                Log.d(TAG, "save_expo: " + save_expo);
+            if (MyDebug.LOG) Log.d(TAG, "save_expo: " + save_expo);
 
             success = saveImage(save_expo, images, current_date);
         } else {
@@ -2706,21 +2510,18 @@ public class TCameraInterface extends BasicApplicationInterface {
 
 
     public boolean onRawPictureTaken(RawImage raw_image, Date current_date) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "onRawPictureTaken");
+        if (MyDebug.LOG) Log.d(TAG, "onRawPictureTaken");
         System.gc();
 
         n_capture_images_raw++;
-        if (MyDebug.LOG)
-            Log.d(TAG, "n_capture_images_raw is now " + n_capture_images_raw);
+        if (MyDebug.LOG) Log.d(TAG, "n_capture_images_raw is now " + n_capture_images_raw);
 
         boolean do_in_background = saveInBackground(false);
 
         PhotoMode photo_mode = getPhotoMode();
         //if( main_activity.getPreview().isVideo() )
         if (property.getBoolean("isVideo")) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "snapshot mode");
+            if (MyDebug.LOG) Log.d(TAG, "snapshot mode");
             // must be in photo snapshot while recording video mode, only support standard photo mode
             // (RAW not supported anyway for video snapshot mode, but have this code just to be safe)
             photo_mode = PhotoMode.Standard;
@@ -2732,15 +2533,13 @@ public class TCameraInterface extends BasicApplicationInterface {
         int suffix_offset = force_suffix ? (n_capture_images_raw - 1) : 0;
         boolean success = imageSaver.saveImageRaw(do_in_background, force_suffix, suffix_offset, raw_image, current_date);
 
-        if (MyDebug.LOG)
-            Log.d(TAG, "onRawPictureTaken complete");
+        if (MyDebug.LOG) Log.d(TAG, "onRawPictureTaken complete");
         return success;
     }
 
 
     public boolean onRawBurstPictureTaken(List<RawImage> raw_images, Date current_date) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "onRawBurstPictureTaken");
+        if (MyDebug.LOG) Log.d(TAG, "onRawBurstPictureTaken");
         System.gc();
 
         boolean do_in_background = saveInBackground(false);
@@ -2751,8 +2550,7 @@ public class TCameraInterface extends BasicApplicationInterface {
             success = imageSaver.saveImageRaw(do_in_background, true, i, raw_images.get(i), current_date);
         }
 
-        if (MyDebug.LOG)
-            Log.d(TAG, "onRawBurstPictureTaken complete");
+        if (MyDebug.LOG) Log.d(TAG, "onRawBurstPictureTaken complete");
         return success;
     }
 
@@ -2802,11 +2600,9 @@ public class TCameraInterface extends BasicApplicationInterface {
         // see note under LastImage constructor for why we need to update the Uris
         for (int i = 0; i < last_images.size(); i++) {
             LastImage last_image = last_images.get(i);
-            if (MyDebug.LOG)
-                Log.d(TAG, "compare to last_image: " + last_image.name);
+            if (MyDebug.LOG) Log.d(TAG, "compare to last_image: " + last_image.name);
             if (last_image.uri == null && last_image.name != null && last_image.name.equals(file.getAbsolutePath())) {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "updated last_image : " + i);
+                if (MyDebug.LOG) Log.d(TAG, "updated last_image : " + i);
                 last_image.uri = uri;
             }
         }

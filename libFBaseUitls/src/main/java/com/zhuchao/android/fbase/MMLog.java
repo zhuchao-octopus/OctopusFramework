@@ -11,37 +11,32 @@ public class MMLog {
     public static void setDebugOnOff(boolean debugOnOff) {
         MMLog.debugLogOnOff = debugOnOff;
     }
+
     public static void setLogOnOff(boolean debugOnOff) {
         MMLog.debugLogOnOff = debugOnOff;
     }
 
     public static void v(String TAG, String logMsg) {
-        if (debugLogOnOff)
-            Log.v(MTAG + "." + TAG, logMsg);
+        if (debugLogOnOff) Log.v(MTAG + "." + TAG, logMsg);
     }
 
     public static void log(String TAG, String logMsg) {
-        if (debugLogOnOff)
-            Log.d(MTAG + "." + TAG, logMsg);
+        if (debugLogOnOff) Log.d(MTAG + "." + TAG, logMsg);
     }
 
     public static void d(String TAG, String logMsg) {
-        if (debugLogOnOff)
-            Log.d(MTAG + "." + TAG, logMsg);
+        if (debugLogOnOff) Log.d(MTAG + "." + TAG, logMsg);
     }
 
     public static void i(String TAG, String logMsg) {
-        if (debugLogOnOff)
-            Log.i(MTAG + "." + TAG, logMsg);
+        if (debugLogOnOff) Log.i(MTAG + "." + TAG, logMsg);
     }
 
     public static void w(String TAG, String logMsg) {
-        if (debugLogOnOff)
-            Log.w(MTAG + "." + TAG, logMsg);
+        if (debugLogOnOff) Log.w(MTAG + "." + TAG, logMsg);
     }
 
     public static void e(String TAG, String logMsg) {
-        if (debugLogOnOff)
-            Log.e(MTAG + "." + TAG, logMsg);
+        if (debugLogOnOff) Log.e(MTAG + "." + TAG, logMsg);
     }
 }

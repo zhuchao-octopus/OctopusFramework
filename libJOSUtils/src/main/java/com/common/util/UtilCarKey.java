@@ -1,26 +1,16 @@
 package com.common.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Objects;
-
-
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
-import android.speech.RecognizerIntent;
 import android.util.Log;
-import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.zhuchao.android.fbase.MMLog;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Objects;
 
 public class UtilCarKey {
     private final static String TAG = "UtilCarKey";

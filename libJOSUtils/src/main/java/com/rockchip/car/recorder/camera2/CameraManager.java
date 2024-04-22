@@ -28,14 +28,14 @@ import android.view.SurfaceHolder;
 
 /**
  * An interface which provides possible camera_surfaceview device operations.
- *
+ * <p>
  * The client should call {@code CameraManager.cameraOpen} to get an instance
  * of {@link CameraProxy} to control the camera_surfaceview. Classes
  * implementing this interface should have its own one unique {@code Thread}
  * other than the main thread for camera_surfaceview operations. Camera device callbacks
  * are wrapped since the client should not deal with
  * {@code android.hardware.Camera} directly.
- *
+ * <p>
  * TODO: provide callback interfaces for:
  * {@code android.hardware.Camera.ErrorCallback},
  * {@code android.hardware.Camera.OnZoomChangeListener}, and
@@ -82,12 +82,11 @@ public interface CameraManager {
         public void onPreviewFrame(byte[] data, CameraProxy camera);
     }
 
-    
-    
+
     /**
-     * wo jiad 
-     * @author Administrator
+     * wo jiad
      *
+     * @author Administrator
      */
     public interface CameraStartPreviewCallback {
         public void onSuccess(int cameraId, boolean record);
@@ -95,7 +94,7 @@ public interface CameraManager {
         public void onFailure(int cameraId, int reason);
     }
 
-    
+
     /**
      * An interface which wraps
      * {@link Camera.FaceDetectionListener}.
@@ -104,8 +103,8 @@ public interface CameraManager {
         /**
          * Callback for face detection.
          *
-         * @param faces   Recognized face in the preview.
-         * @param camera  The camera_surfaceview which the preview image comes from.
+         * @param faces  Recognized face in the preview.
+         * @param camera The camera_surfaceview which the preview image comes from.
          */
         public void onFaceDetection(Camera.Face[] faces, CameraProxy camera);
     }
@@ -133,19 +132,20 @@ public interface CameraManager {
          */
         public void onFailure(int cameraId, int reason);
     }
+
     /**
      * Opens the camera_surfaceview of the specified ID synchronously.
      *
-     * @param handler The {@link Handler} in which the callback
-     *                was handled.
+     * @param handler  The {@link Handler} in which the callback
+     *                 was handled.
      * @param callback The callback when any error happens.
      * @param cameraId The camera_surfaceview ID to open.
-     * @return   An instance of {@link CameraProxy} on success. null on failure.
+     * @return An instance of {@link CameraProxy} on success. null on failure.
      */
     public CameraProxy cameraOpen(Handler handler, CameraOpenCallback callback);
 
     public <T> CameraProxy cameraOpen(Handler handler, CameraOpenCallback callback, boolean preview, boolean record, T t);
-    
+
 
     /**
      * An interface that takes camera_surfaceview operation requests and post messages to the
@@ -171,12 +171,12 @@ public interface CameraManager {
 
         /**
          * Reconnects to the camera_surfaceview device.
-         * @see Camera#reconnect()
          *
          * @param handler The {@link Handler} in which the callback
          *                was handled.
-         * @param cb The callback when any error happens.
+         * @param cb      The callback when any error happens.
          * @return {@code false} on errors.
+         * @see Camera#reconnect()
          */
         public boolean reconnect(Handler handler, CameraOpenCallback cb);
 
@@ -189,6 +189,7 @@ public interface CameraManager {
 
         /**
          * Locks the camera_surfaceview device.
+         *
          * @see Camera#lock()
          */
         public void lock();
@@ -206,7 +207,9 @@ public interface CameraManager {
          * @param surfaceHolder The {@link SurfaceHolder} for preview.
          */
         public void setPreviewDisplay(final SurfaceHolder surfaceHolder);
+
         public void setPreviewDisplay();
+
         /**
          * Starts the camera_surfaceview preview.
          */
@@ -226,9 +229,9 @@ public interface CameraManager {
         /**
          * Sets the callback for preview data.
          *
-         * @param handler    The {@link Handler} in which the callback was handled.
-         * @param cb         The callback to be invoked when the preview data is available.
-         * @see  Camera#setPreviewCallback(Camera.PreviewCallback)
+         * @param handler The {@link Handler} in which the callback was handled.
+         * @param cb      The callback to be invoked when the preview data is available.
+         * @see Camera#setPreviewCallback(Camera.PreviewCallback)
          */
         public void setPreviewDataCallback(Handler handler, CameraPreviewDataCallback cb);
 
@@ -275,15 +278,15 @@ public interface CameraManager {
         /**
          * Instrument the camera_surfaceview to take a picture.
          *
-         * @param handler   The handler in which the callback will be invoked.
-         * @param shutter   The callback for shutter action, may be null.
-         * @param raw       The callback for uncompressed data, may be null.
-         * @param postview  The callback for postview image data, may be null.
-         * @param jpeg      The callback for jpeg image data, may be null.
+         * @param handler  The handler in which the callback will be invoked.
+         * @param shutter  The callback for shutter action, may be null.
+         * @param raw      The callback for uncompressed data, may be null.
+         * @param postview The callback for postview image data, may be null.
+         * @param jpeg     The callback for jpeg image data, may be null.
          * @see Camera#takePicture(
-         *         Camera.ShutterCallback,
-         *         Camera.PictureCallback,
-         *         Camera.PictureCallback)
+         *Camera.ShutterCallback,
+         * Camera.PictureCallback,
+         * Camera.PictureCallback)
          */
         public void takePicture(Handler handler, CameraShutterCallback shutter, CameraPictureCallback raw, CameraPictureCallback postview, CameraPictureCallback jpeg);
 
@@ -351,8 +354,8 @@ public interface CameraManager {
         /**
          * Enables/Disables the camera_surfaceview shutter sound.
          *
-         * @param enable   {@code true} to enable the shutter sound,
-         *                 {@code false} to disable it.
+         * @param enable {@code true} to enable the shutter sound,
+         *               {@code false} to disable it.
          */
         public void enableShutterSound(boolean enable);
     }

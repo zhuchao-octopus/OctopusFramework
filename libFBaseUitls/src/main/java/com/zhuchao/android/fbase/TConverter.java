@@ -12,8 +12,7 @@ public class TConverter {
 
     public static <T> T fromJson(String json, Class<T> classOfT) {
         try {
-            return new Gson().fromJson(json,
-                    classOfT);
+            return new Gson().fromJson(json, classOfT);
         } catch (JsonSyntaxException e) {
             MMLog.e(TAG, "fromJson failed " + e.toString() + "," + json);
             return null;

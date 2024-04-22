@@ -55,20 +55,15 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
      * @throws IllegalAccessException
      * @throws java.lang.reflect.InvocationTargetException
      */
-    void analyze(LitePalSupport baseObj, AssociationsInfo associationInfo) throws SecurityException,
-            IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
+    void analyze(LitePalSupport baseObj, AssociationsInfo associationInfo) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Collection<LitePalSupport> associatedModels = getAssociatedModels(baseObj, associationInfo);
         declareAssociations(baseObj, associationInfo);
         if (associatedModels != null) {
             for (LitePalSupport associatedModel : associatedModels) {
-                Collection<LitePalSupport> tempCollection = getReverseAssociatedModels(
-                        associatedModel, associationInfo);
-                Collection<LitePalSupport> reverseAssociatedModels = checkAssociatedModelCollection(
-                        tempCollection, associationInfo.getAssociateSelfFromOtherModel());
+                Collection<LitePalSupport> tempCollection = getReverseAssociatedModels(associatedModel, associationInfo);
+                Collection<LitePalSupport> reverseAssociatedModels = checkAssociatedModelCollection(tempCollection, associationInfo.getAssociateSelfFromOtherModel());
                 addNewModelForAssociatedModel(reverseAssociatedModels, baseObj);
-                setReverseAssociatedModels(associatedModel, associationInfo,
-                        reverseAssociatedModels);
+                setReverseAssociatedModels(associatedModel, associationInfo, reverseAssociatedModels);
                 dealAssociatedModel(baseObj, associatedModel);
             }
         }
@@ -93,8 +88,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
      *                                  self model into it if it doesn't contain self model yet.
      * @param baseObj                   The baseObj currently want to persist or update.
      */
-    private void addNewModelForAssociatedModel(Collection<LitePalSupport> associatedModelCollection,
-                                               LitePalSupport baseObj) {
+    private void addNewModelForAssociatedModel(Collection<LitePalSupport> associatedModelCollection, LitePalSupport baseObj) {
         if (!associatedModelCollection.contains(baseObj)) {
             associatedModelCollection.add(baseObj);
         }
@@ -111,8 +105,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
      */
     private void dealAssociatedModel(LitePalSupport baseObj, LitePalSupport associatedModel) {
         if (associatedModel.isSaved()) {
-            baseObj.addAssociatedModelForJoinTable(associatedModel.getTableName(),
-                    associatedModel.getBaseObjId());
+            baseObj.addAssociatedModelForJoinTable(associatedModel.getTableName(), associatedModel.getBaseObjId());
         }
     }
 
@@ -124,8 +117,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
      * @return The name of associated table with changed case.
      */
     private String getAssociatedTableName(AssociationsInfo associationInfo) {
-        return BaseUtility.changeCase(DBUtility.getTableNameByClassName(associationInfo
-                .getAssociatedClassName()));
+        return BaseUtility.changeCase(DBUtility.getTableNameByClassName(associationInfo.getAssociatedClassName()));
     }
 
     /**
@@ -146,9 +138,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
         SQLiteDatabase db = Connector.getDatabase();
         Cursor cursor = null;
         try {
-            cursor = db.query(getJoinTableName(baseObj, associatedModel), null,
-                    getSelection(baseObj, associatedModel),
-                    getSelectionArgs(baseObj, associatedModel), null, null, null);
+            cursor = db.query(getJoinTableName(baseObj, associatedModel), null, getSelection(baseObj, associatedModel), getSelectionArgs(baseObj, associatedModel), null, null, null);
             exists = cursor.getCount() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -185,8 +175,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
      * associatedModel to fill.
      */
     private String[] getSelectionArgs(LitePalSupport baseObj, LitePalSupport associatedModel) {
-        return new String[]{String.valueOf(baseObj.getBaseObjId()),
-                String.valueOf(associatedModel.getBaseObjId())};
+        return new String[]{String.valueOf(baseObj.getBaseObjId()), String.valueOf(associatedModel.getBaseObjId())};
     }
 
     /**

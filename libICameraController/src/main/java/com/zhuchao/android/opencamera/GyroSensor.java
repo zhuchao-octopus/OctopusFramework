@@ -83,10 +83,8 @@ public class GyroSensor implements SensorEventListener {
 
         if (MyDebug.LOG) {
             Log.d(TAG, "GyroSensor");
-            if (mSensor == null)
-                Log.d(TAG, "gyroscope not available");
-            else if (mSensorAccel == null)
-                Log.d(TAG, "accelerometer not available");
+            if (mSensor == null) Log.d(TAG, "gyroscope not available");
+            else if (mSensorAccel == null) Log.d(TAG, "accelerometer not available");
         }
         setToIdentity();
     }
@@ -168,8 +166,7 @@ public class GyroSensor implements SensorEventListener {
      * This should be limited to when we might want to use the gyro, to help battery life.
      */
     void enableSensors() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "enableSensors");
+        if (MyDebug.LOG) Log.d(TAG, "enableSensors");
         has_rotationVector = false;
         has_gyroVector = false;
         for (int i = 0; i < 3; i++) {
@@ -178,21 +175,17 @@ public class GyroSensor implements SensorEventListener {
             gyroVector[i] = 0.0f;
         }
 
-        if (mSensor != null)
-            mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_UI);
-        if (mSensorAccel != null)
-            mSensorManager.registerListener(this, mSensorAccel, SensorManager.SENSOR_DELAY_UI);
+        if (mSensor != null) mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_UI);
+        if (mSensorAccel != null) mSensorManager.registerListener(this, mSensorAccel, SensorManager.SENSOR_DELAY_UI);
     }
 
     void disableSensors() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "disableSensors");
+        if (MyDebug.LOG) Log.d(TAG, "disableSensors");
         mSensorManager.unregisterListener(this);
     }
 
     void startRecording() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "startRecording");
+        if (MyDebug.LOG) Log.d(TAG, "startRecording");
         is_recording = true;
         timestamp = 0;
         setToIdentity();
@@ -200,8 +193,7 @@ public class GyroSensor implements SensorEventListener {
 
     void stopRecording() {
         if (is_recording) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "stopRecording");
+            if (MyDebug.LOG) Log.d(TAG, "stopRecording");
             is_recording = false;
             timestamp = 0;
         }
@@ -582,14 +574,12 @@ public class GyroSensor implements SensorEventListener {
                     /*if( MyDebug.LOG )
                         Log.d(TAG, "gyro vector angle with target: " + Math.toDegrees(angle) + " degrees");*/
                     if (angle <= targetAngle) {
-                        if (MyDebug.LOG)
-                            Log.d(TAG, "    ### achieved target angle: " + Math.toDegrees(angle) + " degrees");
+                        if (MyDebug.LOG) Log.d(TAG, "    ### achieved target angle: " + Math.toDegrees(angle) + " degrees");
                         targetAchieved = true;
                         if (targetCallback != null) {
                             //targetCallback.onAchieved(indx);
                             if (has_lastTargetAngle) {
-                                if (MyDebug.LOG)
-                                    Log.d(TAG, "        last target angle: " + Math.toDegrees(lastTargetAngle) + " degrees");
+                                if (MyDebug.LOG) Log.d(TAG, "        last target angle: " + Math.toDegrees(lastTargetAngle) + " degrees");
                                 if (angle > lastTargetAngle) {
                                     // started to get worse, so call callback
                                     targetCallback.onAchieved(indx);
@@ -652,8 +642,7 @@ public class GyroSensor implements SensorEventListener {
     // for testing
 
     public void testForceTargetAchieved(int indx) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "testForceTargetAchieved: " + indx);
+        if (MyDebug.LOG) Log.d(TAG, "testForceTargetAchieved: " + indx);
         if (targetCallback != null) {
             targetCallback.onAchieved(indx);
         }

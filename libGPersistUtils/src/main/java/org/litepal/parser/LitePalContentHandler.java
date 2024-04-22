@@ -71,8 +71,7 @@ public class LitePalContentHandler extends DefaultHandler {
      * LitePalAttr model.
      */
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes)
-            throws SAXException {
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if (LitePalParser.NODE_DB_NAME.equalsIgnoreCase(localName)) {
             for (int i = 0; i < attributes.getLength(); i++) {
                 if (LitePalParser.ATTR_VALUE.equalsIgnoreCase(attributes.getLocalName(i))) {

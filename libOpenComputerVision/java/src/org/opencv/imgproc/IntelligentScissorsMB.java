@@ -5,18 +5,18 @@ package org.opencv.imgproc;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
-import org.opencv.imgproc.IntelligentScissorsMB;
 
 // C++: class IntelligentScissorsMB
+
 /**
  * Intelligent Scissors image segmentation
- *
+ * <p>
  * This class is used to find the path (contour) between two points
  * which can be used for image segmentation.
- *
+ * <p>
  * Usage example:
  * SNIPPET: snippets/imgproc_segmentation.cpp usage_example_intelligent_scissors
- *
+ * <p>
  * Reference: &lt;a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.138.3811&amp;rep=rep1&amp;type=pdf"&gt;"Intelligent Scissors for Image Composition"&lt;/a&gt;
  * algorithm designed by Eric N. Mortensen and William A. Barrett, Brigham Young University
  * CITE: Mortensen95intelligentscissors
@@ -24,12 +24,19 @@ import org.opencv.imgproc.IntelligentScissorsMB;
 public class IntelligentScissorsMB {
 
     protected final long nativeObj;
-    protected IntelligentScissorsMB(long addr) { nativeObj = addr; }
 
-    public long getNativeObjAddr() { return nativeObj; }
+    protected IntelligentScissorsMB(long addr) {
+        nativeObj = addr;
+    }
+
+    public long getNativeObjAddr() {
+        return nativeObj;
+    }
 
     // internal usage only
-    public static IntelligentScissorsMB __fromPtr__(long addr) { return new IntelligentScissorsMB(addr); }
+    public static IntelligentScissorsMB __fromPtr__(long addr) {
+        return new IntelligentScissorsMB(addr);
+    }
 
     //
     // C++:   cv::segmentation::IntelligentScissorsMB::IntelligentScissorsMB()
@@ -46,11 +53,11 @@ public class IntelligentScissorsMB {
 
     /**
      * Specify weights of feature functions
-     *
+     * <p>
      * Consider keeping weights normalized (sum of weights equals to 1.0)
      * Discrete dynamic programming (DP) goal is minimization of costs between pixels.
      *
-     * @param weight_non_edge Specify cost of non-edge pixels (default: 0.43f)
+     * @param weight_non_edge           Specify cost of non-edge pixels (default: 0.43f)
      * @param weight_gradient_direction Specify cost of gradient direction function (default: 0.43f)
      * @param weight_gradient_magnitude Specify cost of gradient magnitude function (default: 0.14f)
      * @return automatically generated
@@ -66,7 +73,7 @@ public class IntelligentScissorsMB {
 
     /**
      * Specify gradient magnitude max value threshold
-     *
+     * <p>
      * Zero limit value is used to disable gradient magnitude thresholding (default behavior, as described in original article).
      * Otherwize pixels with {@code gradient magnitude &gt;= threshold} have zero cost.
      *
@@ -81,7 +88,7 @@ public class IntelligentScissorsMB {
 
     /**
      * Specify gradient magnitude max value threshold
-     *
+     * <p>
      * Zero limit value is used to disable gradient magnitude thresholding (default behavior, as described in original article).
      * Otherwize pixels with {@code gradient magnitude &gt;= threshold} have zero cost.
      *
@@ -100,9 +107,9 @@ public class IntelligentScissorsMB {
 
     /**
      * Switch to "Laplacian Zero-Crossing" edge feature extractor and specify its parameters
-     *
+     * <p>
      * This feature extractor is used by default according to article.
-     *
+     * <p>
      * Implementation has additional filtering for regions with low-amplitude noise.
      * This filtering is enabled through parameter of minimal gradient amplitude (use some small value 4, 8, 16).
      *
@@ -119,9 +126,9 @@ public class IntelligentScissorsMB {
 
     /**
      * Switch to "Laplacian Zero-Crossing" edge feature extractor and specify its parameters
-     *
+     * <p>
      * This feature extractor is used by default according to article.
-     *
+     * <p>
      * Implementation has additional filtering for regions with low-amplitude noise.
      * This filtering is enabled through parameter of minimal gradient amplitude (use some small value 4, 8, 16).
      *
@@ -144,12 +151,13 @@ public class IntelligentScissorsMB {
      * Switch edge feature extractor to use Canny edge detector
      *
      * <b>Note:</b> "Laplacian Zero-Crossing" feature extractor is used by default (following to original article)
-     *
+     * <p>
      * SEE: Canny
-     * @param threshold1 automatically generated
-     * @param threshold2 automatically generated
+     *
+     * @param threshold1   automatically generated
+     * @param threshold2   automatically generated
      * @param apertureSize automatically generated
-     * @param L2gradient automatically generated
+     * @param L2gradient   automatically generated
      * @return automatically generated
      */
     public IntelligentScissorsMB setEdgeFeatureCannyParameters(double threshold1, double threshold2, int apertureSize, boolean L2gradient) {
@@ -160,10 +168,11 @@ public class IntelligentScissorsMB {
      * Switch edge feature extractor to use Canny edge detector
      *
      * <b>Note:</b> "Laplacian Zero-Crossing" feature extractor is used by default (following to original article)
-     *
+     * <p>
      * SEE: Canny
-     * @param threshold1 automatically generated
-     * @param threshold2 automatically generated
+     *
+     * @param threshold1   automatically generated
+     * @param threshold2   automatically generated
      * @param apertureSize automatically generated
      * @return automatically generated
      */
@@ -175,8 +184,9 @@ public class IntelligentScissorsMB {
      * Switch edge feature extractor to use Canny edge detector
      *
      * <b>Note:</b> "Laplacian Zero-Crossing" feature extractor is used by default (following to original article)
-     *
+     * <p>
      * SEE: Canny
+     *
      * @param threshold1 automatically generated
      * @param threshold2 automatically generated
      * @return automatically generated
@@ -207,13 +217,13 @@ public class IntelligentScissorsMB {
 
     /**
      * Specify custom features of input image
-     *
+     * <p>
      * Customized advanced variant of applyImage() call.
      *
-     * @param non_edge Specify cost of non-edge pixels. Type is CV_8UC1. Expected values are {@code {0, 1}}.
+     * @param non_edge           Specify cost of non-edge pixels. Type is CV_8UC1. Expected values are {@code {0, 1}}.
      * @param gradient_direction Specify gradient direction feature. Type is CV_32FC2. Values are expected to be normalized: {@code x^2 + y^2 == 1}
      * @param gradient_magnitude Specify cost of gradient magnitude function: Type is CV_32FC1. Values should be in range {@code [0, 1]}.
-     * @param image <b>Optional parameter</b>. Must be specified if subset of features is specified (non-specified features are calculated internally)
+     * @param image              <b>Optional parameter</b>. Must be specified if subset of features is specified (non-specified features are calculated internally)
      * @return automatically generated
      */
     public IntelligentScissorsMB applyImageFeatures(Mat non_edge, Mat gradient_direction, Mat gradient_magnitude, Mat image) {
@@ -222,10 +232,10 @@ public class IntelligentScissorsMB {
 
     /**
      * Specify custom features of input image
-     *
+     * <p>
      * Customized advanced variant of applyImage() call.
      *
-     * @param non_edge Specify cost of non-edge pixels. Type is CV_8UC1. Expected values are {@code {0, 1}}.
+     * @param non_edge           Specify cost of non-edge pixels. Type is CV_8UC1. Expected values are {@code {0, 1}}.
      * @param gradient_direction Specify gradient direction feature. Type is CV_32FC2. Values are expected to be normalized: {@code x^2 + y^2 == 1}
      * @param gradient_magnitude Specify cost of gradient magnitude function: Type is CV_32FC1. Values should be in range {@code [0, 1]}.
      * @return automatically generated
@@ -261,7 +271,7 @@ public class IntelligentScissorsMB {
      * <b>Note:</b> buildMap() must be called before this call
      *
      * @param targetPt The target point
-     * @param contour The list of pixels which contains optimal path between the source and the target points of the image. Type is CV_32SC2 (compatible with {@code std::vector&lt;Point&gt;})
+     * @param contour  The list of pixels which contains optimal path between the source and the target points of the image. Type is CV_32SC2 (compatible with {@code std::vector&lt;Point&gt;})
      * @param backward Flag to indicate reverse order of retrived pixels (use "true" value to fetch points from the target to the source point)
      */
     public void getContour(Point targetPt, Mat contour, boolean backward) {
@@ -274,7 +284,7 @@ public class IntelligentScissorsMB {
      * <b>Note:</b> buildMap() must be called before this call
      *
      * @param targetPt The target point
-     * @param contour The list of pixels which contains optimal path between the source and the target points of the image. Type is CV_32SC2 (compatible with {@code std::vector&lt;Point&gt;})
+     * @param contour  The list of pixels which contains optimal path between the source and the target points of the image. Type is CV_32SC2 (compatible with {@code std::vector&lt;Point&gt;})
      */
     public void getContour(Point targetPt, Mat contour) {
         getContour_1(nativeObj, targetPt.x, targetPt.y, contour.nativeObj);
@@ -287,7 +297,6 @@ public class IntelligentScissorsMB {
     }
 
 
-
     // C++:   cv::segmentation::IntelligentScissorsMB::IntelligentScissorsMB()
     private static native long IntelligentScissorsMB_0();
 
@@ -296,15 +305,19 @@ public class IntelligentScissorsMB {
 
     // C++:  IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setGradientMagnitudeMaxLimit(float gradient_magnitude_threshold_max = 0.0f)
     private static native long setGradientMagnitudeMaxLimit_0(long nativeObj, float gradient_magnitude_threshold_max);
+
     private static native long setGradientMagnitudeMaxLimit_1(long nativeObj);
 
     // C++:  IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setEdgeFeatureZeroCrossingParameters(float gradient_magnitude_min_value = 0.0f)
     private static native long setEdgeFeatureZeroCrossingParameters_0(long nativeObj, float gradient_magnitude_min_value);
+
     private static native long setEdgeFeatureZeroCrossingParameters_1(long nativeObj);
 
     // C++:  IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setEdgeFeatureCannyParameters(double threshold1, double threshold2, int apertureSize = 3, bool L2gradient = false)
     private static native long setEdgeFeatureCannyParameters_0(long nativeObj, double threshold1, double threshold2, int apertureSize, boolean L2gradient);
+
     private static native long setEdgeFeatureCannyParameters_1(long nativeObj, double threshold1, double threshold2, int apertureSize);
+
     private static native long setEdgeFeatureCannyParameters_2(long nativeObj, double threshold1, double threshold2);
 
     // C++:  IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::applyImage(Mat image)
@@ -312,6 +325,7 @@ public class IntelligentScissorsMB {
 
     // C++:  IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::applyImageFeatures(Mat non_edge, Mat gradient_direction, Mat gradient_magnitude, Mat image = Mat())
     private static native long applyImageFeatures_0(long nativeObj, long non_edge_nativeObj, long gradient_direction_nativeObj, long gradient_magnitude_nativeObj, long image_nativeObj);
+
     private static native long applyImageFeatures_1(long nativeObj, long non_edge_nativeObj, long gradient_direction_nativeObj, long gradient_magnitude_nativeObj);
 
     // C++:  void cv::segmentation::IntelligentScissorsMB::buildMap(Point sourcePt)
@@ -319,6 +333,7 @@ public class IntelligentScissorsMB {
 
     // C++:  void cv::segmentation::IntelligentScissorsMB::getContour(Point targetPt, Mat& contour, bool backward = false)
     private static native void getContour_0(long nativeObj, double targetPt_x, double targetPt_y, long contour_nativeObj, boolean backward);
+
     private static native void getContour_1(long nativeObj, double targetPt_x, double targetPt_y, long contour_nativeObj);
 
     // native support for java finalize()

@@ -5,9 +5,9 @@ import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import com.zhuchao.android.fbase.ByteUtils;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.EventCourier;
-import com.zhuchao.android.fbase.eventinterface.EventCourierInterface;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.ObjectList;
+import com.zhuchao.android.fbase.eventinterface.EventCourierInterface;
 import com.zhuchao.android.fbase.eventinterface.TCourierEventListener;
 
 import java.io.IOException;
@@ -97,8 +97,7 @@ public class TUartFile extends TDevice implements TCourierEventListener {
         if (deviceOnReceiveEventListenerList.getCount() > 0) {//处理一帧数据
             TProtocol_Package tProtocol_package = new TProtocol_Package();
             tProtocol_package.parse(eventCourier.getDatas());
-            if (tProtocol_package.getMsgHead() == tProtocol_package.DEFAULT_HEAD &&
-                    tProtocol_package.getMsg_End() == tProtocol_package.DEFAULT_END) {
+            if (tProtocol_package.getMsgHead() == tProtocol_package.DEFAULT_HEAD && tProtocol_package.getMsg_End() == tProtocol_package.DEFAULT_END) {
                 eventCourier.setObj(tProtocol_package);
             }
 
@@ -174,6 +173,7 @@ public class TUartFile extends TDevice implements TCourierEventListener {
     public void addFrameEndCode(int frameEndCode) {
         this.frameEndCodeList.add(frameEndCode);
     }
+
     public void clearFrameEndCode() {
         this.frameEndCodeList.clear();
     }
@@ -206,8 +206,7 @@ public class TUartFile extends TDevice implements TCourierEventListener {
     }
 
     public String getDeviceTag() {
-        if (isReadyPooling())
-            return serialPort.getDevice().getAbsolutePath();
+        if (isReadyPooling()) return serialPort.getDevice().getAbsolutePath();
         return " ";
     }
 
@@ -280,11 +279,9 @@ public class TUartFile extends TDevice implements TCourierEventListener {
         @Override
         public void run() {
             super.run();
-            while (serialPort.isDeviceReady())
-            {
+            while (serialPort.isDeviceReady()) {
                 try {
-                    if (serialPort.getInputStream().available() >= frame_size)
-                    {
+                    if (serialPort.getInputStream().available() >= frame_size) {
                         byte[] readData = new byte[serialPort.getInputStream().available()];
                         int size = serialPort.getInputStream().read(readData);
                         if (size <= 0) continue;
@@ -292,9 +289,7 @@ public class TUartFile extends TDevice implements TCourierEventListener {
                             byte bitData = readData[i];
                             queueDatas.offer(bitData);
                         }
-                    }
-                    else
-                    {
+                    } else {
                         Thread.sleep(30);
                     }
                 } catch (Exception e) {
@@ -313,6 +308,7 @@ public class TUartFile extends TDevice implements TCourierEventListener {
         int startHeadCodeIndex = 0;
         int timeout = 0;
         boolean ok_going = false;
+
         private void appendByte(Byte aByte) {
             if (aByte != null) {
                 byteArrayList.add(aByte);
@@ -334,15 +330,13 @@ public class TUartFile extends TDevice implements TCourierEventListener {
             byte starFrame1 = 0;
             int endFrame = 0;
 
-            while (serialPort.isDeviceReady())
-            {
+            while (serialPort.isDeviceReady()) {
                 try {
                     Byte aByte = queueDatas.poll();
                     if (aByte == null) {
                         Thread.sleep(WAITING_TIME_MS);
                         timeout = timeout + WAITING_TIME_MS;
-                        if (timeout < readTimeout_millis)
-                            continue;
+                        if (timeout < readTimeout_millis) continue;
                     }
 
                     ok_going = false;
@@ -363,36 +357,23 @@ public class TUartFile extends TDevice implements TCourierEventListener {
                             startHeadCodeIndex = 0;
                         }
                         if (startHeadCode == defaultStartCode0) {
-                            if (byteArrayList.size() < 7)
-                                continue;
+                            if (byteArrayList.size() < 7) continue;
                             frameLength = ByteUtils.DoubleBytesToInt(byteArrayList.get(6), byteArrayList.get(5));
-                            if (byteArrayList.size() < 7 + frameLength + 2)
-                                continue;
+                            if (byteArrayList.size() < 7 + frameLength + 2) continue;
                             ok_going = true;
                         } else if (startHeadCode == defaultStartCode1 || startHeadCode == defaultStartCode2) {
-                            if (byteArrayList.size() < 3)
-                                continue;
+                            if (byteArrayList.size() < 3) continue;
                             frameLength = byteArrayList.get(3);
-                            if (byteArrayList.size() < frameLength + 2)
-                                continue;
+                            if (byteArrayList.size() < frameLength + 2) continue;
                             ok_going = true;
                         }
-                    }
-                    else if (frameEndCodeList.contains(endFrame))
-                    {
+                    } else if (frameEndCodeList.contains(endFrame)) {
                         ok_going = true;
-                    }
-                    else if (timeout >= readTimeout_millis && frameHeadCodeList.contains(startHeadCode))
-                    {
+                    } else if (timeout >= readTimeout_millis && frameHeadCodeList.contains(startHeadCode)) {
                         ok_going = true;
-                    }
-                    else if(frameHeadCodeList.size() == 0 && frameEndCodeList.size() == 0)
-                    {
-                        if(byteArrayList.size() >=10 || timeout >= readTimeout_millis)
-                            ok_going = true;
-                    }
-                    else
-                    {
+                    } else if (frameHeadCodeList.size() == 0 && frameEndCodeList.size() == 0) {
+                        if (byteArrayList.size() >= 10 || timeout >= readTimeout_millis) ok_going = true;
+                    } else {
                         startHeadCode = 0;
                     }
 

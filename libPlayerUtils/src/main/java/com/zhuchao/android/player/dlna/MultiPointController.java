@@ -65,12 +65,10 @@ public class MultiPointController implements IController {
             return false;
         }
         Service localService = device.getService(AVTransport1);
-        if (localService == null)
-            return false;
+        if (localService == null) return false;
 
         final Action localAction = localService.getAction("Seek");
-        if (localAction == null)
-            return false;
+        if (localAction == null) return false;
         localAction.setArgumentValue("InstanceID", "0");
         // if (mUseRelTime) {
         // } else {
@@ -172,8 +170,7 @@ public class MultiPointController implements IController {
             return false;
         }
         Service localService = device.getService(AVTransport1);
-        if (localService == null)
-            return false;
+        if (localService == null) return false;
 
         Action localAction = localService.getAction("Seek");
         if (localAction == null) {
@@ -204,8 +201,7 @@ public class MultiPointController implements IController {
         }
         Service localService = device.getService(AVTransport1);
 
-        if (localService == null)
-            return null;
+        if (localService == null) return null;
 
         final Action localAction = localService.getAction("GetPositionInfo");
         if (localAction == null) {

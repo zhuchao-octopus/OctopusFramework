@@ -115,15 +115,13 @@ public class DateTimeUtils {
         long day = 0;
         try {
             // 获得两个时间的毫秒时间差异
-            diff = sd.parse(endTime).getTime()
-                    - sd.parse(startTime).getTime();
+            diff = sd.parse(endTime).getTime() - sd.parse(startTime).getTime();
             day = diff / nd;// 计算差多少天
             long hour = diff % nd / nh;// 计算差多少小时
             long min = diff % nd % nh / nm;// 计算差多少分钟
             long sec = diff % nd % nh % nm / ns;// 计算差多少秒
             // 输出结果
-            System.out.println("时间相差：" + day + "天" + hour + "小时" + min
-                    + "分钟" + sec + "秒。");
+            System.out.println("时间相差：" + day + "天" + hour + "小时" + min + "分钟" + sec + "秒。");
             if (day >= 1) {
                 return day;
             } else {
@@ -196,15 +194,13 @@ public class DateTimeUtils {
     }
 
     public static void setAutoTimeZone(Context context, int checked) {
-        android.provider.Settings.Global.putInt(context.getContentResolver(),
-                android.provider.Settings.Global.AUTO_TIME_ZONE, checked);
+        android.provider.Settings.Global.putInt(context.getContentResolver(), android.provider.Settings.Global.AUTO_TIME_ZONE, checked);
 
         MMLog.log(TAG, "getCurrentTimeZone=" + getCurrentTimeZone());
     }
 
     public static void setAutoDateTime(Context context, int checked) {
-        android.provider.Settings.Global.putInt(context.getContentResolver(),
-                android.provider.Settings.Global.AUTO_TIME, checked);
+        android.provider.Settings.Global.putInt(context.getContentResolver(), android.provider.Settings.Global.AUTO_TIME, checked);
     }
 
     public static void set24Hour(Context mContext) {

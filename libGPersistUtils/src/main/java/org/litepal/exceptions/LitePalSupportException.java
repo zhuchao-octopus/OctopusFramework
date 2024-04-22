@@ -86,8 +86,7 @@ public class LitePalSupportException extends DataSupportException {
      * @return Exception message.
      */
     public static String noSuchMethodException(String className, String methodName) {
-        return "The " + methodName + " method in " + className
-                + " class is necessary which does not exist.";
+        return "The " + methodName + " method in " + className + " class is necessary which does not exist.";
     }
 
     /**
@@ -99,8 +98,7 @@ public class LitePalSupportException extends DataSupportException {
      * @return Exception message.
      */
     public static String noSuchFieldExceptioin(String className, String fieldName) {
-        return "The " + fieldName + " field in " + className
-                + " class is necessary which does not exist.";
+        return "The " + fieldName + " field in " + className + " class is necessary which does not exist.";
     }
 
 }

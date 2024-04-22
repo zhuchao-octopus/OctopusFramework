@@ -72,8 +72,7 @@ public class StorageUtils {
     }
 
     void clearLastMediaScanned() {
-        if (MyDebug.LOG)
-            Log.d(TAG, "clearLastMediaScanned");
+        if (MyDebug.LOG) Log.d(TAG, "clearLastMediaScanned");
         last_media_scanned = null;
         last_media_scanned_is_raw = false;
     }
@@ -97,11 +96,9 @@ public class StorageUtils {
      * See https://github.com/owncloud/android/issues/1675 for OwnCloud's discussion on this.
      */
     void announceUri(Uri uri, boolean is_new_picture, boolean is_new_video) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "announceUri: " + uri);
+        if (MyDebug.LOG) Log.d(TAG, "announceUri: " + uri);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "broadcasts deprecated on Android 7 onwards, so don't send them");
+            if (MyDebug.LOG) Log.d(TAG, "broadcasts deprecated on Android 7 onwards, so don't send them");
             // see note above; the intents won't be delivered, so might as well save the trouble of trying to send them
         } else if (is_new_picture) {
             // note, we reference the string directly rather than via Camera.ACTION_NEW_PICTURE, as the latter class is now deprecated - but we still need to broadcast the string for other apps
@@ -115,11 +112,9 @@ public class StorageUtils {
                 String[] CONTENT_PROJECTION = {Images.Media.DATA, Images.Media.DISPLAY_NAME, Images.Media.MIME_TYPE, Images.Media.SIZE, Images.Media.DATE_TAKEN, Images.Media.DATE_ADDED};
                 Cursor c = context.getContentResolver().query(uri, CONTENT_PROJECTION, null, null, null);
                 if (c == null) {
-                    if (MyDebug.LOG)
-                        Log.e(TAG, "Couldn't resolve given uri [1]: " + uri);
+                    if (MyDebug.LOG) Log.e(TAG, "Couldn't resolve given uri [1]: " + uri);
                 } else if (!c.moveToFirst()) {
-                    if (MyDebug.LOG)
-                        Log.e(TAG, "Couldn't resolve given uri [2]: " + uri);
+                    if (MyDebug.LOG) Log.e(TAG, "Couldn't resolve given uri [2]: " + uri);
                 } else {
                     String file_path = c.getString(c.getColumnIndexOrThrow(Images.Media.DATA));
                     String file_name = c.getString(c.getColumnIndexOrThrow(Images.Media.DISPLAY_NAME));
@@ -229,8 +224,7 @@ public class StorageUtils {
      * call this function for DNGs, so that they show up on MTP.
      */
     public void broadcastFile(final File file, final boolean is_new_picture, final boolean is_new_video, final boolean set_last_scanned) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "broadcastFile: " + file.getAbsolutePath());
+        if (MyDebug.LOG) Log.d(TAG, "broadcastFile: " + file.getAbsolutePath());
         // note that the new method means that the new folder shows up as a file when connected to a PC via MTP (at least tested on Windows 8)
         if (file.isDirectory()) {
             //this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(file)));
@@ -241,36 +235,33 @@ public class StorageUtils {
             // both of these work fine, but using MediaScannerConnection.scanFile() seems to be preferred over sending an intent
             //context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
             failed_to_scan = true; // set to true until scanned okay
-            if (MyDebug.LOG)
-                Log.d(TAG, "failed_to_scan set to true");
-            MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, null,
-                    new MediaScannerConnection.OnScanCompletedListener() {
-                        public void onScanCompleted(String path, Uri uri) {
-                            failed_to_scan = false;
-                            if (MyDebug.LOG) {
-                                Log.d(TAG, "Scanned " + path + ":");
-                                Log.d(TAG, "-> uri=" + uri);
-                            }
-                            if (set_last_scanned) {
-                                boolean is_raw = filenameIsRaw(file.getName());
-                                setLastMediaScanned(uri, is_raw);
-                            }
-                            announceUri(uri, is_new_picture, is_new_video);
-                            //applicationInterface.scannedFile(file, uri);
-
-                            // If called from video intent, if not using scoped-storage, we'll have saved using File API (even if user preference is SAF), see
-                            // MyApplicationInterface.createOutputVideoMethod().
-                            // It seems caller apps seem to prefer the content:// Uri rather than one based on a File
-                            // update for Android 7: seems that passing file uris is now restricted anyway, see https://code.google.com/p/android/issues/detail?id=203555
-                            // So we pass the uri back to the caller here.
-                            Activity activity = (Activity) context;
-                            String action = activity.getIntent().getAction();
-                            if (!useScopedStorage() && MediaStore.ACTION_VIDEO_CAPTURE.equals(action)) {
-                                //applicationInterface.finishVideoIntent(uri);
-                            }
-                        }
+            if (MyDebug.LOG) Log.d(TAG, "failed_to_scan set to true");
+            MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                public void onScanCompleted(String path, Uri uri) {
+                    failed_to_scan = false;
+                    if (MyDebug.LOG) {
+                        Log.d(TAG, "Scanned " + path + ":");
+                        Log.d(TAG, "-> uri=" + uri);
                     }
-            );
+                    if (set_last_scanned) {
+                        boolean is_raw = filenameIsRaw(file.getName());
+                        setLastMediaScanned(uri, is_raw);
+                    }
+                    announceUri(uri, is_new_picture, is_new_video);
+                    //applicationInterface.scannedFile(file, uri);
+
+                    // If called from video intent, if not using scoped-storage, we'll have saved using File API (even if user preference is SAF), see
+                    // MyApplicationInterface.createOutputVideoMethod().
+                    // It seems caller apps seem to prefer the content:// Uri rather than one based on a File
+                    // update for Android 7: seems that passing file uris is now restricted anyway, see https://code.google.com/p/android/issues/detail?id=203555
+                    // So we pass the uri back to the caller here.
+                    Activity activity = (Activity) context;
+                    String action = activity.getIntent().getAction();
+                    if (!useScopedStorage() && MediaStore.ACTION_VIDEO_CAPTURE.equals(action)) {
+                        //applicationInterface.finishVideoIntent(uri);
+                    }
+                }
+            });
         }
     }
 
@@ -278,8 +269,7 @@ public class StorageUtils {
      * Wrapper for broadcastFile, when we only have a Uri (e.g., for SAF)
      */
     public void broadcastUri(final Uri uri, final boolean is_new_picture, final boolean is_new_video, final boolean set_last_scanned, final boolean image_capture_intent) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "broadcastUri: " + uri);
+        if (MyDebug.LOG) Log.d(TAG, "broadcastUri: " + uri);
         /* We still need to broadcastFile for SAF for various reasons:
             1. To call storageUtils.announceUri() to broadcast NEW_PICTURE etc.
                Whilst in theory we could do this directly, it seems external apps that use such broadcasts typically
@@ -294,17 +284,14 @@ public class StorageUtils {
                mediastore uri, not the SAF uri.
         */
         File real_file = getFileFromDocumentUriSAF(uri, false);
-        if (MyDebug.LOG)
-            Log.d(TAG, "real_file: " + real_file);
+        if (MyDebug.LOG) Log.d(TAG, "real_file: " + real_file);
         if (real_file != null) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "broadcast file");
+            if (MyDebug.LOG) Log.d(TAG, "broadcast file");
             //Uri media_uri = broadcastFileRaw(real_file, current_date, location);
             //announceUri(media_uri, is_new_picture, is_new_video);
             broadcastFile(real_file, is_new_picture, is_new_video, set_last_scanned);
         } else if (!image_capture_intent) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "announce SAF uri");
+            if (MyDebug.LOG) Log.d(TAG, "announce SAF uri");
             // shouldn't do this for an image capture intent - e.g., causes crash when calling from Google Keep
             announceUri(uri, is_new_picture, is_new_video);
         }
@@ -464,8 +451,7 @@ public class StorageUtils {
         File file = null;
         if ("com.android.externalstorage.documents".equals(authority)) {
             final String id = is_folder ? DocumentsContract.getTreeDocumentId(uri) : DocumentsContract.getDocumentId(uri);
-            if (MyDebug.LOG)
-                Log.d(TAG, "id: " + id);
+            if (MyDebug.LOG) Log.d(TAG, "id: " + id);
             String[] split = id.split(":");
             if (split.length >= 1) {
                 String type = split[0];
@@ -505,8 +491,7 @@ public class StorageUtils {
                         final Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
 
                         String filename = getDataColumn(contentUri, null, null);
-                        if (filename != null)
-                            file = new File(filename);
+                        if (filename != null) file = new File(filename);
                     } catch (NumberFormatException e) {
                         // have had crashes from Google Play from Long.parseLong(id)
                         Log.e(TAG, "failed to parse id: " + id);
@@ -514,8 +499,7 @@ public class StorageUtils {
                     }
                 }
             } else {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "downloads uri not supported for folders");
+                if (MyDebug.LOG) Log.d(TAG, "downloads uri not supported for folders");
                 // This codepath can be reproduced by enabling SAF and selecting Downloads.
                 // DocumentsContract.getDocumentId() throws IllegalArgumentException for
                 // this (content://com.android.providers.downloads.documents/tree/downloads).
@@ -541,34 +525,26 @@ public class StorageUtils {
             }
 
             final String selection = "_id=?";
-            final String[] selectionArgs = new String[]{
-                    split[1]
-            };
+            final String[] selectionArgs = new String[]{split[1]};
 
             String filename = getDataColumn(contentUri, selection, selectionArgs);
-            if (filename != null)
-                file = new File(filename);
+            if (filename != null) file = new File(filename);
         }
 
         if (MyDebug.LOG) {
-            if (file != null)
-                Log.d(TAG, "file: " + file.getAbsolutePath());
-            else
-                Log.d(TAG, "failed to find file");
+            if (file != null) Log.d(TAG, "file: " + file.getAbsolutePath());
+            else Log.d(TAG, "failed to find file");
         }
         return file;
     }
 
     private String getDataColumn(Uri uri, String selection, String[] selectionArgs) {
         final String column = ImageColumns.DATA;
-        final String[] projection = {
-                column
-        };
+        final String[] projection = {column};
 
         Cursor cursor = null;
         try {
-            cursor = this.context.getContentResolver().query(uri, projection, selection, selectionArgs,
-                    null);
+            cursor = this.context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
             if (cursor != null && cursor.moveToFirst()) {
                 final int column_index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(column_index);
@@ -579,8 +555,7 @@ public class StorageUtils {
             // have received crashes from Google Play for this
             e.printStackTrace();
         } finally {
-            if (cursor != null)
-                cursor.close();
+            if (cursor != null) cursor.close();
         }
         return null;
     }
@@ -603,27 +578,22 @@ public class StorageUtils {
                 if (cursor != null && cursor.moveToFirst()) {
                     final int column_index = cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME);
                     result = cursor.getString(column_index);
-                    if (MyDebug.LOG)
-                        Log.d(TAG, "found name from database: " + result);
+                    if (MyDebug.LOG) Log.d(TAG, "found name from database: " + result);
                 }
             } catch (Exception e) {
-                if (MyDebug.LOG)
-                    Log.e(TAG, "Exception trying to find filename");
+                if (MyDebug.LOG) Log.e(TAG, "Exception trying to find filename");
                 e.printStackTrace();
             } finally {
-                if (cursor != null)
-                    cursor.close();
+                if (cursor != null) cursor.close();
             }
         }
         if (result == null) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "resort to checking the uri's path");
+            if (MyDebug.LOG) Log.d(TAG, "resort to checking the uri's path");
             result = uri.getPath();
             int cut = result.lastIndexOf('/');
             if (cut != -1) {
                 result = result.substring(cut + 1);
-                if (MyDebug.LOG)
-                    Log.d(TAG, "found name from path: " + result);
+                if (MyDebug.LOG) Log.d(TAG, "found name from path: " + result);
             }
         }
         return result;
@@ -666,8 +636,7 @@ public class StorageUtils {
             }
             default:
                 // throw exception as this is a programming error
-                if (MyDebug.LOG)
-                    Log.e(TAG, "unknown type: " + type);
+                if (MyDebug.LOG) Log.e(TAG, "unknown type: " + type);
                 throw new RuntimeException();
         }
         return mediaFilename;
@@ -684,8 +653,7 @@ public class StorageUtils {
      */
     void createFolderIfRequired(File folder) throws IOException {
         if (!folder.exists()) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "create directory: " + folder);
+            if (MyDebug.LOG) Log.d(TAG, "create directory: " + folder);
             if (!folder.mkdirs()) {
                 Log.e(TAG, "failed to create directory");
                 throw new IOException();
@@ -735,8 +703,7 @@ public class StorageUtils {
         if (MyDebug.LOG) {
             Log.d(TAG, "getOutputMediaFile returns: " + mediaFile);
         }
-        if (mediaFile == null)
-            throw new IOException();
+        if (mediaFile == null) throw new IOException();
         return mediaFile;
     }
 
@@ -745,36 +712,29 @@ public class StorageUtils {
     Uri createOutputFileSAF(String filename, String mimeType) throws IOException {
         try {
             Uri treeUri = getTreeUriSAF();
-            if (MyDebug.LOG)
-                Log.d(TAG, "treeUri: " + treeUri);
+            if (MyDebug.LOG) Log.d(TAG, "treeUri: " + treeUri);
             Uri docUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, DocumentsContract.getTreeDocumentId(treeUri));
-            if (MyDebug.LOG)
-                Log.d(TAG, "docUri: " + docUri);
+            if (MyDebug.LOG) Log.d(TAG, "docUri: " + docUri);
             // note that DocumentsContract.createDocument will automatically append to the filename if it already exists
             Uri fileUri = DocumentsContract.createDocument(context.getContentResolver(), docUri, mimeType, filename);
-            if (MyDebug.LOG)
-                Log.d(TAG, "returned fileUri: " + fileUri);
+            if (MyDebug.LOG) Log.d(TAG, "returned fileUri: " + fileUri);
 			/*if( true )
 				throw new SecurityException(); // test*/
-            if (fileUri == null)
-                throw new IOException();
+            if (fileUri == null) throw new IOException();
             return fileUri;
         } catch (IllegalArgumentException e) {
             // DocumentsContract.getTreeDocumentId throws this if URI is invalid
-            if (MyDebug.LOG)
-                Log.e(TAG, "createOutputMediaFileSAF failed with IllegalArgumentException");
+            if (MyDebug.LOG) Log.e(TAG, "createOutputMediaFileSAF failed with IllegalArgumentException");
             e.printStackTrace();
             throw new IOException();
         } catch (IllegalStateException e) {
             // Have reports of this from Google Play for DocumentsContract.createDocument - better to fail gracefully and tell user rather than crash!
-            if (MyDebug.LOG)
-                Log.e(TAG, "createOutputMediaFileSAF failed with IllegalStateException");
+            if (MyDebug.LOG) Log.e(TAG, "createOutputMediaFileSAF failed with IllegalStateException");
             e.printStackTrace();
             throw new IOException();
         } catch (SecurityException e) {
             // Have reports of this from Google Play - better to fail gracefully and tell user rather than crash!
-            if (MyDebug.LOG)
-                Log.e(TAG, "createOutputMediaFileSAF failed with SecurityException");
+            if (MyDebug.LOG) Log.e(TAG, "createOutputMediaFileSAF failed with SecurityException");
             e.printStackTrace();
             throw new IOException();
         }
@@ -839,8 +799,7 @@ public class StorageUtils {
                 break;
             default:
                 // throw exception as this is a programming error
-                if (MyDebug.LOG)
-                    Log.e(TAG, "unknown type: " + type);
+                if (MyDebug.LOG) Log.e(TAG, "unknown type: " + type);
                 throw new RuntimeException();
         }
         // note that DocumentsContract.createDocument will automatically append to the filename if it already exists
@@ -873,8 +832,7 @@ public class StorageUtils {
          * will return null.
          */
         Uri getMediaStoreUri(Context context) {
-            if (this.mediastore)
-                return this.uri;
+            if (this.mediastore) return this.uri;
             else {
                 try {
                     // should only have allowed mediastore==null when using scoped storage
@@ -895,14 +853,12 @@ public class StorageUtils {
 
     private static String filenameWithoutExtension(String filename) {
         String filename_without_ext = filename.toLowerCase(Locale.US);
-        if (filename_without_ext.indexOf(".") > 0)
-            filename_without_ext = filename_without_ext.substring(0, filename_without_ext.lastIndexOf("."));
+        if (filename_without_ext.indexOf(".") > 0) filename_without_ext = filename_without_ext.substring(0, filename_without_ext.lastIndexOf("."));
         return filename_without_ext;
     }
 
     private enum UriType {
-        MEDIASTORE_IMAGES,
-        MEDIASTORE_VIDEOS
+        MEDIASTORE_IMAGES, MEDIASTORE_VIDEOS
     }
 
     @SuppressLint("InlinedApi")
@@ -943,28 +899,20 @@ public class StorageUtils {
         String selection = "";
         switch (uri_type) {
             case MEDIASTORE_IMAGES: {
-                if (bucket_id != null)
-                    selection = ImageColumns.BUCKET_ID + " = " + bucket_id;
+                if (bucket_id != null) selection = ImageColumns.BUCKET_ID + " = " + bucket_id;
                 boolean and = selection.length() > 0;
-                if (and)
-                    selection += " AND ( ";
-                selection += ImageColumns.MIME_TYPE + "='image/jpeg' OR " +
-                        ImageColumns.MIME_TYPE + "='image/webp' OR " +
-                        ImageColumns.MIME_TYPE + "='image/png' OR " +
-                        ImageColumns.MIME_TYPE + "='image/x-adobe-dng'";
-                if (and)
-                    selection += " )";
+                if (and) selection += " AND ( ";
+                selection += ImageColumns.MIME_TYPE + "='image/jpeg' OR " + ImageColumns.MIME_TYPE + "='image/webp' OR " + ImageColumns.MIME_TYPE + "='image/png' OR " + ImageColumns.MIME_TYPE + "='image/x-adobe-dng'";
+                if (and) selection += " )";
                 break;
             }
             case MEDIASTORE_VIDEOS:
-                if (bucket_id != null)
-                    selection = VideoColumns.BUCKET_ID + " = " + bucket_id;
+                if (bucket_id != null) selection = VideoColumns.BUCKET_ID + " = " + bucket_id;
                 break;
             default:
                 throw new RuntimeException("unknown uri_type: " + uri_type);
         }
-        if (MyDebug.LOG)
-            Log.d(TAG, "selection: " + selection);
+        if (MyDebug.LOG) Log.d(TAG, "selection: " + selection);
         String order;
         switch (uri_type) {
             case MEDIASTORE_IMAGES:
@@ -983,14 +931,12 @@ public class StorageUtils {
         // an equivalent non-RAW image
         // request 3, just in case
         Uri queryUri = baseUri.buildUpon().appendQueryParameter("limit", "3").build();
-        if (MyDebug.LOG)
-            Log.d(TAG, "queryUri: " + queryUri);
+        if (MyDebug.LOG) Log.d(TAG, "queryUri: " + queryUri);
 
         try {
             cursor = context.getContentResolver().query(queryUri, projection, selection, null, order);
             if (cursor != null && cursor.moveToFirst()) {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "found: " + cursor.getCount());
+                if (MyDebug.LOG) Log.d(TAG, "found: " + cursor.getCount());
 
                 // now sorted in order of date - so just pick the most recent one
 
@@ -1041,29 +987,23 @@ public class StorageUtils {
                     }
                     // in theory now that we use DISPLAY_NAME instead of DATA (for path), this should always be non-null, but check just in case
                     if (filename != null && filenameIsRaw(filename)) {
-                        if (MyDebug.LOG)
-                            Log.d(TAG, "try to find a non-RAW version of the DNG");
+                        if (MyDebug.LOG) Log.d(TAG, "try to find a non-RAW version of the DNG");
                         int dng_pos = cursor.getPosition();
                         boolean found_non_raw = false;
                         String filename_without_ext = filenameWithoutExtension(filename);
-                        if (MyDebug.LOG)
-                            Log.d(TAG, "filename_without_ext: " + filename_without_ext);
+                        if (MyDebug.LOG) Log.d(TAG, "filename_without_ext: " + filename_without_ext);
                         while (cursor.moveToNext()) {
                             String next_filename = cursor.getString(column_name_c);
-                            if (MyDebug.LOG)
-                                Log.d(TAG, "next_filename: " + next_filename);
+                            if (MyDebug.LOG) Log.d(TAG, "next_filename: " + next_filename);
                             if (next_filename == null) {
-                                if (MyDebug.LOG)
-                                    Log.d(TAG, "done scanning, couldn't find filename");
+                                if (MyDebug.LOG) Log.d(TAG, "done scanning, couldn't find filename");
                                 break;
                             }
                             String next_filename_without_ext = filenameWithoutExtension(next_filename);
-                            if (MyDebug.LOG)
-                                Log.d(TAG, "next_filename_without_ext: " + next_filename_without_ext);
+                            if (MyDebug.LOG) Log.d(TAG, "next_filename_without_ext: " + next_filename_without_ext);
                             if (!filename_without_ext.equals(next_filename_without_ext)) {
                                 // no point scanning any further as sorted by date - and we don't want to read through the entire set!
-                                if (MyDebug.LOG)
-                                    Log.d(TAG, "done scanning");
+                                if (MyDebug.LOG) Log.d(TAG, "done scanning");
                                 break;
                             }
                             // so we've found another file with matching filename - is it a JPEG/etc?
@@ -1071,18 +1011,15 @@ public class StorageUtils {
                             // only need to check that it isn't another DNG (which would be strange, as it
                             // would mean a duplicate filename, but check just in case!)
                             if (filenameIsRaw(next_filename)) {
-                                if (MyDebug.LOG)
-                                    Log.d(TAG, "found another dng!");
+                                if (MyDebug.LOG) Log.d(TAG, "found another dng!");
                             } else {
-                                if (MyDebug.LOG)
-                                    Log.d(TAG, "found equivalent non-dng");
+                                if (MyDebug.LOG) Log.d(TAG, "found equivalent non-dng");
                                 found_non_raw = true;
                                 break;
                             }
                         }
                         if (!found_non_raw) {
-                            if (MyDebug.LOG)
-                                Log.d(TAG, "can't find equivalent jpeg/etc");
+                            if (MyDebug.LOG) Log.d(TAG, "can't find equivalent jpeg/etc");
                             cursor.moveToPosition(dng_pos);
                         }
                     }
@@ -1093,8 +1030,7 @@ public class StorageUtils {
                 int orientation = (uri_type == UriType.MEDIASTORE_IMAGES) ? cursor.getInt(column_orientation_c) : 0;
                 Uri uri = ContentUris.withAppendedId(baseUri, id);
                 String filename = cursor.getString(column_name_c);
-                if (MyDebug.LOG)
-                    Log.d(TAG, "found most recent uri for " + uri_type + ": " + uri);
+                if (MyDebug.LOG) Log.d(TAG, "found most recent uri for " + uri_type + ": " + uri);
 
                 boolean video;
                 switch (uri_type) {
@@ -1107,8 +1043,7 @@ public class StorageUtils {
                     default:
                         throw new RuntimeException("unknown uri_type: " + uri_type);
                 }
-                if (MyDebug.LOG)
-                    Log.d(TAG, "video: " + video);
+                if (MyDebug.LOG) Log.d(TAG, "video: " + video);
 
                 media = new Media(true, id, video, uri, date, orientation, filename);
 
@@ -1121,18 +1056,15 @@ public class StorageUtils {
                             Uri this_uri = ContentUris.withAppendedId(baseUri, this_id);
                             String this_filename = cursor.getString(column_name_c);
                             Log.d(TAG, "Date: " + this_date + " ID: " + this_id + " Name: " + this_filename + " Uri: " + this_uri);
-                        }
-                        while (cursor.moveToNext());
+                        } while (cursor.moveToNext());
                     }
                 }
             } else {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "mediastore returned no media");
+                if (MyDebug.LOG) Log.d(TAG, "mediastore returned no media");
             }
         } catch (Exception e) {
             // have had exceptions such as SQLiteException, NullPointerException reported on Google Play from within getContentResolver().query() call
-            if (MyDebug.LOG)
-                Log.e(TAG, "Exception trying to find latest media");
+            if (MyDebug.LOG) Log.e(TAG, "Exception trying to find latest media");
             e.printStackTrace();
         } finally {
             if (cursor != null) {
@@ -1140,8 +1072,7 @@ public class StorageUtils {
             }
         }
 
-        if (MyDebug.LOG)
-            Log.d(TAG, "return latest media: " + media);
+        if (MyDebug.LOG) Log.d(TAG, "return latest media: " + media);
         return media;
     }
 
@@ -1157,8 +1088,7 @@ public class StorageUtils {
      */
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private Media getLatestMediaSAF(Uri treeUri) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "getLatestMediaSAF: " + treeUri);
+        if (MyDebug.LOG) Log.d(TAG, "getLatestMediaSAF: " + treeUri);
 
         Media media = null;
 
@@ -1178,8 +1108,7 @@ public class StorageUtils {
             Log.e(TAG, "Exception using treeUri: " + treeUri);
             return media;
         }
-        if (MyDebug.LOG)
-            Log.d(TAG, "baseUri: " + baseUri);
+        if (MyDebug.LOG) Log.d(TAG, "baseUri: " + baseUri);
 
         final int column_id_c = 0;
         final int column_date_c = 1;
@@ -1196,8 +1125,7 @@ public class StorageUtils {
         try {
             cursor = context.getContentResolver().query(baseUri, projection, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "found: " + cursor.getCount());
+                if (MyDebug.LOG) Log.d(TAG, "found: " + cursor.getCount());
 
                 Uri latest_uri = null;
                 long latest_date = 0;
@@ -1263,12 +1191,10 @@ public class StorageUtils {
                             nonraw_latest_filename = this_filename;
                         }
                     }
-                }
-                while (cursor.moveToNext());
+                } while (cursor.moveToNext());
 
                 if (latest_uri == null) {
-                    if (MyDebug.LOG)
-                        Log.e(TAG, "couldn't find latest uri");
+                    if (MyDebug.LOG) Log.e(TAG, "couldn't find latest uri");
                 } else {
                     if (MyDebug.LOG) {
                         Log.d(TAG, "latest_uri: " + latest_uri);
@@ -1284,8 +1210,7 @@ public class StorageUtils {
                             Log.d(TAG, "next_filename_without_ext: " + next_filename_without_ext);
                         }
                         if (filename_without_ext.equals(next_filename_without_ext)) {
-                            if (MyDebug.LOG)
-                                Log.d(TAG, "prefer non-RAW to RAW");
+                            if (MyDebug.LOG) Log.d(TAG, "prefer non-RAW to RAW");
                             latest_uri = nonraw_latest_uri;
                             latest_date = nonraw_latest_date;
                             latest_filename = nonraw_latest_filename;
@@ -1310,12 +1235,10 @@ public class StorageUtils {
                     }
                 }*/
             } else {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "mediastore returned no media");
+                if (MyDebug.LOG) Log.d(TAG, "mediastore returned no media");
             }
         } catch (Exception e) {
-            if (MyDebug.LOG)
-                Log.e(TAG, "Exception trying to find latest media");
+            if (MyDebug.LOG) Log.e(TAG, "Exception trying to find latest media");
             e.printStackTrace();
         } finally {
             if (cursor != null) {
@@ -1323,14 +1246,12 @@ public class StorageUtils {
             }
         }
 
-        if (MyDebug.LOG)
-            Log.d(TAG, "return latest media: " + media);
+        if (MyDebug.LOG) Log.d(TAG, "return latest media: " + media);
         return media;
     }
 
     private Media getLatestMedia(UriType uri_type) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "getLatestMedia: " + uri_type);
+        if (MyDebug.LOG) Log.d(TAG, "getLatestMedia: " + uri_type);
         /*if( !useScopedStorage() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
             // needed for Android 6, in case users deny storage permission, otherwise we get java.lang.SecurityException from ContentResolver.query()
             // see https://developer.android.com/training/permissions/requesting.html
@@ -1344,14 +1265,12 @@ public class StorageUtils {
         }*/
 
         String save_folder = getImageFolderPath(); // may be null if using SAF
-        if (MyDebug.LOG)
-            Log.d(TAG, "save_folder: " + save_folder);
+        if (MyDebug.LOG) Log.d(TAG, "save_folder: " + save_folder);
         String bucket_id = null;
         if (save_folder != null) {
             bucket_id = String.valueOf(save_folder.toLowerCase().hashCode());
         }
-        if (MyDebug.LOG)
-            Log.d(TAG, "bucket_id: " + bucket_id);
+        if (MyDebug.LOG) Log.d(TAG, "bucket_id: " + bucket_id);
 
         Uri baseUri;
         switch (uri_type) {
@@ -1365,12 +1284,10 @@ public class StorageUtils {
                 throw new RuntimeException("unknown uri_type: " + uri_type);
         }
 
-        if (MyDebug.LOG)
-            Log.d(TAG, "baseUri: " + baseUri);
+        if (MyDebug.LOG) Log.d(TAG, "baseUri: " + baseUri);
         Media media = getLatestMediaCore(baseUri, bucket_id, uri_type);
         if (media == null && bucket_id != null) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "fall back to checking any folder");
+            if (MyDebug.LOG) Log.d(TAG, "fall back to checking any folder");
             media = getLatestMediaCore(baseUri, null, uri_type);
         }
 
@@ -1387,12 +1304,10 @@ public class StorageUtils {
         Media video_media = getLatestMedia(UriType.MEDIASTORE_VIDEOS);
         Media media = null;
         if (image_media != null && video_media == null) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "only found images");
+            if (MyDebug.LOG) Log.d(TAG, "only found images");
             media = image_media;
         } else if (image_media == null && video_media != null) {
-            if (MyDebug.LOG)
-                Log.d(TAG, "only found videos");
+            if (MyDebug.LOG) Log.d(TAG, "only found videos");
             media = video_media;
         } else if (image_media != null && video_media != null) {
             if (MyDebug.LOG) {
@@ -1401,17 +1316,14 @@ public class StorageUtils {
                 Log.d(TAG, "latest video date: " + video_media.date);
             }
             if (image_media.date >= video_media.date) {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "latest image is newer");
+                if (MyDebug.LOG) Log.d(TAG, "latest image is newer");
                 media = image_media;
             } else {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "latest video is newer");
+                if (MyDebug.LOG) Log.d(TAG, "latest video is newer");
                 media = video_media;
             }
         }
-        if (MyDebug.LOG)
-            Log.d(TAG, "return latest media: " + media);
+        if (MyDebug.LOG) Log.d(TAG, "return latest media: " + media);
         return media;
     }
 
@@ -1420,19 +1332,16 @@ public class StorageUtils {
     private long freeMemorySAF() {
         Uri treeUri = getTreeUriSAF();
         ParcelFileDescriptor pfd = null;
-        if (MyDebug.LOG)
-            Log.d(TAG, "treeUri: " + treeUri);
+        if (MyDebug.LOG) Log.d(TAG, "treeUri: " + treeUri);
         try {
             Uri docUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, DocumentsContract.getTreeDocumentId(treeUri));
-            if (MyDebug.LOG)
-                Log.d(TAG, "docUri: " + docUri);
+            if (MyDebug.LOG) Log.d(TAG, "docUri: " + docUri);
             pfd = context.getContentResolver().openFileDescriptor(docUri, "r");
             if (pfd == null) { // just in case
                 Log.e(TAG, "pfd is null!");
                 throw new FileNotFoundException();
             }
-            if (MyDebug.LOG)
-                Log.d(TAG, "read direct from SAF uri");
+            if (MyDebug.LOG) Log.d(TAG, "read direct from SAF uri");
             StructStatVfs statFs = Os.fstatvfs(pfd.getFileDescriptor());
             long blocks = statFs.f_bavail;
             long size = statFs.f_bsize;
@@ -1450,8 +1359,7 @@ public class StorageUtils {
             e.printStackTrace();
         } finally {
             try {
-                if (pfd != null)
-                    pfd.close();
+                if (pfd != null) pfd.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1463,8 +1371,7 @@ public class StorageUtils {
      * Return free memory in MB, or -1 if this was unable to be found.
      */
     public long freeMemory() { // return free memory in MB
-        if (MyDebug.LOG)
-            Log.d(TAG, "freeMemory");
+        if (MyDebug.LOG) Log.d(TAG, "freeMemory");
         if (isUsingSAF() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // if we fail for SAF, don't fall back to the methods below, as this may be incorrect (especially for external SD card)
             return freeMemorySAF();

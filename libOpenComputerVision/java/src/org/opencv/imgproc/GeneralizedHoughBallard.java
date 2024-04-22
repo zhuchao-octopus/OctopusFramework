@@ -3,20 +3,23 @@
 //
 package org.opencv.imgproc;
 
-import org.opencv.imgproc.GeneralizedHough;
-
 // C++: class GeneralizedHoughBallard
+
 /**
  * finds arbitrary template in the grayscale image using Generalized Hough Transform
- *
+ * <p>
  * Detects position only without translation and rotation CITE: Ballard1981 .
  */
 public class GeneralizedHoughBallard extends GeneralizedHough {
 
-    protected GeneralizedHoughBallard(long addr) { super(addr); }
+    protected GeneralizedHoughBallard(long addr) {
+        super(addr);
+    }
 
     // internal usage only
-    public static GeneralizedHoughBallard __fromPtr__(long addr) { return new GeneralizedHoughBallard(addr); }
+    public static GeneralizedHoughBallard __fromPtr__(long addr) {
+        return new GeneralizedHoughBallard(addr);
+    }
 
     //
     // C++:  void cv::GeneralizedHoughBallard::setLevels(int levels)
@@ -58,7 +61,6 @@ public class GeneralizedHoughBallard extends GeneralizedHough {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
 
 
     // C++:  void cv::GeneralizedHoughBallard::setLevels(int levels)

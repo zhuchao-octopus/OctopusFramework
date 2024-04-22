@@ -1010,8 +1010,7 @@ public class Operator {
      * @param ids        Which records to query. Or do not pass it to find all records.
      * @return An object list with found data from database, or an empty list.
      */
-    public static <T> List<T> findAll(Class<T> modelClass, boolean isEager,
-                                      long... ids) {
+    public static <T> List<T> findAll(Class<T> modelClass, boolean isEager, long... ids) {
         synchronized (LitePalSupport.class) {
             QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
             return queryHandler.onFindAll(modelClass, isEager, ids);
@@ -1340,10 +1339,8 @@ public class Operator {
      *                   all rows.
      * @return The number of rows affected.
      */
-    public static int updateAll(Class<?> modelClass, ContentValues values,
-                                String... conditions) {
-        return updateAll(BaseUtility.changeCase(DBUtility.getTableNameByClassName(
-                modelClass.getName())), values, conditions);
+    public static int updateAll(Class<?> modelClass, ContentValues values, String... conditions) {
+        return updateAll(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), values, conditions);
     }
 
     /**
@@ -1352,8 +1349,7 @@ public class Operator {
      */
     @Deprecated
     public static UpdateOrDeleteExecutor updateAllAsync(Class<?> modelClass, ContentValues values, String... conditions) {
-        return updateAllAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(
-                modelClass.getName())), values, conditions);
+        return updateAllAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), values, conditions);
     }
 
     /**
@@ -1382,8 +1378,7 @@ public class Operator {
      *                   all rows.
      * @return The number of rows affected.
      */
-    public static int updateAll(String tableName, ContentValues values,
-                                String... conditions) {
+    public static int updateAll(String tableName, ContentValues values, String... conditions) {
         synchronized (LitePalSupport.class) {
             UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
             return updateHandler.onUpdateAll(tableName, values, conditions);

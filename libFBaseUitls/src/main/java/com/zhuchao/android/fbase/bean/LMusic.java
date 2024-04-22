@@ -102,14 +102,6 @@ public class LMusic implements Comparable<LMusic> {
 
     @Override
     public String toString() {
-        return "Music{" +
-                "name='" + name + '\'' +
-                ", path='" + path + '\'' +
-                ", album='" + album + '\'' +
-                ", artist='" + artist + '\'' +
-                ", size=" + size +
-                ", duration=" + duration +
-                ", pinyin='" + pinyin + '\'' +
-                '}';
+        return "Music{" + "name='" + name + '\'' + ", path='" + path + '\'' + ", album='" + album + '\'' + ", artist='" + artist + '\'' + ", size=" + size + ", duration=" + duration + ", pinyin='" + pinyin + '\'' + '}';
     }
 }

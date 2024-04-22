@@ -638,10 +638,12 @@ public class MachineConfig {
         getConfigProperties();
         return mProperties.getProperty(name);
     }
+
     public static String getPropertyForce(String name) {
         getConfigProperties();
         return mProperties.getProperty(name);
     }
+
     public static String getPropertyReadOnly(String name) {
         if (mPropertiesReadOnly == null) {
             InputStream inputStream = null;

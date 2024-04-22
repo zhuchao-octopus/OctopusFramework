@@ -1,10 +1,10 @@
 package com.common.util.log;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import android.util.Log;
 
 public class LogFile {
 

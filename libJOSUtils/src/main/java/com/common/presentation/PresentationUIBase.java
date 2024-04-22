@@ -2,8 +2,8 @@ package com.common.presentation;
 
 import android.app.Activity;
 import android.app.Presentation;
-import android.view.Display;
 import android.content.Context;
+import android.view.Display;
 import android.view.WindowManager;
 
 public class PresentationUIBase extends Presentation {
