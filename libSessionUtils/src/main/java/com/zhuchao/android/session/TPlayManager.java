@@ -789,7 +789,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
     }
 
     public void loadFromFile() {
-
+        mFavouriteList.loadFromFile(mContext,"Medias_Favourite");
+        mPlayingHistoryList.loadFromFile(mContext,"Medias_History");
     }
 
     public void free() {
