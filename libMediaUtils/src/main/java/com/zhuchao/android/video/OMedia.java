@@ -31,7 +31,6 @@ import com.zhuchao.android.player.dlna.DLNAUtil;
 import org.cybergarage.upnp.Device;
 
 import java.io.FileDescriptor;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -587,8 +586,8 @@ public class OMedia implements PlayerCallback {
         if (!isPlayerReady()) return;
         //if (FPlayer.getTAG().startsWith(MPLAYER))
         if (FPlayer instanceof MPlayer) {
-            if (scale <= 0) FPlayer.setScale(VIDEO_SCALING_MODE_SCALE_TO_FIT);
-            else FPlayer.setScale(VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
+            if (scale <= 0) FPlayer.setScale(VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
+            else FPlayer.setScale(VIDEO_SCALING_MODE_SCALE_TO_FIT);
         } else {
             FPlayer.setScale(scale);
         }
@@ -624,6 +623,16 @@ public class OMedia implements PlayerCallback {
 
     public void setRestorePlay(boolean restorePlay) {
         this.restorePlay = restorePlay;
+    }
+
+    public int getVideoWidth() {
+        if (isPlayerReady()) return FPlayer.getVideoWidth();
+        else return 0;
+    }
+
+    public int getVideoHeight() {
+        if (isPlayerReady()) return FPlayer.getVideoHeight();
+        else return 0;
     }
 
     @Override

@@ -385,6 +385,10 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         return 0;
     }
 
+    public void setMediaToPlay(OMedia oMediaPlaying) {
+        this.oMediaPlaying = oMediaPlaying;
+    }
+
     public OMedia getPlayingMedia() {
         return oMediaPlaying;
     }
@@ -519,8 +523,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
 
         OMedia oOMedia = null;
         OMedia retOMedia = null;
-        for (Object o : objects)
-        {
+        for (Object o : objects) {
             if (oMediaPlaying.equals(oOMedia))//是自己只有一首
                 oOMedia = ((VideoList) o).getNextAvailable(null);//跳到下一个列表
             else oOMedia = ((VideoList) o).getNextAvailable(oMediaPlaying);
@@ -761,12 +764,12 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
                 break;
             case MessageEvent.MESSAGE_EVENT_SD_VIDEO:
                 mLocalSDMediaVideos.clear();
-                mLocalSDMediaVideos.add(tMultimediaManager.getFileVideoSession().getVideos());
+                mLocalSDMediaVideos.add(tMultimediaManager.getSDVideoSession().getAllVideos());
                 //mLocalSDMediaVideos.printAll();
                 break;
             case MessageEvent.MESSAGE_EVENT_SD_AUDIO:
                 mLocalSDMediaAudios.clear();
-                mLocalSDMediaAudios.add(tMultimediaManager.getFileAudioSession().getAudios());
+                mLocalSDMediaAudios.add(tMultimediaManager.getSDAudioSession().getAllVideos());
                 //mLocalSDMediaAudios.printAll();
                 break;
         }
@@ -774,23 +777,21 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         Cabinet.getEventBus().post(new EC(session_id));
     }
 
-    public void updateMediaLibrary()
-    {
-        if(tMultimediaManager != null)
-            tMultimediaManager.updateMedias();
+    public void updateMediaLibrary() {
+        if (tMultimediaManager != null) tMultimediaManager.updateMedias();
     }
+
     public void saveToFile() {
-        if (mFavouriteList.getCount() > 100)
-            mFavouriteList.deleteFrom(mFavouriteList.getFirstItem(), mFavouriteList.getCount() - 100);
-        mFavouriteList.saveToFile(mContext,"Medias_Favourite");
+        if (mFavouriteList.getCount() > 100) mFavouriteList.deleteFrom(mFavouriteList.getFirstItem(), mFavouriteList.getCount() - 100);
+        mFavouriteList.saveToFile(mContext, "Medias_Favourite");
         if (mPlayingHistoryList.getCount() > 100)
             mPlayingHistoryList.deleteFrom(mPlayingHistoryList.getFirstItem(), mPlayingHistoryList.getCount() - 100);
-        mPlayingHistoryList.saveToFile(mContext,"Medias_History");
+        mPlayingHistoryList.saveToFile(mContext, "Medias_History");
     }
 
     public void loadFromFile() {
-        mFavouriteList.loadFromFile(mContext,"Medias_Favourite");
-        mPlayingHistoryList.loadFromFile(mContext,"Medias_History");
+        mFavouriteList.loadFromFile(mContext, "Medias_Favourite");
+        mPlayingHistoryList.loadFromFile(mContext, "Medias_History");
     }
 
     public void free() {

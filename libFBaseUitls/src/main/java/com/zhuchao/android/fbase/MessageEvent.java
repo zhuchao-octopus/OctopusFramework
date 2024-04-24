@@ -22,4 +22,6 @@ public class MessageEvent {
     public static final int MESSAGE_EVENT_USB_AUDIO = 3004;     //USB媒体库音频更新
     public static final int MESSAGE_EVENT_SD_VIDEO = 3005;      //USB媒体SD卡更新
     public static final int MESSAGE_EVENT_SD_AUDIO = 3006;      //USB媒体SD卡更新
+
+    public static final int MESSAGE_EVENT_FILES = 3007;        //文件
 }

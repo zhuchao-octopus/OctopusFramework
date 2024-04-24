@@ -127,6 +127,10 @@ public abstract class PlayControl {
 
     public abstract void deselectTrack(int index);
 
+    public abstract int getVideoWidth();
+
+    public abstract int getVideoHeight();
+
     public PlayerStatusInfo getPlayerStatusInfo() {
         return playerStatusInfo;
     }

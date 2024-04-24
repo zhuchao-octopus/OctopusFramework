@@ -631,6 +631,16 @@ public class OPlayer extends PlayControl {
 
     }
 
+    @Override
+    public int getVideoWidth() {
+        return 0;
+    }
+
+    @Override
+    public int getVideoHeight() {
+        return 0;
+    }
+
     public void setCallback(PlayerCallback callback) {
         this.playerEventCallBack = callback;
     }

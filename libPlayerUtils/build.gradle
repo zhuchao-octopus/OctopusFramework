@@ -69,13 +69,14 @@ android {
 }
 
 dependencies {
-    api files('libs/clink210.jar')
-    //compileOnly files('libs/libvlc-3.5.4-armeabi-v7a-release.aar')
-    compileOnly files('libs/libvlc-all-4.0.0-eap15.aar')
     implementation project(path: ':libFBaseUitls')
     implementation project(path: ':libINetUtils')
     implementation project(path: ':libJOSUtils')
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    api files('libs/clink210.jar')
+    compileOnly files('libs/libvlc-all-4.0.0-eap15.aar')
 
+    //compileOnly files('libs/libvlc-3.5.4-armeabi-v7a-release.aar')
     //compileOnly 'org.videolan.android:libvlc-all:3.5.0-eap8'
     //implementation group: 'org.videolan.android', name: 'libvlc-all', version: '4.0.0-eap8'
     //implementation group: 'org.videolan.android', name: 'libvlc-all', version: '3.5.1'

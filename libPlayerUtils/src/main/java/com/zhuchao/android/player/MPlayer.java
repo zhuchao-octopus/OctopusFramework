@@ -4,6 +4,7 @@ import static android.media.MediaPlayer.SEEK_CLOSEST;
 import static android.media.MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_AUDIO;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
@@ -12,10 +13,13 @@ import android.os.Build;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
+import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.ThreadUtils;
 import com.zhuchao.android.fbase.eventinterface.PlaybackEvent;
 import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
 
@@ -133,6 +137,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
                 if (!mSurfaceView.getHolder().isCreating()) {
                     if (mSurfaceView.getHolder().getSurface().isValid()) {
                         mediaPlayer.setDisplay(mSurfaceView.getHolder());
+                        playerStatusInfo.setSurfacePrepared(true);
                         MMLog.d(TAG, "setSurfaceView().setDisplay  to " + surfaceView.toString());
                     } else {
                         MMLog.d(TAG, "setSurfaceView().setDisplay failed,is invalid");
@@ -165,6 +170,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             MMLog.d(TAG, "reAttachSurfaceView() to  " + surfaceView.toString());
             mSurfaceView = surfaceView;
             mTextureView = null;
+            playerStatusInfo.setSurfacePrepared(true);
         } catch (Exception e) {
             MMLog.e(TAG, "reAttachSurfaceView() setDisplay " + e.toString());
         }
@@ -365,6 +371,9 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     public void setWindowSize(int width, int height) {
         if (mSurfaceView != null && playerStatusInfo.isSurfacePrepared()) {
             mSurfaceView.getHolder().setFixedSize(width, height);
+            MMLog.d(TAG, "setWindowSize to " + width + " " + height);
+        } else {
+            MMLog.d(TAG, "setWindowSize to " + width + " " + height + " failed " + playerStatusInfo.isSurfacePrepared());
         }
     }
 
@@ -376,9 +385,12 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     @Override
     public void setScale(float scale) {
         try {
-            if (mediaPlayer != null) mediaPlayer.setVideoScalingMode((int) scale);
+            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                mediaPlayer.setVideoScalingMode((int) scale);
+                MMLog.d(TAG, "setScale() " + (int) scale);
+            }
         } catch (Exception e) {
-            MMLog.e(TAG, "setScale() " + e.toString());
+            MMLog.e(TAG, "setScale() " + (int) scale + "," + e.toString());
         }
     }
 
@@ -484,6 +496,18 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     }
 
     @Override
+    public int getVideoWidth() {
+        if (mediaPlayer == null) return 0;
+        return mediaPlayer.getVideoWidth();
+    }
+
+    @Override
+    public int getVideoHeight() {
+        if (mediaPlayer == null) return 0;
+        return mediaPlayer.getVideoHeight();
+    }
+
+    @Override
     public void pushTo(String filePath, boolean duplicated) {
 
     }
@@ -507,7 +531,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     public void onCompletion(MediaPlayer mediaPlayer) {
         //playStatus = PlaybackEvent.Status_Ended;
         playerStatusInfo.setEventType(PlaybackEvent.Status_Ended);
-        MMLog.log(TAG, "onCompletion playing ended  playStatus = " + PlaybackEvent.Status_Ended);
+        MMLog.log(TAG, "onCompletion playing ended playStatus = " + PlaybackEvent.Status_Ended);
     }
 
     @Override
@@ -529,13 +553,13 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         playerStatusInfo.setSurfacePrepared(true);
         if (mediaPlayer == null) mediaPlayer = new MediaPlayer();
         mediaPlayer.setDisplay(surfaceHolder);
-        //surfaceHolder.setSizeFromLayout();
-        //surfaceHolder.setFixedSize(w,h);
+        ///surfaceHolder.setSizeFromLayout();
+        ///surfaceHolder.setFixedSize(w,h);
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        MMLog.log(TAG, "surfaceChanged, f = " + i + " w = " + i1 + " h = " + i2);
+        MMLog.log(TAG, "surfaceChanged,format=" + i + " width=" + i1 + " height=" + i2);
         playerStatusInfo.setSurfaceW(i1);
         playerStatusInfo.setSurfaceH(i2);
     }
@@ -548,9 +572,20 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
     @Override
     public void onVideoSizeChanged(MediaPlayer mediaPlayer, int i, int i1) {
-        MMLog.log(TAG, "onVideoSizeChanged, w = " + i + " h = " + i1);
         playerStatusInfo.setVideoW(i);
         playerStatusInfo.setVideoH(i1);
+        MMLog.log(TAG, "onVideoSizeChanged width=" + i + " height=" + i1 + ", SurfaceView.getWidth()=" + mSurfaceView.getWidth() + " SurfaceView.getHeight()=" + mSurfaceView.getHeight());
+        if (mSurfaceView != null) {
+            ThreadUtils.runOnMainUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    autoFitVideoSize(mSurfaceView, i, i1);
+                    ///playerStatusInfo.setSurfaceW( mSurfaceView.getWidth());
+                    ///playerStatusInfo.setSurfaceH( mSurfaceView.getHeight());
+                    MMLog.log(TAG, "onVideoSizeChanged width=" + i + " height=" + i1 + ", SurfaceView.getWidth()=" + mSurfaceView.getWidth() + " SurfaceView.getHeight()=" + mSurfaceView.getHeight());
+                }
+            });
+        }
     }
 
     @Override
@@ -616,6 +651,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         mediaPlayer.setOnSeekCompleteListener(this);
         mediaPlayer.setOnErrorListener(this);
         mediaPlayer.setOnBufferingUpdateListener(this);
+        mediaPlayer.setOnVideoSizeChangedListener(this);
         playerStatusInfo.setEventType(PlaybackEvent.Status_NothingIdle);
         playerStatusInfo.setLastError(PlaybackEvent.Status_NothingIdle);
         StartPlayProgressThread(); //开启进度 pooling 线程
@@ -644,6 +680,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
 
                                 if (!mp.isPlaying()) {
                                     mp.start();
+                                    mp.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT);
                                     playerStatusInfo.setEventType(PlaybackEvent.Status_Playing);
                                     MMLog.log(TAG, "AsyncPlayProcess() start playing... playStatus = " + playerStatusInfo.getEventType());
                                 }
@@ -759,5 +796,51 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         boolean isActive() {
             return isActive;
         }
+    }
+
+    public void autoFitVideoSize(SurfaceView surfaceView, int videoWidth, int videoHeight) {
+        View view = (View) surfaceView.getParent();
+        int deviceWidth = view.getWidth();//mContext.getResources().getDisplayMetrics().widthPixels;
+        int deviceHeight = view.getHeight();//surfaceView.getHeight();// wgetResources().getDisplayMetrics().heightPixels;
+        float devicePercent = 0;
+        MMLog.d(TAG, "autoFitVideoSize: deviceViewWidth=" + deviceWidth + "deviceViewHeight=" + deviceHeight);
+
+        //下面进行求屏幕比例,因为横竖屏会改变屏幕宽度值,所以为了保持更小的值除更大的值.
+        if (mContext.getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) { //竖屏
+            devicePercent = (float) deviceWidth / (float) deviceHeight; //竖屏状态下宽度小与高度,求比
+        } else { //横屏
+            devicePercent = (float) deviceHeight / (float) deviceWidth; //横屏状态下高度小与宽度,求比
+        }
+
+        if (videoWidth > videoHeight) { //判断视频的宽大于高,那么我们就优先满足视频的宽度铺满屏幕的宽度,然后在按比例求出合适比例的高度
+            videoWidth = deviceWidth;//将视频宽度等于设备宽度,让视频的宽铺满屏幕
+            videoHeight = (int) (deviceWidth * devicePercent);//设置了视频宽度后,在按比例算出视频高度
+
+        } else {  //判断视频的高大于宽,那么我们就优先满足视频的高度铺满屏幕的高度,然后在按比例求出合适比例的宽度
+            if (mContext.getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {//竖屏
+                videoHeight = deviceHeight;
+                //接受在宽度的轻微拉伸来满足视频铺满屏幕的优化
+                float videoPercent = (float) videoWidth / (float) videoHeight;//求视频比例 注意是宽除高 与 上面的devicePercent 保持一致
+                float differenceValue = Math.abs(videoPercent - devicePercent);//相减求绝对值
+                ///MMLog.d(TAG, "devicePercent=" + devicePercent);
+                ///MMLog.d(TAG, "videoPercent=" + videoPercent);
+                ///MMLog.d(TAG, "differenceValue=" + differenceValue);
+                if (differenceValue < 0.3) { //如果小于0.3比例,那么就放弃按比例计算宽度直接使用屏幕宽度
+                    videoWidth = deviceWidth;
+                } else {
+                    videoWidth = (int) (videoWidth / devicePercent);//注意这里是用视频宽度来除
+                }
+            } else { //横屏
+                videoHeight = deviceHeight;
+                videoWidth = (int) (deviceHeight * devicePercent);
+            }
+        }
+
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) surfaceView.getLayoutParams();
+        layoutParams.width = videoWidth;
+        layoutParams.height = videoHeight;
+        layoutParams.verticalBias = 0.5f;
+        layoutParams.horizontalBias = 0.5f;
+        surfaceView.setLayoutParams(layoutParams);
     }
 }
