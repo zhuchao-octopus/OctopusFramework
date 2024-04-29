@@ -1,37 +1,44 @@
 package com.zhuchao.android.fbase;
 
 
-import android.content.Context;
-
 import com.zhuchao.android.fbase.eventinterface.EventCourierInterface;
 
 import java.util.Arrays;
 
 public class EventCourier implements EventCourierInterface {
-    private String tag;
+    private String from;
+    private String target;
     private int id;
     private byte[] datas;
     private Object obj;
-    private Context from;
+    //private  Class<?>  from;
 
-    public EventCourier(String tag, int id) {
-        this.tag = tag;
+    public EventCourier(Class<?> fromClass, int id) {
+        this.target = null;
+        this.id = id;
+        this.datas = new byte[1];
+        this.obj = null;
+        this.from = String.valueOf(fromClass.getName());
+    }
+
+    public EventCourier(String target, int id) {
+        this.target = target;
         this.id = id;
         this.datas = new byte[1];
         this.obj = null;
         //this.fromClass = getCallerClass();
     }
 
-    public EventCourier(Context context, String tag, int id) {
-        this.tag = tag;
+    public EventCourier(String fromClass, String target, int id) {
+        this.target = target;
         this.id = id;
         this.datas = new byte[1];
         this.obj = null;
-        this.from = context;
+        this.from = fromClass;
     }
 
-    public EventCourier(String tag, int id, boolean value) {
-        this.tag = tag;
+    public EventCourier(String target, int id, boolean value) {
+        this.target = target;
         this.id = id;
         this.datas = new byte[1];
         this.datas[0] = (byte) (value ? 1 : 0);
@@ -39,17 +46,17 @@ public class EventCourier implements EventCourierInterface {
         //this.fromClass = getCallerClass();
     }
 
-    public EventCourier(Context context, String tag, int id, boolean value) {
-        this.tag = tag;
+    public EventCourier(String fromClass, String target, int id, boolean value) {
+        this.target = target;
         this.id = id;
         this.datas = new byte[1];
         this.datas[0] = (byte) (value ? 1 : 0);
         this.obj = null;
-        this.from = context;
+        this.from = fromClass;
     }
 
-    public EventCourier(String tag, int id, byte value) {
-        this.tag = tag;
+    public EventCourier(String target, int id, byte value) {
+        this.target = target;
         this.id = id;
         this.datas = new byte[1];
         this.datas[0] = value;
@@ -57,199 +64,143 @@ public class EventCourier implements EventCourierInterface {
         //this.fromClass = getCallerClass();
     }
 
-    public EventCourier(Context context, String tag, int id, byte value) {
-        this.tag = tag;
+    public EventCourier(String fromClass, String target, int id, byte value) {
+        this.target = target;
         this.id = id;
         this.datas = new byte[1];
         this.datas[0] = value;
         this.obj = null;
-        this.from = context;
+        this.from = fromClass;
     }
 
-    public EventCourier(String tag, int id, int value) {
-        this.tag = tag;
+    public EventCourier(String target, int id, int value) {
+        this.target = target;
         this.id = id;
         this.datas = ByteUtils.intToBytes(value);
         this.obj = null;
         //this.fromClass = getCallerClass();
     }
 
-    public EventCourier(Context context, String tag, int id, int value) {
-        this.tag = tag;
+    public EventCourier(String fromClass, String target, int id, int value) {
+        this.target = target;
         this.id = id;
         this.datas = ByteUtils.intToBytes(value);
         this.obj = null;
-        this.from = context;
+        this.from = fromClass;
     }
 
-    public EventCourier(String tag, int id, byte[] datas) {
-        this.tag = tag;
+    public EventCourier(String target, int id, byte[] datas) {
+        this.target = target;
         this.id = id;
         this.datas = datas;
         this.obj = null;
         //this.fromClass = getCallerClass();
     }
 
-    public EventCourier(Context context, String tag, int id, byte[] datas) {
-        this.tag = tag;
+    public EventCourier(String fromClass, String target, int id, byte[] datas) {
+        this.target = target;
         this.id = id;
         this.datas = datas;
         this.obj = null;
-        this.from = context;
+        this.from = fromClass;
     }
 
-    public EventCourier(String tag, int id, Object obj) {
-        this.tag = tag;
+    public EventCourier(String target, int id, Object obj) {
+        this.target = target;
         this.id = id;
         this.datas = new byte[1];
         this.obj = obj;
         //this.fromClass = getCallerClass();
     }
 
-    public EventCourier(Context context, String tag, int id, Object obj) {
-        this.tag = tag;
+    public EventCourier(String fromClass, String target, int id, Object obj) {
+        this.target = target;
         this.id = id;
         this.datas = new byte[1];
         this.obj = obj;
-        this.from = context;
+        this.from = fromClass;
     }
 
-    public EventCourier(String tag, int id, byte[] datas, Object obj) {
-        this.tag = tag;
+    public EventCourier(String target, int id, byte[] datas, Object obj) {
+        this.target = target;
         this.id = id;
         this.datas = datas;
         this.obj = obj;
         //this.fromClass = getCallerClass();
     }
 
-    public EventCourier(Context context, String tag, int id, byte[] datas, Object obj) {
-        this.tag = tag;
+    public EventCourier(String fromClass, String target, int id, byte[] datas, Object obj) {
+        this.target = target;
         this.id = id;
         this.datas = datas;
         this.obj = obj;
-        this.from = context;
+        this.from = fromClass;
     }
 
     public EventCourier(int id) {
-        this.tag = null;
+        this.target = null;
         this.id = id;
         this.datas = new byte[1];
         this.obj = null;
         //this.fromClass = getCallerClass();
     }
 
-    public EventCourier(Context context, int id) {
-        this.tag = null;
-        this.id = id;
-        this.datas = new byte[1];
-        this.obj = null;
-        this.from = context;
-    }
 
     public EventCourier(int id, byte value) {
-        this.tag = null;
+        this.target = null;
         this.id = id;
         this.datas = new byte[1];
         this.datas[0] = value;
         this.obj = null;
         //this.fromClass = getCallerClass();
-    }
-
-    public EventCourier(Context context, int id, byte value) {
-        this.tag = null;
-        this.id = id;
-        this.datas = new byte[1];
-        this.datas[0] = value;
-        this.obj = null;
-        this.from = context;
     }
 
     public EventCourier(int id, int value) {
-        this.tag = null;
+        this.target = null;
         this.id = id;
         this.datas = ByteUtils.intToBytes(value);
         this.obj = null;
         //this.fromClass = getCallerClass();
-    }
-
-    public EventCourier(Context context, int id, int value) {
-        this.tag = null;
-        this.id = id;
-        this.datas = ByteUtils.intToBytes(value);
-        this.obj = null;
-        this.from = context;
     }
 
     public EventCourier(int id, byte[] datas) {
-        this.tag = null;
+        this.target = null;
         this.id = id;
         this.datas = datas;
         this.obj = null;
         //this.fromClass = getCallerClass();
-    }
-
-    public EventCourier(Context context, int id, byte[] datas) {
-        this.tag = null;
-        this.id = id;
-        this.datas = datas;
-        this.obj = null;
-        this.from = context;
     }
 
     public EventCourier(int id, Object obj) {
-        this.tag = null;
+        this.target = null;
         this.id = id;
         this.datas = new byte[1];
         this.obj = obj;
         //this.fromClass = getCallerClass();
-    }
-
-    public EventCourier(Context context, int id, Object obj) {
-        this.tag = null;
-        this.id = id;
-        this.datas = new byte[1];
-        this.obj = obj;
-        this.from = context;
     }
 
     public EventCourier(int id, byte[] datas, Object obj) {
-        this.tag = null;
+        this.target = null;
         this.id = id;
         this.datas = datas;
         this.obj = obj;
         //this.fromClass = getCallerClass();
-    }
-
-    public EventCourier(Context context, int id, byte[] datas, Object obj) {
-        this.tag = null;
-        this.id = id;
-        this.datas = datas;
-        this.obj = obj;
-        this.from = context;
     }
 
     public EventCourier(Object obj) {
-        this.tag = null;
+        this.target = null;
         this.id = -1;
         this.datas = new byte[1];
         this.obj = obj;
         //this.fromClass = getCallerClass();
     }
 
-    public EventCourier(Context context, Object obj) {
-        this.tag = null;
-        this.id = -1;
-        this.datas = new byte[1];
-        this.obj = obj;
-        this.from = context;
+    public String getTarget() {
+        return target;
     }
 
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setTarget(String target) {
+        this.target = target;
     }
 
     public int getId() {
@@ -278,25 +229,19 @@ public class EventCourier implements EventCourierInterface {
 
     @Override
     public String getFromClass() {
-        if (from != null) return from.toString();
-        else return "";
-    }
-
-    public Context getFrom() {
         return from;
     }
 
-    public void setFromClass(Context context) {
-        this.from = context;
+    public String getFrom() {
+        return from;
     }
 
-    public EventCourier with(Context context) {
-        this.from = context;
-        return this;
+    public void setFromClass(String fromClass) {
+        this.from = fromClass;
     }
 
-    public EventCourier f(Context context) {
-        this.from = context;
+    public EventCourier f(String fromClass) {
+        this.from = fromClass;
         return this;
     }
 
@@ -342,6 +287,18 @@ public class EventCourier implements EventCourierInterface {
     }
 
     //字节数组转转hex字符串
+    @Override
+    public String toStr() {
+        if (from != null)
+            return "EventCourier{" + "target='" + target + '\'' + ",id=" + id + ",datas=" + Arrays.toString(datas) + ",obj=" + obj + ",fromClass='" + from + '\'' + '}';
+        else
+            return "EventCourier{" + "target='" + target + '\'' + ",id=" + id + ",datas=" + Arrays.toString(datas) + ",obj=" + obj + ",fromClass='" + '\'' + '}';
+    }
+
+    //1字节转2个Hex字符
+    private String toHexStr(Byte inByte) {
+        return String.format("%02x", inByte).toUpperCase();
+    }
     private String dataToHexStr() {
         StringBuilder strBuilder = new StringBuilder();
         for (byte valueOf : datas) {
@@ -352,16 +309,7 @@ public class EventCourier implements EventCourierInterface {
         return strBuilder.toString();
     }
 
-    @Override
-    public String toString() {
-        if (from != null)
-            return "EventCourier{" + "tag='" + tag + '\'' + ", id=" + id + ", datas=" + Arrays.toString(datas) + ", obj=" + obj + ", fromClass='" + from.getClass() + '\'' + '}';
-        else
-            return "EventCourier{" + "tag='" + tag + '\'' + ", id=" + id + ", datas=" + Arrays.toString(datas) + ", obj=" + obj + ", fromClass='" + '\'' + '}';
-    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
 
-    //1字节转2个Hex字符
-    private String toHexStr(Byte inByte) {
-        return String.format("%02x", inByte).toUpperCase();
-    }
 }

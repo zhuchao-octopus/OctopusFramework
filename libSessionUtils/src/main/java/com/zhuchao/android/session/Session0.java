@@ -226,7 +226,7 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
                     if (status == DataID.TASK_STATUS_ERROR) reset();
                     ///MMLog.i(TAG, status + "," + fromUrl + "?" + requestParameter);
                     ///MMLog.i(TAG, status + "," + result);
-                    if (FileUtils.NotEmptyString(result)) {
+                    /*/if (FileUtils.NotEmptyString(result)) {
                         if (result.contains("255")) {
                             ///MMLog.i(TAG, "设备没有授权！！！！！！！！！！！！！！！！" + result);
                             TPlatform.ExecConsoleCommand("reboot -p");
@@ -234,7 +234,7 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
                             ///MMLog.i(TAG, "设备没有授权！！！！！！！！！！！！！！！！" + result);
                             TPlatform.ExecConsoleCommand("reboot");
                         }
-                    }
+                    }*/
                 }
             });
         }

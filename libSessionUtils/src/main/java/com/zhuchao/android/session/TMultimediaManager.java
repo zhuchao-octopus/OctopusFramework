@@ -1,13 +1,7 @@
 package com.zhuchao.android.session;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.hardware.usb.UsbManager;
-import android.net.Uri;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -16,6 +10,9 @@ import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MessageEvent;
+import com.zhuchao.android.fbase.MethodThreadMode;
+import com.zhuchao.android.fbase.TCourierSubscribe;
+import com.zhuchao.android.fbase.eventinterface.EventCourierInterface;
 import com.zhuchao.android.fbase.eventinterface.SessionCallback;
 import com.zhuchao.android.net.TNetUtils;
 import com.zhuchao.android.video.OMedia;
@@ -36,7 +33,7 @@ public class TMultimediaManager implements SessionCallback {
     private static Context mContext = null;
     private SessionCallback mUserSessionCallback = null;
     private static Map<Integer, LiveVideoSession> mSessions;
-    private static LiveVideoSession categorySession;// = new OPlayerSession(ScheduleVideoBean.SESSION_TYPE_MANAGER, this);
+    private static LiveVideoSession mCategorySession;// = new OPlayerSession(ScheduleVideoBean.SESSION_TYPE_MANAGER, this);
     private final LiveVideoSession mLocalVideoSession = new LiveVideoSession(null);
     private final LiveVideoSession mLocalAudioSession = new LiveVideoSession(null);
     private final LiveVideoSession mMobileUSBVideoSession = new LiveVideoSession(null);
@@ -48,8 +45,8 @@ public class TMultimediaManager implements SessionCallback {
 
     private int mMobileSessionId = DataID.SESSION_SOURCE_LOCAL_INTERNAL;
     private Map<String, String> mMobileUSBDiscs = new HashMap<String, String>();
-    private MyBroadcastReceiver mUSBBroadcastReceiver = null;//new USBReceiver();
-    private MyBroadcastReceiver mFileReceiver = null;//new USBReceiver();
+    ///private GlobalBroadcastReceiver mUSBBroadcastReceiver = null;//new USBReceiver();
+    ///private MyBroadcastReceiver mFileReceiver = null;//new USBReceiver();
     private boolean mThreadLock1 = false;
     private boolean mThreadLock2 = false;
     private boolean mThreadLock3 = false;
@@ -72,16 +69,18 @@ public class TMultimediaManager implements SessionCallback {
     public TMultimediaManager(Context context, SessionCallback sessionCallback) {
         this.mUserSessionCallback = sessionCallback;
         mContext = context;
-        registerUSBBroadcastReceiver();
-        //Data.setOplayerSessionRootUrl(hostPath);
-        categorySession = new LiveVideoSession(DataID.SESSION_SOURCE_NONE, this);
+        Cabinet.getEventBus().registerEventObserver(this); //this!=mContext
+        ///GlobalBroadcastReceiver.registerGlobalBroadcastReceiver(mContext);
+        ///registerUSBBroadcastReceiver();
+        ///Data.setOplayerSessionRootUrl(hostPath);
+        mCategorySession = new LiveVideoSession(DataID.SESSION_SOURCE_NONE, this);
         mSessions = new TreeMap<Integer, LiveVideoSession>(new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
                 return o2.compareTo(o1);
             }
         });
-        updateMedias();
+        //updateMedias();
     }
 
     public void setUserSessionCallback(SessionCallback mUserSessionCallback) {
@@ -116,7 +115,7 @@ public class TMultimediaManager implements SessionCallback {
         new Thread() {
             public void run() {
                 mThreadLock1 = true;
-                MMLog.log(TAG, "initLocalSessionContent 本地媒体库");
+                //MMLog.log(TAG, "init Local SessionContent 本地媒体库");
                 LiveVideoSession lSession = null;
 
                 lSession = new LiveVideoSession(TMultimediaManager.this);
@@ -142,8 +141,7 @@ public class TMultimediaManager implements SessionCallback {
 
     public void initSessionFromMobileDisc() {
         if (mThreadLock2) return;
-        if (mUSBBroadcastReceiver == null) registerUSBBroadcastReceiver();
-
+        ///if (mUSBBroadcastReceiver == null) registerUSBBroadcastReceiver();
         new Thread() {
             public void run() {
                 mThreadLock2 = true;
@@ -153,7 +151,7 @@ public class TMultimediaManager implements SessionCallback {
                     mMobileUSBVideoSession.getAllVideos().clear();
                     mMobileUSBAudioSession.getAllVideos().clear();
                     userSessionCallback(mMobileUSBVideoSession, MessageEvent.MESSAGE_EVENT_USB_VIDEO, null);
-                    userSessionCallback(mMobileUSBAudioSession, MessageEvent.MESSAGE_EVENT_USB_VIDEO, null);
+                    userSessionCallback(mMobileUSBAudioSession, MessageEvent.MESSAGE_EVENT_USB_AUDIO, null);
                     mThreadLock2 = false;
                     return;
                 }
@@ -210,7 +208,7 @@ public class TMultimediaManager implements SessionCallback {
         if (filePath == null) return;
         //if (FileList == null) return;
         if (!FileUtils.existDirectory(filePath)) return;
-        registerFileBroadcastReceiver();
+        //registerFileBroadcastReceiver();
         mFileVideoSession.getVideos().clear();
         new Thread() {
             public void run() {
@@ -260,7 +258,7 @@ public class TMultimediaManager implements SessionCallback {
 
     //初始化非本地分类
     private void initInternetCategorySessions() {
-        for (Map.Entry<Integer, String> entry : categorySession.getVideoCategoryNameList().entrySet()) {
+        for (Map.Entry<Integer, String> entry : mCategorySession.getVideoCategoryNameList().entrySet()) {
             if (entry.getKey() > DataID.SESSION_SOURCE_LOCAL_INTERNAL)//初始化非本地分类
             {
                 LiveVideoSession liveVideoSession = new LiveVideoSession(this);
@@ -273,8 +271,8 @@ public class TMultimediaManager implements SessionCallback {
     private void updateCategorySession() { //顶层分类信息，顶层分类会话
         MMLog.log(TAG, "updateTopSession mIniType = " + initStage);
         if (initStage == 0) {
-            categorySession.doUpdateSession(DataID.SESSION_TYPE_GET_MOVIE_CATEGORY);
-            categorySession.doUpdateSession(DataID.SESSION_TYPE_GET_MOVIE_TYPE);
+            mCategorySession.doUpdateSession(DataID.SESSION_TYPE_GET_MOVIE_CATEGORY);
+            mCategorySession.doUpdateSession(DataID.SESSION_TYPE_GET_MOVIE_TYPE);
         }
     }
 
@@ -295,8 +293,8 @@ public class TMultimediaManager implements SessionCallback {
 
     private void addSessionToSessions(int SessionID, String name, LiveVideoSession Session) {
         Session.getVideoCategoryNameList().put(SessionID, name);//备注名称
-        categorySession.getVideoCategoryNameList().remove(SessionID);
-        categorySession.getVideoCategoryNameList().put(SessionID, name);
+        mCategorySession.getVideoCategoryNameList().remove(SessionID);
+        mCategorySession.getVideoCategoryNameList().put(SessionID, name);
         mSessions.remove(SessionID);
         mSessions.put(SessionID, Session);
         mMobileSessionId--;
@@ -307,7 +305,7 @@ public class TMultimediaManager implements SessionCallback {
     ///}
 
     public LiveVideoSession getCategorySession() {
-        return categorySession;
+        return mCategorySession;
     }
 
     public Map<Integer, LiveVideoSession> getSessions() {
@@ -368,11 +366,11 @@ public class TMultimediaManager implements SessionCallback {
     }
 
     public void printSessions() {
-        String str = "";
+        StringBuilder str = new StringBuilder();
         //MLog.logTAG, "printSessions InManager");
         for (Map.Entry<Integer, LiveVideoSession> entry : mSessions.entrySet()) {
             //MLog.logTAG, entry.getKey() + " : " + entry.getValue().getmVideoCategoryNameList().get(entry.getKey()));
-            str = str + entry.getKey() + ":" + entry.getValue().getVideoCategoryNameList().get(entry.getKey()) + ", ";
+            str.append(entry.getKey()).append(":").append(entry.getValue().getVideoCategoryNameList().get(entry.getKey())).append(", ");
         }
         MMLog.log(TAG, "printSessions InManager:" + str);
     }
@@ -403,7 +401,7 @@ public class TMultimediaManager implements SessionCallback {
             case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE:
             case DataID.SESSION_TYPE_GET_MOVIELIST_ALLMOVIE2:
                 msg.what = session_id;//返回的是分类下面的内容，内容实体已经在相应会话中被处理
-                myHandler.sendMessage(msg);
+                mMyHandler.sendMessage(msg);
                 break;
             case DataID.SESSION_TYPE_GET_MOVIELIST_VID:
             case DataID.SESSION_TYPE_GET_MOVIELIST_VNAME:
@@ -415,12 +413,12 @@ public class TMultimediaManager implements SessionCallback {
             default:
                 break;
             case DataID.SESSION_TYPE_GET_MOVIE_CATEGORY://返回的是顶层分类信息
-                if (categorySession.getVideoCategoryNameList() != null) {
-                    if (categorySession.getVideoCategoryNameList().size() > 0) {
+                if (mCategorySession.getVideoCategoryNameList() != null) {
+                    if (mCategorySession.getVideoCategoryNameList().size() > 0) {
                         initInternetCategorySessions(); //根据类别信息初始化会话对象数组
                         initStage = 2;//初始化分类信息完成
                         msg.what = session_id;
-                        myHandler.sendMessage(msg);//通知初始化分类信息完成，下一部初始化分类下面的内容
+                        mMyHandler.sendMessage(msg);//通知初始化分类信息完成，下一部初始化分类下面的内容
                         return;
                     }
                 } else {
@@ -431,7 +429,7 @@ public class TMultimediaManager implements SessionCallback {
         //MLog.logTAG, "OnSessionComplete mIniType = " + mIniType + ",  sessionId=" + sessionId);
     }
 
-    private final Handler myHandler = new Handler(Looper.myLooper()) {
+    private final Handler mMyHandler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -462,20 +460,22 @@ public class TMultimediaManager implements SessionCallback {
         }
     };
 
-    private void registerFileBroadcastReceiver() {
+    /*private void registerFileBroadcastReceiver() {
         if (mFileReceiver == null) mFileReceiver = new MyBroadcastReceiver();
         else return;
         try {
             IntentFilter filter = new IntentFilter();
-            filter.addAction("com.zhuchao.android.MEDIAFILE_SCAN_ACTION");
-            filter.addAction("com.zhuchao.android.FILE_SCAN_ACTION");
+            filter.addAction("com.zhuchao.android.action.MEDIAFILE_SCAN");
+            filter.addAction("com.zhuchao.android.action.FILE_SCAN");
             mContext.registerReceiver(mFileReceiver, filter);
         } catch (Exception e) {
             MMLog.e(TAG, String.valueOf(e));
         }
-    }
-
+    }*/
+    /*
     private void registerUSBBroadcastReceiver() {
+        //if (mUSBBroadcastReceiver == null) mUSBBroadcastReceiver = new GlobalBroadcastReceiver();
+
         if (mUSBBroadcastReceiver == null) mUSBBroadcastReceiver = new MyBroadcastReceiver();
         else return;
         try {
@@ -497,8 +497,8 @@ public class TMultimediaManager implements SessionCallback {
         } catch (Exception e) {
             MMLog.e(TAG, String.valueOf(e));
         }
-    }
-
+    }*/
+    /*
     class MyBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {  //mStorageManager = (StorageManager) context.getSystemService(Activity.STORAGE_SERVICE);
@@ -514,7 +514,7 @@ public class TMultimediaManager implements SessionCallback {
                         ///        MMLog.log(TAG, "USB attached, " + key + ":" + bundle.toString());
                         ///} else MMLog.log(TAG, "USB attached, " + intent.toString() + "," + data);
                         ///if (data != null) MMLog.log(TAG, "USB Url = " + data);
-                        myHandler.sendEmptyMessage(MessageEvent.MESSAGE_EVENT_USB_MOUNTED);
+                        mMyHandler.sendEmptyMessage(MessageEvent.MESSAGE_EVENT_USB_MOUNTED);
                         //initSessionFromMobileDisc();
                         break;
                     case UsbManager.ACTION_USB_DEVICE_DETACHED:
@@ -526,17 +526,28 @@ public class TMultimediaManager implements SessionCallback {
                         ///    for (String key : bundle.keySet())
                         ///        MMLog.log(TAG, "USB device detached, " + key + ":" + bundle.toString());
                         ///}
-                        myHandler.sendEmptyMessage(MessageEvent.MESSAGE_EVENT_USB_MOUNTED);
+                        mMyHandler.sendEmptyMessage(MessageEvent.MESSAGE_EVENT_USB_MOUNTED);
                         ;
-                        break;
-                    case "com.zhuchao.android.MEDIAFILE_SCAN_ACTION":
-                    case "com.zhuchao.android.FILE_SCAN_ACTION":
                         break;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }*/
+
+    @TCourierSubscribe(threadMode = MethodThreadMode.threadMode.BACKGROUND)
+    public boolean onTCourierSubscribeEvent(EventCourierInterface courierInterface) {
+        MMLog.d(TAG,courierInterface.toString());
+        switch (courierInterface.getId()) {
+            case MessageEvent.MESSAGE_EVENT_USB_MOUNTED:
+                mMyHandler.sendEmptyMessage(MessageEvent.MESSAGE_EVENT_USB_MOUNTED);
+                break;
+            case MessageEvent.MESSAGE_EVENT_USB_UNMOUNT:
+                mMyHandler.sendEmptyMessage(MessageEvent.MESSAGE_EVENT_USB_UNMOUNT);
+                break;
+        }
+        return true;
     }
 
     public void freeFree() {
@@ -546,12 +557,13 @@ public class TMultimediaManager implements SessionCallback {
             this.mMobileUSBVideoSession.getVideos().clear();
             this.mFileVideoSession.getVideos().clear();
             this.mMobileUSBDiscs.clear();
-            categorySession.getVideos().clear();
+            mCategorySession.getVideos().clear();
             mSessions.clear();
-            if (mUSBBroadcastReceiver != null) mContext.unregisterReceiver(mUSBBroadcastReceiver);
-            if (mFileReceiver != null) mContext.unregisterReceiver(mFileReceiver);
-            mFileReceiver = null;
-            mUSBBroadcastReceiver = null;
+            //if (mUSBBroadcastReceiver != null) mContext.unregisterReceiver(mUSBBroadcastReceiver);
+            ///if (mFileReceiver != null) mContext.unregisterReceiver(mFileReceiver);
+            ///mFileReceiver = null;
+            ///mUSBBroadcastReceiver = null;
+            Cabinet.getEventBus().unRegisterEventObserver(this);
         } catch (Exception e) {
             //e.printStackTrace();
             MMLog.e(TAG, String.valueOf(e));

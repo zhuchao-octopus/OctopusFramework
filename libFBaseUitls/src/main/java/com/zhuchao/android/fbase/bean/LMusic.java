@@ -25,7 +25,7 @@ public class LMusic implements Comparable<LMusic> {
     /**
      * 时长
      */
-    private int duration;
+    private long duration;
 
     private String pinyin;
 
@@ -79,7 +79,7 @@ public class LMusic implements Comparable<LMusic> {
         this.size = size;
     }
 
-    public int getDuration() {
+    public long getDuration() {
         return duration;
     }
 

@@ -8,26 +8,37 @@ import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.view.WindowManager;
 
+import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.TAppProcessUtils;
+
 public class MApplication extends Application {
+    private static final String TAG = "MApplication";
     protected static Context appContext = null;//需要使用的上下文对象
     public static WindowManager.LayoutParams LayoutParams = new WindowManager.LayoutParams();
-
     public static Context getAppContext() {
         return appContext;
     }
-
-    private MultimediaBroadcastReceiver mMultimediaBroadcastReceiver = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
         appContext = this.getApplicationContext();
-        //layoutParams = View;
+        String appName = TAppProcessUtils.getCurrentProcessNameAndId(this);
+        String sdkVersion = String.valueOf(Build.VERSION.SDK_INT);
         /////////////////////////////////////////////////////////////////////////////////
         //初始化各模块组件
-        mMultimediaBroadcastReceiver = new MultimediaBroadcastReceiver();
-        registerBaseBroadcastReceiver();
-        Cabinet.InitialModules(this);
+        MMLog.d(TAG,"START.. application for "+ appName +" sdk.version="+sdkVersion);
+        GlobalBroadcastReceiver.registerGlobalBroadcastReceiver(this);
+        if(appName!=null && appName.contains("com.zhuchao.android.car"))
+        {
+            MMLog.d(TAG, "Initial few modules for " + TAppProcessUtils.getCurrentProcessNameAndId(this) + " ");
+            Cabinet.InitialBaseModules(this);
+        }
+        else
+        {
+            MMLog.d(TAG, "Initial all modules for " + TAppProcessUtils.getCurrentProcessNameAndId(this) + " ");
+            Cabinet.InitialAllModules(this);
+        }
         //////////////////////////////////////////////////////////////////////////////////
     }
 
@@ -48,26 +59,10 @@ public class MApplication extends Application {
 
     @Override
     public void onTerminate() {
-        super.onTerminate();
-        if (mMultimediaBroadcastReceiver != null) unregisterReceiver(mMultimediaBroadcastReceiver);
+        GlobalBroadcastReceiver.unregisterGlobalBroadcastReceiver(this);
         Cabinet.FreeModules(this);
+        MMLog.d("MApplication","onTerminate! "+ TAppProcessUtils.getCurrentProcessNameAndId(this));
+        super.onTerminate();
     }
 
-    private void registerBaseBroadcastReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_MEDIA_SHARED); //如果SDCard未安装,并通过USB大容量存储共享返回
-        intentFilter.addAction(Intent.ACTION_MEDIA_MOUNTED); //表明sd对象是存在并具有读/写权限
-        intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED); //SDCard已卸掉,如果SDCard是存在但没有被安装
-        intentFilter.addAction(Intent.ACTION_MEDIA_CHECKING); //表明对象正在磁盘检查
-        intentFilter.addAction(Intent.ACTION_MEDIA_EJECT); //物理的拔出 SDCARD
-        intentFilter.addAction(Intent.ACTION_MEDIA_REMOVED); //完全拔出
-        intentFilter.addDataScheme("file");
-        intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        intentFilter.addAction(MultimediaBroadcastReceiver.Action_OCTOPUS_HELLO);
-        //context.registerReceiver(mMultimediaBroadcastReceiver, intentFilter);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            registerReceiver(mMultimediaBroadcastReceiver, intentFilter, MultimediaBroadcastReceiver.Action_OCTOPUS_permission, null, RECEIVER_EXPORTED);
-        }
-    }
 }

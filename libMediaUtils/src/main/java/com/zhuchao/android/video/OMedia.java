@@ -364,14 +364,13 @@ public class OMedia implements PlayerCallback {
 
     public void stop() {
         try {
-            MMLog.i(TAG, "call stop() with " + FPlayer.getTAG());
+            MMLog.d(TAG, "call stop() with " + FPlayer.getTAG());
             if (isPlayerReady()) {
                 if (FPlayer.getPlayerStatusInfo().getEventType() != PlaybackEvent.Status_Stopped) {
                     long stopTime = getTime();
                     if (stopTime > 100) playTime = stopTime;
                     //MMLog.log(TAG, "OMedia playing time = " + playTime);
                 }
-
                 FPlayer.stop();
                 MMLog.log(TAG, "OMedia has stopped at time " + playTime);
             }
@@ -754,9 +753,9 @@ public class OMedia implements PlayerCallback {
             case 3:
                 if (FPlayer == null) FPlayer = PlayerManager.getMultiOPlayer(context, options, this);
                 break;
-            //default:
-            //    FPlayer = PlayerManager.getSingleMPlayer(context, this);
-            //    break;
+            ///default:
+            ///    FPlayer = PlayerManager.getSingleMPlayer(context, this);
+            ///    break;
         }
         MMLog.d(TAG, "GetPlayer() MagicNumber = " + magicNumber + ", FPlayer = " + FPlayer.getTAG());
 

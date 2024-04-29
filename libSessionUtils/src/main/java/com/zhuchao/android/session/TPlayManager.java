@@ -14,7 +14,7 @@ import android.view.SurfaceView;
 import androidx.annotation.NonNull;
 
 import com.zhuchao.android.fbase.DataID;
-import com.zhuchao.android.fbase.EC;
+import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MessageEvent;
 import com.zhuchao.android.fbase.ObjectList;
@@ -99,7 +99,10 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         ///this.allPlayLists.addObject("LocalSDAudios", mLocalSDMediaVideos);
         this.tMultimediaManager = new TMultimediaManager(mContext, this);
     }
-
+    public void updateLocalMedias()
+    {
+        tMultimediaManager.updateMedias();
+    }
     public int getTryCountForError() {
         return tryCountForError;
     }
@@ -740,7 +743,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
 
     @Override
     public void OnSessionComplete(int session_id, String result, int count) {
-        MMLog.d(TAG, "OnSessionComplete id= " + session_id + ":" + result + ":" + count);
+        MMLog.d(TAG, "OnSessionComplete id=" + session_id + ":" + result + ":" + count);
         switch (session_id) {
             case MessageEvent.MESSAGE_EVENT_LOCAL_VIDEO:
                 mLocalMediaVideos.clear();
@@ -774,7 +777,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
                 break;
         }
         playHandler.sendEmptyMessage(session_id);
-        Cabinet.getEventBus().post(new EC(session_id));
+        Cabinet.getEventBus().post(new EventCourier(TPlayManager.this.getClass().getName(),session_id));
     }
 
     public void updateMediaLibrary() {

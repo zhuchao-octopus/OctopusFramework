@@ -212,7 +212,8 @@ public class LiveVideoSession implements SessionCallback {
     }
 
     public void initMediasFromLocal(Context context, Integer fType) {
-        if (fType == DataID.MEDIA_TYPE_ID_VIDEO) {
+        if (fType == DataID.MEDIA_TYPE_ID_VIDEO)
+        {
             List<LVideo> lVideos = FileUtils.getVideos(context);
             for (LVideo lVideo : lVideos) {
                 Movie movie = new Movie(lVideo.getPath());
@@ -221,12 +222,18 @@ public class LiveVideoSession implements SessionCallback {
                 OMedia oMedia = new OMedia(movie);
                 mVideoList.add(oMedia);
             }
-        } else if (fType == DataID.MEDIA_TYPE_ID_AUDIO) {
+        }
+        else if (fType == DataID.MEDIA_TYPE_ID_AUDIO)
+        {
             List<LMusic> lMusics = FileUtils.getMusics(context);
             for (LMusic lmusic : lMusics) {
                 Movie movie = new Movie(lmusic.getPath());
                 String fileName = getFileName(movie.getSrcUrl());
                 if (NotEmptyString(fileName)) movie.setName(fileName);
+                movie.setAlbum(lmusic.getAlbum());
+                movie.setArtist(lmusic.getArtist());
+                movie.setSize(lmusic.getSize());
+                movie.setDuration(lmusic.getDuration());
                 OMedia oMedia = new OMedia(movie);
                 mVideoList.add(oMedia);
             }
@@ -311,7 +318,6 @@ public class LiveVideoSession implements SessionCallback {
                 //this.generateAndAppendVideoFromIlpr();
                 break;
         }
-
         if (userSessionCallback != null) userSessionCallback.OnSessionComplete(session_id, result, count);
     }
 

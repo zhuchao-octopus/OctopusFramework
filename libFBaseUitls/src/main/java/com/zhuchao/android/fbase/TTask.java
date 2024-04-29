@@ -263,7 +263,7 @@ public class TTask implements TTaskInterface {
     public synchronized void start() {
         //if (ttThread != null || this.isKeeping) {
         if (isBusy()) {
-            MMLog.log(TAG, "TTask is working tName:" + tName);
+            //MMLog.log(TAG, "TTask is already working tName:" + tName);
             return;
         }
         if (properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED_STOP) {

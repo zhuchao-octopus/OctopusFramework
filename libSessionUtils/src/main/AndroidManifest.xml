@@ -6,14 +6,15 @@
 
     <application>
         <receiver
-            android:name="com.zhuchao.android.session.MultimediaBroadcastReceiver"
+            android:name="com.zhuchao.android.session.GlobalBroadcastReceiver"
             android:enabled="true"
             android:exported="true"
             tools:ignore="WrongManifestParent">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="com.octopus.android.action.OCTOPUS_HELLO" />
-
+                <action android:name="com.zhuchao.android.action.FILE_SCAN" />
+                <action android:name="com.zhuchao.android.action.MEDIAFILE_SCAN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>

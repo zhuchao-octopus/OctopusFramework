@@ -193,30 +193,30 @@ public class PlayerStatusInfo {
     }
 
     public String toString() {
-        String str = "eventCode = " + eventCode;
-        str += " EventType = " + eventType;
-        str += " TimeChanged = " + timeChanged;
-        str += " Position = " + position;
-        str += " PositionChanged = " + positionChanged;
-        str += " LengthChanged = " + lengthChanged;
-        str += " Length = " + length;
+        String str = "eventCode=" + eventCode;
+        str += " EventType=" + eventType;
+        str += " TimeChanged=" + timeChanged;
+        str += " Position=" + position;
+        str += " PositionChanged=" + positionChanged;
+        str += " LengthChanged=" + lengthChanged;
+        str += " Length=" + length;
 
-        str += " buffering = " + buffering;
+        str += " buffering=" + buffering;
 
-        str += " OutCount = " + outCount;
-        str += " ChangedID = " + changedID;
-        str += " ChangedType = " + changedType;
+        str += " OutCount=" + outCount;
+        str += " ChangedID=" + changedID;
+        str += " ChangedType=" + changedType;
 
-        str += " surfaceStatus = " + surfacePrepared;
-        str += " sourceStatus = " + sourcePrepared;
-        str += " surfaceW = " + surfaceW;
-        str += " surfaceH = " + surfaceH;
+        str += " surfaceStatus=" + surfacePrepared;
+        str += " sourceStatus=" + sourcePrepared;
+        str += " surfaceW=" + surfaceW;
+        str += " surfaceH=" + surfaceH;
 
-        str += " videoW = " + videoW;
-        str += " videoH = " + videoH;
+        str += " videoW=" + videoW;
+        str += " videoH=" + videoH;
 
-        str += " volume = " + volume;
-        str += " playRate = " + playRate;
+        str += " volume=" + volume;
+        str += " playRate=" + playRate;
         return str;
     }
 }

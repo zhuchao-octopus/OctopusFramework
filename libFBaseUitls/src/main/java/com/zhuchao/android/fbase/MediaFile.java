@@ -410,8 +410,8 @@ public class MediaFile {
                             FileList.add(filePathName);
                             sendProgressMessage(context, filePathName);
                         } else {
-                            //FileList.add(filePathName);
-                            //sendProgressMessage(context, filePathName);
+                            ///FileList.add(filePathName);
+                            ///sendProgressMessage(context, filePathName);
                         }
                     }
                 }
@@ -421,7 +421,7 @@ public class MediaFile {
 
     private static void sendProgressMessage(Context context, String msg) {
         if (context != null) {
-            Intent i = new Intent("com.zhuchao.android.MEDIAFILE_SCAN_ACTION");
+            Intent i = new Intent("com.zhuchao.android.action.MEDIAFILE_SCAN");
             i.putExtra("FileName", msg);
             context.sendBroadcast(i);
         }

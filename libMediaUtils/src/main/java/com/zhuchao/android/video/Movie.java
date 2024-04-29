@@ -16,9 +16,6 @@ package com.zhuchao.android.video;
 
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 
-import android.content.Context;
-import android.widget.ImageView;
-
 import java.io.Serializable;
 
 /*
@@ -43,6 +40,10 @@ public class Movie implements Serializable {
     private String category;
     private String date;
     private String srcUrl;
+    private String artist;
+    private String album;
+    private long duration;
+    private long size;
 
     public Movie(final String sourceUrl) {
         this.srcUrl = sourceUrl;
@@ -206,12 +207,44 @@ public class Movie implements Serializable {
         this.srcUrl = srcUrl;
     }
 
-    public void loadResourceInto(Context mContext, String path, ImageView imageView, int preloadImg) {
-        //Glide.with(mContext)
-        //            .load(path)
-        //.placeholder(preloadImg)
-        //.diskCacheStrategy(DiskCacheStrategy.NONE)
-        //           .into(imageView);
+    public String getArtist() {
+        return artist;
     }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public String getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(String album) {
+        this.album = album;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
+    ///public void loadResourceInto(Context mContext, String path, ImageView imageView, int preloadImg) {
+    //Glide.with(mContext)
+    //            .load(path)
+    //.placeholder(preloadImg)
+    //.diskCacheStrategy(DiskCacheStrategy.NONE)
+    //           .into(imageView);
+    ///}
 
 }

@@ -21,107 +21,107 @@ import java.util.Vector;
 //内部以链表作为底层实现的集合在执行插入，删除操作时有较好的性能
 public class ObjectList {
     private final String TAG = "ObjectList";
-    private HashMap<String, Object> FHashMap = new HashMap<String, Object>();
+    private HashMap<String, Object> mFHashMap = new HashMap<String, Object>();
 
     public ObjectList() {
         //this.FHashMap = ;
     }
 
     public int getCount() {
-        return FHashMap.size();
+        return mFHashMap.size();
     }
 
     public void addItem(String Name, Object Obj) {
-        FHashMap.put(Name, Obj);
+        mFHashMap.put(Name, Obj);
     }
 
     public void addObject(String Name, Object Obj) {
-        FHashMap.put(Name, Obj);
+        mFHashMap.put(Name, Obj);
     }
 
     public void remove(String Name) {
-        FHashMap.remove(Name);
+        mFHashMap.remove(Name);
     }
 
     public void delete(String key, Object Obj) {
-        FHashMap.remove(key, Obj);
+        mFHashMap.remove(key, Obj);
     }
 
     public void delete(String Name) {
-        FHashMap.remove(Name);
+        mFHashMap.remove(Name);
     }
 
     public void clear() {
-        FHashMap.clear();
+        mFHashMap.clear();
     }
 
     public void removeObjectsLike(String keyLike) {
         List<String> list = new Vector<>();
-        for (Map.Entry<String, Object> entity : FHashMap.entrySet()) {
+        for (Map.Entry<String, Object> entity : mFHashMap.entrySet()) {
             if (entity.getKey().contains(keyLike)) {
                 //FHashMap.remove(entity.getKey());
                 list.add(entity.getKey());
             }
         }
         for (String key : list) {
-            FHashMap.remove(key);
+            mFHashMap.remove(key);
         }
     }
 
     public Object get(String Name) {
-        return FHashMap.get(Name);
+        return mFHashMap.get(Name);
     }
 
     public Object getObject(String Name) {
-        return FHashMap.get(Name);
+        return mFHashMap.get(Name);
     }
 
     public Object getObject(int Index) {
-        if (Index < 0 || Index >= FHashMap.size()) return null;
-        Object[] array = FHashMap.values().toArray();
+        if (Index < 0 || Index >= mFHashMap.size()) return null;
+        Object[] array = mFHashMap.values().toArray();
         return array[Index];
     }
 
     public String getName(int Index) {
-        if (Index < 0 || Index >= FHashMap.size()) return null;
-        String[] array = (String[]) FHashMap.keySet().toArray();
+        if (Index < 0 || Index >= mFHashMap.size()) return null;
+        String[] array = (String[]) mFHashMap.keySet().toArray();
         if (array == null) return null;
         return array[Index];
     }
 
     public Object getRandom() {
         Random generator = new Random();
-        Object[] values = FHashMap.values().toArray();
+        Object[] values = mFHashMap.values().toArray();
         return values[generator.nextInt(values.length)];
     }
 
     public boolean exist(String Name) {
-        return FHashMap.containsKey(Name);
+        return mFHashMap.containsKey(Name);
     }
 
     public boolean existObject(String Name) {
-        return FHashMap.containsKey(Name);
+        return mFHashMap.containsKey(Name);
     }
 
     public boolean containsTag(String Name) {
-        return FHashMap.containsKey(Name);
+        return mFHashMap.containsKey(Name);
     }
 
     public boolean containsObject(Object obj) {
-        return FHashMap.containsValue(obj);
+        return mFHashMap.containsValue(obj);
     }
 
     public HashMap<String, Object> getAll() {
-        return FHashMap;
+        return mFHashMap;
     }
 
     public Collection<Object> getAllObject() {
-        return FHashMap.values();
+        return mFHashMap.values();
     }
 
     public List<Object> getObjectsLike(String keyLike) {
         List<Object> list = new Vector<>();
-        for (Map.Entry<String, Object> entity : FHashMap.entrySet()) {
+        for (Map.Entry<String, Object> entity : mFHashMap.entrySet()) {
             if (entity.getKey().contains(keyLike)) {
                 list.add(entity.getValue());
             }
@@ -130,31 +130,31 @@ public class ObjectList {
     }
 
     public void putString(String key, String value) {
-        FHashMap.put(key, value);
+        mFHashMap.put(key, value);
     }
 
     public void putLong(String key, Long value) {
-        FHashMap.put(key, value);
+        mFHashMap.put(key, value);
     }
 
     public void putInt(String key, int value) {
-        FHashMap.put(key, value);
+        mFHashMap.put(key, value);
     }
 
     public void putFloat(String key, float value) {
-        FHashMap.put(key, value);
+        mFHashMap.put(key, value);
     }
 
     public void putBoolean(String key, boolean value) {
-        FHashMap.put(key, value);
+        mFHashMap.put(key, value);
     }
 
     public void putObject(String key, Object value) {
-        FHashMap.put(key, value);
+        mFHashMap.put(key, value);
     }
 
     public String getString(String key) {
-        Object o = FHashMap.get(key);
+        Object o = mFHashMap.get(key);
         if (o == null) return null;
         try {
             return (String) o;
@@ -164,7 +164,7 @@ public class ObjectList {
     }
 
     public String get(String key, String defaultValue) {
-        Object o = FHashMap.get(key);
+        Object o = mFHashMap.get(key);
         if (o == null) return defaultValue;
         try {
             return (String) o;
@@ -174,7 +174,7 @@ public class ObjectList {
     }
 
     public String getString(String key, String defaultValue) {
-        Object o = FHashMap.get(key);
+        Object o = mFHashMap.get(key);
         if (o == null) return defaultValue;
         try {
             return (String) o;
@@ -184,7 +184,7 @@ public class ObjectList {
     }
 
     public int getInt(String key) {
-        Object o = FHashMap.get(key);
+        Object o = mFHashMap.get(key);
         if (o == null) return 0;
         try {
             return (int) o;
@@ -194,7 +194,7 @@ public class ObjectList {
     }
 
     public int getInt(String key, int defaultValue) {
-        Object o = FHashMap.get(key);
+        Object o = mFHashMap.get(key);
         if (o == null) return defaultValue;
         try {
             return (int) o;
@@ -204,7 +204,7 @@ public class ObjectList {
     }
 
     public Long getLong(String key) {
-        Object o = FHashMap.get(key);
+        Object o = mFHashMap.get(key);
         if (o == null) return 0L;
         try {
             return (Long) o;
@@ -214,7 +214,7 @@ public class ObjectList {
     }
 
     public Long getLong(String key, Long defaultValue) {
-        Object o = FHashMap.get(key);
+        Object o = mFHashMap.get(key);
         if (o == null) return defaultValue;
         try {
             return (Long) o;
@@ -224,7 +224,7 @@ public class ObjectList {
     }
 
     public Float getFloat(String key) {
-        Object o = FHashMap.get(key);
+        Object o = mFHashMap.get(key);
         if (o == null) return 0.00f;
         try {
             return (Float) o;
@@ -234,7 +234,7 @@ public class ObjectList {
     }
 
     public Float getLong(String key, Float defaultValue) {
-        Object o = FHashMap.get(key);
+        Object o = mFHashMap.get(key);
         if (o == null) return defaultValue;
         try {
             return (Float) o;
@@ -244,7 +244,7 @@ public class ObjectList {
     }
 
     public boolean getBoolean(String key) {
-        Object o = FHashMap.get(key);
+        Object o = mFHashMap.get(key);
         if (o == null) return false;
         try {
             return (boolean) o;
@@ -254,7 +254,7 @@ public class ObjectList {
     }
 
     public boolean getBoolean(String key, boolean defaultValue) {
-        Object o = FHashMap.get(key);
+        Object o = mFHashMap.get(key);
         if (o == null) return defaultValue;
         try {
             return (boolean) o;
@@ -267,7 +267,7 @@ public class ObjectList {
     /////////////////////////////////////////////////////////////////////////////////////////////////
     public void printAll() {
         int i = 0;
-        for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
+        for (HashMap.Entry<String, Object> m : mFHashMap.entrySet()) {
             MMLog.log(TAG, i + ":" + m.getKey() + ":" + m.getValue().toString());
             i++;
         }
@@ -278,7 +278,7 @@ public class ObjectList {
         try {
             outStream = new FileOutputStream(filePath);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outStream);
-            objectOutputStream.writeObject(FHashMap);
+            objectOutputStream.writeObject(mFHashMap);
             outStream.close();
         } catch (Exception ex) {
             MMLog.e(TAG, ex.getMessage()); //e.printStackTrace();
@@ -290,7 +290,7 @@ public class ObjectList {
         try {
             inputStream = new FileInputStream(filePath);
             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-            FHashMap = (HashMap<String, Object>) objectInputStream.readObject();
+            mFHashMap = (HashMap<String, Object>) objectInputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             // TODO Auto-generated catch block
             MMLog.e(TAG, e.getMessage()); //e.printStackTrace();
@@ -298,7 +298,7 @@ public class ObjectList {
     }
 
     public void saveAsPersistent() {
-        Set<Map.Entry<String, Object>> set = FHashMap.entrySet();
+        Set<Map.Entry<String, Object>> set = mFHashMap.entrySet();
         for (Map.Entry<String, Object> stringObjectEntry : set) {
             //stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
             //jsonObject.put(((Map.Entry<?, ?>) stringObjectEntry).getKey().toString(),
@@ -315,7 +315,7 @@ public class ObjectList {
             StringBuilder stringBuffer = new StringBuilder();
             FileWriter fw = new FileWriter(filePathName);
 
-            Set<Map.Entry<String, Object>> set = FHashMap.entrySet();
+            Set<Map.Entry<String, Object>> set = mFHashMap.entrySet();
             for (Map.Entry<String, Object> stringObjectEntry : set) {
                 stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
             }
@@ -335,7 +335,7 @@ public class ObjectList {
             StringBuilder stringBuffer = new StringBuilder();
             FileWriter fw = new FileWriter(filePathName);
 
-            Set<Map.Entry<String, Object>> set = FHashMap.entrySet();
+            Set<Map.Entry<String, Object>> set = mFHashMap.entrySet();
             for (Map.Entry<String, Object> stringObjectEntry : set) {
                 stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
             }
@@ -355,7 +355,7 @@ public class ObjectList {
             //String line = System.getProperty("line.separator");
             StringBuilder stringBuffer = new StringBuilder();
             FileWriter fw = new FileWriter(filePathName);
-            Set<Map.Entry<String, Object>> set = FHashMap.entrySet();
+            Set<Map.Entry<String, Object>> set = mFHashMap.entrySet();
 
             for (Map.Entry<String, Object> stringObjectEntry : set) {
                 //stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
@@ -381,7 +381,7 @@ public class ObjectList {
             StringBuilder stringBuffer = new StringBuilder();
             FileWriter fw = new FileWriter(filePathName);
 
-            Set<Map.Entry<String, Object>> set = FHashMap.entrySet();
+            Set<Map.Entry<String, Object>> set = mFHashMap.entrySet();
             for (Map.Entry<String, Object> stringObjectEntry : set) {
                 stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
             }

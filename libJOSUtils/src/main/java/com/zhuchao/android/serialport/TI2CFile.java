@@ -159,7 +159,7 @@ public class TI2CFile extends TDevice implements TCourierEventListener, InvokeIn
         switch (eventCourier.getId()) {
             case DataID.DEVICE_EVENT_I2C_WRITE:
             case DataID.DEVICE_EVENT_WRITE:
-                if (eventCourier.getTag().equals(getDevicePath())) {
+                if (eventCourier.getTarget().equals(getDevicePath())) {
                     if (eventCourier.getDatas() != null) {
                         writeFile(eventCourier.getDatas(), eventCourier.getDatas().length);
                     }

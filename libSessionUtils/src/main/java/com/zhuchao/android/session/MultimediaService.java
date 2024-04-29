@@ -9,7 +9,6 @@ import com.zhuchao.android.fbase.MessageEvent;
 import com.zhuchao.android.fbase.MethodThreadMode;
 import com.zhuchao.android.fbase.TCourierSubscribe;
 import com.zhuchao.android.fbase.eventinterface.EventCourierInterface;
-import com.zhuchao.android.session.Cabinet;
 
 public class MultimediaService extends Service {
     private static final String TAG = "MultimediaService";

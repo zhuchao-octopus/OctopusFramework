@@ -840,7 +840,6 @@ public class FileUtils {
                 if (!new File(path).exists()) {
                     continue;
                 }
-
                 int id = c.getInt(c.getColumnIndexOrThrow(MediaStore.Video.Media._ID));// 视频的id
                 String name = c.getString(c.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 视频名称
                 String resolution = c.getString(c.getColumnIndexOrThrow(MediaStore.Video.Media.RESOLUTION)); //分辨率
@@ -942,7 +941,7 @@ public class FileUtils {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     isr = new InputStreamReader(Files.newInputStream(file.toPath()));
                 }
-                if(isr == null) return newList;
+                if (isr == null) return newList;
 
                 BufferedReader br = new BufferedReader(isr);
                 String lineTxt = null;

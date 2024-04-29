@@ -5,9 +5,9 @@ import android.content.Context;
 import com.zhuchao.android.fbase.EventCourier;
 
 public interface EventCourierInterface {
-    abstract String getTag();
+    abstract String getTarget();
 
-    abstract void setTag(String tag);
+    abstract void setTarget(String target);
 
     abstract int getId();
 
@@ -23,13 +23,14 @@ public interface EventCourierInterface {
 
     abstract String getFromClass();
 
-    abstract EventCourier with(Context context);
+    //abstract EventCourier with(Context context);
 
-    abstract EventCourier f(Context context);
+    abstract EventCourier f(String fromClass);
 
     abstract byte getByte();
 
     abstract int getValue();
 
-    abstract String toString();
+    abstract String toStr();
+
 }

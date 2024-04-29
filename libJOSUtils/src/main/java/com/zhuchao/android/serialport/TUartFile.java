@@ -263,7 +263,7 @@ public class TUartFile extends TDevice implements TCourierEventListener {
         switch (eventCourier.getId()) {
             case DataID.DEVICE_EVENT_UART_WRITE:
             case DataID.DEVICE_EVENT_WRITE:
-                if (eventCourier.getTag().equals(serialPort.getDevice().getAbsolutePath())) {
+                if (eventCourier.getTarget().equals(serialPort.getDevice().getAbsolutePath())) {
                     if (eventCourier.getDatas() != null) {
                         //writeBytesWait(eventCourier.getDatas());
                         //writeBytes(eventCourier.getDatas());
