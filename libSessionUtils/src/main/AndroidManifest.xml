@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
     <application>
         <receiver
@@ -19,11 +21,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name="com.zhuchao.android.session.MultimediaService"
-            android:enabled="true"
-            android:exported="true"
-            tools:ignore="ExportedService,WrongManifestParent" />
     </application>
 </manifest>
 

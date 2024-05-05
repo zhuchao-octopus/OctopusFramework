@@ -51,7 +51,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
     private int videoOutWidth = 0;
     private int videoOutHeight = 0;
 
-    private final TMultimediaManager tMultimediaManager;
+    private final TMediaManager tMediaManager;
     private final VideoList mLocalMediaVideos = new VideoList();
     private final VideoList mLocalUSBMediaVideos = new VideoList();
     private final VideoList mLocalSDMediaVideos = new VideoList();
@@ -97,12 +97,13 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         ///this.allPlayLists.addObject("LocalUsbAudios", mLocalUSBMediaAudios);
         ///this.allPlayLists.addObject("LocalSDVideos", mLocalSDMediaVideos);
         ///this.allPlayLists.addObject("LocalSDAudios", mLocalSDMediaVideos);
-        this.tMultimediaManager = new TMultimediaManager(mContext, this);
+        this.tMediaManager = new TMediaManager(mContext, this);
     }
-    public void updateLocalMedias()
-    {
-        tMultimediaManager.updateMedias();
+
+    public void updateLocalMedias() {
+        tMediaManager.updateMedias();
     }
+
     public int getTryCountForError() {
         return tryCountForError;
     }
@@ -747,41 +748,41 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         switch (session_id) {
             case MessageEvent.MESSAGE_EVENT_LOCAL_VIDEO:
                 mLocalMediaVideos.clear();
-                mLocalMediaVideos.add(tMultimediaManager.getLocalVideoSession().getVideos());
+                mLocalMediaVideos.add(tMediaManager.getLocalVideoSession().getVideos());
                 //mLocalMediaVideos.printAll();
                 break;
             case MessageEvent.MESSAGE_EVENT_LOCAL_AUDIO:
                 mLocalMediaAudios.clear();
-                mLocalMediaAudios.add(tMultimediaManager.getLocalAudioSession().getAllVideos());
+                mLocalMediaAudios.add(tMediaManager.getLocalAudioSession().getAllVideos());
                 //mLocalMediaAudios.printAll();
                 break;
             case MessageEvent.MESSAGE_EVENT_USB_VIDEO:
                 mLocalUSBMediaVideos.clear();
-                mLocalUSBMediaVideos.add(tMultimediaManager.getUSBVideoSession().getAllVideos());
+                mLocalUSBMediaVideos.add(tMediaManager.getUSBVideoSession().getAllVideos());
                 //mLocalUSBMediaVideos.printAll();
                 break;
             case MessageEvent.MESSAGE_EVENT_USB_AUDIO:
                 mLocalUSBMediaAudios.clear();
-                mLocalUSBMediaAudios.add(tMultimediaManager.getUSBAudioSession().getAllVideos());
+                mLocalUSBMediaAudios.add(tMediaManager.getUSBAudioSession().getAllVideos());
                 //mLocalUSBMediaAudios.printAll();
                 break;
             case MessageEvent.MESSAGE_EVENT_SD_VIDEO:
                 mLocalSDMediaVideos.clear();
-                mLocalSDMediaVideos.add(tMultimediaManager.getSDVideoSession().getAllVideos());
+                mLocalSDMediaVideos.add(tMediaManager.getSDVideoSession().getAllVideos());
                 //mLocalSDMediaVideos.printAll();
                 break;
             case MessageEvent.MESSAGE_EVENT_SD_AUDIO:
                 mLocalSDMediaAudios.clear();
-                mLocalSDMediaAudios.add(tMultimediaManager.getSDAudioSession().getAllVideos());
+                mLocalSDMediaAudios.add(tMediaManager.getSDAudioSession().getAllVideos());
                 //mLocalSDMediaAudios.printAll();
                 break;
         }
         playHandler.sendEmptyMessage(session_id);
-        Cabinet.getEventBus().post(new EventCourier(TPlayManager.this.getClass().getName(),session_id));
+        Cabinet.getEventBus().post(new EventCourier(TPlayManager.this.getClass().getName(), session_id));
     }
 
     public void updateMediaLibrary() {
-        if (tMultimediaManager != null) tMultimediaManager.updateMedias();
+        if (tMediaManager != null) tMediaManager.updateMedias();
     }
 
     public void saveToFile() {
@@ -801,7 +802,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         try {
             if (getPlayingMedia() != null) getPlayingMedia().free();
             allPlayLists.clear();
-            tMultimediaManager.freeFree();
+            tMediaManager.freeFree();
         } catch (Exception e) {
             MMLog.e(TAG, "free() " + e.toString());
         }

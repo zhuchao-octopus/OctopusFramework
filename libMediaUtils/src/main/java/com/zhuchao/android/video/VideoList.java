@@ -36,11 +36,11 @@ import java.util.Random;
 
 public class VideoList {
     private String TAG = "VideoList";
-    private NormalCallback RequestCallBack = null;
-    private OMedia firstItem = null;
-    private OMedia lastItem = null;
-    private boolean threadLock = false;
-    private HashMap<String, Object> FHashMap = new HashMap<>();
+    private NormalCallback mRequestCallBack = null;
+    private OMedia mFirstItem = null;
+    private OMedia mLastItem = null;
+    private boolean mThreadLock = false;
+    private final HashMap<String, Object> mFHashMap = new HashMap<>();
 
     /*private TreeMap<String, Object> FHashMap = new TreeMap<String, Object>(new Comparator<String>() {
         @Override
@@ -50,15 +50,15 @@ public class VideoList {
     });*/
 
     public VideoList() {
-        RequestCallBack = null;
+        mRequestCallBack = null;
     }
 
-    public VideoList(NormalCallback requestCallBack) {
-        RequestCallBack = requestCallBack;
+    public VideoList(NormalCallback mRequestCallBack) {
+        this.mRequestCallBack = mRequestCallBack;
     }
 
     public HashMap<String, Object> getMap() {
-        return FHashMap;
+        return mFHashMap;
     }
 
     public void makeSingleLinkAll() {
@@ -78,21 +78,21 @@ public class VideoList {
 
     public void add(OMedia oMedia) {
         if (oMedia == null) return;
-        if (FHashMap.containsKey(oMedia.md5())) return;
-        if (FHashMap.size() == 0) firstItem = oMedia;
+        if (mFHashMap.containsKey(oMedia.md5())) return;
+        if (mFHashMap.size() == 0) mFirstItem = oMedia;
 
-        if (lastItem != null) {//依次连接
-            lastItem.setNext(oMedia);
-            oMedia.setPre(lastItem);
+        if (mLastItem != null) {//依次连接
+            mLastItem.setNext(oMedia);
+            oMedia.setPre(mLastItem);
         }
-        if (firstItem != null) {//首尾连接
-            firstItem.setPre(oMedia);
-            oMedia.setNext(firstItem);
+        if (mFirstItem != null) {//首尾连接
+            mFirstItem.setPre(oMedia);
+            oMedia.setNext(mFirstItem);
         }
-        FHashMap.put(oMedia.md5(), oMedia);
-        lastItem = oMedia;
+        mFHashMap.put(oMedia.md5(), oMedia);
+        mLastItem = oMedia;
         //MLog.log(TAG, "add1");
-        if (RequestCallBack != null) RequestCallBack.onEventRequest(TAG, getCount());
+        if (mRequestCallBack != null) mRequestCallBack.onEventRequest(TAG, getCount());
     }
 
     public void add(String fileName) {
@@ -116,10 +116,10 @@ public class VideoList {
         if (oPre != null) oPre.setNext(oNext);
         if (oNext != null) oNext.setPre(oPre);
 
-        if (oMedia.equals(firstItem)) firstItem = oNext;
-        else if (oMedia.equals(lastItem)) lastItem = oPre;
+        if (oMedia.equals(mFirstItem)) mFirstItem = oNext;
+        else if (oMedia.equals(mLastItem)) mLastItem = oPre;
 
-        FHashMap.remove(oMedia.md5());
+        mFHashMap.remove(oMedia.md5());
     }
 
     public void delete(String fileName) {
@@ -128,21 +128,21 @@ public class VideoList {
     }
 
     public void deleteFrom(OMedia oMedia, int count) {
-        if (getCount() <= 0 || firstItem == null) return;
+        if (getCount() <= 0 || mFirstItem == null) return;
         for (int i = 0; i < count; i++) {
             delete(oMedia);
         }
     }
 
     public OMedia findByIndex(int index) {
-        if (index < 0 || index >= FHashMap.size()) return null;
-        Object[] array = FHashMap.values().toArray();
+        if (index < 0 || index >= mFHashMap.size()) return null;
+        Object[] array = mFHashMap.values().toArray();
         return (OMedia) array[index];
     }
 
     public List<OMedia> findsByName(String fileName) {
         List<OMedia> movies = new ArrayList<>();
-        for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
+        for (HashMap.Entry<String, Object> m : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) m.getValue();
             if (fileName.equals(oMedia.getMovie().getName())) movies.add(oMedia);
         }
@@ -150,7 +150,7 @@ public class VideoList {
     }
 
     public OMedia findByName(String fileName) {
-        for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
+        for (HashMap.Entry<String, Object> m : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) m.getValue();
             if (fileName.equals(oMedia.getMovie().getName())) return oMedia;
         }
@@ -159,12 +159,12 @@ public class VideoList {
 
     public OMedia findByPath(String fileName) {
         String md5Key = FileUtils.MD5(fileName);
-        return (OMedia) FHashMap.get(md5Key);
+        return (OMedia) mFHashMap.get(md5Key);
     }
 
     public OMedia findAny() {
         Random generator = new Random();
-        Object[] values = FHashMap.values().toArray();
+        Object[] values = mFHashMap.values().toArray();
         Object randomValue = values[generator.nextInt(values.length)];
         return (OMedia) randomValue;
     }
@@ -173,7 +173,7 @@ public class VideoList {
     public OMedia getNextAvailable(OMedia oMedia) {
         OMedia ooMedia = null;
         if (getCount() <= 0) return null;
-        if (oMedia == null) return firstItem;
+        if (oMedia == null) return mFirstItem;
 
         ooMedia = oMedia;//找下一个
         for (int i = 0; i < getCount(); i++) {
@@ -187,7 +187,7 @@ public class VideoList {
     public OMedia getPreAvailable(OMedia oMedia) {
         OMedia ooMedia = null;
         if (getCount() <= 0) return null;
-        if (oMedia == null) return lastItem;
+        if (oMedia == null) return mLastItem;
 
         ooMedia = oMedia;//找下一个
         for (int i = 0; i < getCount(); i++) {
@@ -200,7 +200,7 @@ public class VideoList {
 
     public VideoList getVideos() {
         VideoList videoList1 = new VideoList();
-        for (HashMap.Entry<String, Object> oo : FHashMap.entrySet()) {
+        for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) oo.getValue();
             if (oMedia.isVideo()) videoList1.add(oMedia);
         }
@@ -209,7 +209,7 @@ public class VideoList {
 
     public VideoList getAudios() {
         VideoList audioList1 = new VideoList();
-        for (HashMap.Entry<String, Object> oo : FHashMap.entrySet()) {
+        for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) oo.getValue();
             if (oMedia.isAudio()) audioList1.add(oMedia);
         }
@@ -217,32 +217,32 @@ public class VideoList {
     }
 
     public HashMap<String, Object> getAll() {
-        return FHashMap;
+        return mFHashMap;
     }
 
     public boolean exist(String fileName) {
         String md5Key = FileUtils.MD5(fileName);
-        return FHashMap.containsKey(md5Key);
+        return mFHashMap.containsKey(md5Key);
     }
 
     public boolean exist(OMedia oMedia) {
-        return FHashMap.containsValue(oMedia);
+        return mFHashMap.containsValue(oMedia);
     }
 
     public OMedia getFirstItem() {
-        return firstItem;
+        return mFirstItem;
     }
 
     public OMedia getLastItem() {
-        return lastItem;
+        return mLastItem;
     }
 
     public int getCount() {
-        return FHashMap.size();
+        return mFHashMap.size();
     }
 
     public void clear() {
-        FHashMap.clear();
+        mFHashMap.clear();
     }
 
     public String getTAG() {
@@ -255,7 +255,7 @@ public class VideoList {
 
     public void printAll() {
         int i = 0;
-        for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
+        for (HashMap.Entry<String, Object> m : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) m.getValue();
             MMLog.log(TAG, i + ":" + oMedia.getPathName());
             i++;
@@ -272,7 +272,7 @@ public class VideoList {
 
     public void printFollow() {
         if (getCount() <= 0) return;
-        OMedia oMedia = firstItem;
+        OMedia oMedia = mFirstItem;
         for (int i = 0; i < getCount(); i++) {
             if (oMedia != null) {
                 MMLog.log(TAG, i + ":↓" + oMedia.getPathName());
@@ -281,18 +281,18 @@ public class VideoList {
                     MMLog.log(TAG, "null");
                     break;
                 }
-                if (oMedia.equals(lastItem)) MMLog.log(TAG, "printFollow() done");
+                if (oMedia.equals(mLastItem)) MMLog.log(TAG, "printFollow() done");
             }
         }
     }
 
     public void loadFromDir(String dirPath, int FileType) {
-        if (threadLock) return;
+        if (mThreadLock) return;
         new Thread() {
             public void run() {
-                threadLock = true;
+                mThreadLock = true;
                 getMediaFiles(dirPath, FileType);
-                threadLock = false;
+                mThreadLock = false;
             }
         }.start();
     }
@@ -325,7 +325,7 @@ public class VideoList {
                         add(filePathName);//所有的文件
                     }
                     try {
-                        if (RequestCallBack != null) RequestCallBack.onEventRequest(TAG, fileType);
+                        if (mRequestCallBack != null) mRequestCallBack.onEventRequest(TAG, fileType);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -350,7 +350,7 @@ public class VideoList {
             ///for (Map.Entry<String, Object> stringObjectEntry : set) {
             ///    stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
             ///}
-            for (HashMap.Entry<String, Object> m : FHashMap.entrySet()) {
+            for (HashMap.Entry<String, Object> m : mFHashMap.entrySet()) {
                 OMedia oMedia = (OMedia) m.getValue();
                 stringBuffer.append(oMedia.getPathName()).append(line);
                 ///MMLog.log(TAG, i + ":" + oMedia.getPathName());

@@ -28,7 +28,9 @@ public class MMLog {
     public static void d(String TAG, String logMsg) {
         if (mDebugLogOnOff) Log.d(MTAG + "." + TAG, logMsg);
     }
-
+    public static void debug(String TAG, String logMsg) {
+        if (mDebugLogOnOff) Log.d(MTAG + "." + TAG, logMsg);
+    }
     public static void mm(String logMsg) {
         if (logMsg == null) mStringBuffer.setLength(0);
         else {

@@ -103,6 +103,7 @@ public class Cabinet {
             MMLog.e(TAG, e.toString());
         }
     }
+
     public static synchronized void InitialBaseModules(@NotNull Context context) {
         //MMLog.d(TAG, "Initial few modules for " + TAppProcessUtils.getCurrentProcessNameAndId(context) + " ");
         try {

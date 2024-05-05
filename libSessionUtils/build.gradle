@@ -81,5 +81,7 @@ dependencies {
     implementation project(path: ':libMediaUtils')
     implementation project(path: ':libPlayerUtils')
     implementation project(path: ':libGPersistUtils')
+    implementation ('androidx.appcompat:appcompat:1.6.1')
+    implementation ('androidx.media:media:1.6.0')
 
 }

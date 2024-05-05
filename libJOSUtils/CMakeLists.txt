@@ -3,6 +3,9 @@
 # your build.
 
 cmake_minimum_required(VERSION 3.4.1)
+project(MyJniProjects)
+
+Set(CMAKE VERBOSE MAKEFILE On)
 
 # Specifies a library name, specifies whether the library is STATIC or
 # SHARED, and provides relative paths to the source code. You can
@@ -10,29 +13,16 @@ cmake_minimum_required(VERSION 3.4.1)
 # and CMake builds them for you. When you build your app, Gradle
 # automatically packages shared libraries with your APK.
 
-add_library( # Specifies the name of the library.
-        uart
 
-        # Sets the library as a shared library.
-        SHARED
+SET(BT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/main/cpp/bt)
+SET(MCU_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/main/cpp/mcu)
+SET(UART_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/main/cpp/uart)
 
-        # Provides a relative path to your source file(s).
-        src/main/cpp/SerialPort.c)
 
-find_library( # Sets the name of the path variable.
-        log-lib
+include_directories(BT_PATH)
+include_directories(MCU_PATH)
+include_directories(UART_PATH)
 
-        # Specifies the name of the NDK library that
-        # you want CMake to locate.
-        log)
-
-# Specifies libraries CMake should link to your target library. You
-# can link multiple libraries, such as libraries you define in this
-# build script, prebuilt third-party libraries, or system libraries.
-
-target_link_libraries( # Specifies the target library.
-        uart
-
-        # Links the target library to the log library
-        # included in the NDK.
-        ${log-lib})
+ADD_SUBDIRECTORY(${BT_PATH})
+ADD_SUBDIRECTORY(${MCU_PATH})
+ADD_SUBDIRECTORY(${UART_PATH})

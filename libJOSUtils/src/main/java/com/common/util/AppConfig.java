@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.view.View;
 
-import com.zhuchao.android.SysProperties;
 import com.zhuchao.android.fbase.MMLog;
 
 import java.io.BufferedReader;
@@ -212,7 +211,7 @@ public class AppConfig {
         if (Util.isAndroidLaterP()) {
             try {
                 //topPackageName = SystemProperties.get("ak.status.public_top_activity" + (displayId > 0 ? displayId : ""));
-                topPackageName = SysProperties.get("ak.status.public_top_activity" + (displayId > 0 ? displayId : ""));
+                topPackageName = systemPropertiesGet("ak.status.public_top_activity" + (displayId > 0 ? displayId : ""));
             } catch (Exception e) {
                 MMLog.e(TAG, "getTopActivity displayId:" + displayId + " Exception: " + e);
             }

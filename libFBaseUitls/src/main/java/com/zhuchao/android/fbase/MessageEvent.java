@@ -25,6 +25,7 @@ public class MessageEvent {
     public static final int MESSAGE_EVENT_OCTOPUS_CAR_SERVICE = 3501;
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static final String MESSAGE_EVENT_OCTOPUS_ACTION_TEST = "com.octopus.android.action.OCTOPUS_TEST";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_HELLO = "com.octopus.android.action.OCTOPUS_HELLO";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_CAR_CLIENT = "com.octopus.android.action.CAR_CLIENT";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_CAR_SERVICE = "com.octopus.android.action.CAR_SERVICE";

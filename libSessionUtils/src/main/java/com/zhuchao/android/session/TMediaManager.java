@@ -27,8 +27,8 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 
-public class TMultimediaManager implements SessionCallback {
-    private final String TAG = "TMultimediaManager";
+public class TMediaManager implements SessionCallback {
+    private final String TAG = "TMediaManager";
     @SuppressLint("StaticFieldLeak")
     private static Context mContext = null;
     private SessionCallback mUserSessionCallback = null;
@@ -51,11 +51,11 @@ public class TMultimediaManager implements SessionCallback {
     private boolean mThreadLock2 = false;
     private boolean mThreadLock3 = false;
     private int initStage = 0;//0 从网络， 1 //从本地, >=3 已经初始化完成
-    private TMultimediaManager tMultimediaManager = null;
+    private TMediaManager tMediaManager = null;
 
-    public synchronized TMultimediaManager getInstance(Context context) {
-        if (tMultimediaManager == null) tMultimediaManager = new TMultimediaManager(context, null);
-        return tMultimediaManager;
+    public synchronized TMediaManager getInstance(Context context) {
+        if (tMediaManager == null) tMediaManager = new TMediaManager(context, null);
+        return tMediaManager;
     }
 
     @SuppressLint("SdCardPath")
@@ -66,7 +66,7 @@ public class TMultimediaManager implements SessionCallback {
         initSDSessionFromPath();
     }
 
-    public TMultimediaManager(Context context, SessionCallback sessionCallback) {
+    public TMediaManager(Context context, SessionCallback sessionCallback) {
         this.mUserSessionCallback = sessionCallback;
         mContext = context;
         Cabinet.getEventBus().registerEventObserver(this); //this!=mContext
@@ -87,7 +87,7 @@ public class TMultimediaManager implements SessionCallback {
         this.mUserSessionCallback = mUserSessionCallback;
     }
 
-    public TMultimediaManager Callback(SessionCallback userSessionCallback) {
+    public TMediaManager Callback(SessionCallback userSessionCallback) {
         this.mUserSessionCallback = userSessionCallback;
         return this;
     }
@@ -118,13 +118,13 @@ public class TMultimediaManager implements SessionCallback {
                 //MMLog.log(TAG, "init Local SessionContent 本地媒体库");
                 LiveVideoSession lSession = null;
 
-                lSession = new LiveVideoSession(TMultimediaManager.this);
+                lSession = new LiveVideoSession(TMediaManager.this);
                 lSession.initMediasFromLocal(mContext, DataID.MEDIA_TYPE_ID_VIDEO);
                 if (lSession.getVideos().getCount() > 0) addSessionToSessions(mMobileSessionId, "本地视频", lSession);
                 mLocalVideoSession.addVideos(lSession.getVideos());
                 userSessionCallback(mLocalVideoSession, MessageEvent.MESSAGE_EVENT_LOCAL_VIDEO, "本地视频");
 
-                lSession = new LiveVideoSession(TMultimediaManager.this);
+                lSession = new LiveVideoSession(TMediaManager.this);
                 lSession.initMediasFromLocal(mContext, DataID.MEDIA_TYPE_ID_AUDIO);
                 if (lSession.getVideos().getCount() > 0) addSessionToSessions(mMobileSessionId, "本地音乐", lSession);
                 mLocalAudioSession.addVideos(lSession.getVideos());
@@ -225,7 +225,7 @@ public class TMultimediaManager implements SessionCallback {
         if (DeviceName == null) return;
         LiveVideoSession mSession = null;
 
-        mSession = new LiveVideoSession(TMultimediaManager.this);
+        mSession = new LiveVideoSession(TMediaManager.this);
         mSession.initMediasFromPath(mContext, DevicePath, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO);
         if (mSession.getVideos().getCount() > 0) {
             addSessionToSessions(mMobileSessionId, DeviceName, mSession);
@@ -538,7 +538,7 @@ public class TMultimediaManager implements SessionCallback {
 
     @TCourierSubscribe(threadMode = MethodThreadMode.threadMode.BACKGROUND)
     public boolean onTCourierSubscribeEvent(EventCourierInterface courierInterface) {
-        MMLog.d(TAG,courierInterface.toString());
+        MMLog.d(TAG,courierInterface.toStr());
         switch (courierInterface.getId()) {
             case MessageEvent.MESSAGE_EVENT_USB_MOUNTED:
                 mMyHandler.sendEmptyMessage(MessageEvent.MESSAGE_EVENT_USB_MOUNTED);

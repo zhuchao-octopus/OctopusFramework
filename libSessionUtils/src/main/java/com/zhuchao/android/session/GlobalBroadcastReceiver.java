@@ -1,6 +1,9 @@
 package com.zhuchao.android.session;
 
 import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothA2dp;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -14,7 +17,6 @@ import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MessageEvent;
 import com.zhuchao.android.fbase.TAppProcessUtils;
-import com.zhuchao.android.fbase.TAppUtils;
 
 import java.util.Objects;
 
@@ -22,12 +24,12 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = "GlobalBroadcastReceiver";
     //public static final String Action_OCTOPUS_permission = "com.octopus.android.action.OCTOPUS.PERMISSION";
     public static final String ACTION_BOOT_COMPLETED = "android.intent.action.BOOT_COMPLETED";
-
+    public static final String ACTION_PAIRING_CANCEL = "android.bluetooth.device.action.PAIRING_CANCEL";
     public static GlobalBroadcastReceiver mGlobalBroadcastReceiver = null;
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     public synchronized static void registerGlobalBroadcastReceiver(Context context) {
-        if(mGlobalBroadcastReceiver == null) {
+        if (mGlobalBroadcastReceiver == null) {
             mGlobalBroadcastReceiver = new GlobalBroadcastReceiver();
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(Intent.ACTION_MEDIA_SHARED); //如果SDCard未安装,并通过USB大容量存储共享返回
@@ -46,16 +48,30 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
             intentFilter.addAction(Intent.ACTION_LOCALE_CHANGED);
             intentFilter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
 
+            intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+            intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+            intentFilter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+            intentFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+
+            intentFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+            intentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+            intentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+            intentFilter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST);
+            intentFilter.addAction(BluetoothDevice.ACTION_FOUND);
+
+            intentFilter.addAction(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED);
+            intentFilter.addAction(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED);
+
+
             intentFilter.addAction(MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_HELLO);
-            intentFilter.addAction("com.zhuchao.android.ACTION_TEST");
+            intentFilter.addAction(MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_TEST);
             context.registerReceiver(mGlobalBroadcastReceiver, intentFilter);
         }
     }
 
     public synchronized static void unregisterGlobalBroadcastReceiver(Context context) {
         try {
-            if (mGlobalBroadcastReceiver != null)
-                context.unregisterReceiver(mGlobalBroadcastReceiver);
+            if (mGlobalBroadcastReceiver != null) context.unregisterReceiver(mGlobalBroadcastReceiver);
             mGlobalBroadcastReceiver = null;
         } catch (Exception e) {
             //throw new RuntimeException(e);
@@ -64,26 +80,29 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        MMLog.d(TAG, TAG + " action=" + intent.getAction() + " "+context.getPackageName());
+        MMLog.d(TAG, TAG + " action=" + intent.getAction() + " " + context.getPackageName());
 
         switch (Objects.requireNonNull(intent.getAction())) {
             case ACTION_BOOT_COMPLETED:
                 Intent intent1 = new Intent();
                 intent1.setComponent(new ComponentName("com.zhuchao.android.car", "com.zhuchao.android.car.service.MMCarService"));
                 context.startService(intent1);
+                Intent intent2 = new Intent();
+                intent2.setComponent(new ComponentName("com.zhuchao.android.car", "com.zhuchao.android.car.service.MultiService"));
+                context.startService(intent2);
                 break;
             case MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_HELLO:
                 MMLog.mm(null);
-                MMLog.mm("*Hello "+ TAppProcessUtils.getCurrentProcessNameAndId(context));
+                MMLog.mm("*Hello " + TAppProcessUtils.getCurrentProcessNameAndId(context));
                 //Cabinet.getEventBus().printAllEventListener();
                 MMLog.mm(Cabinet.getEventBus().getEventListeners());
                 MMLog.m(TAG);
                 break;
             case Intent.ACTION_MEDIA_MOUNTED:
-                Cabinet.getEventBus().post(new EventCourier(mGlobalBroadcastReceiver.getClass(),MessageEvent.MESSAGE_EVENT_USB_MOUNTED));
+                Cabinet.getEventBus().post(new EventCourier(mGlobalBroadcastReceiver.getClass(), MessageEvent.MESSAGE_EVENT_USB_MOUNTED));
                 break;
             case Intent.ACTION_MEDIA_UNMOUNTED:
-                Cabinet.getEventBus().post(new EventCourier(mGlobalBroadcastReceiver.getClass(),MessageEvent.MESSAGE_EVENT_USB_UNMOUNT));
+                Cabinet.getEventBus().post(new EventCourier(mGlobalBroadcastReceiver.getClass(), MessageEvent.MESSAGE_EVENT_USB_UNMOUNT));
                 break;
             case Intent.ACTION_MEDIA_EJECT:
                 break;
@@ -96,6 +115,49 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     MMLog.i(TAG, "getSerialNumber=" + usbDevice.getSerialNumber());
                 }
                 break;
+            //BluetoothAdapter 相关广播
+            case BluetoothAdapter.ACTION_STATE_CHANGED: //蓝牙开关
+                //("Bluetooth Switch state :STATE_OFF --> 10, STATE_TURNING_ON --> 11, STATE_ON --> 12 ,STATE_TURNING_OFF --> 13 ");
+                int switchState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+                MMLog.d(TAG, "Bluetooth Switch change to= " + switchState);
+                break;
+            case BluetoothAdapter.ACTION_SCAN_MODE_CHANGED: //蓝牙扫描状态修改
+                //("Bluetooth scan mode :SCAN_MODE_NONE --> 20, SCAN_MODE_CONNECTABLE --> 21, SCAN_MODE_CONNECTABLE_DISCOVERABLE --> 23");
+                int scanMode = intent.getIntExtra(BluetoothAdapter.EXTRA_SCAN_MODE, -1);
+                MMLog.d(TAG, "Bluetooth scanMode change to = " + scanMode);
+                break;
+            case BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED: //蓝牙连接，和ACL连接的区别 ?
+                //("bluetooth ConnectState :STATE_DISCONNECTED=0, STATE_CONNECTING=1, STATE_CONNECTED=2, STATE_DISCONNECTING=3");
+                int connectPreviousState = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_CONNECTION_STATE, -1);
+                MMLog.d(TAG, "Bluetooth connectPreviousState = " + connectPreviousState);
+                int connectState = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, -1);
+                MMLog.d(TAG, "Bluetooth state = " + connectState);
+                break;
+
+            //BluetoothDevice 相关广播
+            case BluetoothDevice.ACTION_ACL_CONNECTED: //蓝牙连接
+                //判断当前连接的蓝牙数量
+                MMLog.debug(TAG, "ACTION_ACL_CONNECTED() ！");
+                break;
+            case BluetoothDevice.ACTION_ACL_DISCONNECTED: //蓝牙断开
+                MMLog.debug(TAG, "ACTION_ACL_DISCONNECTED() ！");
+                break;
+            case BluetoothDevice.ACTION_BOND_STATE_CHANGED: //蓝牙绑定状态改变,绑定前后蓝牙变化广播
+                //("Bluetooth bond state :BOND_NONE = 10, BOND_BONDING = 11, BOND_BONDED = 12 ");
+                int bondPreviousState = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, -1);
+                MMLog.debug(TAG, "Bluetooth bondPreviousState = " + bondPreviousState);
+                int bondState = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, -1);
+                MMLog.debug(TAG, "Bluetooth bondState = " + bondState);
+                break;
+            case BluetoothDevice.ACTION_PAIRING_REQUEST: //蓝牙配对
+                MMLog.debug(TAG, "ACTION_PAIRING_REQUEST ！");
+                int pinNumber = intent.getIntExtra("android.bluetooth.device.extra.PAIRING_KEY", 1234);
+                MMLog.debug(TAG, "ACTION_PAIRING_REQUEST  pinNumber = " + pinNumber);
+                break;
+            case ACTION_PAIRING_CANCEL://BluetoothDevice.ACTION_PAIRING_CANCEL: //蓝牙取消配对
+                MMLog.debug(TAG, "ACTION_PAIRING_CANCEL ！");
+                break;
+
         }
     }
 

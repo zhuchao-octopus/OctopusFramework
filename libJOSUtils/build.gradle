@@ -33,26 +33,17 @@ android {
     defaultConfig {
         minSdk 24
         targetSdk 34
-
-        externalNativeBuild {
-            cmake {
-                cppFlags "-frtti -fexceptions"
-                abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
-            }
-        }
     }
 
-    publishing {
-        singleVariant('release') {
-            withSourcesJar()
-            //withJavadocJar()
-        }
-    }
     publishing {
         multipleVariants {
             withSourcesJar()
             //withJavadocJar()
             allVariants()
+        }
+        singleVariant('release') {
+            withSourcesJar()
+            //withJavadocJar()
         }
     }
 
@@ -68,12 +59,11 @@ android {
             path 'CMakeLists.txt'
         }
     }
-    namespace 'com.zhuchao.android.serialport'
+
+    namespace 'com.zhuchao.android.platform'
 }
 
 dependencies {
     implementation project(path: ':libFBaseUitls')
-    //implementation files('libs/framework.jar')
-    //implementation files('libs\\javalib.jar')
 }
 
