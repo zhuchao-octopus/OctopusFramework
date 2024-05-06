@@ -16,7 +16,7 @@ public class TTask implements TTaskInterface {
     protected InvokeInterface invokeInterface = null;
     //protected TaskCallback taskCallback = null;
     protected ObjectList properties = null;
-    protected boolean isKeeping = false;
+    protected boolean isKeeping = false;//主题任务是个异步任务，需要等待
     protected int invokedCount = 0;
     protected long delayedMillis = 0;
     protected int taskCallbackCount = 0;
@@ -148,9 +148,8 @@ public class TTask implements TTaskInterface {
         return isKeeping;
     }
 
-    public TTask setKeep(boolean keeping) {
+    public void setKeep(boolean keeping) {
         isKeeping = keeping;
-        return this;
     }
 
     public boolean isBusy() {
@@ -182,15 +181,28 @@ public class TTask implements TTaskInterface {
     }
 
     public TTask reset() {
+        if (isBusy()) {
+            MMLog.i(TAG, "this task is busy! not allow to reset tag = " + this.tTag);
+            return this;
+        }
         properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_CAN_RESTART);
         free();
         return this;
     }
 
     public TTask resetAll() {
+        if (isBusy()) {
+            MMLog.d(TAG, "this task is busy! not allow to reset for tag = " + this.tTag);
+            return this;
+        }
         properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_CAN_RESTART);
         freeFree();
         return this;
+    }
+
+    public void forceResetAll() {
+        properties.putInt(DataID.TASK_STATUS_INTERNAL_, DataID.TASK_STATUS_CAN_RESTART);
+        freeFree();
     }
 
     public synchronized void startAgain() {
@@ -221,7 +233,7 @@ public class TTask implements TTaskInterface {
     //    this.taskTimeOut = taskTimeOut;
     //}
 
-    public void lock() {
+    public void lock() {//主题任务是个异步任务，需要等待
         isKeeping = true;
     }//与主题任务同步
 
@@ -263,7 +275,7 @@ public class TTask implements TTaskInterface {
     public synchronized void start() {
         //if (ttThread != null || this.isKeeping) {
         if (isBusy()) {
-            //MMLog.log(TAG, "TTask is already working tName:" + tName);
+             ///MMLog.log(TAG, "TTask is already working tName:" + tName);
             return;
         }
         if (properties.getInt(DataID.TASK_STATUS_INTERNAL_) == DataID.TASK_STATUS_FINISHED_STOP) {
@@ -305,7 +317,7 @@ public class TTask implements TTaskInterface {
                 threadPoolCallback.onEventTask(TTask.this, DataID.TASK_STATUS_FINISHED_STOP);
             } else {
                 //打印任务完成log
-                MMLog.log(TTask.this.TAG, "Ttask finish tName = " + tName + " invoked = " + invokedCount);
+                MMLog.log(TTask.this.TAG, "Ttask " + tName + " finished,invoked = " + invokedCount);
                 if (isAutoFreeRemove())//没有threadPool
                     freeFree();
             }

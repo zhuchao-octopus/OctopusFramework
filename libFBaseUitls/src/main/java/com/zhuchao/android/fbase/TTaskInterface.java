@@ -27,7 +27,7 @@ public abstract interface TTaskInterface {
 
     public void setTaskName(String tName);
 
-    public TTask setKeep(boolean keeping);
+    public void setKeep(boolean keeping);
 
     public boolean isKeeping();
 
@@ -42,6 +42,8 @@ public abstract interface TTaskInterface {
     public TTask reset();
 
     public TTask resetAll();
+
+    public void forceResetAll();
 
     public void start();
 

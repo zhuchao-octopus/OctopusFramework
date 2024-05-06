@@ -2,10 +2,7 @@ package com.zhuchao.android.session;
 
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 
-import android.content.Context;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 
 import androidx.annotation.RequiresApi;
@@ -31,26 +28,26 @@ import java.util.concurrent.locks.LockSupport;
 
 
 public class TTaskManager {
-    private final String TAG = "TTaskManager";
-    private TTaskThreadPool tTaskThreadPool = null;
+    private static final String TAG = "TTaskManager";
+    private static final TTaskThreadPool tTaskThreadPool = new TTaskThreadPool();
 
     ///private boolean stopContinue = true;
     ///private boolean reDownload = true;
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    private final Handler TimerTaskHandler = new Handler(Looper.myLooper()) {
+    /*private static final Handler TimerTaskHandler = new Handler(Looper.myLooper()) {
         public void handleMessage(Message msg) {
             TransactionProcessing(msg.obj);
         }
-    };
+    };*/
 
-    private final Handler taskMainLooperHandler = new Handler(Looper.getMainLooper()) {
+    /*private static final Handler taskMainLooperHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             TransactionProcessing(msg.obj);
         }
-    };
+    };*/
 
-    private synchronized void TransactionProcessing(Object obj) {
+    private static synchronized void TransactionProcessing(Object obj) {
         if (obj == null) return;
         TTask tTask = (TTask) (obj);
         if (tTask.getCallBackHandler() != null) {
@@ -65,37 +62,29 @@ public class TTaskManager {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public TTaskManager(Context context) {
-        tTaskThreadPool = new TTaskThreadPool();
-        //TTaskThreadPool_SESSION_UPDATE_TEST_INIT();
-        tTaskManagerTTaskPoolInit();
-    }
 
-    public <T> T getTask(String tName) {
+    public static <T> T getTask(String tName) {
         return tTaskThreadPool.getObjectByName(tName);
     }
 
-    public <T> T getByName(String tName) {
+    public static <T> T getByName(String tName) {
         return tTaskThreadPool.getObjectByName(tName);
     }
 
-    public <T> T getObjectByName(String tName) {
+    public static <T> T getObjectByName(String tName) {
         return tTaskThreadPool.getObjectByName(tName);
     }
 
-    public int getTaskCount() {
-        return tTaskThreadPool.getCount();
-    }
 
-    public TTask getTaskByName(String tName) {
+    public static TTask getTaskByName(String tName) {
         return tTaskThreadPool.getTaskByName(tName);
     }
 
-    public TTask getTaskByTag(String tag) {
+    public static TTask getTaskByTag(String tag) {
         return tTaskThreadPool.getTaskByTag(tag);
     }
 
-    public TTask getIdleTask() {
+    public static TTask getIdleTask() {
         Collection<Object> objects = tTaskThreadPool.getAllObject();
         for (Object o : objects) {
             TTask tTask = ((TTask) o);
@@ -104,7 +93,7 @@ public class TTaskManager {
         return null;
     }
 
-    public TTask getIdleTaskLock() {
+    public static TTask getIdleTaskLock() {
         Collection<Object> objects = tTaskThreadPool.getAllObject();
         for (Object o : objects) {
             TTask tTask = ((TTask) o);
@@ -116,12 +105,12 @@ public class TTaskManager {
         return null;
     }
 
-    public TTask getNewTask(String tName) {
+    public static TTask getNewTask(String tName) {
         if (existsTask(tName)) return tTaskThreadPool.createTask(tName + System.currentTimeMillis());
         else return tTaskThreadPool.createTask(tName);
     }
 
-    public TTask getAvailableTask(String tName) {
+    public static TTask getAvailableTask(String tName) {
         TTask tTask = getIdleTask();
         if (tTask != null) {
             tTask.resetAll();
@@ -129,7 +118,7 @@ public class TTaskManager {
         } else return getNewTask(tName);
     }
 
-    public TTask getAvailableTaskLock(String tName) {
+    public static TTask getAvailableTaskLock(String tName) {
         TTask tTask = getIdleTaskLock();
         if (tTask != null) {
             tTask.resetAll();
@@ -140,7 +129,7 @@ public class TTaskManager {
         return tTask;
     }
 
-    public TTask getSingleTaskFor(String tName) {
+    public static synchronized TTask getSingleTaskFor(String tName) {
         TTask tTask = getTaskByName(tName);
         if (tTask == null) {
             return tTaskThreadPool.createTask(tName);
@@ -148,26 +137,26 @@ public class TTaskManager {
         return tTask;
     }
 
-    public synchronized TTask getSingleTaskLock(String tName) {
+    public static synchronized TTask getSingleTaskLock(String tName) {//主题任务是个异步任务，需要等待
         TTask tTask = getTaskByName(tName);
         if (tTask == null) {
             tTask = tTaskThreadPool.createTask(tName);
         }
-        if (tTask.isBusy()) return null;//无法锁定
-        tTask.lock();
+        if (tTask.isBusy()) return tTask;//无法锁定
+        tTask.lock();//主题任务是个异步任务，需要等待
         return tTask;
     }
 
-    public boolean existsTask(String tName) {
+    public static boolean existsTask(String tName) {
         return getTaskByName(tName) != null;
     }
 
-    public void deleteTask(TTask tTask) {
+    public static void deleteTask(TTask tTask) {
         tTask.freeFree();
         tTaskThreadPool.deleteTask(tTask.getTaskTag());
     }
 
-    public List<TTask> getAllTask() {
+    public static List<TTask> getAllTask() {
         List<TTask> allTasks = new ArrayList<>();//(tTaskThreadPool.getAllObject());
         Collection<Object> objects = tTaskThreadPool.getAllObject();
         for (Object o : objects)
@@ -175,16 +164,19 @@ public class TTaskManager {
         return allTasks;
     }
 
-    public void free() {
-        tTaskThreadPool.free();
+    public static int getTaskCount() {
+        return tTaskThreadPool.getCount();
     }
 
+    ///public void free() {
+    ///    tTaskThreadPool.free();
+    ///}
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //copy files
-    public TTask copyDirectory(String fromPath, String toPath, int tCount) {
+    public static TTask copyDirectory(String fromPath, String toPath, int tCount) {
         final int maxTaskCount = tTaskThreadPool.getCount() + tCount;
         TTask tTask = tTaskThreadPool.createTask(fromPath);
         tTask.getProperties().putString("fromPath", fromPath);
@@ -295,9 +287,9 @@ public class TTaskManager {
                                 tTask.getProperties().putInt("copiedCount", CCount);
                             }
                             tTask.getProperties().putString("toFile", tf);
-                            Message msg = taskMainLooperHandler.obtainMessage();
-                            msg.obj = tTask;
-                            taskMainLooperHandler.sendMessage(msg);
+                            ///Message msg = taskMainLooperHandler.obtainMessage();
+                            ///msg.obj = tTask;
+                            ///taskMainLooperHandler.sendMessage(msg);
                             //////////////////////////////////////////////////////////////////////////
                             TTask tto = tTaskThreadPool.getTaskByTag(tag);
                             tTaskThreadPool.deleteTask(tto.getTaskTag());
@@ -328,10 +320,10 @@ public class TTaskManager {
                 long tick = System.currentTimeMillis() - tTask.getProperties().getLong("startTime");
                 tTask.getProperties().putLong("takeUpTime", tick);
 
-                Message msg = taskMainLooperHandler.obtainMessage();
-                msg.obj = tTask;
+                ///Message msg = taskMainLooperHandler.obtainMessage();
+                ///msg.obj = tTask;
                 tTask.getProperties().putInt("status", DataID.TASK_STATUS_FINISHED_STOP);
-                taskMainLooperHandler.sendMessage(msg);
+                ///taskMainLooperHandler.sendMessage(msg);
                 tTask.free();
                 filesFinger.free();
                 //MMLog.log(TAG, "");
@@ -343,7 +335,7 @@ public class TTaskManager {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //timer
-    public TTask timer(long period, String tName) {
+    public static TTask timer(long period, String tName) {
         TTask tTask = tTaskThreadPool.createTask(tName);
         tTask.invoke(new InvokeInterface() {
             @Override
@@ -352,11 +344,12 @@ public class TTaskManager {
                 int lCounter = 0;
                 while (tTask.getCallBackHandler() != null) {
                     if ((System.currentTimeMillis() - lStartTick) >= period) {
-                        Message msg = TimerTaskHandler.obtainMessage();
                         lCounter++;
-                        msg.obj = tTask;
                         tTask.getProperties().putInt("status", lCounter);
-                        TimerTaskHandler.sendMessage(msg);
+                        ///Message msg = TimerTaskHandler.obtainMessage();
+                        ///msg.obj = tTask;
+                        ///TimerTaskHandler.sendMessage(msg);
+
                         lStartTick = System.currentTimeMillis();
                     }
                     try {
@@ -370,7 +363,7 @@ public class TTaskManager {
         return tTask;
     }
 
-    public TTask timerOnUIMain(long period, String tName) {
+    public static TTask timerOnUIMain(long period, String tName) {
         TTask tTask = tTaskThreadPool.createTask(tName);
         tTask.invoke(new InvokeInterface() {
             @Override
@@ -379,11 +372,11 @@ public class TTaskManager {
                 int lCounter = 0;
                 while (tTask.getCallBackHandler() != null) {
                     if ((System.currentTimeMillis() - lStartTick) >= period) {
-                        Message msg = taskMainLooperHandler.obtainMessage();
                         lCounter++;
-                        msg.obj = tTask;
+                        ///Message msg = taskMainLooperHandler.obtainMessage();
+                        ///msg.obj = tTask;
+                        ///taskMainLooperHandler.sendMessage(msg);
                         tTask.getProperties().putInt("status", lCounter);
-                        taskMainLooperHandler.sendMessage(msg);
                         lStartTick = System.currentTimeMillis();
                     }
                     try {
@@ -404,7 +397,7 @@ public class TTaskManager {
     }
 
     //net request task
-    public TTask request(final String fromUrl) {
+    public static TTask request(final String fromUrl) {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if (EmptyString(fromUrl)) {
             ///tTask.free();//释放无效的任务
@@ -425,7 +418,7 @@ public class TTaskManager {
                             MMLog.e(TAG, "requestGet " + result);
                         }
 
-                        if (tTask.getCallBackHandler() != null) {//回调传递给task
+                        /*if (tTask.getCallBackHandler() != null) {//回调传递给task
                             Message msg = taskMainLooperHandler.obtainMessage();
                             tTask.getProperties().putString("tag", tag);
                             tTask.getProperties().putString("fromUrl", fromUrl);
@@ -436,13 +429,13 @@ public class TTaskManager {
                             tTask.getProperties().putInt("status", status);
                             msg.obj = tTask;
                             taskMainLooperHandler.sendMessage(msg);
-                            //taskMainLooperHandler.sendMessage(msg)后
-                            //tTask.getProperties().getString("fromUrl")有可能被清空
-                            //tTask.free();//释放线程tTask.run //不能释放，连续的调用导致结果数据丢失
-                            //MMLog.d(TAG, "requestGet " + fromUrl + "," + result);
+                            ///taskMainLooperHandler.sendMessage(msg)后
+                            ///tTask.getProperties().getString("fromUrl")有可能被清空
+                            ///tTask.free();//释放线程tTask.run //不能释放，连续的调用导致结果数据丢失
+                            ///MMLog.d(TAG, "requestGet " + fromUrl + "," + result);
                         } else {
                             //deleteTask(tTask);//没有回调任务，直接清除tTask//无需删除，给调用者删除
-                        }
+                        }*/
                     }
                 });
             }
@@ -450,7 +443,7 @@ public class TTaskManager {
         return tTask;
     }
 
-    public TTask requestPost(final String fromUrl, ObjectList bodyParams) {
+    public static TTask requestPost(final String fromUrl, ObjectList bodyParams) {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if (EmptyString(fromUrl)) {
             tTask.free();//释放无效的任务
@@ -469,7 +462,7 @@ public class TTaskManager {
                             MMLog.e(TAG, "requestPost " + fromUrl + "," + result);
                         }
                         if (tTask.getCallBackHandler() != null) {
-                            Message msg = taskMainLooperHandler.obtainMessage();
+                            /*Message msg = taskMainLooperHandler.obtainMessage();
                             msg.obj = tTask;
                             tTask.getProperties().putString("tag", tag);
                             tTask.getProperties().putString("fromUrl", fromUrl);
@@ -479,7 +472,7 @@ public class TTaskManager {
                             tTask.getProperties().putString("result", result);
                             tTask.getProperties().putInt("status", status);
                             taskMainLooperHandler.sendMessage(msg);
-                            tTask.free();
+                            tTask.free();*/
                         } else {
                             deleteTask(tTask);//没有回调任务，直接清除tTask
                         }
@@ -490,7 +483,7 @@ public class TTaskManager {
         return tTask;
     }
 
-    public TTask requestPut(String fromUrl, String bodyJSOSParams) {
+    public static TTask requestPut(String fromUrl, String bodyJSOSParams) {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if (EmptyString(fromUrl)) {
             tTask.free();//释放无效的任务
@@ -510,7 +503,7 @@ public class TTaskManager {
                             MMLog.e(TAG, "requestPut " + fromUrl + "," + result);
                         }
                         if (tTask.getCallBackHandler() != null) {//记得回调传递给task
-                            Message msg = taskMainLooperHandler.obtainMessage();
+                            /*Message msg = taskMainLooperHandler.obtainMessage();
                             msg.obj = tTask;
                             tTask.getProperties().putString("tag", tag);
                             tTask.getProperties().putString("fromUrl", fromUrl);
@@ -519,7 +512,7 @@ public class TTaskManager {
                             tTask.getProperties().putLong("total", total);
                             tTask.getProperties().putString("result", result);
                             tTask.getProperties().putInt("status", status);
-                            taskMainLooperHandler.sendMessage(msg);
+                            taskMainLooperHandler.sendMessage(msg);*/
                             //taskMainLooperHandler.sendMessage(msg)后
                             //tTask.getProperties().getString("fromUrl")有可能被清空
                             tTask.free();//释放线程tTask.run
@@ -534,7 +527,7 @@ public class TTaskManager {
     }
 
     @Deprecated
-    private void TTaskThreadPool_SESSION_UPDATE_TEST_INIT() {
+    private static void TTaskThreadPool_SESSION_UPDATE_TEST_INIT() {
         //TTask tTask = getSingleTaskFor(DataID.SESSION_UPDATE_TEST_NAME);
         TNetTask tNetTask = new TNetTask(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
         boolean b = tTaskThreadPool.addTask(tNetTask);
@@ -546,7 +539,7 @@ public class TTaskManager {
         }
     }
 
-    private void tTaskManagerTTaskPoolInit() {
+    private static void tTaskManagerTTaskPoolInit() {
         TTaskInterface updateSession = new Session0();
         boolean b = tTaskThreadPool.addTaskInterface(updateSession);
         if (!b) {
@@ -556,7 +549,7 @@ public class TTaskManager {
     }
 
     //toPath 必须是绝对路劲下的目录
-    public TTask dl(final String fromUrl, final String toPath) {
+    public static TTask dl(final String fromUrl, final String toPath) {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if (EmptyString(fromUrl)) {
             tTask.free();//释放无效的任务
@@ -575,7 +568,7 @@ public class TTaskManager {
         return tTask;
     }
 
-    public TTask dl(final String fromUrl, final String toPath, boolean reDownload) {
+    public static TTask dl(final String fromUrl, final String toPath, boolean reDownload) {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if (EmptyString(fromUrl)) {
             tTask.free();//释放无效的任务
@@ -594,7 +587,7 @@ public class TTaskManager {
         return tTask;
     }
 
-    public TTask dl(final String fromUrl, final String toPath, boolean reDownload, boolean stopContinue) {
+    public static TTask dl(final String fromUrl, final String toPath, boolean reDownload, boolean stopContinue) {
         TTask tTask = tTaskThreadPool.createTask(fromUrl);
         if (EmptyString(fromUrl)) {
             tTask.free();//释放无效的任务
@@ -614,7 +607,7 @@ public class TTaskManager {
     }
 
     //关联线程池中的某个线程
-    private void download(String tag, String fromUrl, String toPath, boolean reDownload, boolean stopContinue) {
+    private static void download(String tag, String fromUrl, String toPath, boolean reDownload, boolean stopContinue) {
         //MMLog.log(TAG, "download tTask.tag = " + tag);
         TTask tTask = tTaskThreadPool.getTaskByTag(tag);//此时获取到的是调用者创建的任务
         if (tTask == null) {
@@ -665,7 +658,7 @@ public class TTaskManager {
             if (FileUtils.existFile(localPathFileName)) {
                 MMLog.log(TAG, "download stop,file already exist --> " + localPathFileName);
                 //tTask.free();
-                if (tTask.getCallBackHandler() != null) {
+                /*if (tTask.getCallBackHandler() != null) {
                     Message msg = taskMainLooperHandler.obtainMessage();
                     msg.obj = tTask;
                     tTask.getProperties().putString("tag", tag);
@@ -676,7 +669,7 @@ public class TTaskManager {
                     tTask.getProperties().putString("result", "ok");
                     tTask.getProperties().putInt("status", DataID.TASK_STATUS_SUCCESS);
                     taskMainLooperHandler.sendMessage(msg);
-                }
+                }*/
                 return;//已经完成下载，不再重复下载
             }
         } else {//重新下载
@@ -731,7 +724,7 @@ public class TTaskManager {
                             //  MMLog.log(TAG, "skip md5 checking");
                         }
 
-                        if (tTask.getCallBackHandler() != null) {
+                        /*if (tTask.getCallBackHandler() != null) {
                             Message msg = taskMainLooperHandler.obtainMessage();
                             msg.obj = tTask;
                             tTask.getProperties().putString("tag", tag);
@@ -742,13 +735,14 @@ public class TTaskManager {
                             tTask.getProperties().putString("result", result);
                             tTask.getProperties().putInt("status", status);
                             taskMainLooperHandler.sendMessage(msg);
-                        }
+                        }*/
                         break;
                 }
             }
         });
-        //} catch (Exception e) {
-        //    MMLog.e(TAG, "download() " + e.getMessage());//e.printStackTrace();
-        //}
+    }
+
+    static {
+        tTaskManagerTTaskPoolInit();
     }
 }

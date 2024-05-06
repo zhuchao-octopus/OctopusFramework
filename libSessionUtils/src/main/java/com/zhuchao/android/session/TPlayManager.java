@@ -1,6 +1,6 @@
 package com.zhuchao.android.session;
 
-import static com.zhuchao.android.fbase.eventinterface.PlaybackEvent.Status_NothingIdle;
+import static com.zhuchao.android.fbase.PlaybackEvent.Status_NothingIdle;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -18,10 +18,10 @@ import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MessageEvent;
 import com.zhuchao.android.fbase.ObjectList;
+import com.zhuchao.android.fbase.PlaybackEvent;
+import com.zhuchao.android.fbase.PlayerStatusInfo;
 import com.zhuchao.android.fbase.eventinterface.NormalCallback;
-import com.zhuchao.android.fbase.eventinterface.PlaybackEvent;
 import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
-import com.zhuchao.android.fbase.eventinterface.PlayerStatusInfo;
 import com.zhuchao.android.fbase.eventinterface.SessionCallback;
 import com.zhuchao.android.video.OMedia;
 import com.zhuchao.android.video.VideoList;
@@ -34,8 +34,9 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
     private final Context mContext;
     private SurfaceView surfaceView = null;
     private OMedia oMediaPlaying = null;
-    //private boolean oMediaLoading = false;
-    private PlayerCallback callback = null;
+    ///private OMedia oMediaPlaying_Old = null;
+    ///private boolean oMediaLoading = false;
+    private PlayerCallback mUserCallback = null;
     private int playOrder = DataID.PLAY_MANAGER_PLAY_ORDER2;
     private int autoPlaySource = DataID.SESSION_SOURCE_NONE;
     private ObjectList allPlayLists = null;
@@ -90,18 +91,28 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         this.surfaceView = sfView;
         this.setMagicNumber(0);
         this.allPlayLists = new ObjectList();
-        ///this.allPlayLists.addObject("LocalVideos", mPlayingList);
-        ///this.allPlayLists.addObject("LocalVideos", mLocalMediaVideos);
-        ///this.allPlayLists.addObject("LocalAudios", mLocalMediaAudios);
+        this.allPlayLists.addObject("VideosAndAudios", mPlayingList);
+        this.allPlayLists.addObject("LocalVideos", mLocalMediaVideos);
+        this.allPlayLists.addObject("LocalAudios", mLocalMediaAudios);
         this.allPlayLists.addObject("LocalUSBVideos", mLocalUSBMediaVideos);
-        ///this.allPlayLists.addObject("LocalUsbAudios", mLocalUSBMediaAudios);
-        ///this.allPlayLists.addObject("LocalSDVideos", mLocalSDMediaVideos);
-        ///this.allPlayLists.addObject("LocalSDAudios", mLocalSDMediaVideos);
+        this.allPlayLists.addObject("LocalUsbAudios", mLocalUSBMediaAudios);
+        this.allPlayLists.addObject("LocalSDVideos", mLocalSDMediaVideos);
+        this.allPlayLists.addObject("LocalSDAudios", mLocalSDMediaVideos);
         this.tMediaManager = new TMediaManager(mContext, this);
     }
 
-    public void updateLocalMedias() {
-        tMediaManager.updateMedias();
+    public void updateMusicsToPlayList() {
+        this.allPlayLists.clear();
+        this.allPlayLists.addObject("LocalAudios", mLocalMediaAudios);
+        this.allPlayLists.addObject("LocalUsbAudios", mLocalUSBMediaAudios);
+        this.allPlayLists.addObject("LocalSDAudios", mLocalSDMediaVideos);
+    }
+
+    public void updateMoviesToPlayList() {
+        this.allPlayLists.clear();
+        this.allPlayLists.addObject("LocalVideos", mLocalMediaVideos);
+        this.allPlayLists.addObject("LocalUSBVideos", mLocalUSBMediaVideos);
+        this.allPlayLists.addObject("LocalSDVideos", mLocalSDMediaVideos);
     }
 
     public int getTryCountForError() {
@@ -128,8 +139,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         this.playingLock = playingLock;
     }
 
-    public TPlayManager callback(PlayerCallback mCallback) {
-        this.callback = mCallback;
+    public TPlayManager callback(PlayerCallback callback) {
+        this.mUserCallback = callback;
         return this;
     }
 
@@ -156,8 +167,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
 
     public synchronized void startPlay(OMedia oMedia) {
 
-        if (surfaceView == null) {
-            MMLog.log(TAG, "surfaceView  is not ready! return");
+        if (surfaceView == null && oMedia.isVideo()) {
+            MMLog.log(TAG, "Don't forget to set surfaceView,it is not ready!");
             return;
         }
 
@@ -201,6 +212,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         ///this.oMediaPlaying.play();
         ///this.oMediaLoading = false;
         mPlayingHistoryList.add(new OMedia(oMediaPlaying.getPathName()));
+        ///MMLog.log(TAG, "Playing " + oMediaPlaying.getPathName());
     }
 
     public synchronized void startPlay(String url) {
@@ -240,7 +252,12 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
             oMediaPlaying.stop();
         }
     }
-
+    public synchronized void stopIdle() {
+        if (oMediaPlaying != null) {
+            oMediaPlaying.stop();
+            oMediaPlaying = null;
+        }
+    }
     public synchronized void stopFree() {
         if (oMediaPlaying != null) {
             MMLog.log(TAG, "call stopFree()");
@@ -332,10 +349,10 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
 
         OMedia oo = getNextAvailable();//获取下一个有效的资源
         if (oo != null) {
-            MMLog.log(TAG, "Go to next OMedia = " + oo.getPathName());
+            MMLog.log(TAG, "Go to next " + oo.getPathName());
             startPlay(oo);
         } else {
-            MMLog.log(TAG, "Next OMedia= null,go to auto play");
+            MMLog.log(TAG, "Next is null,start auto play");
             autoPlay();
         }
     }
@@ -589,6 +606,15 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         return null;
     }
 
+    public VideoList getAllMusic() {
+        VideoList videoList = new VideoList();
+        Collection<Object> objects = allPlayLists.getAllObject();
+        for (Object o : objects) {
+            videoList.copyAudioMediaFrom((VideoList) o);
+        }
+        return videoList;
+    }
+
     public synchronized void autoPlay() {
         if (isPlaying()) return;
         autoPlay(autoPlaySource);
@@ -616,7 +642,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
 
     @Override
     public void onEventPlayerStatus(PlayerStatusInfo playerStatusInfo) {
-        if (this.callback != null && oMediaPlaying != null) {
+        if (this.mUserCallback != null && oMediaPlaying != null) {
             //this.callback.OnEventCallBack(EventType, TimeChanged, LengthChanged, PositionChanged, OutCount, ChangedType, ChangedID, Buffering, Length);
             Message msg = playHandler.obtainMessage();
             playerStatusInfo.setObj(oMediaPlaying);
@@ -626,7 +652,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
             msg.arg2 = (int) playerStatusInfo.getLengthChanged();
             playHandler.sendMessage(msg);
         }
-        switch (playerStatusInfo.getEventCode()) {
+        switch (playerStatusInfo.getEventCode()) {//media.class 原生事件
             case PlaybackEvent.Buffering:
             case PlaybackEvent.EndReached:
                 break;
@@ -638,7 +664,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
                 break;
         }
         switch (playerStatusInfo.getEventType()) {
-            case Status_NothingIdle:
+            case PlaybackEvent.Status_NothingIdle:
                 ///if (autoPlaySource >= DataID.SESSION_SOURCE_ALL) //立即跳转到收藏列表
                 ///{
                 ///MMLog.log(TAG, "OnEventCallBack.EventType = " + playerStatusInfo.getEventType() + ", " + oMediaPlaying.getPathName());
@@ -646,6 +672,18 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
                 ///}
                 break;
             case PlaybackEvent.Status_Opening:
+                if (oMediaPlaying != null) {
+                    playerStatusInfo.setObj(oMediaPlaying);
+                    Message msg = playHandler.obtainMessage();
+                    msg.what = PlaybackEvent.Status_Changed;
+                    msg.obj = playerStatusInfo;
+                    if (oMediaPlaying.getPre() != null && oMediaPlaying.getNext() != null) {
+                        if (oMediaPlaying.getPre().getNext() == oMediaPlaying) msg.what = PlaybackEvent.Status_Next;
+                        else if (oMediaPlaying.getNext().getPre() == oMediaPlaying) msg.what = PlaybackEvent.Status_Prev;
+                    }
+                    playHandler.sendMessage(msg);
+                }
+                break;
             case PlaybackEvent.Status_Buffering:
             case PlaybackEvent.Status_Playing:
             case PlaybackEvent.Status_Paused:
@@ -657,9 +695,11 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
                 break;
             case PlaybackEvent.Status_Ended:
                 if (playerStatusInfo.getLastError() == PlaybackEvent.Status_Error) {//处理错误
+                    if(oMediaPlaying == null)
+                        break;
                     playerStatusInfo.setLastError(PlaybackEvent.Status_Ended);
                     if (tryCountForError > 0 && tryPlayCount > 0) {
-                        MMLog.log(TAG, "OnEventCallBack.EventType.Status_Ended try again " + oMediaPlaying.getPathName());
+                        MMLog.d(TAG, "OnEventCallBack.EventType.Status_Error try again " + oMediaPlaying.getPathName());
                         playEventHandler(DataID.PLAY_MANAGER_PLAY_ORDER4);
                         tryPlayCount--;
                     } else {
@@ -667,7 +707,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
                     }
                 } else {
                     tryPlayCount = tryCountForError;
-                    MMLog.log(TAG, "OnEventCallBack.EventType.Status_Ended " + oMediaPlaying.getPathName());
+                    MMLog.i(TAG, "OnEventCallBack.EventType.Status_Ended " + oMediaPlaying.getPathName());
                     playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                 }
                 break;
@@ -675,6 +715,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
     }
 
     private void playEventHandler(int playOrder) {
+
         switch (playOrder) {
             case DataID.PLAY_MANAGER_PLAY_ORDER0://自动播放第一个
                 autoPlay();
@@ -699,6 +740,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
             default:
                 break;
         }
+
     }
 
     private final Handler playHandler = new Handler(Looper.getMainLooper()) {
@@ -713,11 +755,11 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
                 case MessageEvent.MESSAGE_EVENT_USB_AUDIO:
                 case MessageEvent.MESSAGE_EVENT_SD_VIDEO:
                 case MessageEvent.MESSAGE_EVENT_SD_AUDIO:
-                    if (callback != null) {
+                    if (mUserCallback != null) {
                         PlayerStatusInfo StatusInfo = new PlayerStatusInfo();
                         StatusInfo.setEventType(MessageEvent.MESSAGE_EVENT_MEDIA_LIBRARY);
                         StatusInfo.setEventCode(msg.what);
-                        callback.onEventPlayerStatus(StatusInfo);
+                        mUserCallback.onEventPlayerStatus(StatusInfo);
                     }
                     return;
             }
@@ -733,7 +775,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
                 case PlaybackEvent.Status_Error:
                     break;
             }
-            if (callback != null) callback.onEventPlayerStatus(playerStatusInfo);
+            if (mUserCallback != null) mUserCallback.onEventPlayerStatus(playerStatusInfo);
         }
     };
 
@@ -741,7 +783,10 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
     public void onEventRequest(String Result, int Index) {
 
     }
-
+    public void printAllEventListener()
+    {
+        Cabinet.getEventBus().printAllEventListener();
+    }
     @Override
     public void OnSessionComplete(int session_id, String result, int count) {
         MMLog.d(TAG, "OnSessionComplete id=" + session_id + ":" + result + ":" + count);
@@ -777,11 +822,16 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
                 //mLocalSDMediaAudios.printAll();
                 break;
         }
+
+        Cabinet.getEventBus().post(new EventCourier(TPlayManager.this.getClass(), session_id));
         playHandler.sendEmptyMessage(session_id);
-        Cabinet.getEventBus().post(new EventCourier(TPlayManager.this.getClass().getName(), session_id));
     }
 
     public void updateMediaLibrary() {
+        if (tMediaManager != null) tMediaManager.updateMedias();
+    }
+
+    public void updateLocalMedias() {
         if (tMediaManager != null) tMediaManager.updateMedias();
     }
 

@@ -1,5 +1,9 @@
 package com.zhuchao.android.session;
 
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_CANBOX_CLASS_NAME;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_PACKAGE_NAME;
+
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothAdapter;
@@ -12,6 +16,8 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.media.AudioManager;
+import android.net.Uri;
+import android.os.Bundle;
 
 import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.MMLog;
@@ -21,7 +27,7 @@ import com.zhuchao.android.fbase.TAppProcessUtils;
 import java.util.Objects;
 
 public class GlobalBroadcastReceiver extends BroadcastReceiver {
-    private static final String TAG = "GlobalBroadcastReceiver";
+    private static final String TAG = "GlobalReceiver";
     //public static final String Action_OCTOPUS_permission = "com.octopus.android.action.OCTOPUS.PERMISSION";
     public static final String ACTION_BOOT_COMPLETED = "android.intent.action.BOOT_COMPLETED";
     public static final String ACTION_PAIRING_CANCEL = "android.bluetooth.device.action.PAIRING_CANCEL";
@@ -85,10 +91,10 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
         switch (Objects.requireNonNull(intent.getAction())) {
             case ACTION_BOOT_COMPLETED:
                 Intent intent1 = new Intent();
-                intent1.setComponent(new ComponentName("com.zhuchao.android.car", "com.zhuchao.android.car.service.MMCarService"));
+                intent1.setComponent(new ComponentName(MESSAGE_EVENT_AIDL_PACKAGE_NAME, MESSAGE_EVENT_AIDL_CANBOX_CLASS_NAME));
                 context.startService(intent1);
                 Intent intent2 = new Intent();
-                intent2.setComponent(new ComponentName("com.zhuchao.android.car", "com.zhuchao.android.car.service.MultiService"));
+                intent2.setComponent(new ComponentName(MESSAGE_EVENT_AIDL_PACKAGE_NAME, MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME));
                 context.startService(intent2);
                 break;
             case MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_HELLO:
@@ -99,12 +105,25 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                 MMLog.m(TAG);
                 break;
             case Intent.ACTION_MEDIA_MOUNTED:
-                Cabinet.getEventBus().post(new EventCourier(mGlobalBroadcastReceiver.getClass(), MessageEvent.MESSAGE_EVENT_USB_MOUNTED));
+                EventCourier eventCourier1 = new EventCourier(mGlobalBroadcastReceiver.getClass(), MessageEvent.MESSAGE_EVENT_USB_MOUNTED);
+                eventCourier1.setObj(intent);
+                Cabinet.getEventBus().post(eventCourier1);
                 break;
             case Intent.ACTION_MEDIA_UNMOUNTED:
-                Cabinet.getEventBus().post(new EventCourier(mGlobalBroadcastReceiver.getClass(), MessageEvent.MESSAGE_EVENT_USB_UNMOUNT));
+                EventCourier eventCourier2 = new EventCourier(mGlobalBroadcastReceiver.getClass(), MessageEvent.MESSAGE_EVENT_USB_UNMOUNT);
+                eventCourier2.setObj(intent);
+                Cabinet.getEventBus().post(eventCourier2);
                 break;
             case Intent.ACTION_MEDIA_EJECT:
+                ///Bundle bundle = intent.getExtras();
+                ///Uri data = intent.getData();
+                ///if (bundle != null) {
+                ///    for (String key : bundle.keySet())
+                ///        MMLog.log(TAG, "USB device eject," + key + ":" + bundle.toString() + " url="+data.toString());
+                ///}
+                EventCourier eventCourier3 = new EventCourier(mGlobalBroadcastReceiver.getClass(), MessageEvent.MESSAGE_EVENT_USB_EJECT);
+                eventCourier3.setObj(intent);
+                Cabinet.getEventBus().post(eventCourier3);
                 break;
             case UsbManager.ACTION_USB_DEVICE_ATTACHED:
             case UsbManager.ACTION_USB_DEVICE_DETACHED:

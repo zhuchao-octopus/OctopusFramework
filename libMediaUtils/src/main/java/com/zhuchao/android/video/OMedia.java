@@ -19,9 +19,9 @@ import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MediaFile;
 import com.zhuchao.android.fbase.TTask;
 import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
-import com.zhuchao.android.fbase.eventinterface.PlaybackEvent;
+import com.zhuchao.android.fbase.PlaybackEvent;
 import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
-import com.zhuchao.android.fbase.eventinterface.PlayerStatusInfo;
+import com.zhuchao.android.fbase.PlayerStatusInfo;
 import com.zhuchao.android.persist.SPreference;
 import com.zhuchao.android.player.MPlayer;
 import com.zhuchao.android.player.PlayControl;
@@ -59,8 +59,8 @@ public class OMedia implements PlayerCallback {
     private final AssetFileDescriptor assetFileDescriptor;
     private final Uri uri;
     private boolean restorePlay = false;
-    public final TTask tTask_play = new TTask("OMedia.play", null);
-    private final TTask tTask_stop = new TTask("OMedia.stop", null);
+    public final TTask tTask_play = new TTask("OMedia.task.play", null);
+    private final TTask tTask_stop = new TTask("OMedia.task.stop", null);
     private int videoOutWidth = 0;
     private int videoOutHeight = 0;
     protected int magicNumber = 0;
@@ -159,9 +159,14 @@ public class OMedia implements PlayerCallback {
             MMLog.log(TAG, "oMedia play failed no player found, check your context");
             return null;
         }
-
-        FPlayer.setSource(url);
-        FPlayer.play();
+        if(FileUtils.existFile(url)) {
+            FPlayer.setSource(url);
+            FPlayer.play();
+        }
+        else
+        {
+            MMLog.d(TAG,"File is not exists "+url);
+        }
         return this;
     }
 
@@ -364,7 +369,7 @@ public class OMedia implements PlayerCallback {
 
     public void stop() {
         try {
-            MMLog.d(TAG, "call stop() with " + FPlayer.getTAG());
+            ///MMLog.d(TAG, "Call stop() with " + FPlayer.getTAG());
             if (isPlayerReady()) {
                 if (FPlayer.getPlayerStatusInfo().getEventType() != PlaybackEvent.Status_Stopped) {
                     long stopTime = getTime();
@@ -372,7 +377,7 @@ public class OMedia implements PlayerCallback {
                     //MMLog.log(TAG, "OMedia playing time = " + playTime);
                 }
                 FPlayer.stop();
-                MMLog.log(TAG, "OMedia has stopped at time " + playTime);
+                MMLog.log(TAG, "OMedia has stopped at time " + playTime + " status="+getPlayStatus());
             }
         } catch (Exception e) {
             //e.printStackTrace();
@@ -636,7 +641,7 @@ public class OMedia implements PlayerCallback {
 
     @Override
     public void onEventPlayerStatus(PlayerStatusInfo playerStatusInfo) {
-        switch (playerStatusInfo.getEventCode()) {
+        switch (playerStatusInfo.getEventCode()) {//media.class 原生事件
             case PlaybackEvent.Buffering:
             case PlaybackEvent.EndReached:
                 break;

@@ -216,6 +216,22 @@ public class VideoList {
         return audioList1;
     }
 
+    public void copyAudioMediaTo(VideoList videoList) {
+        for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
+            OMedia oMedia = (OMedia) oo.getValue();
+            if (oMedia.isAudio()) videoList.add(oMedia);
+        }
+    }
+
+    public void copyAudioMediaFrom(VideoList videoList) {
+        if(videoList != null) {
+            for (HashMap.Entry<String, Object> oo : videoList.getMap().entrySet()) {
+                OMedia oMedia = (OMedia) oo.getValue();
+                if (oMedia.isAudio()) add(oMedia);
+            }
+        }
+    }
+
     public HashMap<String, Object> getAll() {
         return mFHashMap;
     }

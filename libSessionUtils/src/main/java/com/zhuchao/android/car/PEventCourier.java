@@ -11,9 +11,9 @@ import com.zhuchao.android.fbase.ByteUtils;
 import java.util.ArrayList;
 
 public class PEventCourier implements Parcelable {
-    private String from;
-    private String target;
-    private int id;
+    private final String from;
+    private final String target;
+    private final int id;
     private byte[] datas;
     private ArrayList<String> mStrings = new ArrayList<>();
 
@@ -37,6 +37,26 @@ public class PEventCourier implements Parcelable {
         this.id = id;
         this.mStrings.clear();
         this.mStrings.addAll(strings);
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public byte[] getDatas() {
+        return datas;
+    }
+
+    public ArrayList<String> getStrings() {
+        return mStrings;
     }
 
     protected PEventCourier(Parcel in) {

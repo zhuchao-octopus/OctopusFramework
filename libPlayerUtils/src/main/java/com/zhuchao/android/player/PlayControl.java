@@ -7,7 +7,7 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 
 import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
-import com.zhuchao.android.fbase.eventinterface.PlayerStatusInfo;
+import com.zhuchao.android.fbase.PlayerStatusInfo;
 
 import java.io.FileDescriptor;
 import java.util.Map;

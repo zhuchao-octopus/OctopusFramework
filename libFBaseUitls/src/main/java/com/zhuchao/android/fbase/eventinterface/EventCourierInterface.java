@@ -1,9 +1,5 @@
 package com.zhuchao.android.fbase.eventinterface;
 
-import android.content.Context;
-
-import com.zhuchao.android.fbase.EventCourier;
-
 public interface EventCourierInterface {
     abstract String getTarget();
 
@@ -21,11 +17,9 @@ public interface EventCourierInterface {
 
     abstract void setObj(Object obj);
 
-    abstract String getFromClass();
+    abstract Class<?>  getFromClass();
 
-    //abstract EventCourier with(Context context);
-
-    abstract EventCourier f(String fromClass);
+    abstract void setFromClass(Class<?>  fromClass);
 
     abstract byte getByte();
 

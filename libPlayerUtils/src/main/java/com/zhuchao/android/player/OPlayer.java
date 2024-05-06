@@ -14,7 +14,7 @@ import android.view.TextureView;
 import androidx.annotation.NonNull;
 
 import com.zhuchao.android.fbase.MMLog;
-import com.zhuchao.android.fbase.eventinterface.PlaybackEvent;
+import com.zhuchao.android.fbase.PlaybackEvent;
 import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
 
 import org.videolan.libvlc.LibVLC;
@@ -423,7 +423,7 @@ public class OPlayer extends PlayControl {
         try {
             if (mMediaPlayer.getPlayerState() != Media.State.Stopped) mMediaPlayer.stop();
         } catch (Exception e) {
-            MMLog.log(TAG, "call stop() " + e.toString());
+            MMLog.log(TAG, "Call stop() " + e.toString());
         }
     }
 

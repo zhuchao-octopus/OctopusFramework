@@ -131,9 +131,8 @@ public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
     }
 
     @Override
-    public TTask setKeep(boolean keeping) {
+    public void setKeep(boolean keeping) {
         tMainTask.setKeep(keeping);
-        return tMainTask;
     }
 
     @Override
@@ -184,8 +183,12 @@ public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
 
     @Override
     public TTask resetAll() {
-        tMainTask.resetAll();
-        return tMainTask;
+        return tMainTask.resetAll();
+    }
+
+    @Override
+    public void forceResetAll() {
+        tMainTask.forceResetAll();
     }
 
     @Override

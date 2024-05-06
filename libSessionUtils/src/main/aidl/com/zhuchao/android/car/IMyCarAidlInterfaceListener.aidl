@@ -11,4 +11,5 @@ interface IMyCarAidlInterfaceListener {
      */
     //void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat, double aDouble, String aString);
     void onMessageCarAidlInterface(in PEventCourier msg);
+    void onMessageMusice(int MsgId,int status,long timeChanged,long length,String filePathName);
 }

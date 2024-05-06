@@ -82,7 +82,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
 
     //private Context mContext = null;
     private TNetUtils tNetUtils = null;
-    private TTaskManager tTaskManager = null;
+    //private TTaskManager tTaskManager = null;
     private NetworkInformation networkInformation = null;
     private final TTaskQueue tTaskQueue = new TTaskQueue();
     private String pName = null;//"A40I";
@@ -111,7 +111,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
             public void run() {
                 try {
                     VERSION_NAME = TAppUtils.getAppVersionName(TWatchManService.this, TWatchManService.this.getPackageName());
-                    tTaskManager = new TTaskManager(TWatchManService.this);
+                    ///tTaskManager = new TTaskManager(TWatchManService.this);
                     tNetUtils = new TNetUtils(TWatchManService.this);
                     tNetUtils.registerNetStatusCallback(TWatchManService.this);
                     registerUserEventReceiver();
@@ -319,7 +319,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                         installedReboot = intent.getExtras().getBoolean("installedReboot", false);
                         if (EmptyString(apkFilePath)) return;
                         tTaskQueue.setMaxConcurrencyCount(1);
-                        TTask tTask = tTaskManager.getSingleTaskFor("Silent install " + apkFilePath);
+                        TTask tTask = TTaskManager.getSingleTaskFor("Silent install " + apkFilePath);
                         tTask.reset();
                         tTask.invoke(new InvokeInterface() {
                             @Override
@@ -704,7 +704,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
 
     @Deprecated
     private void checkAndUpdateDevice(boolean startAgainFlag) {
-        TTask tTask = tTaskManager.getTaskByName(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
+        TTask tTask = TTaskManager.getTaskByName(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
         if (tTask == null) {
             MMLog.i(TAG, "NOT FOUND TASK SESSION_UPDATE_JHZ_TEST_UPDATE_NAME!!");
             return;
@@ -717,7 +717,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     }
 
     private void session_jhz_test_update_session(boolean startAgainFlag) {
-        TTaskInterface tTask = tTaskManager.getObjectByName(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
+        TTaskInterface tTask = TTaskManager.getObjectByName(DataID.SESSION_UPDATE_JHZ_TEST_UPDATE_NAME);
         if (tTask == null) {
             MMLog.i(TAG, "NOT FOUND TASK SESSION_UPDATE_JHZ_TEST_UPDATE_NAME!!");
             return;
@@ -731,7 +731,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     }
 
     private void doNetStatusChangedFunction() {
-        if (tTaskManager != null && networkInformation != null) {
+        if (networkInformation != null) {
             //checkAndUpdateDevice(false);
             session_jhz_test_update_session(false);
         }

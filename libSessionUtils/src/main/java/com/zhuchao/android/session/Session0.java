@@ -1,8 +1,6 @@
 package com.zhuchao.android.session;
 
-import com.zhuchao.android.TPlatform;
 import com.zhuchao.android.fbase.DataID;
-import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.ObjectList;
 import com.zhuchao.android.fbase.TTask;
 import com.zhuchao.android.fbase.TTaskInterface;
@@ -114,9 +112,8 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
     }
 
     @Override
-    public TTask setKeep(boolean keeping) {
+    public void setKeep(boolean keeping) {
         tTask.setKeep(keeping);
-        return tTask;
     }
 
     @Override
@@ -162,8 +159,12 @@ public class Session0 implements TRequestEventInterface, TTaskInterface, InvokeI
 
     @Override
     public TTask resetAll() {
-        tTask.resetAll();
-        return tTask;
+        return tTask.resetAll();
+    }
+
+    @Override
+    public void forceResetAll() {
+        tTask.forceResetAll();
     }
 
     @Override

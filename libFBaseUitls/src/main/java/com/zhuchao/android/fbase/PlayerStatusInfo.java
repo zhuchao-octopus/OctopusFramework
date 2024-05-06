@@ -1,9 +1,9 @@
-package com.zhuchao.android.fbase.eventinterface;
+package com.zhuchao.android.fbase;
 
 public class PlayerStatusInfo {
     private Object obj;
-    private int eventCode;
-    private int eventType;
+    private int eventCode;//Event extends AbstractVLCEvent
+    private int eventType;//自定义 event id
     private float position;
     private long timeChanged;
     private long lengthChanged;

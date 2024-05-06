@@ -184,8 +184,8 @@ public class LiveVideoSession implements SessionCallback {
 
     public void addVideos(VideoList videoList) {
         mVideoList.add(videoList);
-        //MMLog.d(TAG,"videoList.count="+videoList.getCount());
-        //MMLog.d(TAG,"mVideoList.count="+mVideoList.getCount());
+        ///MMLog.d(TAG,"videoList.count="+videoList.getCount());
+        ///MMLog.d(TAG,"mVideoList.count="+mVideoList.getCount());
     }
 
     public void printMovies() {
@@ -212,8 +212,7 @@ public class LiveVideoSession implements SessionCallback {
     }
 
     public void initMediasFromLocal(Context context, Integer fType) {
-        if (fType == DataID.MEDIA_TYPE_ID_VIDEO)
-        {
+        if (fType == DataID.MEDIA_TYPE_ID_VIDEO) {
             List<LVideo> lVideos = FileUtils.getVideos(context);
             for (LVideo lVideo : lVideos) {
                 Movie movie = new Movie(lVideo.getPath());
@@ -222,9 +221,7 @@ public class LiveVideoSession implements SessionCallback {
                 OMedia oMedia = new OMedia(movie);
                 mVideoList.add(oMedia);
             }
-        }
-        else if (fType == DataID.MEDIA_TYPE_ID_AUDIO)
-        {
+        } else if (fType == DataID.MEDIA_TYPE_ID_AUDIO) {
             List<LMusic> lMusics = FileUtils.getMusics(context);
             for (LMusic lmusic : lMusics) {
                 Movie movie = new Movie(lmusic.getPath());
@@ -279,6 +276,20 @@ public class LiveVideoSession implements SessionCallback {
             }
             FileList.clear();
         }
+    }
+
+    public void initMediasFromPath(Context context, String FilePath, Integer fType, LiveVideoSession videoSession, LiveVideoSession audioSession) {
+        List<String> FileList = MediaFile.getMediaFiles(FilePath, fType);
+        for (int i = 0; i < FileList.size(); i++) {
+            Movie movie = new Movie(FileList.get(i));
+            String fileName = getFileName(movie.getSrcUrl());
+            if (NotEmptyString(fileName)) movie.setName(fileName);
+            OMedia oMedia = new OMedia(movie);
+            if (oMedia.isVideo()) videoSession.getVideoList().add(oMedia);
+            else if (oMedia.isAudio()) audioSession.getVideoList().add(oMedia);
+            //mVideoList.add(oMedia);
+        }
+        FileList.clear();
     }
 
     private void generateAndAppendVideoFromIlpr() {

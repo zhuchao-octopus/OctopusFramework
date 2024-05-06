@@ -6,136 +6,13 @@ import com.zhuchao.android.fbase.eventinterface.EventCourierInterface;
 import java.util.Arrays;
 
 public class EventCourier implements EventCourierInterface {
-    private String from;
+    private Class<?> from;
+    ///private String from;
     private String target;
     private int id;
     private byte[] datas;
-    private Object obj;
-    //private  Class<?>  from;
+    private Object obj = null;
 
-    public EventCourier(Class<?> fromClass, int id) {
-        this.target = null;
-        this.id = id;
-        this.datas = new byte[1];
-        this.obj = null;
-        this.from = String.valueOf(fromClass.getName());
-    }
-
-    public EventCourier(String target, int id) {
-        this.target = target;
-        this.id = id;
-        this.datas = new byte[1];
-        this.obj = null;
-        //this.fromClass = getCallerClass();
-    }
-
-    public EventCourier(String fromClass, String target, int id) {
-        this.target = target;
-        this.id = id;
-        this.datas = new byte[1];
-        this.obj = null;
-        this.from = fromClass;
-    }
-
-    public EventCourier(String target, int id, boolean value) {
-        this.target = target;
-        this.id = id;
-        this.datas = new byte[1];
-        this.datas[0] = (byte) (value ? 1 : 0);
-        this.obj = null;
-        //this.fromClass = getCallerClass();
-    }
-
-    public EventCourier(String fromClass, String target, int id, boolean value) {
-        this.target = target;
-        this.id = id;
-        this.datas = new byte[1];
-        this.datas[0] = (byte) (value ? 1 : 0);
-        this.obj = null;
-        this.from = fromClass;
-    }
-
-    public EventCourier(String target, int id, byte value) {
-        this.target = target;
-        this.id = id;
-        this.datas = new byte[1];
-        this.datas[0] = value;
-        this.obj = null;
-        //this.fromClass = getCallerClass();
-    }
-
-    public EventCourier(String fromClass, String target, int id, byte value) {
-        this.target = target;
-        this.id = id;
-        this.datas = new byte[1];
-        this.datas[0] = value;
-        this.obj = null;
-        this.from = fromClass;
-    }
-
-    public EventCourier(String target, int id, int value) {
-        this.target = target;
-        this.id = id;
-        this.datas = ByteUtils.intToBytes(value);
-        this.obj = null;
-        //this.fromClass = getCallerClass();
-    }
-
-    public EventCourier(String fromClass, String target, int id, int value) {
-        this.target = target;
-        this.id = id;
-        this.datas = ByteUtils.intToBytes(value);
-        this.obj = null;
-        this.from = fromClass;
-    }
-
-    public EventCourier(String target, int id, byte[] datas) {
-        this.target = target;
-        this.id = id;
-        this.datas = datas;
-        this.obj = null;
-        //this.fromClass = getCallerClass();
-    }
-
-    public EventCourier(String fromClass, String target, int id, byte[] datas) {
-        this.target = target;
-        this.id = id;
-        this.datas = datas;
-        this.obj = null;
-        this.from = fromClass;
-    }
-
-    public EventCourier(String target, int id, Object obj) {
-        this.target = target;
-        this.id = id;
-        this.datas = new byte[1];
-        this.obj = obj;
-        //this.fromClass = getCallerClass();
-    }
-
-    public EventCourier(String fromClass, String target, int id, Object obj) {
-        this.target = target;
-        this.id = id;
-        this.datas = new byte[1];
-        this.obj = obj;
-        this.from = fromClass;
-    }
-
-    public EventCourier(String target, int id, byte[] datas, Object obj) {
-        this.target = target;
-        this.id = id;
-        this.datas = datas;
-        this.obj = obj;
-        //this.fromClass = getCallerClass();
-    }
-
-    public EventCourier(String fromClass, String target, int id, byte[] datas, Object obj) {
-        this.target = target;
-        this.id = id;
-        this.datas = datas;
-        this.obj = obj;
-        this.from = fromClass;
-    }
 
     public EventCourier(int id) {
         this.target = null;
@@ -145,6 +22,29 @@ public class EventCourier implements EventCourierInterface {
         //this.fromClass = getCallerClass();
     }
 
+    public EventCourier(Object obj) {
+        this.target = null;
+        this.id = -1;
+        this.datas = new byte[1];
+        this.obj = obj;
+        //this.fromClass = getCallerClass();
+    }
+
+    public EventCourier(Class<?> fromClass, int id) {
+        this.target = null;
+        this.id = id;
+        this.datas = new byte[1];
+        this.obj = null;
+        this.from = fromClass;
+    }
+
+    public EventCourier(String target, int id) {
+        this.target = target;
+        this.id = id;
+        this.datas = new byte[1];
+        this.obj = null;
+        //this.fromClass = getCallerClass();
+    }
 
     public EventCourier(int id, byte value) {
         this.target = null;
@@ -179,6 +79,56 @@ public class EventCourier implements EventCourierInterface {
         //this.fromClass = getCallerClass();
     }
 
+    public EventCourier(Class<?> fromClass, String target, int id) {
+        this.target = target;
+        this.id = id;
+        this.datas = new byte[1];
+        this.obj = null;
+        this.from = fromClass;
+    }
+
+    public EventCourier(String target, int id, boolean value) {
+        this.target = target;
+        this.id = id;
+        this.datas = new byte[1];
+        this.datas[0] = (byte) (value ? 1 : 0);
+        this.obj = null;
+        //this.fromClass = getCallerClass();
+    }
+
+    public EventCourier(String target, int id, byte value) {
+        this.target = target;
+        this.id = id;
+        this.datas = new byte[1];
+        this.datas[0] = value;
+        this.obj = null;
+        //this.fromClass = getCallerClass();
+    }
+
+    public EventCourier(String target, int id, int value) {
+        this.target = target;
+        this.id = id;
+        this.datas = ByteUtils.intToBytes(value);
+        this.obj = null;
+        //this.fromClass = getCallerClass();
+    }
+
+    public EventCourier(String target, int id, byte[] datas) {
+        this.target = target;
+        this.id = id;
+        this.datas = datas;
+        this.obj = null;
+        //this.fromClass = getCallerClass();
+    }
+
+    public EventCourier(String target, int id, Object obj) {
+        this.target = target;
+        this.id = id;
+        this.datas = new byte[1];
+        this.obj = obj;
+        //this.fromClass = getCallerClass();
+    }
+
     public EventCourier(int id, byte[] datas, Object obj) {
         this.target = null;
         this.id = id;
@@ -187,12 +137,62 @@ public class EventCourier implements EventCourierInterface {
         //this.fromClass = getCallerClass();
     }
 
-    public EventCourier(Object obj) {
-        this.target = null;
-        this.id = -1;
-        this.datas = new byte[1];
+    public EventCourier(String target, int id, byte[] datas, Object obj) {
+        this.target = target;
+        this.id = id;
+        this.datas = datas;
         this.obj = obj;
         //this.fromClass = getCallerClass();
+    }
+
+    public EventCourier(Class<?> fromClass, String target, int id, boolean value) {
+        this.target = target;
+        this.id = id;
+        this.datas = new byte[1];
+        this.datas[0] = (byte) (value ? 1 : 0);
+        this.obj = null;
+        this.from = fromClass;
+    }
+
+    public EventCourier(Class<?> fromClass, String target, int id, byte value) {
+        this.target = target;
+        this.id = id;
+        this.datas = new byte[1];
+        this.datas[0] = value;
+        this.obj = null;
+        this.from = fromClass;
+    }
+
+    public EventCourier(Class<?> fromClass, String target, int id, int value) {
+        this.target = target;
+        this.id = id;
+        this.datas = ByteUtils.intToBytes(value);
+        this.obj = null;
+        this.from = fromClass;
+    }
+
+    public EventCourier(Class<?> fromClass, String target, int id, byte[] datas) {
+        this.target = target;
+        this.id = id;
+        this.datas = datas;
+        this.obj = null;
+        this.from = fromClass;
+    }
+
+    public EventCourier(Class<?> fromClass, String target, int id, Object obj) {
+        this.target = target;
+        this.id = id;
+        this.datas = new byte[1];
+        this.obj = obj;
+        this.from = fromClass;
+    }
+
+    public EventCourier(Class<?> fromClass, String target, int id, byte[] datas, Object obj) {
+        this.target = target;
+        this.id = id;
+        this.datas = datas;
+        this.obj = obj;
+        this.from = fromClass;
     }
 
     public String getTarget() {
@@ -228,21 +228,12 @@ public class EventCourier implements EventCourierInterface {
     }
 
     @Override
-    public String getFromClass() {
+    public Class<?> getFromClass() {
         return from;
     }
 
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFromClass(String fromClass) {
+    public void setFromClass(Class<?> fromClass) {
         this.from = fromClass;
-    }
-
-    public EventCourier f(String fromClass) {
-        this.from = fromClass;
-        return this;
     }
 
     public byte getByte() {
@@ -290,7 +281,7 @@ public class EventCourier implements EventCourierInterface {
     @Override
     public String toStr() {
         if (from != null)
-            return "EventCourier{" + "target='" + target + '\'' + ",id=" + id + ",datas=" + Arrays.toString(datas) + ",obj=" + obj + ",fromClass='" + from + '\'' + '}';
+            return "EventCourier{" + "target='" + target + '\'' + ",id=" + id + ",datas=" + Arrays.toString(datas) + ",obj=" + obj + ",fromClass='" + String.valueOf(from.getName()) + '\'' + '}';
         else
             return "EventCourier{" + "target='" + target + '\'' + ",id=" + id + ",datas=" + Arrays.toString(datas) + ",obj=" + obj + ",fromClass='" + '\'' + '}';
     }
@@ -299,6 +290,7 @@ public class EventCourier implements EventCourierInterface {
     private String toHexStr(Byte inByte) {
         return String.format("%02x", inByte).toUpperCase();
     }
+
     private String dataToHexStr() {
         StringBuilder strBuilder = new StringBuilder();
         for (byte valueOf : datas) {

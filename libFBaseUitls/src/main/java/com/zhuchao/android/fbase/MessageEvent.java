@@ -2,11 +2,11 @@ package com.zhuchao.android.fbase;
 
 public class MessageEvent {
     ////////////////////////////////////////////////////////////////////////////////////
-    public static final int MESSAGE_EVENT_USB_DEVICE = 2000;
+    public static final int MESSAGE_EVENT_TEST = 2000;
     public static final int MESSAGE_EVENT_USB_MOUNTED = 2001;//USB 存储器挂载成功
     public static final int MESSAGE_EVENT_USB_UNMOUNT = 2002;//USB 存储器卸载完成
     public static final int MESSAGE_EVENT_USB_CHECKING = 2003;//USB 磁盘检测中
-    public static final int MESSAGE_EVENT_USB_EJECT = 2004;//USB 存储器卸载失败
+    public static final int MESSAGE_EVENT_USB_EJECT = 2004;//USB 存储器卸载
     public static final int MESSAGE_EVENT_USB_ATTACHED = 2005;//USB 插上
     public static final int MESSAGE_EVENT_USB_REMOVED = 2006;////USB 完全拔出
     public static final int MESSAGE_EVENT_USB_DETACHED = 2007;//USB 完全拔出
@@ -21,20 +21,44 @@ public class MessageEvent {
     public static final int MESSAGE_EVENT_SD_AUDIO = 3006;      //USB媒体SD卡更新
     public static final int MESSAGE_EVENT_FILES = 3007;        //文件
 
-    public static final int MESSAGE_EVENT_OCTOPUS_CAR_CLIENT = 3500;
-    public static final int MESSAGE_EVENT_OCTOPUS_CAR_SERVICE = 3501;
+    public static final int MESSAGE_EVENT_OCTOPUS_CAR_CLIENT = 3100;
+    public static final int MESSAGE_EVENT_OCTOPUS_CAR_SERVICE = 3101;
+
+    public static final int MESSAGE_EVENT_OCTOPUS_PLAY_PAUSE = 3200;
+    public static final int MESSAGE_EVENT_OCTOPUS_PLAY = 3201;
+    public static final int MESSAGE_EVENT_OCTOPUS_PAUSE =3202;
+    public static final int MESSAGE_EVENT_OCTOPUS_NEXT = 3203;
+    public static final int MESSAGE_EVENT_OCTOPUS_PREV = 3204;
+    public static final int MESSAGE_EVENT_OCTOPUS_TITLE_CHANGED = 3205;
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //事件常量
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_TEST = "com.octopus.android.action.OCTOPUS_TEST";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_HELLO = "com.octopus.android.action.OCTOPUS_HELLO";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_CAR_CLIENT = "com.octopus.android.action.CAR_CLIENT";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_CAR_SERVICE = "com.octopus.android.action.CAR_SERVICE";
+
+    public static final String MESSAGE_EVENT_OCTOPUS_ACTION_CANBOX_SERVICE = "com.zhuchao.android.car.action.CANBOX_SERVICE";
+    public static final String MESSAGE_EVENT_OCTOPUS_ACTION_MULTIMEDIA_SERVICE = "com.zhuchao.android.car.action.MULTIMEDIA_SERVICE";
+
     public static final String MESSAGE_EVENT_MACHINE_ACTION_CONFIG_UPDATE = "com.octopus.android.MachineConfig_update";
+
+    public static final String MESSAGE_EVENT_OCTOPUS_ACTION_DISABLE_AUTO_PLAY = "com.octopus.android.action.DISABLE_AUTO_PLAY";
+    public static final String MESSAGE_EVENT_OCTOPUS_ACTION_AUTO_PLAY = "com.octopus.android.action.AUTO_PLAY";
+    public static final String MESSAGE_EVENT_OCTOPUS_ACTION_PLAY_PAUSE = "com.octopus.android.action.PLAY_PAUSE";
+    public static final String MESSAGE_EVENT_OCTOPUS_ACTION_PLAY = "com.octopus.android.action.PLAY";
+    public static final String MESSAGE_EVENT_OCTOPUS_ACTION_PAUSE = "com.octopus.android.action.PAUSE";
+    public static final String MESSAGE_EVENT_OCTOPUS_ACTION_NEXT = "com.octopus.android.action.NEXT";
+    public static final String MESSAGE_EVENT_OCTOPUS_ACTION_PREV = "com.octopus.android.action.PREVIOUS";
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///第三方消息事件
     public final static String MESSAGE_EVENT_LINK_Z = "com.zjinnova.zlink";
     public final static String MESSAGE_EVENT_LINK_CARLETTER = "com.carletter.link";
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //组件名称
     public final static String MESSAGE_EVENT_AIDL_PACKAGE_NAME = "com.zhuchao.android.car";
-
+    public final static String MESSAGE_EVENT_AIDL_CANBOX_CLASS_NAME = "com.zhuchao.android.car.service.CanboxService";
+    public final static String MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME = "com.zhuchao.android.car.service.MultimService";
+    public final static String MESSAGE_EVENT_AIDL_BT_CLASS_NAME = "com.zhuchao.android.car.service.BtService";
 }

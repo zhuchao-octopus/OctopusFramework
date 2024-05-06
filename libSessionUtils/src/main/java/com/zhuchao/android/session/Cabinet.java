@@ -1,8 +1,10 @@
 package com.zhuchao.android.session;
 
 import static android.content.Context.BIND_AUTO_CREATE;
-
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_CANBOX_CLASS_NAME;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_PACKAGE_NAME;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_CANBOX_SERVICE;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_CAR_CLIENT;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_CAR_SERVICE;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_CAR_CLIENT;
@@ -13,8 +15,17 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.media.MediaMetadata;
+import android.media.browse.MediaBrowser;
+import android.media.session.MediaController;
+import android.media.session.MediaSession;
+import android.media.session.PlaybackState;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.zhuchao.android.car.IMyCarAidlInterface;
 import com.zhuchao.android.car.IMyCarAidlInterfaceListener;
@@ -23,8 +34,6 @@ import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MessageEvent;
-import com.zhuchao.android.fbase.Msg;
-import com.zhuchao.android.fbase.TAppProcessUtils;
 import com.zhuchao.android.fbase.TAppUtils;
 import com.zhuchao.android.fbase.TCourierEventBus;
 import com.zhuchao.android.fbase.eventinterface.TCourierEventBusInterface;
@@ -33,12 +42,12 @@ import com.zhuchao.android.persist.TPersistent;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class Cabinet {
-    private static final String TAG = "Cabinet";
+    private static final String TAG = "CABINET";
     @SuppressLint("StaticFieldLeak")
     private static TPlayManager tPlayManager = null;
-    @SuppressLint("StaticFieldLeak")
-    private static TTaskManager tTaskManager = null;
     @SuppressLint("StaticFieldLeak")
     private static TNetUtils tNetUtils = null;
     @SuppressLint("StaticFieldLeak")
@@ -48,11 +57,19 @@ public class Cabinet {
     @SuppressLint("StaticFieldLeak")
     private static TPersistent tPersistent = null;
     private static TCourierEventBusInterface tCourierEventBus = null;
-
     private static IMyCarAidlInterface tIMyCarAidlInterface = null;
 
+    private static MediaBrowser mMediaBrowser;
+    private static MediaController mMediaController;
+
+    public static Context getMyApplicationContext() {
+        return MApplication.getAppContext();
+    }
+
     public static synchronized void initialEventBus() {
-        if (tCourierEventBus == null) tCourierEventBus = new TCourierEventBus();
+        if (tCourierEventBus == null) {
+            tCourierEventBus = new TCourierEventBus();
+        }
     }
 
     public synchronized static void initialPlayManager(Context context) {
@@ -60,12 +77,6 @@ public class Cabinet {
         tPlayManager.setPlayOrder(DataID.PLAY_MANAGER_PLAY_ORDER2);//循环顺序播放
         tPlayManager.setAutoPlaySource(DataID.SESSION_SOURCE_FAVORITELIST);//自动播放源列表
         tPlayManager.updateMediaLibrary();
-    }
-
-    public static synchronized void initialTaskManager(Context context) {
-        if (tTaskManager == null) {
-            tTaskManager = new TTaskManager(context);
-        }
     }
 
     public synchronized static TPlayManager getPlayManager() {
@@ -85,19 +96,11 @@ public class Cabinet {
         return tCourierEventBus;
     }
 
-    public static synchronized TTaskManager getTaskManager(Context context) {
-        if (tTaskManager == null) {
-            tTaskManager = new TTaskManager(context);
-        }
-        return tTaskManager;
-    }
-
     public static synchronized void InitialAllModules(@NotNull Context context) {
         //MMLog.d(TAG, "Initial all modules for " + TAppProcessUtils.getCurrentProcessNameAndId(context) + " ");
         try {
             initialMyCarAidlInterface(context);
             initialEventBus();
-            initialTaskManager(context);
             initialPlayManager(context);
         } catch (Exception e) {
             MMLog.e(TAG, e.toString());
@@ -108,33 +111,50 @@ public class Cabinet {
         //MMLog.d(TAG, "Initial few modules for " + TAppProcessUtils.getCurrentProcessNameAndId(context) + " ");
         try {
             initialEventBus();
-            initialTaskManager(context);
         } catch (Exception e) {
             MMLog.e(TAG, e.toString());
         }
     }
+
     public static synchronized void FreeModules(@NotNull Context context) {
         try {
+            if (tCourierEventBus != null) tCourierEventBus.free();
             if (tPlayManager != null) tPlayManager.free();
-            if (tTaskManager != null) tTaskManager.free();
             if (tNetUtils != null) tNetUtils.free();
             if (tDeviceManager != null) tDeviceManager.closeAllUartDevice();
-            if (tCourierEventBus != null) tCourierEventBus.free();
+
             if (tPersistent != null) tPersistent.commit();//持久化数据
             if (tAppUtils != null) tAppUtils.free();
-            if (tIMyCarAidlInterface != null)disconnectedMyCarAidlService(context);
+            if (tIMyCarAidlInterface != null) disconnectedMyCarAidlService(context);
         } catch (Exception e) {
             //e.printStackTrace();
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     //aidl
+    public static void initialMyCarAidlInterface(Context context) {
+        ///Intent intent = new Intent(mContext, MMCarService.class);
+        //MMLog.d(TAG,"initial MMCarService proxy");
+        Intent intent = new Intent(MESSAGE_EVENT_OCTOPUS_ACTION_CANBOX_SERVICE);
+        //intent.setPackage(mContext.getPackageName());
+        intent.setComponent(new ComponentName(MESSAGE_EVENT_AIDL_PACKAGE_NAME, MESSAGE_EVENT_AIDL_CANBOX_CLASS_NAME));
+        //Intent newIntent = new Intent(createExplicitFromImplicitIntent(mContext,intent));
+        boolean isBound = context.bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
+        if (!isBound) MMLog.d(TAG, "Connect to MMCarService proxy failed!");
+    }
+
     private static final IMyCarAidlInterfaceListener mIMyCarAidlInterfaceListener = new IMyCarAidlInterfaceListener.Stub() {
 
         @Override
         public void onMessageCarAidlInterface(PEventCourier msg) throws RemoteException {
-             MMLog.d(TAG, msg.toStr());
+            MMLog.d(TAG, TAG+"."+msg.toStr());
+        }
+
+        @Override
+        public void onMessageMusice(int MsgId, int status, long timeChanged, long length, String filePathName) throws RemoteException {
+
         }
     };
     private static final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -156,30 +176,18 @@ public class Cabinet {
             MMLog.d(TAG, "MMCarService onServiceDisconnected!");
         }
     };
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void disconnectedMyCarAidlService(Context context)
-    {
-       if(tIMyCarAidlInterface != null && tIMyCarAidlInterface.asBinder().isBinderAlive())
-       {
-           try {
-               context.unbindService(mServiceConnection);
-               tIMyCarAidlInterface.unregisterListener(mIMyCarAidlInterfaceListener);
-               tIMyCarAidlInterface = null;
-           } catch (RemoteException e) {
-               //throw new RuntimeException(e);
-           }
-       }
-    }
-    public static void initialMyCarAidlInterface(Context context) {
-        ///Intent intent = new Intent(mContext, MMCarService.class);
-        //MMLog.d(TAG,"initial MMCarService proxy");
-        Intent intent = new Intent("com.zhuchao.android.car.action.MMCarService");
-        //intent.setPackage(mContext.getPackageName());
-        intent.setComponent(new ComponentName("com.zhuchao.android.car", "com.zhuchao.android.car.service.MMCarService"));
-        //Intent newIntent = new Intent(createExplicitFromImplicitIntent(mContext,intent));
-        boolean isBound= context.bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
-        if(!isBound)
-            MMLog.d(TAG,"Connect to MMCarService proxy failed!");
+    public static void disconnectedMyCarAidlService(Context context) {
+        if (tIMyCarAidlInterface != null && tIMyCarAidlInterface.asBinder().isBinderAlive()) {
+            try {
+                context.unbindService(mServiceConnection);
+                tIMyCarAidlInterface.unregisterListener(mIMyCarAidlInterfaceListener);
+                tIMyCarAidlInterface = null;
+            } catch (RemoteException e) {
+                //throw new RuntimeException(e);
+            }
+        }
     }
 
     public static IMyCarAidlInterface getMyCarAidlInterface() {
@@ -191,40 +199,34 @@ public class Cabinet {
         else return null;
     }
 
-    public static void testMyCarAidlInterface()  {
-       if(tIMyCarAidlInterface!= null) {
-           try {
-               MMLog.d(TAG,tIMyCarAidlInterface.getHelloData());
-           } catch (RemoteException e) {
-               //throw new RuntimeException(e);
-               MMLog.d(TAG,"MyCarAidlInterface "+e);
-           }
-       }
-       else
-           MMLog.d(TAG,"MyCarAidlInterface is null!");
+    public static void testMyCarAidlInterface() {
+        if (tIMyCarAidlInterface != null) {
+            try {
+                MMLog.d(TAG, tIMyCarAidlInterface.getHelloData());
+            } catch (RemoteException e) {
+                //throw new RuntimeException(e);
+                MMLog.d(TAG, "MyCarAidlInterface " + e);
+            }
+        } else MMLog.d(TAG, "MyCarAidlInterface is null!");
     }
 
-    public static void IAidlSendMessage(PEventCourier pEventCourier)  {
-        if(tIMyCarAidlInterface!= null)
-        {
+    public static void IAidlSendMessage(PEventCourier pEventCourier) {
+        if (tIMyCarAidlInterface != null) {
             try {
                 tIMyCarAidlInterface.sendMessage(pEventCourier);
             } catch (RemoteException e) {
                 //throw new RuntimeException(e);
-                MMLog.d(TAG,"ICarAidlSend "+e);
+                MMLog.d(TAG, "ICarAidlSend " + e);
             }
-        }
-        else {
+        } else {
             MMLog.d(TAG, "ICarAidlSend is null!");
         }
     }
 
-    public static void IAidlSendMessage(EventCourier eventCourier)
-    {
+    public static void IAidlSendMessage(EventCourier eventCourier) {
         String action = MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_HELLO;
         Intent intent = new Intent();
-        switch (eventCourier.getId())
-        {
+        switch (eventCourier.getId()) {
             case MESSAGE_EVENT_OCTOPUS_CAR_SERVICE:
                 action = MESSAGE_EVENT_OCTOPUS_ACTION_CAR_SERVICE;
                 intent.setAction(action);
@@ -239,6 +241,105 @@ public class Cabinet {
                 MApplication.getAppContext().sendBroadcast(intent);
                 break;
         }
-
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //aidl music
+
+    private static void connectRemoteService() {
+        ComponentName componentName = new ComponentName(MESSAGE_EVENT_AIDL_PACKAGE_NAME, MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME);
+        // 2.创建MediaBrowser
+        mMediaBrowser = new MediaBrowser(getMyApplicationContext(), componentName, mMediaBrowserConnectionCallbacks, null);
+        // 3.建立连接
+        mMediaBrowser.connect();
+    }
+
+    private static final MediaBrowser.ConnectionCallback mMediaBrowserConnectionCallbacks = new MediaBrowser.ConnectionCallback() {
+        @Override
+        public void onConnected() {
+            MMLog.d(TAG, "MediaBrowser.onConnected");
+            if (mMediaBrowser.isConnected()) {
+                String mediaId = mMediaBrowser.getRoot();
+                mMediaBrowser.unsubscribe(mediaId);
+                mMediaBrowser.subscribe(mediaId, mBrowserSubscriptionCallback);
+                mMediaController = new MediaController(getMyApplicationContext(), mMediaBrowser.getSessionToken());
+                mMediaController.registerCallback(mMediaControllerCompatCallback);
+                if (mMediaController.getMetadata() != null) {
+                }
+            }
+        }
+
+        @Override
+        public void onConnectionSuspended() {
+            MMLog.d(TAG, "MediaBrowser.onConnectionSuspended");
+        }
+
+        @Override
+        public void onConnectionFailed() {
+            MMLog.d(TAG, "MediaBrowser.onConnectionFailed");
+        }
+    };
+
+    private static final MediaBrowser.SubscriptionCallback mBrowserSubscriptionCallback = new MediaBrowser.SubscriptionCallback() {
+        @Override
+        public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowser.MediaItem> children) {
+            super.onChildrenLoaded(parentId, children);
+        }
+
+        @Override
+        public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowser.MediaItem> children, @NonNull Bundle options) {
+            super.onChildrenLoaded(parentId, children, options);
+        }
+
+        @Override
+        public void onError(@NonNull String parentId) {
+            super.onError(parentId);
+        }
+
+        @Override
+        public void onError(@NonNull String parentId, @NonNull Bundle options) {
+            super.onError(parentId, options);
+        }
+    };
+    private static final MediaController.Callback mMediaControllerCompatCallback = new MediaController.Callback() {
+        //蓝牙音乐信息变化之后在这里进行回调
+        @Override
+        public void onPlaybackStateChanged(PlaybackState state) {
+        }
+
+        @Override
+        public void onSessionDestroyed() {
+            super.onSessionDestroyed();
+        }
+
+        @Override
+        public void onSessionEvent(@NonNull String event, @Nullable Bundle extras) {
+            super.onSessionEvent(event, extras);
+        }
+
+        @Override
+        public void onQueueChanged(@Nullable List<MediaSession.QueueItem> queue) {
+            super.onQueueChanged(queue);
+        }
+
+        @Override
+        public void onQueueTitleChanged(@Nullable CharSequence title) {
+            super.onQueueTitleChanged(title);
+        }
+
+        @Override
+        public void onExtrasChanged(@Nullable Bundle extras) {
+            super.onExtrasChanged(extras);
+        }
+
+        @Override
+        public void onAudioInfoChanged(MediaController.PlaybackInfo info) {
+            super.onAudioInfoChanged(info);
+        }
+
+        @Override
+        public void onMetadataChanged(MediaMetadata metadata) {
+
+        }
+    };
 }
