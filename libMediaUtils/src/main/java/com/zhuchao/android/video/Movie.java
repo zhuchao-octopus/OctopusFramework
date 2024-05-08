@@ -16,12 +16,17 @@ package com.zhuchao.android.video;
 
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
 /*
  * Movie class represents video entity with videoName, description, image thumbs and video url.
  */
-public class Movie implements Serializable {
+public class Movie implements Parcelable {
     //static final long serialVersionUID = 727566175075960653L;
     private int mid;
     private int sid;
@@ -70,6 +75,42 @@ public class Movie implements Serializable {
         this.date = date;
         this.status = status;
     }
+
+    protected Movie(Parcel in) {
+        mid = in.readInt();
+        sid = in.readInt();
+        status = in.readInt();
+        name = in.readString();
+        type = in.readString();
+        year = in.readString();
+        region = in.readString();
+        actor = in.readString();
+        language = in.readString();
+        sharpness = in.readString();
+        description = in.readString();
+        studio = in.readString();
+        bgImageUrl = in.readString();
+        cardImageUrl = in.readString();
+        category = in.readString();
+        date = in.readString();
+        srcUrl = in.readString();
+        artist = in.readString();
+        album = in.readString();
+        duration = in.readLong();
+        size = in.readLong();
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     public int getMid() {
         return mid;
@@ -237,6 +278,36 @@ public class Movie implements Serializable {
 
     public void setSize(long size) {
         this.size = size;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(mid);
+        dest.writeInt(sid);
+        dest.writeInt(status);
+        dest.writeString(name);
+        dest.writeString(type);
+        dest.writeString(year);
+        dest.writeString(region);
+        dest.writeString(actor);
+        dest.writeString(language);
+        dest.writeString(sharpness);
+        dest.writeString(description);
+        dest.writeString(studio);
+        dest.writeString(bgImageUrl);
+        dest.writeString(cardImageUrl);
+        dest.writeString(category);
+        dest.writeString(date);
+        dest.writeString(srcUrl);
+        dest.writeString(artist);
+        dest.writeString(album);
+        dest.writeLong(duration);
+        dest.writeLong(size);
     }
 
     ///public void loadResourceInto(Context mContext, String path, ImageView imageView, int preloadImg) {

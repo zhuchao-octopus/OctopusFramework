@@ -11,11 +11,12 @@ public interface TCourierEventBusInterface {
     public void unRegisterEventObserver(@NotNull Object courierEventListener);
 
 
-    public void postMain(EventCourierInterface eventCourier);
     public void post(EventCourierInterface eventCourier);
     public void post(Object eventCourier);
     public void postDelay(Object eventCourier, long millis);
-    public void printAllEventListener();
+    public void postMain(EventCourierInterface eventCourier);
+    public void printEventListener();
+    public void printInvokerList();
     public String getEventListeners();
     public void free();
 }

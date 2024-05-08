@@ -13,7 +13,6 @@ public class EventCourier implements EventCourierInterface {
     private byte[] datas;
     private Object obj = null;
 
-
     public EventCourier(int id) {
         this.target = null;
         this.id = id;
@@ -302,6 +301,4 @@ public class EventCourier implements EventCourierInterface {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-
 }

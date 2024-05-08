@@ -269,6 +269,16 @@ public class VideoList {
         this.TAG = TAG;
     }
 
+    public List<Movie> toList()
+    {
+        List<Movie> list = new ArrayList<>();
+        for (HashMap.Entry<String, Object> m : mFHashMap.entrySet()) {
+            OMedia oMedia = (OMedia) m.getValue();
+            list.add(oMedia.getMovie());
+        }
+        return list;
+    }
+
     public void printAll() {
         int i = 0;
         for (HashMap.Entry<String, Object> m : mFHashMap.entrySet()) {

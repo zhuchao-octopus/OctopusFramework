@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import com.zhuchao.android.car.aidl.PEventCourier;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
@@ -18,9 +19,7 @@ import com.zhuchao.android.fbase.ObjectList;
 import com.zhuchao.android.fbase.TCourierSubscribe;
 import com.zhuchao.android.fbase.TTask;
 import com.zhuchao.android.fbase.eventinterface.EventCourierInterface;
-import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
 import com.zhuchao.android.fbase.eventinterface.SessionCallback;
-import com.zhuchao.android.net.TNetUtils;
 import com.zhuchao.android.video.OMedia;
 
 import java.util.ArrayList;
@@ -88,22 +87,89 @@ public class TMediaManager implements SessionCallback {
         return this;
     }
 
-    private void initSessionsFromInternet() {
-        new Thread() {
-            public void run() {
-                try {
-                    while (true) {
-                        if (TNetUtils.isInternetReachable(null)) {
-                            updateCategorySession(); //  初始化线程
-                            break;
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+    public ObjectList getSessions() {
+        return mAllSessions;
+    }
+
+    public LiveVideoSession getCategorySession() {
+        return mNetCategorySession;
+    }
+
+    public LiveVideoSession getLocalVideoSession() {
+        return mLocalVideoSession;
+    }
+
+    public LiveVideoSession getLocalAudioSession() {
+        return mLocalAudioSession;
+    }
+
+    public LiveVideoSession getUSBVideoSession() {
+        LiveVideoSession liveVideoSession = new LiveVideoSession(null);
+        if (mMobileUSBDiscs.size() > 1) {
+            for (Map.Entry<String, String> entry : mMobileUSBDiscs.entrySet())
+            {
+                Object obj = mAllSessions.get(makeSessionName(entry.getKey(), DataID.MEDIA_TYPE_ID_VIDEO));
+                if (obj != null) {
+                    LiveVideoSession lvs = (LiveVideoSession) obj;
+                    liveVideoSession.addVideos(lvs.getAllVideos());
                 }
             }
-        }.start();
+        }
+        else
+        {
+            for (Map.Entry<String, String> entry : mMobileUSBDiscs.entrySet())
+            {
+                Object obj = mAllSessions.get(makeSessionName(entry.getKey(), DataID.MEDIA_TYPE_ID_VIDEO));
+                if (obj != null) liveVideoSession = (LiveVideoSession) obj;
+            }
+        }
+        return liveVideoSession;
     }
+
+    public LiveVideoSession getUSBAudioSession() {
+        LiveVideoSession liveVideoSession = new LiveVideoSession(null);
+        if (mMobileUSBDiscs.size() > 1) {
+            for (Map.Entry<String, String> entry : mMobileUSBDiscs.entrySet())
+            {
+                Object obj = mAllSessions.get(makeSessionName(entry.getKey(), DataID.MEDIA_TYPE_ID_AUDIO));
+                if (obj != null) {
+                    LiveVideoSession lvs = (LiveVideoSession) obj;
+                    liveVideoSession.addVideos(lvs.getAllVideos());
+                }
+            }
+        }
+        else
+        {
+            for (Map.Entry<String, String> entry : mMobileUSBDiscs.entrySet()) {
+                Object obj = mAllSessions.get(makeSessionName(entry.getKey(), DataID.MEDIA_TYPE_ID_AUDIO));
+                if (obj != null) liveVideoSession = (LiveVideoSession) obj;
+            }
+        }
+        return liveVideoSession;
+    }
+
+    public LiveVideoSession getSDVideoSession() {
+        return mSDVideoSession;
+    }
+
+    public LiveVideoSession getSDAudioSession() {
+        return mSDAudioSession;
+    }
+
+    public LiveVideoSession getFileVideoSession() {
+        return mFileVideoSession;
+    }
+
+    public LiveVideoSession getFileAudioSession() {
+        return mFileAudioSession;
+    }
+
+    public Map<String, String> getMobileUSBDiscs() {
+        return mMobileUSBDiscs;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////
 
     public void initSessionFromLocal() {
         if (mThreadLock1) return;
@@ -123,10 +189,6 @@ public class TMediaManager implements SessionCallback {
                 addLocalSessionToSessions("本地音乐", mLocalAudioSession);
                 userSessionCallback(mLocalAudioSession, MessageEvent.MESSAGE_EVENT_LOCAL_AUDIO, "本地音乐");
 
-                ///lSession = new LiveVideoSession(TMultimediaManager.this);
-                ///lSession.initMediasFromLocal(mContext, DataID.MEDIA_TYPE_ID_PIC);
-                ///if (lSession.getVideos().getCount() > 0) addSessionToSessions(mobileSessionId, "本地图片", lSession);
-                ///localSession.addVideos(lSession.getVideos());
                 mThreadLock1 = false;
             }
         }.start();
@@ -190,7 +252,7 @@ public class TMediaManager implements SessionCallback {
         new Thread() {
             public void run() {
                 mThreadLock3 = true;
-                mFileVideoSession.getVideos().clear();
+                mFileVideoSession.clear();
                 mFileVideoSession.initMediasFromPath(mContext, path, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO);
                 userSessionCallback(mFileVideoSession, MessageEvent.MESSAGE_EVENT_FILES, path);
                 mThreadLock3 = false;
@@ -204,7 +266,7 @@ public class TMediaManager implements SessionCallback {
         //if (FileList == null) return;
         if (!FileUtils.existDirectory(filePath)) return;
         //registerFileBroadcastReceiver();
-        mFileVideoSession.getVideos().clear();
+        mFileVideoSession.clear();
         new Thread() {
             public void run() {
                 mThreadLock3 = true;
@@ -224,36 +286,23 @@ public class TMediaManager implements SessionCallback {
         LiveVideoSession mMobileUSBAudioSession = new LiveVideoSession(TMediaManager.this);
 
         mSession.initMediasFromPath(mContext, DevicePath, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO, mMobileUSBVideoSession, mMobileUSBAudioSession);
-        addLocalSessionToSessions(DeviceName + DataID.MEDIA_TYPE_ID_VIDEO, mMobileUSBVideoSession);
-        addLocalSessionToSessions(DeviceName + DataID.MEDIA_TYPE_ID_AUDIO, mMobileUSBAudioSession);
+        addLocalSessionToSessions(makeSessionName(DeviceName,DataID.MEDIA_TYPE_ID_VIDEO), mMobileUSBVideoSession);
+        addLocalSessionToSessions(makeSessionName(DeviceName,DataID.MEDIA_TYPE_ID_AUDIO), mMobileUSBAudioSession);
 
-        ///mMobileUSBVideoSession.initMediasFromPath(mContext, DevicePath, DataID.MEDIA_TYPE_ID_VIDEO);
-        ///mMobileUSBAudioSession.initMediasFromPath(mContext, DevicePath, DataID.MEDIA_TYPE_ID_AUDIO);
-        ///MMLog.d(TAG,"mobileUSBVideoSession.size="+mobileUSBVideoSession.getAllVideos().getCount());
-        ///MMLog.d(TAG,"mobileUSBAudioSession.size="+mobileUSBVideoSession.getAllVideos().getCount());
-        /*mSession = new OPlayerSession(OPlayerSessionManager.this);
-        mSession.initMediasFromPath(mContext, DevicePath, Data.MEDIA_TYPE_ID_AUDIO);
-        if (mSession.getVideos().size() > 0)
-            addSessionToSessions(mobileSessionId, DeviceName, mSession);
-        mobileUSBSession.addVideos(mSession.getVideos());//USB总共的媒体文件
-
-        mSession = new OPlayerSession(OPlayerSessionManager.this);
-        mSession.initMediasFromPath(mContext, DevicePath, Data.MEDIA_TYPE_ID_PIC);
-        if (mSession.getVideos().size() > 0)
-            addSessionToSessions(mobileSessionId, DeviceName, mSession);
-        mobileUSBSession.addVideos(mSession.getVideos());//USB总共的媒体文件*/
         userSessionCallback(mMobileUSBVideoSession, MessageEvent.MESSAGE_EVENT_USB_VIDEO, DeviceName + ":" + DevicePath);
         userSessionCallback(mMobileUSBAudioSession, MessageEvent.MESSAGE_EVENT_USB_AUDIO, DeviceName + ":" + DevicePath);
     }
 
     private void userSessionCallback(LiveVideoSession liveVideoSession, int mobileSessionId, String message)//DeviceName + ":" + DevicePath
     {
-        if (mUserSessionCallback != null) {
-            if(liveVideoSession != null)
+        if (mUserSessionCallback != null) {///通知本地播放器
+            if (liveVideoSession != null)
                 mUserSessionCallback.OnSessionComplete(mobileSessionId, message, liveVideoSession.getAllVideos().getCount());
-            else
-                mUserSessionCallback.OnSessionComplete(mobileSessionId, message, 0);
+            else mUserSessionCallback.OnSessionComplete(mobileSessionId, message, 0);
         }
+        ///通知本地总线
+        ///Cabinet.getEventBus().post(new EventCourier(this.getClass(), mobileSessionId));
+        Cabinet.getEventBus().post(new PEventCourier(this.getClass(), mobileSessionId));//通知IPC,通知外部客户端
     }
 
     ///增加本地分类
@@ -301,76 +350,6 @@ public class TMediaManager implements SessionCallback {
         }
     }
 
-    public ObjectList getSessions() {
-        return mAllSessions;
-    }
-
-    public LiveVideoSession getCategorySession() {
-        return mNetCategorySession;
-    }
-
-    public LiveVideoSession getLocalVideoSession() {
-        return mLocalVideoSession;
-    }
-
-    public LiveVideoSession getLocalAudioSession() {
-        return mLocalAudioSession;
-    }
-
-    public LiveVideoSession getUSBVideoSession() {
-        LiveVideoSession liveVideoSession = new LiveVideoSession(null);
-        if (mMobileUSBDiscs.size() > 1) {
-            for (Map.Entry<String, String> entry : mMobileUSBDiscs.entrySet()) {
-                //if (entry.getValue().equals(value)) return entry.getKey();
-                LiveVideoSession lvs = (LiveVideoSession) mAllSessions.get(entry.getKey() + DataID.MEDIA_TYPE_ID_VIDEO);
-                liveVideoSession.addVideos(lvs.getAllVideos());
-            }
-        } else {
-            for (Map.Entry<String, String> entry : mMobileUSBDiscs.entrySet()) {
-                //if (entry.getValue().equals(value)) return entry.getKey();
-                liveVideoSession = (LiveVideoSession) mAllSessions.get(entry.getKey() + DataID.MEDIA_TYPE_ID_VIDEO);
-            }
-        }
-        return liveVideoSession;
-    }
-
-    public LiveVideoSession getUSBAudioSession() {
-        LiveVideoSession liveVideoSession = new LiveVideoSession(null);
-        if (mMobileUSBDiscs.size() > 1) {
-            for (Map.Entry<String, String> entry : mMobileUSBDiscs.entrySet()) {
-                //if (entry.getValue().equals(value)) return entry.getKey();
-                LiveVideoSession lvs = (LiveVideoSession) mAllSessions.get(entry.getKey() + DataID.MEDIA_TYPE_ID_AUDIO);
-                liveVideoSession.addVideos(lvs.getAllVideos());
-            }
-        } else {
-            for (Map.Entry<String, String> entry : mMobileUSBDiscs.entrySet()) {
-                //if (entry.getValue().equals(value)) return entry.getKey();
-                liveVideoSession = (LiveVideoSession) mAllSessions.get(entry.getKey() + DataID.MEDIA_TYPE_ID_AUDIO);
-            }
-        }
-        return liveVideoSession;
-    }
-
-    public LiveVideoSession getSDVideoSession() {
-        return mSDVideoSession;
-    }
-
-    public LiveVideoSession getSDAudioSession() {
-        return mSDAudioSession;
-    }
-
-    public LiveVideoSession getFileVideoSession() {
-        return mFileVideoSession;
-    }
-
-    public LiveVideoSession getFileAudioSession() {
-        return mFileAudioSession;
-    }
-
-    public Map<String, String> getMobileUSBDiscs() {
-        return mMobileUSBDiscs;
-    }
-
     public List<OMedia> getAllMedias() {
         List<OMedia> allOMedia = new ArrayList<>();
         for (Map.Entry<String, Object> entry : mAllSessions.getAll().entrySet()) {
@@ -378,7 +357,7 @@ public class TMediaManager implements SessionCallback {
             MLog.logTAG, "printSessionsVideoList " + entry.getKey() + " : " + entry.getValue().getVideoCategoryNameList().get(entry.getKey())
                     + " Movies Count =" + entry.getValue().getVideos().size());
             */
-            for (HashMap.Entry<String, Object> m : ((LiveVideoSession) entry.getValue()).getVideos().getMap().entrySet())
+            for (HashMap.Entry<String, Object> m : ((LiveVideoSession) entry.getValue()).getAllVideos().getMap().entrySet())
                 allOMedia.add((OMedia) m.getValue());
         }
         return allOMedia;
@@ -547,7 +526,7 @@ public class TMediaManager implements SessionCallback {
         ///MMLog.d(TAG,finalDeviceName +" 1 "+finalDevicePath);
         if (FileUtils.EmptyString(finalDeviceName) || !FileUtils.existDirectory(finalDevicePath)) return;
         ///MMLog.d(TAG,finalDeviceName +" 2 "+finalDevicePath);
-        TTask tTask = TTaskManager.getSingleTaskFor(TAG+"."+finalDeviceName).resetAll();
+        TTask tTask = TTaskManager.getSingleTaskFor(TAG + "." + finalDeviceName).resetAll();
         if (!tTask.isBusy()) {
             tTask.invoke(tag -> initMobileSessionContent(finalDeviceName, finalDevicePath)).startAgain();
         }
@@ -555,6 +534,10 @@ public class TMediaManager implements SessionCallback {
         ///{
         ///  MMLog.d(TAG,"singleTaskSearchMobileDisc task is busy!");
         ///}
+    }
+
+    public String makeSessionName(String name, int id) {
+        return name + "." + id;
     }
 
     @TCourierSubscribe(threadMode = MethodThreadMode.threadMode.BACKGROUND)
@@ -591,8 +574,8 @@ public class TMediaManager implements SessionCallback {
                     if (subName2 != null) {
                         usbName = getUSBNameByValue(subName2);
                         if (FileUtils.EmptyString(usbName)) {
-                            mAllSessions.delete(usbName + DataID.MEDIA_TYPE_ID_VIDEO);
-                            mAllSessions.delete(usbName + DataID.MEDIA_TYPE_ID_AUDIO);
+                            mAllSessions.delete(makeSessionName(usbName, DataID.MEDIA_TYPE_ID_VIDEO));
+                            mAllSessions.delete(makeSessionName(usbName, DataID.MEDIA_TYPE_ID_AUDIO));
                         }
                     }
                     userSessionCallback(null, MessageEvent.MESSAGE_EVENT_USB_UNMOUNT, usbName + ":" + subName2);
@@ -600,7 +583,7 @@ public class TMediaManager implements SessionCallback {
                     ///    MMLog.log(TAG, "USB:" + key + ":" + bundle.toString() + " " + subName2);
                 }
                 ///printUSBList();
-                //mMyHandler.sendEmptyMessage(MessageEvent.MESSAGE_EVENT_USB_UNMOUNT);
+                ///mMyHandler.sendEmptyMessage(MessageEvent.MESSAGE_EVENT_USB_UNMOUNT);
                 break;
         }
         return true;
@@ -608,20 +591,19 @@ public class TMediaManager implements SessionCallback {
 
     public void freeFree() {
         try {
-            this.mLocalVideoSession.getVideoList().clear();
-            this.mLocalAudioSession.getVideoList().clear();
-            //this.mMobileUSBVideoSession.getVideos().clear();
-            this.mFileVideoSession.getVideos().clear();
+            this.mLocalVideoSession.clear();
+            this.mLocalAudioSession.clear();
+            this.mFileVideoSession.clear();
             this.mMobileUSBDiscs.clear();
-            mNetCategorySession.getVideos().clear();
-            mAllSessions.clear();
-            //if (mUSBBroadcastReceiver != null) mContext.unregisterReceiver(mUSBBroadcastReceiver);
+            this.mNetCategorySession.clear();
+            this.mAllSessions.clear();
+            ///if (mUSBBroadcastReceiver != null) mContext.unregisterReceiver(mUSBBroadcastReceiver);
             ///if (mFileReceiver != null) mContext.unregisterReceiver(mFileReceiver);
             ///mFileReceiver = null;
             ///mUSBBroadcastReceiver = null;
             Cabinet.getEventBus().unRegisterEventObserver(this);
         } catch (Exception e) {
-            //e.printStackTrace();
+            ///e.printStackTrace();
             MMLog.e(TAG, String.valueOf(e));
         }
     }

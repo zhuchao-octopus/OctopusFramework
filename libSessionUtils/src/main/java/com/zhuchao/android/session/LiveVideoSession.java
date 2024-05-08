@@ -39,8 +39,8 @@ for (Integer value : map.values())
 
 //会话
 public class LiveVideoSession implements SessionCallback {
-    public final String TAG = "OPlayerSession ---> ";
-    protected int sessionId = DataID.SESSION_SOURCE_NONE;//会话ID
+    private final String TAG = "OPlayerSession ---> ";
+    private int sessionId = DataID.SESSION_SOURCE_NONE;//会话ID
     private SessionCallback userSessionCallback = null;//会话回调
     private ImplementProxy implementProxy = null;//new ImplementProxy();执行代理
     private VideoList mVideoList = new VideoList(null);//会话内容
@@ -148,16 +148,20 @@ public class LiveVideoSession implements SessionCallback {
         if (videoTypeNameList != null) this.videoTypeNameList = videoTypeNameList;
     }
 
-    public VideoList getVideoList() {
-        return mVideoList;
+    public OMedia getVideoByIndex(int index) {
+        return mVideoList.findByIndex(index);
     }
 
     void setVideoList(VideoList mVideoList) {
         if (mVideoList != null) this.mVideoList = mVideoList;
     }
 
-    public OMedia getVideoByIndex(int index) {
-        return mVideoList.findByIndex(index);
+    public void clear() {
+        mVideoList.clear();
+    }
+
+    public VideoList getVideoList() {
+        return mVideoList;
     }
 
     public VideoList getAllVideos() {
@@ -186,29 +190,6 @@ public class LiveVideoSession implements SessionCallback {
         mVideoList.add(videoList);
         ///MMLog.d(TAG,"videoList.count="+videoList.getCount());
         ///MMLog.d(TAG,"mVideoList.count="+mVideoList.getCount());
-    }
-
-    public void printMovies() {
-        //MLog.logTAG,"printMovies mVideoList size =" + mVideoList.getVideos().size());
-        //for (OMedia oMedia : videoList.getList()) {
-        //    MLog.logTAG, "vidieId = " + oMedia.getMovie().getMovieId() + " : videoName = " + oMedia.getMovie().getMovieName());
-        //}
-    }
-
-    public void printCategory() {
-        for (Map.Entry<Integer, String> entry : videoCategoryNameList.entrySet())
-            MMLog.log(TAG, "id = " + entry.getKey() + ", name = " + entry.getValue());
-    }
-
-    public void printVideoType() {
-        for (Map.Entry<Integer, String> entry : videoTypeNameList.entrySet())
-            MMLog.log(TAG, "id = " + entry.getKey() + ", name = " + entry.getValue());
-    }
-
-    public String getFileName(String filePath) {
-        File file = new File(filePath);
-        if (file.exists()) return file.getName();
-        else return null;
     }
 
     public void initMediasFromLocal(Context context, Integer fType) {
@@ -303,6 +284,30 @@ public class LiveVideoSession implements SessionCallback {
         } else {
             MMLog.log(TAG, "generateAndAppendVideoFromIlpr movieListBean == null");
         }
+    }
+
+
+    public void printMovies() {
+        //MLog.logTAG,"printMovies mVideoList size =" + mVideoList.getVideos().size());
+        //for (OMedia oMedia : videoList.getList()) {
+        //    MLog.logTAG, "vidieId = " + oMedia.getMovie().getMovieId() + " : videoName = " + oMedia.getMovie().getMovieName());
+        //}
+    }
+
+    public void printCategory() {
+        for (Map.Entry<Integer, String> entry : videoCategoryNameList.entrySet())
+            MMLog.log(TAG, "id = " + entry.getKey() + ", name = " + entry.getValue());
+    }
+
+    public void printVideoType() {
+        for (Map.Entry<Integer, String> entry : videoTypeNameList.entrySet())
+            MMLog.log(TAG, "id = " + entry.getKey() + ", name = " + entry.getValue());
+    }
+
+    public String getFileName(String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) return file.getName();
+        else return null;
     }
 
     @Override

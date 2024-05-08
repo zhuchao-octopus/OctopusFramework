@@ -1,18 +1,38 @@
 package com.zhuchao.android.session;
 
+import static android.content.Context.BIND_AUTO_CREATE;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_PACKAGE_NAME;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_MULTIMEDIA_SERVICE;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_AIDL_PLAYING_STATUS;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_NEXT;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_PAUSE;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_PLAY;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_PLAY_PAUSE;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_PREV;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_STOP;
 import static com.zhuchao.android.fbase.PlaybackEvent.Status_NothingIdle;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.os.RemoteException;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.zhuchao.android.car.aidl.IMyAidlInterfaceListener;
+import com.zhuchao.android.car.aidl.IMyMediaAidlInterface;
+import com.zhuchao.android.car.aidl.PEventCourier;
+import com.zhuchao.android.car.aidl.PMovie;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.MMLog;
@@ -20,26 +40,27 @@ import com.zhuchao.android.fbase.MessageEvent;
 import com.zhuchao.android.fbase.ObjectList;
 import com.zhuchao.android.fbase.PlaybackEvent;
 import com.zhuchao.android.fbase.PlayerStatusInfo;
-import com.zhuchao.android.fbase.eventinterface.NormalCallback;
 import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
 import com.zhuchao.android.fbase.eventinterface.SessionCallback;
+import com.zhuchao.android.video.Movie;
 import com.zhuchao.android.video.OMedia;
 import com.zhuchao.android.video.VideoList;
 
 import java.io.FileDescriptor;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-public class TPlayManager implements PlayerCallback, NormalCallback, SessionCallback {
+public class TPlayManager implements PlayerCallback, SessionCallback {
     private final String TAG = "PlayManager";
     private final Context mContext;
     private SurfaceView surfaceView = null;
     private OMedia oMediaPlaying = null;
-    ///private OMedia oMediaPlaying_Old = null;
+    private OMedia oMediaSearching = null;
     ///private boolean oMediaLoading = false;
     private PlayerCallback mUserCallback = null;
     private int playOrder = DataID.PLAY_MANAGER_PLAY_ORDER2;
     private int autoPlaySource = DataID.SESSION_SOURCE_NONE;
-    private ObjectList allPlayLists = null;
     private long lStartTick_Play = 0;
     private long lStartTick_Next = 0;
     private long lStartTick_Pre = 0;
@@ -51,15 +72,15 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
     private boolean playingLock = true;
     private int videoOutWidth = 0;
     private int videoOutHeight = 0;
+    private ObjectList allPlayLists = null;
+    private TMediaManager tMediaManager = null;
+    private VideoList mLocalMediaVideos = new VideoList();
+    private VideoList mLocalUSBMediaVideos = new VideoList();
+    private VideoList mLocalSDMediaVideos = new VideoList();
 
-    private final TMediaManager tMediaManager;
-    private final VideoList mLocalMediaVideos = new VideoList();
-    private final VideoList mLocalUSBMediaVideos = new VideoList();
-    private final VideoList mLocalSDMediaVideos = new VideoList();
-
-    private final VideoList mLocalMediaAudios = new VideoList();
-    private final VideoList mLocalUSBMediaAudios = new VideoList();
-    private final VideoList mLocalSDMediaAudios = new VideoList();
+    private VideoList mLocalMediaAudios = new VideoList();
+    private VideoList mLocalUSBMediaAudios = new VideoList();
+    private VideoList mLocalSDMediaAudios = new VideoList();
 
     private final VideoList mPlayingList = new VideoList();
     private final VideoList mPlayingHistoryList = new VideoList();
@@ -86,8 +107,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public TPlayManager(Context mContext, SurfaceView sfView) {
-        this.mContext = mContext;
+    public TPlayManager(Context context, SurfaceView sfView) {
+        this.mContext = context;
         this.surfaceView = sfView;
         this.setMagicNumber(0);
         this.allPlayLists = new ObjectList();
@@ -98,7 +119,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         this.allPlayLists.addObject("LocalUsbAudios", mLocalUSBMediaAudios);
         this.allPlayLists.addObject("LocalSDVideos", mLocalSDMediaVideos);
         this.allPlayLists.addObject("LocalSDAudios", mLocalSDMediaVideos);
-        this.tMediaManager = new TMediaManager(mContext, this);
+        ///Cabinet.getEventBus().registerEventObserver(this);
+        initialMyMediaAidlInterface(mContext);
     }
 
     public void updateMusicsToPlayList() {
@@ -113,6 +135,17 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         this.allPlayLists.addObject("LocalVideos", mLocalMediaVideos);
         this.allPlayLists.addObject("LocalUSBVideos", mLocalUSBMediaVideos);
         this.allPlayLists.addObject("LocalSDVideos", mLocalSDMediaVideos);
+    }
+
+    public void updateAllPlayList() {
+        this.allPlayLists.clear();
+        this.allPlayLists.addObject("VideosAndAudios", mPlayingList);
+        this.allPlayLists.addObject("LocalVideos", mLocalMediaVideos);
+        this.allPlayLists.addObject("LocalAudios", mLocalMediaAudios);
+        this.allPlayLists.addObject("LocalUSBVideos", mLocalUSBMediaVideos);
+        this.allPlayLists.addObject("LocalUsbAudios", mLocalUSBMediaAudios);
+        this.allPlayLists.addObject("LocalSDVideos", mLocalSDMediaVideos);
+        this.allPlayLists.addObject("LocalSDAudios", mLocalSDMediaVideos);
     }
 
     public int getTryCountForError() {
@@ -179,6 +212,11 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
 
         if (!oMedia.isAvailable(null)) {
             MMLog.log(TAG, "The oMedia is not available! ---> " + oMedia.getMovie().getSrcUrl());
+            return;
+        }
+
+        if (hasPlayAidlProxy() && oMedia.isAudio()) {//后台代理播放
+            mediaAidlProxyInterfaceAction(MESSAGE_EVENT_OCTOPUS_PLAY, oMedia.getPathName());
             return;
         }
 
@@ -250,18 +288,28 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
     public synchronized void stopPlay() {
         if (oMediaPlaying != null) {
             oMediaPlaying.stop();
+            if (hasPlayAidlProxy()) {
+                try {
+                    getMyMediaAidlInterface().playStop();
+                } catch (RemoteException ignored) {
+                }
+            }
         }
     }
+
     public synchronized void stopIdle() {
         if (oMediaPlaying != null) {
             oMediaPlaying.stop();
+            mediaAidlProxyInterfaceAction(MESSAGE_EVENT_OCTOPUS_STOP, oMediaPlaying.getPathName());
             oMediaPlaying = null;
         }
     }
+
     public synchronized void stopFree() {
         if (oMediaPlaying != null) {
             MMLog.log(TAG, "call stopFree()");
             oMediaPlaying.stopFree();
+            mediaAidlProxyInterfaceAction(MESSAGE_EVENT_OCTOPUS_STOP, oMediaPlaying.getPathName());
             oMediaPlaying = null;
         }
     }
@@ -270,6 +318,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         if (oMediaPlaying != null) {
             MMLog.log(TAG, "call stopFree()");
             oMediaPlaying.stopFreeFree();
+            mediaAidlProxyInterfaceAction(MESSAGE_EVENT_OCTOPUS_STOP, oMediaPlaying.getPathName());
             oMediaPlaying = null;
         }
     }
@@ -278,6 +327,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         if (oMediaPlaying != null) {
             MMLog.log(TAG, "call stopFree_t()");
             oMediaPlaying.stopFree_t();
+            mediaAidlProxyInterfaceAction(MESSAGE_EVENT_OCTOPUS_STOP, oMediaPlaying.getPathName());
             oMediaPlaying = null;
         }
     }
@@ -293,23 +343,29 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
     }
 
     public void playPause() {//非阻塞模式
+
         final int ACTION_DELAY = 600;
         if ((System.currentTimeMillis() - lStartTick_Play) <= ACTION_DELAY) {
             MMLog.log(TAG, "playPause() not allowed to do this now");
             return;
         }
-        lStartTick_Play = System.currentTimeMillis();
 
+        lStartTick_Play = System.currentTimeMillis();
         if (oMediaPlaying == null) {
             autoPlay();
             return;
         }
+
+        if (hasPlayAidlProxy() && oMediaPlaying.isAudio()) {
+            mediaAidlProxyInterfaceAction(MESSAGE_EVENT_OCTOPUS_PLAY_PAUSE, oMediaPlaying.getPathName());
+        }
+
         MMLog.log(TAG, "playPause() playStatus = " + oMediaPlaying.getPlayStatus());
         switch (oMediaPlaying.getPlayStatus()) {
             ///case PlaybackEvent.Status_NothingIdle:
-            ///     MMLog.log(TAG, "PlaybackEvent.Status_NothingIdle go next");
-            ///     playNext();//play next
-            ///     break;
+            ///MMLog.log(TAG, "PlaybackEvent.Status_NothingIdle go next");
+            ///playNext();//play next
+            ///break;
             case PlaybackEvent.Status_Opening:
             case PlaybackEvent.Status_Buffering:
                 if (oMediaPlaying.tTask_play.isTimeOut(playTimeOut)) { //playTimeOut秒没有打开文件，结束播放
@@ -346,8 +402,8 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
             return;
         }
         lStartTick_Next = System.currentTimeMillis();
-
         OMedia oo = getNextAvailable();//获取下一个有效的资源
+
         if (oo != null) {
             MMLog.log(TAG, "Go to next " + oo.getPathName());
             startPlay(oo);
@@ -509,6 +565,10 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         setVolume(getVolume() - 5);
     }
 
+    public TMediaManager getMediaManager() {
+        return tMediaManager;
+    }
+
     public void setWindowSize(int width, int height) {
         if (oMediaPlaying != null) {
             oMediaPlaying.setWindowSize(width, height);
@@ -536,8 +596,14 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         Collection<Object> objects = allPlayLists.getAllObject();
         if (oMediaPlaying == null) {
             for (Object o : objects) {
-                OMedia oOMedia = ((VideoList) o).getNextAvailable(null);
-                if (oOMedia != null) return oOMedia;
+                OMedia oOMedia = null;
+                if (oMediaSearching != null) oOMedia = ((VideoList) o).getNextAvailable(oMediaSearching);
+                else oOMedia = ((VideoList) o).getNextAvailable(null);
+
+                if (oOMedia != null) {
+                    oMediaSearching = oOMedia;
+                    return oOMedia;
+                }
             }
             return null;
         }
@@ -695,8 +761,7 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
                 break;
             case PlaybackEvent.Status_Ended:
                 if (playerStatusInfo.getLastError() == PlaybackEvent.Status_Error) {//处理错误
-                    if(oMediaPlaying == null)
-                        break;
+                    if (oMediaPlaying == null) break;
                     playerStatusInfo.setLastError(PlaybackEvent.Status_Ended);
                     if (tryCountForError > 0 && tryPlayCount > 0) {
                         MMLog.d(TAG, "OnEventCallBack.EventType.Status_Error try again " + oMediaPlaying.getPathName());
@@ -779,60 +844,269 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         }
     };
 
-    @Override
-    public void onEventRequest(String Result, int Index) {
-
-    }
-    public void printAllEventListener()
-    {
-        Cabinet.getEventBus().printAllEventListener();
-    }
-    @Override
+    @Override ///来自本地媒体库的callback
     public void OnSessionComplete(int session_id, String result, int count) {
         MMLog.d(TAG, "OnSessionComplete id=" + session_id + ":" + result + ":" + count);
-        switch (session_id) {
-            case MessageEvent.MESSAGE_EVENT_LOCAL_VIDEO:
-                mLocalMediaVideos.clear();
-                mLocalMediaVideos.add(tMediaManager.getLocalVideoSession().getVideos());
-                //mLocalMediaVideos.printAll();
-                break;
-            case MessageEvent.MESSAGE_EVENT_LOCAL_AUDIO:
-                mLocalMediaAudios.clear();
-                mLocalMediaAudios.add(tMediaManager.getLocalAudioSession().getAllVideos());
-                //mLocalMediaAudios.printAll();
-                break;
-            case MessageEvent.MESSAGE_EVENT_USB_VIDEO:
-                mLocalUSBMediaVideos.clear();
-                mLocalUSBMediaVideos.add(tMediaManager.getUSBVideoSession().getAllVideos());
-                //mLocalUSBMediaVideos.printAll();
-                break;
-            case MessageEvent.MESSAGE_EVENT_USB_AUDIO:
-                mLocalUSBMediaAudios.clear();
-                mLocalUSBMediaAudios.add(tMediaManager.getUSBAudioSession().getAllVideos());
-                //mLocalUSBMediaAudios.printAll();
-                break;
-            case MessageEvent.MESSAGE_EVENT_SD_VIDEO:
-                mLocalSDMediaVideos.clear();
-                mLocalSDMediaVideos.add(tMediaManager.getSDVideoSession().getAllVideos());
-                //mLocalSDMediaVideos.printAll();
-                break;
-            case MessageEvent.MESSAGE_EVENT_SD_AUDIO:
-                mLocalSDMediaAudios.clear();
-                mLocalSDMediaAudios.add(tMediaManager.getSDAudioSession().getAllVideos());
-                //mLocalSDMediaAudios.printAll();
-                break;
+        if (tMediaManager != null) {
+            switch (session_id) {
+                case MessageEvent.MESSAGE_EVENT_LOCAL_VIDEO:
+                    mLocalMediaVideos.clear();
+                    mLocalMediaVideos.add(tMediaManager.getLocalVideoSession().getAllVideos());
+                    //mLocalMediaVideos.printAll();
+                    break;
+                case MessageEvent.MESSAGE_EVENT_LOCAL_AUDIO:
+                    mLocalMediaAudios.clear();
+                    mLocalMediaAudios.add(tMediaManager.getLocalAudioSession().getAllVideos());
+                    //mLocalMediaAudios.printAll();
+                    break;
+                case MessageEvent.MESSAGE_EVENT_USB_VIDEO:
+                    mLocalUSBMediaVideos.clear();
+                    mLocalUSBMediaVideos.add(tMediaManager.getUSBVideoSession().getAllVideos());
+                    //mLocalUSBMediaVideos.printAll();
+                    break;
+                case MessageEvent.MESSAGE_EVENT_USB_AUDIO:
+                    mLocalUSBMediaAudios.clear();
+                    mLocalUSBMediaAudios.add(tMediaManager.getUSBAudioSession().getAllVideos());
+                    //mLocalUSBMediaAudios.printAll();
+                    break;
+                case MessageEvent.MESSAGE_EVENT_SD_VIDEO:
+                    mLocalSDMediaVideos.clear();
+                    mLocalSDMediaVideos.add(tMediaManager.getSDVideoSession().getAllVideos());
+                    //mLocalSDMediaVideos.printAll();
+                    break;
+                case MessageEvent.MESSAGE_EVENT_SD_AUDIO:
+                    mLocalSDMediaAudios.clear();
+                    mLocalSDMediaAudios.add(tMediaManager.getSDAudioSession().getAllVideos());
+                    //mLocalSDMediaAudios.printAll();
+                    break;
+            }
+            playHandler.sendEmptyMessage(session_id);
         }
-
-        Cabinet.getEventBus().post(new EventCourier(TPlayManager.this.getClass(), session_id));
-        playHandler.sendEmptyMessage(session_id);
     }
 
+    ///@TCourierSubscribe(threadMode = MethodThreadMode.threadMode.BACKGROUND)
+    public void onTCourierSubscribeEventAidl(PEventCourier pEventCourier) {///内部更新
+        ///MMLog.d(TAG, pEventCourier.toStr());
+        if (pEventCourier == null) {
+            this.mLocalMediaVideos = getAidlOMedias(MessageEvent.MESSAGE_EVENT_LOCAL_VIDEO);
+            this.mLocalUSBMediaVideos = getAidlOMedias(MessageEvent.MESSAGE_EVENT_USB_VIDEO);
+            this.mLocalSDMediaVideos = getAidlOMedias(MessageEvent.MESSAGE_EVENT_SD_VIDEO);
+
+            this.mLocalSDMediaAudios = getAidlOMedias(MessageEvent.MESSAGE_EVENT_LOCAL_AUDIO);
+            this.mLocalSDMediaVideos = getAidlOMedias(MessageEvent.MESSAGE_EVENT_USB_AUDIO);
+            this.mLocalUSBMediaAudios = getAidlOMedias(MessageEvent.MESSAGE_EVENT_SD_AUDIO);
+            return;
+        }
+
+        switch (pEventCourier.getId()) {
+            case MessageEvent.MESSAGE_EVENT_LOCAL_VIDEO:
+                this.mLocalMediaVideos = getAidlOMedias(pEventCourier.getId());
+                this.allPlayLists.addObject("LocalVideos", mLocalMediaVideos);
+                MMLog.d(TAG, "Update LocalMediaVideos.size=" + mLocalMediaVideos.getCount());
+                break;
+            case MessageEvent.MESSAGE_EVENT_USB_VIDEO:
+                this.mLocalUSBMediaVideos = getAidlOMedias(pEventCourier.getId());
+                this.allPlayLists.addObject("LocalUSBVideos", mLocalUSBMediaVideos);
+                MMLog.d(TAG, "Update LocalUSBMediaVideos.size=" + mLocalUSBMediaVideos.getCount());
+                break;
+            case MessageEvent.MESSAGE_EVENT_SD_VIDEO:
+                this.mLocalSDMediaVideos = getAidlOMedias(pEventCourier.getId());
+                this.allPlayLists.addObject("LocalSDVideos", mLocalSDMediaVideos);
+                MMLog.d(TAG, "Update LocalSDMediaVideos.size=" + mLocalSDMediaVideos.getCount());
+                break;
+            case MessageEvent.MESSAGE_EVENT_LOCAL_AUDIO:
+                this.mLocalMediaAudios = getAidlOMedias(pEventCourier.getId());
+                this.allPlayLists.addObject("LocalAudios", mLocalMediaAudios);
+                MMLog.d(TAG, "Update LocalMediaAudios.size=" + mLocalMediaAudios.getCount());
+                break;
+            case MessageEvent.MESSAGE_EVENT_USB_AUDIO:
+                this.mLocalUSBMediaAudios = getAidlOMedias(pEventCourier.getId());
+                this.allPlayLists.addObject("LocalUsbAudios", mLocalUSBMediaAudios);
+                MMLog.d(TAG, "Update LocalUSBMediaAudios.size=" + mLocalUSBMediaAudios.getCount());
+                break;
+            case MessageEvent.MESSAGE_EVENT_SD_AUDIO:
+                this.mLocalSDMediaAudios = getAidlOMedias(pEventCourier.getId());
+                this.allPlayLists.addObject("LocalSDAudios", mLocalSDMediaVideos);
+                MMLog.d(TAG, "Update LocalSDMediaAudios.size=" + mLocalSDMediaAudios.getCount());
+                break;
+        }
+        Cabinet.getEventBus().post(new EventCourier(pEventCourier.getId()));//通知本地UI外部数据加载完毕
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private IMyMediaAidlInterface tIMyMediaAidlInterface = null;
+    private boolean tIMyMediaAidlInterfaceIsBound = false;
+
+    private boolean hasPlayAidlProxy() {
+        return tIMyMediaAidlInterfaceIsBound && (tIMyMediaAidlInterface != null);
+    }
+
+    //aidl
+    private void initialMyMediaAidlInterface(Context context) {
+        ///Intent intent = new Intent(mContext, MMCarService.class);
+        //MMLog.d(TAG,"initial MMCarService proxy");
+        Intent intent = new Intent(MESSAGE_EVENT_OCTOPUS_ACTION_MULTIMEDIA_SERVICE);
+        //intent.setPackage(mContext.getPackageName());
+        intent.setComponent(new ComponentName(MESSAGE_EVENT_AIDL_PACKAGE_NAME, MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME));
+        //Intent newIntent = new Intent(createExplicitFromImplicitIntent(mContext,intent));
+        tIMyMediaAidlInterfaceIsBound = context.bindService(intent, mMediaServiceConnection, BIND_AUTO_CREATE);
+        if (!tIMyMediaAidlInterfaceIsBound) MMLog.d(TAG, "Connect to multimedia service proxy failed!");
+    }
+
+    private final ServiceConnection mMediaServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MMLog.d(TAG, "Connect to multimedia proxy successfully!");
+            tIMyMediaAidlInterface = IMyMediaAidlInterface.Stub.asInterface(service);
+            try {
+                tIMyMediaAidlInterface.registerListener(mIMyMediaAidlInterfaceListener);
+            } catch (RemoteException e) {
+                //throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            tIMyMediaAidlInterface = null;
+            tIMyMediaAidlInterfaceIsBound = false;
+            MMLog.d(TAG, "Multimedia service disconnected!");
+        }
+    };
+    private final IMyAidlInterfaceListener mIMyMediaAidlInterfaceListener = new IMyAidlInterfaceListener.Stub() {
+
+        @Override
+        public void onMessageAidlInterface(PEventCourier msg) {
+            ///MMLog.d(TAG, TAG + "." + msg.toStr());
+            switch (msg.getId()) { ///加载外部数据
+                case MessageEvent.MESSAGE_EVENT_LOCAL_VIDEO:
+                case MessageEvent.MESSAGE_EVENT_USB_VIDEO:
+                case MessageEvent.MESSAGE_EVENT_SD_VIDEO:
+                case MessageEvent.MESSAGE_EVENT_LOCAL_AUDIO:
+                case MessageEvent.MESSAGE_EVENT_USB_AUDIO:
+                case MessageEvent.MESSAGE_EVENT_SD_AUDIO:
+                    onTCourierSubscribeEventAidl(msg);
+                    break;
+                case MessageEvent.MESSAGE_EVENT_MEDIA_LIBRARY:
+                    onTCourierSubscribeEventAidl(null);
+                    break;
+            }
+        }
+
+        @Override
+        public void onMessageMusice(int MsgId, int status, long timeChanged, long length, String filePathName) {
+            PlayerStatusInfo playerStatusInfo = new PlayerStatusInfo();
+            playerStatusInfo.setEventType(MsgId);
+            playerStatusInfo.setTimeChanged(timeChanged);
+            playerStatusInfo.setLength(length);
+            playerStatusInfo.setEventCode(MESSAGE_EVENT_OCTOPUS_AIDL_PLAYING_STATUS);
+            ///MMLog.d(TAG,playerStatusInfo.toString()+","+filePathName);
+            if (mUserCallback != null) mUserCallback.onEventPlayerStatus(playerStatusInfo);
+        }
+    };
+
+    private List<Movie> transformToMovie(List<PMovie> list) {
+        List<Movie> movies = new ArrayList<>();
+        for (PMovie pMovie : list) {
+            movies.add((Movie) (pMovie));
+        }
+        return movies;
+    }
+
+    private List<PMovie> getMovies(int typeID) {
+        List<PMovie> pMovies = new ArrayList<>();
+        if (tIMyMediaAidlInterface != null) {
+            try {
+                pMovies = tIMyMediaAidlInterface.getMediaList(typeID);
+            } catch (RemoteException e) {
+                MMLog.d(TAG, String.valueOf(e));
+            }
+        }
+        return pMovies;
+    }
+
+    private VideoList getAidlOMedias(int typeID) {
+        VideoList videoList = new VideoList();
+        List<PMovie> pMovies = new ArrayList<>();
+        if (tIMyMediaAidlInterface != null) {
+            try {
+                pMovies = tIMyMediaAidlInterface.getMediaList(typeID);
+                List<Movie> movies = transformToMovie(pMovies);
+                for (Movie movie : movies) {
+                    OMedia oMedia = new OMedia(movie);
+                    videoList.add(oMedia);
+                }
+            } catch (RemoteException e) {
+                MMLog.d(TAG, String.valueOf(e));
+            }
+        }
+        return videoList;
+    }
+
+    private void disconnectedMyAidlService(Context context) {
+
+        if (tIMyMediaAidlInterface != null && tIMyMediaAidlInterface.asBinder().isBinderAlive()) {
+            try {
+                context.unbindService(mMediaServiceConnection);
+                tIMyMediaAidlInterface.unregisterListener(mIMyMediaAidlInterfaceListener);
+                tIMyMediaAidlInterface = null;
+                tIMyMediaAidlInterfaceIsBound = false;
+            } catch (RemoteException e) {
+                //throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private IMyMediaAidlInterface getMyMediaAidlInterface() {
+        return tIMyMediaAidlInterface;
+    }
+
+    private void mediaAidlProxyInterfaceAction(int msg_id, String fileName) {
+        if (hasPlayAidlProxy()) {
+            try {
+                switch (msg_id) {
+                    case MESSAGE_EVENT_OCTOPUS_PLAY_PAUSE:
+                        getMyMediaAidlInterface().playPause();
+                        break;
+                    case MESSAGE_EVENT_OCTOPUS_PLAY:
+                        getMyMediaAidlInterface().startPlay(fileName);
+                        break;
+                    case MESSAGE_EVENT_OCTOPUS_PAUSE:
+                        getMyMediaAidlInterface().pausePlay();
+                        break;
+                    case MESSAGE_EVENT_OCTOPUS_NEXT:
+                        getMyMediaAidlInterface().playNext();
+                        break;
+                    case MESSAGE_EVENT_OCTOPUS_PREV:
+                        getMyMediaAidlInterface().playPrev();
+                        break;
+                    case MESSAGE_EVENT_OCTOPUS_STOP:
+                        getMyMediaAidlInterface().playStop();
+                        break;
+                }
+            } catch (RemoteException e) {
+                ///throw new RuntimeException(e);
+            }
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void updateMediaLibrary() {
-        if (tMediaManager != null) tMediaManager.updateMedias();
+        if (hasPlayAidlProxy()) {
+            onTCourierSubscribeEventAidl(null);
+        } else {
+            if (tMediaManager == null) this.tMediaManager = new TMediaManager(mContext, this);
+            tMediaManager.updateMedias();
+        }
     }
 
     public void updateLocalMedias() {
-        if (tMediaManager != null) tMediaManager.updateMedias();
+        if (hasPlayAidlProxy()) {
+            onTCourierSubscribeEventAidl(null);
+        } else if (tMediaManager != null) {
+            tMediaManager.updateMedias();
+        }
     }
 
     public void saveToFile() {
@@ -852,9 +1126,12 @@ public class TPlayManager implements PlayerCallback, NormalCallback, SessionCall
         try {
             if (getPlayingMedia() != null) getPlayingMedia().free();
             allPlayLists.clear();
-            tMediaManager.freeFree();
+            Cabinet.getEventBus().unRegisterEventObserver(this);
+            if (tMediaManager != null) tMediaManager.freeFree();
+            disconnectedMyAidlService(mContext);
         } catch (Exception e) {
             MMLog.e(TAG, "free() " + e.toString());
         }
     }
+
 }

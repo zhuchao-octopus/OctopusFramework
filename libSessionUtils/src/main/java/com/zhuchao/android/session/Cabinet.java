@@ -27,9 +27,9 @@ import android.os.RemoteException;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.zhuchao.android.car.IMyCarAidlInterface;
-import com.zhuchao.android.car.IMyCarAidlInterfaceListener;
-import com.zhuchao.android.car.PEventCourier;
+import com.zhuchao.android.car.aidl.IMyAidlInterface;
+import com.zhuchao.android.car.aidl.IMyAidlInterfaceListener;
+import com.zhuchao.android.car.aidl.PEventCourier;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.MMLog;
@@ -57,7 +57,7 @@ public class Cabinet {
     @SuppressLint("StaticFieldLeak")
     private static TPersistent tPersistent = null;
     private static TCourierEventBusInterface tCourierEventBus = null;
-    private static IMyCarAidlInterface tIMyCarAidlInterface = null;
+    private static IMyAidlInterface tIMyCarAidlInterface = null;
 
     private static MediaBrowser mMediaBrowser;
     private static MediaController mMediaController;
@@ -76,7 +76,6 @@ public class Cabinet {
         tPlayManager = TPlayManager.getInstance(context);
         tPlayManager.setPlayOrder(DataID.PLAY_MANAGER_PLAY_ORDER2);//循环顺序播放
         tPlayManager.setAutoPlaySource(DataID.SESSION_SOURCE_FAVORITELIST);//自动播放源列表
-        tPlayManager.updateMediaLibrary();
     }
 
     public synchronized static TPlayManager getPlayManager() {
@@ -99,9 +98,9 @@ public class Cabinet {
     public static synchronized void InitialAllModules(@NotNull Context context) {
         //MMLog.d(TAG, "Initial all modules for " + TAppProcessUtils.getCurrentProcessNameAndId(context) + " ");
         try {
-            initialMyCarAidlInterface(context);
             initialEventBus();
             initialPlayManager(context);
+            ///initialMyCarAidlInterface(context);
         } catch (Exception e) {
             MMLog.e(TAG, e.toString());
         }
@@ -111,6 +110,7 @@ public class Cabinet {
         //MMLog.d(TAG, "Initial few modules for " + TAppProcessUtils.getCurrentProcessNameAndId(context) + " ");
         try {
             initialEventBus();
+            initialPlayManager(context);
         } catch (Exception e) {
             MMLog.e(TAG, e.toString());
         }
@@ -125,7 +125,7 @@ public class Cabinet {
 
             if (tPersistent != null) tPersistent.commit();//持久化数据
             if (tAppUtils != null) tAppUtils.free();
-            if (tIMyCarAidlInterface != null) disconnectedMyCarAidlService(context);
+            if (tIMyCarAidlInterface != null) disconnectedMyAidlService(context);
         } catch (Exception e) {
             //e.printStackTrace();
         }
@@ -141,15 +141,34 @@ public class Cabinet {
         //intent.setPackage(mContext.getPackageName());
         intent.setComponent(new ComponentName(MESSAGE_EVENT_AIDL_PACKAGE_NAME, MESSAGE_EVENT_AIDL_CANBOX_CLASS_NAME));
         //Intent newIntent = new Intent(createExplicitFromImplicitIntent(mContext,intent));
-        boolean isBound = context.bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
-        if (!isBound) MMLog.d(TAG, "Connect to MMCarService proxy failed!");
+        boolean isBound = context.bindService(intent, mCanboxServiceConnection, BIND_AUTO_CREATE);
+        if (!isBound) MMLog.d(TAG, "Connect to canbox service proxy failed!");
     }
 
-    private static final IMyCarAidlInterfaceListener mIMyCarAidlInterfaceListener = new IMyCarAidlInterfaceListener.Stub() {
+    private static final ServiceConnection mCanboxServiceConnection = new ServiceConnection() {
 
         @Override
-        public void onMessageCarAidlInterface(PEventCourier msg) throws RemoteException {
-            MMLog.d(TAG, TAG+"."+msg.toStr());
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            tIMyCarAidlInterface = IMyAidlInterface.Stub.asInterface(service);
+            try {
+                tIMyCarAidlInterface.registerListener(mIMyCarAidlInterfaceListener);
+            } catch (RemoteException e) {
+                //throw new RuntimeException(e);
+            }
+            MMLog.d(TAG, "Connect to canbox service proxy successfully!");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            tIMyCarAidlInterface = null;
+            MMLog.d(TAG, "Canbox service disconnected!");
+        }
+    };
+    private static final IMyAidlInterfaceListener mIMyCarAidlInterfaceListener = new IMyAidlInterfaceListener.Stub() {
+
+        @Override
+        public void onMessageAidlInterface(PEventCourier msg) throws RemoteException {
+            MMLog.d(TAG, TAG + "." + msg.toStr());
         }
 
         @Override
@@ -157,31 +176,11 @@ public class Cabinet {
 
         }
     };
-    private static final ServiceConnection mServiceConnection = new ServiceConnection() {
 
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            tIMyCarAidlInterface = IMyCarAidlInterface.Stub.asInterface(service);
-            try {
-                tIMyCarAidlInterface.registerListener(mIMyCarAidlInterfaceListener);
-            } catch (RemoteException e) {
-                //throw new RuntimeException(e);
-            }
-            MMLog.d(TAG, "Connect to MMCarService proxy successfully!");
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            tIMyCarAidlInterface = null;
-            MMLog.d(TAG, "MMCarService onServiceDisconnected!");
-        }
-    };
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void disconnectedMyCarAidlService(Context context) {
+    public static void disconnectedMyAidlService(Context context) {
         if (tIMyCarAidlInterface != null && tIMyCarAidlInterface.asBinder().isBinderAlive()) {
             try {
-                context.unbindService(mServiceConnection);
+                context.unbindService(mCanboxServiceConnection);
                 tIMyCarAidlInterface.unregisterListener(mIMyCarAidlInterfaceListener);
                 tIMyCarAidlInterface = null;
             } catch (RemoteException e) {
@@ -189,25 +188,15 @@ public class Cabinet {
             }
         }
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static IMyCarAidlInterface getMyCarAidlInterface() {
+    public static IMyAidlInterface getMyCarAidlInterface() {
         return tIMyCarAidlInterface;
     }
 
     public static <T> T getMyCarAidlInterface(Class<T> classOfT) {
         if (tIMyCarAidlInterface != null) return classOfT.cast(tIMyCarAidlInterface);
         else return null;
-    }
-
-    public static void testMyCarAidlInterface() {
-        if (tIMyCarAidlInterface != null) {
-            try {
-                MMLog.d(TAG, tIMyCarAidlInterface.getHelloData());
-            } catch (RemoteException e) {
-                //throw new RuntimeException(e);
-                MMLog.d(TAG, "MyCarAidlInterface " + e);
-            }
-        } else MMLog.d(TAG, "MyCarAidlInterface is null!");
     }
 
     public static void IAidlSendMessage(PEventCourier pEventCourier) {
@@ -242,6 +231,7 @@ public class Cabinet {
                 break;
         }
     }
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     //aidl music

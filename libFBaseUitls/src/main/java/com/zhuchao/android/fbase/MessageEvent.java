@@ -29,7 +29,10 @@ public class MessageEvent {
     public static final int MESSAGE_EVENT_OCTOPUS_PAUSE =3202;
     public static final int MESSAGE_EVENT_OCTOPUS_NEXT = 3203;
     public static final int MESSAGE_EVENT_OCTOPUS_PREV = 3204;
-    public static final int MESSAGE_EVENT_OCTOPUS_TITLE_CHANGED = 3205;
+    public static final int MESSAGE_EVENT_OCTOPUS_STOP = 3205;
+    public static final int MESSAGE_EVENT_OCTOPUS_TITLE_CHANGED = 3206;
+    public static final int MESSAGE_EVENT_OCTOPUS_PLAYING_STATUS = 3207;
+    public static final int MESSAGE_EVENT_OCTOPUS_AIDL_PLAYING_STATUS = 3208;
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //事件常量
@@ -42,7 +45,6 @@ public class MessageEvent {
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_MULTIMEDIA_SERVICE = "com.zhuchao.android.car.action.MULTIMEDIA_SERVICE";
 
     public static final String MESSAGE_EVENT_MACHINE_ACTION_CONFIG_UPDATE = "com.octopus.android.MachineConfig_update";
-
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_DISABLE_AUTO_PLAY = "com.octopus.android.action.DISABLE_AUTO_PLAY";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_AUTO_PLAY = "com.octopus.android.action.AUTO_PLAY";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_PLAY_PAUSE = "com.octopus.android.action.PLAY_PAUSE";

@@ -1,4 +1,4 @@
-package com.zhuchao.android.car;
+package com.zhuchao.android.car.aidl;
 
 import android.os.Build;
 import android.os.Parcel;
@@ -14,8 +14,15 @@ public class PEventCourier implements Parcelable {
     private final String from;
     private final String target;
     private final int id;
-    private byte[] datas;
+    private byte[] datas = {0};
     private ArrayList<String> mStrings = new ArrayList<>();
+
+    public PEventCourier(int id) {
+        this.from = null;
+        this.target = null;
+        this.id = id;
+        this.datas = ByteUtils.intToBytes(0);
+    }
 
     public PEventCourier(int id, int value) {
         this.from = null;
@@ -33,6 +40,21 @@ public class PEventCourier implements Parcelable {
 
     public PEventCourier(int id, ArrayList<String> strings) {
         this.from = null;
+        this.target = null;
+        this.id = id;
+        this.mStrings.clear();
+        this.mStrings.addAll(strings);
+    }
+
+    public PEventCourier(Class<?> fromClass, int id) {
+        this.from = fromClass.getName();
+        this.target = null;
+        this.id = id;
+        this.mStrings.clear();
+    }
+
+    public PEventCourier(Class<?> fromClass, int id, ArrayList<String> strings) {
+        this.from = fromClass.getName();
         this.target = null;
         this.id = id;
         this.mStrings.clear();
@@ -94,8 +116,8 @@ public class PEventCourier implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeInt(id);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            dest.writeBlob(datas);
-        } else {
+            if (datas != null) dest.writeBlob(datas);
+        } else if (datas != null) {
             dest.writeInt(datas.length);
             dest.writeByteArray(datas);
         }
@@ -120,14 +142,14 @@ public class PEventCourier implements Parcelable {
             }
         }
         strBuilder.append("]");
-        return strBuilder.toString();
+        return strBuilder.toString().trim();
     }
 
     public String toStr() {
         if (from != null && mStrings != null)
-            return "EventCourier{" + "id=" + id + ",datas=" + datasToHexStr() + ",strings=" + mStrings.toString() + ",fromClass='" + from + '\'' + ",target='" + target + '\'' + '}';
+            return "PEventCourier{" + "id=" + id + ",datas=" + datasToHexStr() + ",strings=" + mStrings.toString() + ",fromClass='" + from + '\'' + ",target='" + target + '\'' + '}';
         else if (mStrings != null)
-            return "EventCourier{" + "id=" + id + ",datas=" + datasToHexStr() + ",strings=" + mStrings.toString() + ",fromClass='" + from + '\'' + ",target='" + target + '\'' + '}';
-        else return "EventCourier{" + "id=" + id + ",datas=" + datasToHexStr() + ",fromClass='" + '\'' + ",target='" + target + '\'' + '}';
+            return "PEventCourier{" + "id=" + id + ",datas=" + datasToHexStr() + ",strings=" + mStrings.toString() + ",fromClass='" + from + '\'' + ",target='" + target + '\'' + '}';
+        else return "PEventCourier{" + "id=" + id + ",datas=" + datasToHexStr() + ",fromClass='" + '\'' + ",target='" + target + '\'' + '}';
     }
 }

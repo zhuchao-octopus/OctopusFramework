@@ -806,13 +806,11 @@ public class FileUtils {
         ArrayList<LMusic> musics = new ArrayList<>();
         ContentResolver mContentResolver = context.getContentResolver();
         try (Cursor c = mContentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER)) {
-
+            if (c == null) return musics;
             while (c.moveToNext()) {
                 String path = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));// 路径
 
-                if (!new File(path).exists()) {
-                    continue;
-                }
+                if (!new File(path).exists()) continue;
 
                 String name = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)); // 歌曲名
                 String album = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)); // 专辑
@@ -820,11 +818,10 @@ public class FileUtils {
                 long size = c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE));// 大小
                 int duration = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));// 时长
                 int time = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));// 歌曲的id
-                // int albumId = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
+                //int albumId = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
                 LMusic music = new LMusic(name, path, album, artist, size, duration);
                 musics.add(music);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -835,11 +832,11 @@ public class FileUtils {
         List<LVideo> videos = new ArrayList<LVideo>();
         ContentResolver mContentResolver = context.getContentResolver();
         try (Cursor c = mContentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Video.Media.DEFAULT_SORT_ORDER)) {
+            if (c == null) return videos;
             while (c.moveToNext()) {
                 String path = c.getString(c.getColumnIndexOrThrow(MediaStore.Video.Media.DATA));// 路径
-                if (!new File(path).exists()) {
-                    continue;
-                }
+                if (!new File(path).exists()) continue;
+
                 int id = c.getInt(c.getColumnIndexOrThrow(MediaStore.Video.Media._ID));// 视频的id
                 String name = c.getString(c.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 视频名称
                 String resolution = c.getString(c.getColumnIndexOrThrow(MediaStore.Video.Media.RESOLUTION)); //分辨率

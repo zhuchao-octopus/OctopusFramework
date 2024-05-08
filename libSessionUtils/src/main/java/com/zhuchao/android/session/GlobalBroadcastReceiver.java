@@ -87,7 +87,6 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         MMLog.d(TAG, TAG + " action=" + intent.getAction() + " " + context.getPackageName());
-
         switch (Objects.requireNonNull(intent.getAction())) {
             case ACTION_BOOT_COMPLETED:
                 Intent intent1 = new Intent();
