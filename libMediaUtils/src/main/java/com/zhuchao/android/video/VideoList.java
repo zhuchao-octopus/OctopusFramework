@@ -78,6 +78,10 @@ public class VideoList {
         }
     }
 
+    public void addRow(OMedia oMedia) {
+        add(oMedia);
+    }
+
     public void add(OMedia oMedia) {
         if (oMedia == null) return;
         if (mFHashMap.containsKey(oMedia.md5())) return;
@@ -200,11 +204,12 @@ public class VideoList {
         return null;
     }
 
+    /////////////////////////////////////////////////////////////////////////////////
     public VideoList getVideos() {
         VideoList videoList1 = new VideoList();
         for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) oo.getValue();
-            if (oMedia.isVideo()) videoList1.add(oMedia);
+            if (oMedia.isVideo()) videoList1.add(new OMedia(oMedia.getMovie()));
         }
         return videoList1;
     }
@@ -213,7 +218,7 @@ public class VideoList {
         VideoList audioList1 = new VideoList();
         for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) oo.getValue();
-            if (oMedia.isAudio()) audioList1.add(oMedia);
+            if (oMedia.isAudio()) audioList1.add(new OMedia(oMedia.getMovie()));
         }
         return audioList1;
     }
@@ -222,7 +227,7 @@ public class VideoList {
         VideoList audioList1 = new VideoList();
         for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) oo.getValue();
-            if (artist.equals(oMedia.getMovie().getArtist())) audioList1.add(oMedia);
+            if (artist.equals(oMedia.getMovie().getArtist())) audioList1.add(new OMedia(oMedia.getMovie()));
         }
         return audioList1;
     }
@@ -231,7 +236,7 @@ public class VideoList {
         VideoList audioList1 = new VideoList();
         for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) oo.getValue();
-            if (album.equals(oMedia.getMovie().getAlbum())) audioList1.add(oMedia);
+            if (album.equals(oMedia.getMovie().getAlbum())) audioList1.add(new OMedia(oMedia.getMovie()));
         }
         return audioList1;
     }
@@ -239,15 +244,23 @@ public class VideoList {
     public void copyAudioMediaTo(VideoList videoList) {
         for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) oo.getValue();
-            if (oMedia.isAudio()) videoList.add(oMedia);
+            if (oMedia.isAudio()) videoList.add(new OMedia(oMedia.getMovie()));
         }
     }
 
     public void copyAudioMediaFrom(VideoList videoList) {
-        if(videoList != null) {
+        if (videoList != null) {
             for (HashMap.Entry<String, Object> oo : videoList.getMap().entrySet()) {
                 OMedia oMedia = (OMedia) oo.getValue();
-                if (oMedia.isAudio()) add(oMedia);
+                if (oMedia.isAudio()) add(new OMedia(oMedia.getMovie()));
+            }
+        }
+    }
+
+    public void loadAllRawMediaFrom(VideoList videoList) {
+        if (videoList != null) {
+            for (HashMap.Entry<String, Object> oo : videoList.getMap().entrySet()) {
+                addRow((OMedia) oo.getValue());
             }
         }
     }
@@ -289,8 +302,7 @@ public class VideoList {
         this.TAG = TAG;
     }
 
-    public List<Movie> toList()
-    {
+    public List<Movie> toList() {
         List<Movie> list = new ArrayList<>();
         for (HashMap.Entry<String, Object> m : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) m.getValue();
@@ -301,6 +313,7 @@ public class VideoList {
 
     public void printAll() {
         int i = 0;
+        MMLog.d(TAG, "Print all medias count:" + getCount());
         for (HashMap.Entry<String, Object> m : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) m.getValue();
             MMLog.log(TAG, i + ":" + oMedia.getPathName());

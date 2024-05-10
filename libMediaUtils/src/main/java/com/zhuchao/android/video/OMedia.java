@@ -17,11 +17,11 @@ import android.view.TextureView;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MediaFile;
+import com.zhuchao.android.fbase.PlaybackEvent;
+import com.zhuchao.android.fbase.PlayerStatusInfo;
 import com.zhuchao.android.fbase.TTask;
 import com.zhuchao.android.fbase.eventinterface.InvokeInterface;
-import com.zhuchao.android.fbase.PlaybackEvent;
 import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
-import com.zhuchao.android.fbase.PlayerStatusInfo;
 import com.zhuchao.android.persist.SPreference;
 import com.zhuchao.android.player.MPlayer;
 import com.zhuchao.android.player.PlayControl;
@@ -46,24 +46,25 @@ import java.util.Map;
 public class OMedia implements PlayerCallback {
     static final long serialVersionUID = 727566175075960653L;
     private final String TAG = "OMedia";
-    protected PlayControl FPlayer = null;
-    protected Context context = null;
-    protected ArrayList<String> options = null;
-    private PlayerCallback callback = null;
     private OMedia preOMedia = null;
     private OMedia nextOMedia = null;
-    private float playRate = 1;
-    private long playTime = 0;
     private Movie movie = null;//new Movie(null);
     private final FileDescriptor fileDescriptor;
     private final AssetFileDescriptor assetFileDescriptor;
     private final Uri uri;
     private boolean restorePlay = false;
-    public final TTask tTask_play = new TTask("OMedia.task.play", null);
-    private final TTask tTask_stop = new TTask("OMedia.task.stop", null);
+
+    private float playRate = 1;
+    private long playTime = 0;
     private int videoOutWidth = 0;
     private int videoOutHeight = 0;
     protected int magicNumber = 0;
+    protected PlayControl FPlayer = null;
+    protected Context context = null;
+    protected ArrayList<String> options = null;
+    private PlayerCallback callback = null;
+    public final TTask tTask_play = new TTask("OMedia.task.play", null);
+    private final TTask tTask_stop = new TTask("OMedia.task.stop", null);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -159,13 +160,11 @@ public class OMedia implements PlayerCallback {
             MMLog.log(TAG, "oMedia play failed no player found, check your context");
             return null;
         }
-        if(FileUtils.existFile(url)) {
+        if (FileUtils.existFile(url)) {
             FPlayer.setSource(url);
             FPlayer.play();
-        }
-        else
-        {
-            MMLog.d(TAG,"File is not exists "+url);
+        } else {
+            MMLog.d(TAG, "File is not exists " + url);
         }
         return this;
     }
@@ -377,7 +376,7 @@ public class OMedia implements PlayerCallback {
                     //MMLog.log(TAG, "OMedia playing time = " + playTime);
                 }
                 FPlayer.stop();
-                MMLog.log(TAG, "OMedia has stopped at time " + playTime + " status="+getPlayStatus());
+                MMLog.log(TAG, "OMedia has stopped at time " + playTime + " status=" + getPlayStatus());
             }
         } catch (Exception e) {
             //e.printStackTrace();

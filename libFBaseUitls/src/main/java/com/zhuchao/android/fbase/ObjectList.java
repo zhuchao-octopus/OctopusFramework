@@ -36,6 +36,7 @@ public class ObjectList {
     }
 
     public void addObject(String Name, Object Obj) {
+        mFHashMap.remove(Name);
         mFHashMap.put(Name, Obj);
     }
 
@@ -267,6 +268,7 @@ public class ObjectList {
     /////////////////////////////////////////////////////////////////////////////////////////////////
     public void printAll() {
         int i = 0;
+        MMLog.d(TAG,"Print all count:"+getCount());
         for (HashMap.Entry<String, Object> entry : mFHashMap.entrySet()) {
             if (entry.getValue() == null) entry.setValue("null");
             MMLog.log(TAG, i + ":" + entry.getKey() + ":" + entry.getValue().toString());

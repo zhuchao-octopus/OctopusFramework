@@ -22,5 +22,6 @@ interface IMyMediaAidlInterface {
     void playStopFree();
     void playStopFreeFree();
     void startPlay(String fileName);
+    boolean isPlaying();
     List<PMovie> getMediaList(int MsgID);
 }

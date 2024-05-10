@@ -34,6 +34,7 @@ import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MessageEvent;
+import com.zhuchao.android.fbase.ObjectList;
 import com.zhuchao.android.fbase.TAppUtils;
 import com.zhuchao.android.fbase.TCourierEventBus;
 import com.zhuchao.android.fbase.eventinterface.TCourierEventBusInterface;
@@ -58,7 +59,7 @@ public class Cabinet {
     private static TPersistent tPersistent = null;
     private static TCourierEventBusInterface tCourierEventBus = null;
     private static IMyAidlInterface tIMyCarAidlInterface = null;
-
+    public static ObjectList properties = new ObjectList();
     private static MediaBrowser mMediaBrowser;
     private static MediaController mMediaController;
 

@@ -33,6 +33,7 @@ public class MessageEvent {
     public static final int MESSAGE_EVENT_OCTOPUS_TITLE_CHANGED = 3206;
     public static final int MESSAGE_EVENT_OCTOPUS_PLAYING_STATUS = 3207;
     public static final int MESSAGE_EVENT_OCTOPUS_AIDL_PLAYING_STATUS = 3208;
+    public static final int MESSAGE_EVENT_OCTOPUS_AIDL_START_REGISTER = 3209;
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //事件常量
