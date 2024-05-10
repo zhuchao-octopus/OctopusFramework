@@ -21,83 +21,85 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import java.io.Serializable;
-
 /*
  * Movie class represents video entity with videoName, description, image thumbs and video url.
  */
 public class Movie implements Parcelable {
     //static final long serialVersionUID = 727566175075960653L;
-    private int mid;
-    private int sid;
-    private int status;
+    private int movie_id;
+    private int source_id;
     private String name;
     private String type;
-    private String year;
-    private String region;
+    private String artist;
+    private String album;
+    private String category;
     private String actor;
+    private String studio;
     private String language;
     private String sharpness;
     private String description;
-    private String studio;
     private String bgImageUrl;
     private String cardImageUrl;
-    private String category;
+    private String year;
     private String date;
     private String srcUrl;
-    private String artist;
-    private String album;
     private long duration;
     private long size;
+    private int status;
 
-    public Movie(final String sourceUrl) {
-        this.srcUrl = sourceUrl;
+    public Movie(final String url) {
+        this.srcUrl = url;
         if (EmptyString(srcUrl)) return;
         this.name = this.srcUrl.substring(this.srcUrl.lastIndexOf("/") + 1);
     }
 
-    public Movie(int movieId, int sourceId, String movieName, String movieType, String year, String region, String actor, String language, String sharpness, String description, String studio, String bgImageUrl, String cardImageUrl, String sourceUrl, String category, String date, int status) {
-        this.mid = movieId;
-        this.sid = sourceId;
-        this.name = movieName;
-        this.type = movieType;
-        this.year = year;
-        this.region = region;
+    public Movie(int movie_id, int source_id, String name, String type, String artist, String album, String category, String actor, String studio, String language, String sharpness, String description, String bgImageUrl, String cardImageUrl, String year, String date, String srcUrl, long duration,long size, int status) {
+        this.movie_id = movie_id;
+        this.source_id = source_id;
+        this.name = name;
+        this.type = type;
+        this.artist = artist;
+        this.album = album;
+        this.category = category;
         this.actor = actor;
+        this.studio = studio;
         this.language = language;
         this.sharpness = sharpness;
         this.description = description;
-        this.studio = studio;
         this.bgImageUrl = bgImageUrl;
         this.cardImageUrl = cardImageUrl;
-        this.srcUrl = sourceUrl;
-        this.category = category;
+
+        this.year = year;
         this.date = date;
+        this.srcUrl = srcUrl;
+
+        this.duration = duration;
+        this.size = size;
         this.status = status;
     }
 
     protected Movie(Parcel in) {
-        mid = in.readInt();
-        sid = in.readInt();
-        status = in.readInt();
+        movie_id = in.readInt();
+        source_id = in.readInt();
         name = in.readString();
         type = in.readString();
-        year = in.readString();
-        region = in.readString();
+        artist = in.readString();
+        album = in.readString();
+        category = in.readString();
         actor = in.readString();
+        studio = in.readString();
         language = in.readString();
         sharpness = in.readString();
         description = in.readString();
-        studio = in.readString();
         bgImageUrl = in.readString();
         cardImageUrl = in.readString();
-        category = in.readString();
+        year = in.readString();
         date = in.readString();
         srcUrl = in.readString();
-        artist = in.readString();
-        album = in.readString();
+
         duration = in.readLong();
         size = in.readLong();
+        status = in.readInt();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -112,28 +114,20 @@ public class Movie implements Parcelable {
         }
     };
 
-    public int getMid() {
-        return mid;
+    public int getMovie_id() {
+        return movie_id;
     }
 
-    public void setMid(int mid) {
-        this.mid = mid;
+    public void setMovie_id(int movie_id) {
+        this.movie_id = movie_id;
     }
 
-    public int getSid() {
-        return sid;
+    public int getSource_id() {
+        return source_id;
     }
 
-    public void setSid(int sid) {
-        this.sid = sid;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
+    public void setSource_id(int source_id) {
+        this.source_id = source_id;
     }
 
     public String getName() {
@@ -152,20 +146,28 @@ public class Movie implements Parcelable {
         this.type = type;
     }
 
-    public String getYear() {
-        return year;
+    public String getArtist() {
+        return artist;
     }
 
-    public void setYear(String year) {
-        this.year = year;
+    public void setArtist(String artist) {
+        this.artist = artist;
     }
 
-    public String getRegion() {
-        return region;
+    public String getAlbum() {
+        return album;
     }
 
-    public void setRegion(String region) {
-        this.region = region;
+    public void setAlbum(String album) {
+        this.album = album;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getActor() {
@@ -174,6 +176,14 @@ public class Movie implements Parcelable {
 
     public void setActor(String actor) {
         this.actor = actor;
+    }
+
+    public String getStudio() {
+        return studio;
+    }
+
+    public void setStudio(String studio) {
+        this.studio = studio;
     }
 
     public String getLanguage() {
@@ -200,14 +210,6 @@ public class Movie implements Parcelable {
         this.description = description;
     }
 
-    public String getStudio() {
-        return studio;
-    }
-
-    public void setStudio(String studio) {
-        this.studio = studio;
-    }
-
     public String getBgImageUrl() {
         return bgImageUrl;
     }
@@ -224,12 +226,28 @@ public class Movie implements Parcelable {
         this.cardImageUrl = cardImageUrl;
     }
 
-    public String getCategory() {
-        return category;
+    public long getDuration() {
+        return duration;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
     }
 
     public String getDate() {
@@ -248,36 +266,12 @@ public class Movie implements Parcelable {
         this.srcUrl = srcUrl;
     }
 
-    public String getArtist() {
-        return artist;
+    public int getStatus() {
+        return status;
     }
 
-    public void setArtist(String artist) {
-        this.artist = artist;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(long duration) {
-        this.duration = duration;
-    }
-
-    public String getAlbum() {
-        return album;
-    }
-
-    public void setAlbum(String album) {
-        this.album = album;
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public void setSize(long size) {
-        this.size = size;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     @Override
@@ -287,35 +281,27 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeInt(mid);
-        dest.writeInt(sid);
-        dest.writeInt(status);
+        dest.writeInt(movie_id);
+        dest.writeInt(source_id);
         dest.writeString(name);
         dest.writeString(type);
-        dest.writeString(year);
-        dest.writeString(region);
+        dest.writeString(artist);
+        dest.writeString(album);
+        dest.writeString(category);
         dest.writeString(actor);
+        dest.writeString(studio);
         dest.writeString(language);
         dest.writeString(sharpness);
         dest.writeString(description);
-        dest.writeString(studio);
         dest.writeString(bgImageUrl);
         dest.writeString(cardImageUrl);
-        dest.writeString(category);
+
+        dest.writeString(year);
         dest.writeString(date);
         dest.writeString(srcUrl);
-        dest.writeString(artist);
-        dest.writeString(album);
+
         dest.writeLong(duration);
         dest.writeLong(size);
+        dest.writeInt(status);
     }
-
-    ///public void loadResourceInto(Context mContext, String path, ImageView imageView, int preloadImg) {
-    //Glide.with(mContext)
-    //            .load(path)
-    //.placeholder(preloadImg)
-    //.diskCacheStrategy(DiskCacheStrategy.NONE)
-    //           .into(imageView);
-    ///}
-
 }

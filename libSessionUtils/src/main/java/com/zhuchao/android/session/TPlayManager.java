@@ -40,6 +40,7 @@ import com.zhuchao.android.fbase.MessageEvent;
 import com.zhuchao.android.fbase.ObjectList;
 import com.zhuchao.android.fbase.PlaybackEvent;
 import com.zhuchao.android.fbase.PlayerStatusInfo;
+import com.zhuchao.android.fbase.TAppProcessUtils;
 import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
 import com.zhuchao.android.fbase.eventinterface.SessionCallback;
 import com.zhuchao.android.video.Movie;
@@ -49,6 +50,7 @@ import com.zhuchao.android.video.VideoList;
 import java.io.FileDescriptor;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 public class TPlayManager implements PlayerCallback, SessionCallback {
@@ -86,6 +88,8 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     private final VideoList mPlayingHistoryList = new VideoList();
     private final VideoList mFavouriteList = new VideoList();
 
+    private final ObjectList mArtistList = new ObjectList();
+    private ObjectList mAlbumList = new ObjectList();
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +124,10 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         this.allPlayLists.addObject("LocalSDVideos", mLocalSDMediaVideos);
         this.allPlayLists.addObject("LocalSDAudios", mLocalSDMediaVideos);
         ///Cabinet.getEventBus().registerEventObserver(this);
-        initialMyMediaAidlInterface(mContext);
+        if(!TAppProcessUtils.getProcessName(context).equals(MessageEvent.MESSAGE_EVENT_AIDL_PROCESS_SERVICE_NAME)) {
+            ///MMLog.d(TAG,"Init play manager "+TAppProcessUtils.getProcessName(context));
+            initialMyMediaAidlInterface(mContext);
+        }
     }
 
     public void updateMusicsToPlayList() {
@@ -175,6 +182,10 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     public TPlayManager callback(PlayerCallback callback) {
         this.mUserCallback = callback;
         return this;
+    }
+
+    public void registerStatusListener(PlayerCallback callback) {
+        this.mUserCallback = callback;
     }
 
     public boolean isPlaying() {
@@ -423,10 +434,10 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
 
         OMedia oo = getPreAvailable();//获取上一个有效的资源
         if (oo != null) {
-            MMLog.log(TAG, "Go Prev = " + oo.getPathName());
+            MMLog.log(TAG, "Go to prev = " + oo.getPathName());
             startPlay(oo);
         } else {
-            MMLog.log(TAG, "Prev = null,go to auto play");
+            MMLog.log(TAG, "Prev is  null,start auto play");
             autoPlay();
         }
     }
@@ -569,6 +580,15 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         return tMediaManager;
     }
 
+    public ObjectList getArtistList() {
+
+        return mArtistList;
+    }
+
+    public ObjectList getAlbumList() {
+        return mAlbumList;
+    }
+
     public void setWindowSize(int width, int height) {
         if (oMediaPlaying != null) {
             oMediaPlaying.setWindowSize(width, height);
@@ -612,14 +632,14 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         OMedia retOMedia = null;
         for (Object o : objects) {
             if (oMediaPlaying.equals(oOMedia))//是自己只有一首
-                oOMedia = ((VideoList) o).getNextAvailable(null);//跳到下一个列表
+                oOMedia = ((VideoList) o).getNextAvailable(null);//跳到下一个列表的第一个
             else oOMedia = ((VideoList) o).getNextAvailable(oMediaPlaying);
 
-            if (oOMedia != null) {
+            if (oOMedia != null) {//只有一首,多列表搜索下一个
                 if (oMediaPlaying.equals(oOMedia))//是自己只有一首
                 {
                     retOMedia = oOMedia;
-                    continue;//多列表搜索下一个
+                    continue;//多列表搜索下一个，跳到下一个列表
                 }
                 return oOMedia;
             }
@@ -632,8 +652,14 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         Collection<Object> objects = allPlayLists.getAllObject();
         if (oMediaPlaying == null) {
             for (Object o : objects) {
-                OMedia oOMedia = ((VideoList) o).getPreAvailable(null);
-                if (oOMedia != null) return oOMedia;
+                OMedia oOMedia = null;
+                if (oMediaSearching != null) oOMedia = ((VideoList) o).getPreAvailable(oMediaSearching);
+                else oOMedia = ((VideoList) o).getPreAvailable(null);
+
+                if (oOMedia != null) {
+                    oMediaSearching = oOMedia;
+                    return oOMedia;
+                }
             }
             return null;
         }
@@ -780,7 +806,6 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     }
 
     private void playEventHandler(int playOrder) {
-
         switch (playOrder) {
             case DataID.PLAY_MANAGER_PLAY_ORDER0://自动播放第一个
                 autoPlay();
@@ -805,7 +830,6 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
             default:
                 break;
         }
-
     }
 
     private final Handler playHandler = new Handler(Looper.getMainLooper()) {
@@ -880,54 +904,73 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
                     //mLocalSDMediaAudios.printAll();
                     break;
             }
+            mAlbumList = tMediaManager.getAlbumList();
+            mAlbumList = tMediaManager.getAlbumList();
             playHandler.sendEmptyMessage(session_id);
+            Cabinet.getEventBus().post(new EventCourier(session_id));//通知本地UI外部数据加载完毕
         }
     }
 
     ///@TCourierSubscribe(threadMode = MethodThreadMode.threadMode.BACKGROUND)
     public void onTCourierSubscribeEventAidl(PEventCourier pEventCourier) {///内部更新
         ///MMLog.d(TAG, pEventCourier.toStr());
-        if (pEventCourier == null) {
-            this.mLocalMediaVideos = getAidlOMedias(MessageEvent.MESSAGE_EVENT_LOCAL_VIDEO);
-            this.mLocalUSBMediaVideos = getAidlOMedias(MessageEvent.MESSAGE_EVENT_USB_VIDEO);
-            this.mLocalSDMediaVideos = getAidlOMedias(MessageEvent.MESSAGE_EVENT_SD_VIDEO);
-
-            this.mLocalSDMediaAudios = getAidlOMedias(MessageEvent.MESSAGE_EVENT_LOCAL_AUDIO);
-            this.mLocalSDMediaVideos = getAidlOMedias(MessageEvent.MESSAGE_EVENT_USB_AUDIO);
-            this.mLocalUSBMediaAudios = getAidlOMedias(MessageEvent.MESSAGE_EVENT_SD_AUDIO);
-            return;
-        }
-
         switch (pEventCourier.getId()) {
             case MessageEvent.MESSAGE_EVENT_LOCAL_VIDEO:
                 this.mLocalMediaVideos = getAidlOMedias(pEventCourier.getId());
                 this.allPlayLists.addObject("LocalVideos", mLocalMediaVideos);
-                MMLog.d(TAG, "Update LocalMediaVideos.size=" + mLocalMediaVideos.getCount());
+                updateArtistAndAlbum(mLocalMediaVideos);
+                MMLog.d(TAG, "Update LocalMediaVideos.count=" + mLocalMediaVideos.getCount());
                 break;
             case MessageEvent.MESSAGE_EVENT_USB_VIDEO:
                 this.mLocalUSBMediaVideos = getAidlOMedias(pEventCourier.getId());
                 this.allPlayLists.addObject("LocalUSBVideos", mLocalUSBMediaVideos);
-                MMLog.d(TAG, "Update LocalUSBMediaVideos.size=" + mLocalUSBMediaVideos.getCount());
+                updateArtistAndAlbum(mLocalUSBMediaVideos);
+                MMLog.d(TAG, "Update LocalUSBMediaVideos.count=" + mLocalUSBMediaVideos.getCount());
                 break;
             case MessageEvent.MESSAGE_EVENT_SD_VIDEO:
                 this.mLocalSDMediaVideos = getAidlOMedias(pEventCourier.getId());
                 this.allPlayLists.addObject("LocalSDVideos", mLocalSDMediaVideos);
-                MMLog.d(TAG, "Update LocalSDMediaVideos.size=" + mLocalSDMediaVideos.getCount());
+                updateArtistAndAlbum(mLocalSDMediaVideos);
+                MMLog.d(TAG, "Update LocalSDMediaVideos.count=" + mLocalSDMediaVideos.getCount());
                 break;
             case MessageEvent.MESSAGE_EVENT_LOCAL_AUDIO:
                 this.mLocalMediaAudios = getAidlOMedias(pEventCourier.getId());
                 this.allPlayLists.addObject("LocalAudios", mLocalMediaAudios);
-                MMLog.d(TAG, "Update LocalMediaAudios.size=" + mLocalMediaAudios.getCount());
+                updateArtistAndAlbum(mLocalMediaAudios);
+                MMLog.d(TAG, "Update LocalMediaAudios.count=" + mLocalMediaAudios.getCount());
                 break;
             case MessageEvent.MESSAGE_EVENT_USB_AUDIO:
                 this.mLocalUSBMediaAudios = getAidlOMedias(pEventCourier.getId());
                 this.allPlayLists.addObject("LocalUsbAudios", mLocalUSBMediaAudios);
-                MMLog.d(TAG, "Update LocalUSBMediaAudios.size=" + mLocalUSBMediaAudios.getCount());
+                updateArtistAndAlbum(mLocalUSBMediaAudios);
+                MMLog.d(TAG, "Update LocalUSBMediaAudios.count=" + mLocalUSBMediaAudios.getCount());
                 break;
             case MessageEvent.MESSAGE_EVENT_SD_AUDIO:
                 this.mLocalSDMediaAudios = getAidlOMedias(pEventCourier.getId());
-                this.allPlayLists.addObject("LocalSDAudios", mLocalSDMediaVideos);
-                MMLog.d(TAG, "Update LocalSDMediaAudios.size=" + mLocalSDMediaAudios.getCount());
+                this.allPlayLists.addObject("LocalSDAudios", mLocalSDMediaAudios);
+                updateArtistAndAlbum(mLocalSDMediaAudios);
+                MMLog.d(TAG, "Update LocalSDMediaAudios.count=" + mLocalSDMediaAudios.getCount());
+                break;
+            case MessageEvent.MESSAGE_EVENT_MEDIA_LIBRARY:
+                this.mLocalMediaVideos = getAidlOMedias(MessageEvent.MESSAGE_EVENT_LOCAL_VIDEO);
+                this.mLocalUSBMediaVideos = getAidlOMedias(MessageEvent.MESSAGE_EVENT_USB_VIDEO);
+                this.mLocalSDMediaVideos = getAidlOMedias(MessageEvent.MESSAGE_EVENT_SD_VIDEO);
+
+                this.mLocalSDMediaAudios = getAidlOMedias(MessageEvent.MESSAGE_EVENT_LOCAL_AUDIO);
+                this.mLocalSDMediaVideos = getAidlOMedias(MessageEvent.MESSAGE_EVENT_USB_AUDIO);
+                this.mLocalUSBMediaAudios = getAidlOMedias(MessageEvent.MESSAGE_EVENT_SD_AUDIO);
+                updateArtistAndAlbum(mLocalMediaVideos);
+                MMLog.d(TAG, "Update LocalMediaVideos.count=" + mLocalMediaVideos.getCount());
+                updateArtistAndAlbum(mLocalUSBMediaVideos);
+                MMLog.d(TAG, "Update LocalUSBMediaVideos.count=" + mLocalUSBMediaVideos.getCount());
+                updateArtistAndAlbum(mLocalSDMediaVideos);
+                MMLog.d(TAG, "Update LocalSDMediaVideos.count=" + mLocalSDMediaVideos.getCount());
+                updateArtistAndAlbum(mLocalMediaAudios);
+                MMLog.d(TAG, "Update LocalMediaAudios.count=" + mLocalMediaAudios.getCount());
+                updateArtistAndAlbum(mLocalUSBMediaAudios);
+                MMLog.d(TAG, "Update LocalUSBMediaAudios.count=" + mLocalUSBMediaAudios.getCount());
+                updateArtistAndAlbum(mLocalSDMediaAudios);
+                MMLog.d(TAG, "Update LocalSDMediaAudios.count=" + mLocalSDMediaAudios.getCount());
                 break;
         }
         Cabinet.getEventBus().post(new EventCourier(pEventCourier.getId()));//通知本地UI外部数据加载完毕
@@ -943,7 +986,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     }
 
     //aidl
-    private void initialMyMediaAidlInterface(Context context) {
+    public void initialMyMediaAidlInterface(Context context) {
         ///Intent intent = new Intent(mContext, MMCarService.class);
         //MMLog.d(TAG,"initial MMCarService proxy");
         Intent intent = new Intent(MESSAGE_EVENT_OCTOPUS_ACTION_MULTIMEDIA_SERVICE);
@@ -974,6 +1017,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
             MMLog.d(TAG, "Multimedia service disconnected!");
         }
     };
+
     private final IMyAidlInterfaceListener mIMyMediaAidlInterfaceListener = new IMyAidlInterfaceListener.Stub() {
 
         @Override
@@ -986,10 +1030,8 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
                 case MessageEvent.MESSAGE_EVENT_LOCAL_AUDIO:
                 case MessageEvent.MESSAGE_EVENT_USB_AUDIO:
                 case MessageEvent.MESSAGE_EVENT_SD_AUDIO:
-                    onTCourierSubscribeEventAidl(msg);
-                    break;
                 case MessageEvent.MESSAGE_EVENT_MEDIA_LIBRARY:
-                    onTCourierSubscribeEventAidl(null);
+                    onTCourierSubscribeEventAidl(msg);
                     break;
             }
         }
@@ -1094,7 +1136,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void updateMediaLibrary() {
         if (hasPlayAidlProxy()) {
-            onTCourierSubscribeEventAidl(null);
+            onTCourierSubscribeEventAidl(new PEventCourier(MessageEvent.MESSAGE_EVENT_MEDIA_LIBRARY));
         } else {
             if (tMediaManager == null) this.tMediaManager = new TMediaManager(mContext, this);
             tMediaManager.updateMedias();
@@ -1103,7 +1145,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
 
     public void updateLocalMedias() {
         if (hasPlayAidlProxy()) {
-            onTCourierSubscribeEventAidl(null);
+            onTCourierSubscribeEventAidl(new PEventCourier(MessageEvent.MESSAGE_EVENT_MEDIA_LIBRARY));
         } else if (tMediaManager != null) {
             tMediaManager.updateMedias();
         }
@@ -1120,6 +1162,19 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     public void loadFromFile() {
         mFavouriteList.loadFromFile(mContext, "Medias_Favourite");
         mPlayingHistoryList.loadFromFile(mContext, "Medias_History");
+    }
+
+    private void updateArtistAndAlbum(VideoList videoList) {
+        OMedia oMedia = null;
+        //for (Map.Entry<String, Object> entry : mAllSessions.getAll().entrySet())
+        {
+            //for (HashMap.Entry<String, Object> m : ((LiveVideoSession) entry.getValue()).getAllVideos().getMap().entrySet())
+            for (HashMap.Entry<String, Object> m : videoList.getMap().entrySet()) {
+                oMedia = (OMedia) m.getValue();
+                if (oMedia.getMovie().getAlbum() != null) mAlbumList.putString(oMedia.getMovie().getAlbum(), oMedia.getMovie().getAlbum());
+                if (oMedia.getMovie().getArtist() != null) mArtistList.putString(oMedia.getMovie().getArtist(), oMedia.getMovie().getArtist());
+            }
+        }
     }
 
     public void free() {

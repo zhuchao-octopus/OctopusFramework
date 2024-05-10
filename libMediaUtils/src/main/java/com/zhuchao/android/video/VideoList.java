@@ -19,6 +19,8 @@ import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
@@ -212,6 +214,24 @@ public class VideoList {
         for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) oo.getValue();
             if (oMedia.isAudio()) audioList1.add(oMedia);
+        }
+        return audioList1;
+    }
+
+    public VideoList getMusicByArtist(@NonNull String artist) {
+        VideoList audioList1 = new VideoList();
+        for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
+            OMedia oMedia = (OMedia) oo.getValue();
+            if (artist.equals(oMedia.getMovie().getArtist())) audioList1.add(oMedia);
+        }
+        return audioList1;
+    }
+
+    public VideoList getMusicByAlbum(@NonNull String album) {
+        VideoList audioList1 = new VideoList();
+        for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
+            OMedia oMedia = (OMedia) oo.getValue();
+            if (album.equals(oMedia.getMovie().getAlbum())) audioList1.add(oMedia);
         }
         return audioList1;
     }

@@ -2,34 +2,19 @@ package com.zhuchao.android.fbase.bean;
 
 
 public class LMusic implements Comparable<LMusic> {
-    /**
-     * 歌曲名
-     */
+    private String pinyin;
+    private int id;
+    private int albumId;
     private String name;
-    /**
-     * 路径
-     */
     private String path;
-    /**
-     * 所属专辑
-     */
     private String album;
-    /**
-     * 艺术家(作者)
-     */
     private String artist;
-    /**
-     * 文件大小
-     */
     private long size;
-    /**
-     * 时长
-     */
     private long duration;
 
-    private String pinyin;
-
-    public LMusic(String name, String path, String album, String artist, long size, int duration) {
+    public LMusic(int id,int albumId,String name, String path, String album, String artist, long size, int duration) {
+        this.id = id;
+        this.albumId = albumId;
         this.name = name;
         this.path = path;
         this.album = album;
@@ -37,6 +22,26 @@ public class LMusic implements Comparable<LMusic> {
         this.size = size;
         this.duration = duration;
         //pinyin = PinyinUtils.getPinyin(name);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getAlbumId() {
+        return albumId;
+    }
+
+    public void setAlbumId(int albumId) {
+        this.albumId = albumId;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     public String getName() {

@@ -1,9 +1,6 @@
 package com.zhuchao.android.player;
 
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
-import static org.videolan.libvlc.interfaces.IMedia.Slave.Type.Audio;
-import static org.videolan.libvlc.interfaces.IMedia.Track.Type.Text;
-import static org.videolan.libvlc.interfaces.IMedia.Track.Type.Video;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -585,13 +582,14 @@ public class OPlayer extends PlayControl {
         Map<Integer, String> mtd = new HashMap<Integer, String>();
         if (mMediaPlayer == null) return mtd;
 
-        ///MediaPlayer.TrackDescription[] TrackDescriptions = mMediaPlayer.getAudioTracks();
-        ///if (TrackDescriptions == null) return mtd;
+        MediaPlayer.TrackDescription[] TrackDescriptions = mMediaPlayer.getAudioTracks();
+        if (TrackDescriptions == null) return mtd;
 
-        ///for (MediaPlayer.TrackDescription td : TrackDescriptions) {
-        //    mtd.put(td.id, td.name);
-        //}
+        for (MediaPlayer.TrackDescription td : TrackDescriptions) {
+            mtd.put(td.id, td.name);
+        }
 
+    /*
         int i = 0;
         Media.Track[] TrackDescriptions = mMediaPlayer.getTracks(Audio);
         for (Media.Track tracks : TrackDescriptions) {
@@ -609,7 +607,7 @@ public class OPlayer extends PlayControl {
         for (Media.Track tracks : TrackDescriptions) {
             mtd.put(i, tracks.id + " " + tracks.name + " " + tracks.type);
             i++;
-        }
+        }*/
 
         return mtd;
     }
@@ -622,8 +620,8 @@ public class OPlayer extends PlayControl {
 
     public void setAudioTrack(int index) {
         if (mMediaPlayer == null) return;
-        //mMediaPlayer.setAudioTrack(index);
-        mMediaPlayer.selectTrack(String.valueOf(index));//.setAudioTrack(index);
+        mMediaPlayer.setAudioTrack(index);
+        ///mMediaPlayer.selectTrack(String.valueOf(index));//.setAudioTrack(index);
     }
 
     @Override

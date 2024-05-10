@@ -10,7 +10,7 @@ public class MessageEvent {
     public static final int MESSAGE_EVENT_USB_ATTACHED = 2005;//USB 插上
     public static final int MESSAGE_EVENT_USB_REMOVED = 2006;////USB 完全拔出
     public static final int MESSAGE_EVENT_USB_DETACHED = 2007;//USB 完全拔出
-
+    public static final int MESSAGE_EVENT_USB_SCANNING_FINISHED = 2008;//USB
     ////////////////////////////////////////////////////////////////////////////////////
     public static final int MESSAGE_EVENT_MEDIA_LIBRARY = 3000; //媒体库
     public static final int MESSAGE_EVENT_LOCAL_VIDEO = 3001;   //本地媒体库视频更新
@@ -59,6 +59,7 @@ public class MessageEvent {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //组件名称
+    public final static String MESSAGE_EVENT_AIDL_PROCESS_SERVICE_NAME = "com.zhuchao.android.car";
     public final static String MESSAGE_EVENT_AIDL_PACKAGE_NAME = "com.zhuchao.android.car";
     public final static String MESSAGE_EVENT_AIDL_CANBOX_CLASS_NAME = "com.zhuchao.android.car.service.CanboxService";
     public final static String MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME = "com.zhuchao.android.car.service.MultimService";

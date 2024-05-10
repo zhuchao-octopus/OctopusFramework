@@ -94,12 +94,12 @@ public class TAppProcessUtils {
         return isRunning;
     }
 
-    public static boolean isProessRunning(Context context, String proessName) {
+    public static boolean isProcessRunning(Context context, String processName) {
         boolean isRunning = false;
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> lists = am.getRunningAppProcesses();
         for (ActivityManager.RunningAppProcessInfo info : lists) {
-            if (info.processName.equals(proessName)) {
+            if (info.processName.equals(processName)) {
                 isRunning = true;
                 break;
             }

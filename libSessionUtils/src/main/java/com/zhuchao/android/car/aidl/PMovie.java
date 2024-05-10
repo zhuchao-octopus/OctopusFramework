@@ -24,23 +24,32 @@ import com.zhuchao.android.video.Movie;
  */
 public class PMovie extends Movie implements Parcelable {
 
-    public PMovie(final String sourceUrl) {
-        super(sourceUrl);
+
+    public PMovie(String url) {
+        super(url);
     }
 
-    public PMovie(int movieId, int sourceId, String movieName, String movieType, String year, String region, String actor, String language, String sharpness, String description, String studio, String bgImageUrl, String cardImageUrl, String sourceUrl, String category, String date, int status) {
-        super(movieId, sourceId, movieName, movieType, year, region, actor, language, sharpness, description, studio, bgImageUrl, cardImageUrl, sourceUrl, category, date, status);
+    public PMovie(int movie_id, int source_id, String name, String type, String artist, String album, String category, String actor, String studio, String language, String sharpness, String description, String bgImageUrl, String cardImageUrl, long duration, long size, String year, String date, String srcUrl, int status) {
+        super(movie_id, source_id, name, type, artist, album, category, actor, studio, language, sharpness, description, bgImageUrl, cardImageUrl, year, date, srcUrl, duration, size, status);
     }
 
-    public PMovie(Movie movie)
-    {
-        super(movie.getMid(),movie.getSid(),movie.getName(),movie.getType(),movie.getYear(),movie.getRegion(),movie.getActor(),movie.getLanguage(),movie.getSharpness()
-        ,movie.getDescription(),movie.getStudio(),movie.getBgImageUrl(),movie.getCardImageUrl(),movie.getSrcUrl(),movie.getCategory(),movie.getDate(),movie.getStatus());
+    public PMovie(Movie movie) {
+        super(movie.getMovie_id(), movie.getSource_id(), movie.getName(), movie.getType(), movie.getArtist(), movie.getAlbum(), movie.getCategory(), movie.getActor(), movie.getStudio(), movie.getLanguage(), movie.getSharpness(), movie.getDescription(), movie.getBgImageUrl(), movie.getCardImageUrl(), movie.getYear(), movie.getDate(), movie.getSrcUrl(), movie.getDuration(), movie.getSize(), movie.getStatus());
     }
+
     protected PMovie(Parcel in) {
         super(in);
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
     public static final Creator<PMovie> CREATOR = new Creator<PMovie>() {
         @Override
@@ -53,6 +62,4 @@ public class PMovie extends Movie implements Parcelable {
             return new PMovie[size];
         }
     };
-
-
 }

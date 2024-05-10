@@ -24,6 +24,7 @@ import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MessageEvent;
 import com.zhuchao.android.fbase.TAppProcessUtils;
 
+import java.io.File;
 import java.util.Objects;
 
 public class GlobalBroadcastReceiver extends BroadcastReceiver {
@@ -32,7 +33,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_BOOT_COMPLETED = "android.intent.action.BOOT_COMPLETED";
     public static final String ACTION_PAIRING_CANCEL = "android.bluetooth.device.action.PAIRING_CANCEL";
     public static GlobalBroadcastReceiver mGlobalBroadcastReceiver = null;
-
+    public static final String ACTION_MEDIA_SCANNER_SCAN_DIR = "android.intent.action.MEDIA_SCANNER_SCAN_DIR";
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     public synchronized static void registerGlobalBroadcastReceiver(Context context) {
         if (mGlobalBroadcastReceiver == null) {
@@ -53,6 +54,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
 
             intentFilter.addAction(Intent.ACTION_LOCALE_CHANGED);
             intentFilter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
+            intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
 
             intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
             intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
@@ -133,6 +135,11 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     MMLog.i(TAG, "getSerialNumber=" + usbDevice.getSerialNumber());
                 }
                 break;
+            case Intent.ACTION_MEDIA_SCANNER_FINISHED:
+                EventCourier eventCourier4 = new EventCourier(mGlobalBroadcastReceiver.getClass(), MessageEvent.MESSAGE_EVENT_USB_SCANNING_FINISHED);
+                eventCourier4.setObj(intent);
+                Cabinet.getEventBus().post(eventCourier4);
+                break;
             //BluetoothAdapter 相关广播
             case BluetoothAdapter.ACTION_STATE_CHANGED: //蓝牙开关
                 //("Bluetooth Switch state :STATE_OFF --> 10, STATE_TURNING_ON --> 11, STATE_ON --> 12 ,STATE_TURNING_OFF --> 13 ");
@@ -177,6 +184,12 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                 break;
 
         }
+    }
+
+    public static void startMediaScanning(Context context,String scanDir) {
+        Intent scanIntent = new Intent(ACTION_MEDIA_SCANNER_SCAN_DIR);
+        scanIntent.setData(Uri.fromFile(new File(scanDir)));
+        context.sendBroadcast(scanIntent);
     }
 
     public static void unMute(Context context) {

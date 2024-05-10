@@ -14,10 +14,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.os.storage.StorageManager;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Size;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -34,7 +36,9 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -112,10 +116,11 @@ public class FileUtils {
     public static ObjectList getPartitions(ObjectList Result) {
         ObjectList Partitions = null;
         long totalSize = 0;
+        String cmd = "cat /proc/partitions";
+
         if (Result == null) Partitions = new ObjectList();
         else Partitions = Result;
 
-        String cmd = "cat /proc/partitions";
         try {
             Process p = Runtime.getRuntime().exec(cmd);
             //StringBuilder data = new StringBuilder();
@@ -154,11 +159,11 @@ public class FileUtils {
 
     public static ObjectList getFileSystemPartitions(ObjectList Result) {
         ObjectList Partitions = null;
-        //long totalSize = 0;
+        String cmd = "df";
+
         if (Result == null) Partitions = new ObjectList();
         else Partitions = Result;
 
-        String cmd = "df";
         try {
             Process p = Runtime.getRuntime().exec(cmd);
             //StringBuilder data = new StringBuilder();
@@ -185,13 +190,49 @@ public class FileUtils {
                     }
                 }
             }
-            //Partitions.putLong("totalSize",totalSize);
-            //ie.close();
+            ///Partitions.putLong("totalSize",totalSize);
+            ///ie.close();
             in.close();
         } catch (IOException ioe) {
             MMLog.e(TAG, ioe.toString());
         }
         return Partitions;
+    }
+
+
+    private static void makeFilePath(String filePath, String fileName) {
+        File file;
+        makeDirectory(filePath);
+        try {
+            file = new File(filePath + fileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            MMLog.e(TAG, e.toString());
+        }
+    }
+
+    private static void makeDirectory(String filePath) {
+        File file = null;
+        try {
+            file = new File(filePath);
+            if (!file.exists()) {
+                file.mkdir();
+            }
+        } catch (Exception e) {
+            MMLog.log(TAG, e.toString());
+        }
+    }
+
+    public static boolean MakeDirsExists(@NonNull String pathDir) {
+        if (EmptyString(pathDir)) return false;
+        File dirs = new File(pathDir);
+        if (!dirs.exists()) {
+            return dirs.mkdirs();
+        }
+        return true;
     }
 
     public static boolean isExternalLinks(String filePath) {
@@ -255,15 +296,6 @@ public class FileUtils {
             }
         }
         return null;
-    }
-
-    public static boolean MakeDirsExists(@NonNull String pathDir) {
-        if (EmptyString(pathDir)) return false;
-        File dirs = new File(pathDir);
-        if (!dirs.exists()) {
-            return dirs.mkdirs();
-        }
-        return true;
     }
 
     //无法获得不存在资源的文件名
@@ -717,7 +749,7 @@ public class FileUtils {
     }
 
     @SuppressLint("PrivateApi")
-    public static Map<String, String> getUDiscName(Context context) {
+    public static Map<String, String> getMobileDiscName(Context context) {
         StorageManager mStorageManager;
         Map<String, String> USBDiscs = new HashMap<String, String>();
         Class<?> volumeInfoClazz = null;
@@ -760,7 +792,7 @@ public class FileUtils {
     }
 
     @SuppressLint("PrivateApi")
-    public static String getUDiscPath(Context context) {
+    public static String getMobileDiscPath(Context context) {
         StorageManager mStorageManager;
         Map<String, String> USBDiscs = new HashMap<String, String>();
         Class<?> volumeInfoClazz = null;
@@ -802,7 +834,7 @@ public class FileUtils {
         return rpath;
     }
 
-    public static List<LMusic> getMusics(Context context) {
+    public static List<LMusic> getLocalSystemMusics(Context context) {
         ArrayList<LMusic> musics = new ArrayList<>();
         ContentResolver mContentResolver = context.getContentResolver();
         try (Cursor c = mContentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER)) {
@@ -817,9 +849,9 @@ public class FileUtils {
                 String artist = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)); // 作者
                 long size = c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE));// 大小
                 int duration = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));// 时长
-                int time = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));// 歌曲的id
-                //int albumId = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
-                LMusic music = new LMusic(name, path, album, artist, size, duration);
+                int id = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));// 歌曲的id
+                int albumId = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));//专辑ID
+                LMusic music = new LMusic(id, albumId, name, path, album, artist, size, duration);
                 musics.add(music);
             }
         } catch (Exception e) {
@@ -828,7 +860,7 @@ public class FileUtils {
         return musics;
     }
 
-    public static List<LVideo> getVideos(Context context) {
+    public static List<LVideo> getLocalSystemVideos(Context context) {
         List<LVideo> videos = new ArrayList<LVideo>();
         ContentResolver mContentResolver = context.getContentResolver();
         try (Cursor c = mContentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Video.Media.DEFAULT_SORT_ORDER)) {
@@ -854,19 +886,61 @@ public class FileUtils {
     }
 
     // 获取视频缩略图
-    public static Bitmap getVideoThumbnail(Context context, int id) {
+    public static Bitmap getVideoThumbnail(Context context, int video_id, String filePath) {
         Bitmap bitmap = null;
+        Size thumbSize = new Size(100, 100);
+        Uri thumbUri = Uri.fromFile(new File(filePath));
         BitmapFactory.Options options = new BitmapFactory.Options();
         ContentResolver mContentResolver = context.getContentResolver();
         //options.inDither = false;
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        bitmap = MediaStore.Video.Thumbnails.getThumbnail(mContentResolver, id, MediaStore.Images.Thumbnails.MICRO_KIND, options);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                bitmap = context.getContentResolver().loadThumbnail(thumbUri, thumbSize, null);
+            } else {
+                bitmap = MediaStore.Images.Thumbnails.getThumbnail(mContentResolver, video_id, MediaStore.Images.Thumbnails.MINI_KIND, null);
+            }
+        } catch (IOException e) {
+            ///throw new RuntimeException(e);
+        }
         return bitmap;
     }
 
-    /**
-     * 通过文件类型得到相应文件的集合
-     **/
+    ///* 从文件当中获取专辑封面位图
+    public static Bitmap getMusicThumbnail(Context context, long music_id, long album_id) {
+        Bitmap bitmap = null;
+        Uri albumArtUri = Uri.parse("content://media/external/audio/albumart");
+
+        if (album_id < 0 && music_id < 0) return null;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            FileDescriptor fd = null;
+            if (album_id < 0) {
+                Uri uri = Uri.parse("content://media/external/audio/media/" + music_id + "/albumart");
+                ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(uri, "r");
+
+                if (pfd != null) fd = pfd.getFileDescriptor();
+            } else {
+                Uri uri = ContentUris.withAppendedId(albumArtUri, album_id);
+                ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(uri, "r");
+                if (pfd != null) {
+                    fd = pfd.getFileDescriptor();
+                }
+            }
+            options.inSampleSize = 1;
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFileDescriptor(fd, null, options);
+            options.inJustDecodeBounds = false;
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            bitmap = BitmapFactory.decodeFileDescriptor(fd, null, options);
+        } catch (FileNotFoundException e) {
+            ///e.printStackTrace();
+        }
+        return bitmap;
+    }
+
+
+    ///* 通过文件类型得到相应文件的集合
     public static List<FileBean> getFilesByType(Context context, int fileType) {
         List<FileBean> files = new ArrayList<FileBean>();
         ContentResolver mContentResolver = context.getContentResolver();
@@ -958,31 +1032,6 @@ public class FileUtils {
         return newList;
     }
 
-    public static void writeFile(String filePath, String data, boolean append) {
-        FileOutputStream out;
-        BufferedWriter writer = null;
-        File file = new File(filePath);
-        if (!file.exists()) {
-            MMLog.log(TAG, "Not found file:" + filePath);
-            return;
-        }
-        try {
-            out = new FileOutputStream(file, append);
-            writer = new BufferedWriter(new OutputStreamWriter(out));
-            writer.write(data);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     // 将字符串写入到文本文件中
     public static void writeTxtToFile(String txtString, String filePath, String fileName) {
         makeFilePath(filePath, fileName);
@@ -1005,29 +1054,28 @@ public class FileUtils {
         }
     }
 
-    private static void makeFilePath(String filePath, String fileName) {
-        File file;
-        makeDirectory(filePath);
-        try {
-            file = new File(filePath + fileName);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-        } catch (Exception e) {
-            //e.printStackTrace();
-            MMLog.e(TAG, e.toString());
+    public static void writeFile(String filePath, String data, boolean append) {
+        FileOutputStream out;
+        BufferedWriter writer = null;
+        File file = new File(filePath);
+        if (!file.exists()) {
+            MMLog.log(TAG, "Not found file:" + filePath);
+            return;
         }
-    }
-
-    private static void makeDirectory(String filePath) {
-        File file = null;
         try {
-            file = new File(filePath);
-            if (!file.exists()) {
-                file.mkdir();
-            }
+            out = new FileOutputStream(file, append);
+            writer = new BufferedWriter(new OutputStreamWriter(out));
+            writer.write(data);
         } catch (Exception e) {
-            MMLog.log(TAG, e.toString());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1072,7 +1120,7 @@ public class FileUtils {
                 }
             } else if (isDownloadsDocument(imageUri)) {
                 String id = DocumentsContract.getDocumentId(imageUri);
-                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
                 return getDataColumn(context, contentUri, null, null);
             } else if (isMediaDocument(imageUri)) {
                 String docId = DocumentsContract.getDocumentId(imageUri);
@@ -1240,6 +1288,63 @@ public class FileUtils {
                     e2.printStackTrace();
                 }
             }
+        }
+    }
+
+    public static ObjectList getTopLevelDir(Context context) {
+        Map<String, String> hashMap;
+        ObjectList objectList = new ObjectList();
+        hashMap = getMobileDiscName(context);
+        objectList.putString("Local Storage", "/storage/emulated/0");
+        for (Map.Entry<String, String> entity : hashMap.entrySet()) {
+            objectList.putString(entity.getKey(), entity.getValue());
+        }
+        return objectList;
+    }
+
+    public static void getSubDirList(String topDir, ObjectList dirList, ObjectList fileList, int searchMode, int fileType) {//,int showMod
+        File file = new File(topDir);
+        File[] fileArray = null;
+        if (file.exists() && file.isDirectory()) fileArray = file.listFiles();
+
+        if (fileArray != null) {
+            for (File f : fileArray)
+            {
+                if (f.isFile()) {
+                    if (fileType == DataID.MEDIA_TYPE_ID_VIDEO && MediaFile.isVideoFile(f.getAbsolutePath())) {
+                        ///dirList.putString(f.getName(), f.getParent());
+                        dirList.putString(f.getParent(), f.getParent());
+                        fileList.putString(f.getName(), f.getAbsolutePath());
+                    } else if (fileType == DataID.MEDIA_TYPE_ID_AUDIO && MediaFile.isAudioFile(f.getAbsolutePath())) {
+                        dirList.putString(f.getParent(), f.getParent());
+                        fileList.putString(f.getName(), f.getAbsolutePath());
+                    } else if (fileType == DataID.MEDIA_TYPE_ID_AllFILE) {
+                        dirList.putString(f.getParent(), f.getParent());
+                        fileList.putString(f.getName(), f.getAbsolutePath());
+                    }
+                } else {
+                    ///dirList.putString(f.getName(), f.getAbsolutePath());
+                    if (searchMode == DataID.MEDIA_TYPE_ID_AllDIR) {
+                        getSubDirList(f.getAbsolutePath(), dirList, fileList, searchMode, fileType);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void getAllSubMediaDirList(Context context, String topDir, ObjectList dirList, ObjectList fileList, int searchMode, int fileType) {//,int showMod
+        File file = new File(topDir);
+        File[] fileArray = null;
+        if (file.exists() && file.isDirectory()) fileArray = file.listFiles();
+        ObjectList objectList = new ObjectList();
+        if (EmptyString(topDir) || "/".equals(topDir)) objectList = getTopLevelDir(context);
+
+        if (objectList.getCount() > 0 || fileArray == null) {
+            for (HashMap.Entry<String, Object> entry : objectList.getAll().entrySet()) {
+                getSubDirList(entry.getValue().toString(), dirList, fileList, searchMode, fileType);
+            }
+        } else {
+            getSubDirList(file.getAbsolutePath(), dirList, fileList, searchMode, fileType);
         }
     }
 

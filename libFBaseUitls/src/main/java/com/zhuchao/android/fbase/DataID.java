@@ -46,7 +46,8 @@ public class DataID {
     public static final int MEDIA_TYPE_ID_VIDEO = MEDIA_TYPE_ID_AUDIO + 1;
     public static final int MEDIA_TYPE_ID_AUDIO_VIDEO = MEDIA_TYPE_ID_VIDEO + 1;
     public static final int MEDIA_TYPE_ID_OTHERS = MEDIA_TYPE_ID_AUDIO_VIDEO + 1;
-
+    public static final int MEDIA_TYPE_ID_SUBDIR = MEDIA_TYPE_ID_OTHERS + 1;
+    public static final int MEDIA_TYPE_ID_AllDIR = MEDIA_TYPE_ID_SUBDIR + 1;
     public static final int PLAY_MANAGER_PLAY_ORDER0 = 200;
     public static final int PLAY_MANAGER_PLAY_ORDER1 = PLAY_MANAGER_PLAY_ORDER0 + 1;
     public static final int PLAY_MANAGER_PLAY_ORDER2 = PLAY_MANAGER_PLAY_ORDER1 + 1;

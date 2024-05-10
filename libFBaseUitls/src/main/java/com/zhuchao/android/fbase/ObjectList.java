@@ -267,8 +267,9 @@ public class ObjectList {
     /////////////////////////////////////////////////////////////////////////////////////////////////
     public void printAll() {
         int i = 0;
-        for (HashMap.Entry<String, Object> m : mFHashMap.entrySet()) {
-            MMLog.log(TAG, i + ":" + m.getKey() + ":" + m.getValue().toString());
+        for (HashMap.Entry<String, Object> entry : mFHashMap.entrySet()) {
+            if (entry.getValue() == null) entry.setValue("null");
+            MMLog.log(TAG, i + ":" + entry.getKey() + ":" + entry.getValue().toString());
             i++;
         }
     }

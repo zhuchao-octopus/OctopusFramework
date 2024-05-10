@@ -23,8 +23,13 @@ import static com.zhuchao.android.fbase.DataID.MEDIA_TYPE_ID_VIDEO;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaMetadataRetriever;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -194,6 +199,36 @@ public class MediaFile {
         addFileType("ZIP", FILE_TYPE_ZIP, "application/zip");
         addFileType("MPG", FILE_TYPE_MP2PS, "video/mp2p");
         addFileType("MPEG", FILE_TYPE_MP2PS, "video/mp2p");
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static List<String> readMetadataFromMusic(String filePath) {
+        String author = null;
+        List<String> list = new ArrayList<>();
+        try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
+            try {
+                // 设置数据源为指定的文件路径
+                retriever.setDataSource(filePath);
+                author = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+                list.add(author);
+                author = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_AUTHOR);
+                list.add(author);
+                author = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
+                list.add(author);
+                author =retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                list.add(author);
+            } catch (Exception e) {
+                ///e.printStackTrace();
+            } finally {
+                try {
+                    retriever.release();
+                } catch (IOException e) {
+                    ///throw new RuntimeException(e);
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return list;
     }
 
     /**
