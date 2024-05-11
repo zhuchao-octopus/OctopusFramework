@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -121,7 +122,8 @@ public class ObjectList {
     }
 
     public List<Object> getObjectsLike(String keyLike) {
-        List<Object> list = new Vector<>();
+        ///List<Object> list = new Vector<>();
+        List<Object> list = new ArrayList<>();
         for (Map.Entry<String, Object> entity : mFHashMap.entrySet()) {
             if (entity.getKey().contains(keyLike)) {
                 list.add(entity.getValue());
@@ -264,11 +266,22 @@ public class ObjectList {
         }
     }
 
+    public Object[] toArray() {
+        return mFHashMap.values().toArray();
+    }
+
+    public <T> List<T> toList() {
+        List<T> list = new ArrayList<T>();
+        for (Map.Entry<String, Object> entity : mFHashMap.entrySet()) {
+            list.add((T) entity.getValue());
+        }
+        return list;
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
     public void printAll() {
         int i = 0;
-        MMLog.d(TAG,"Print all count:"+getCount());
+        MMLog.d(TAG, "Print all count:" + getCount());
         for (HashMap.Entry<String, Object> entry : mFHashMap.entrySet()) {
             if (entry.getValue() == null) entry.setValue("null");
             MMLog.log(TAG, i + ":" + entry.getKey() + ":" + entry.getValue().toString());

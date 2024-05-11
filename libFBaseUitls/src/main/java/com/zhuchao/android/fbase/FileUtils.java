@@ -26,6 +26,7 @@ import androidx.annotation.RequiresApi;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.zhuchao.android.fbase.bean.DirBean;
 import com.zhuchao.android.fbase.bean.FileBean;
 import com.zhuchao.android.fbase.bean.ImgFolderBean;
 import com.zhuchao.android.fbase.bean.LMusic;
@@ -602,6 +603,27 @@ public class FileUtils {
         //return FileList;
     }
 
+    public static List<String> getDirMediaFiles(String filePath, int fileType) {
+        List<String> filesList = new ArrayList<String>();
+        File file = new File(filePath);
+        if (file.exists() && file.isDirectory())
+        {
+            File[] files = file.listFiles();
+            if(files == null) return filesList;
+
+            for (File f : files) {
+                if (fileType == DataID.MEDIA_TYPE_ID_VIDEO && MediaFile.isVideoFile(f.getAbsolutePath())) {
+                    filesList.add(f.getAbsolutePath());
+                } else if (fileType == DataID.MEDIA_TYPE_ID_AUDIO && MediaFile.isAudioFile(f.getAbsolutePath())) {
+                    filesList.add(f.getAbsolutePath());
+                } else if (fileType == DataID.MEDIA_TYPE_ID_AllFILE) {
+                    filesList.add(f.getAbsolutePath());
+                }
+            }
+        }
+        return filesList;
+    }
+
     private static void getFileList(File[] files, List<String> FileList) {
         if (files != null) {// 先判断目录是否为空，否则会报空指针
             String filePathName = null;
@@ -1172,17 +1194,17 @@ public class FileUtils {
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             byte[] bytes = md5.digest(str.getBytes());
-            String result = "";
+            StringBuilder result = new StringBuilder();
             for (byte b : bytes) {
                 String temp = Integer.toHexString(b & 0xff);
                 if (temp.length() == 1) {
                     temp = "0" + temp;
                 }
-                result += temp;
+                result.append(temp);
             }
-            return result;
+            return result.toString();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            ///e.printStackTrace();
         }
         return "null";
     }
@@ -1302,50 +1324,71 @@ public class FileUtils {
         return objectList;
     }
 
-    public static void getSubDirList(String topDir, ObjectList dirList, ObjectList fileList, int searchMode, int fileType) {//,int showMod
+    public static void getSubDirList(String topDir, ObjectList dirList, int searchMode, int fileType) {//,int showMod
         File file = new File(topDir);
         File[] fileArray = null;
         if (file.exists() && file.isDirectory()) fileArray = file.listFiles();
 
         if (fileArray != null) {
-            for (File f : fileArray)
-            {
+            for (File f : fileArray) {
                 if (f.isFile()) {
+                    String dirName = f.getParent();
+                    DirBean dirBean = (DirBean) dirList.getObject(dirName);
+                    if (dirBean == null) {
+                        dirBean = new DirBean(Objects.requireNonNull(f.getParentFile()).getName(), dirName);
+                    }
                     if (fileType == DataID.MEDIA_TYPE_ID_VIDEO && MediaFile.isVideoFile(f.getAbsolutePath())) {
-                        ///dirList.putString(f.getName(), f.getParent());
-                        dirList.putString(f.getParent(), f.getParent());
-                        fileList.putString(f.getName(), f.getAbsolutePath());
+                        ///dirList.putString(f.getParent(), f.getParent());
+                        ///fileList.putString(f.getName(), f.getAbsolutePath());
+                        dirList.addObject(f.getParent(), dirBean);
+                        dirBean.add(f.getAbsolutePath());
                     } else if (fileType == DataID.MEDIA_TYPE_ID_AUDIO && MediaFile.isAudioFile(f.getAbsolutePath())) {
-                        dirList.putString(f.getParent(), f.getParent());
-                        fileList.putString(f.getName(), f.getAbsolutePath());
+                        ///dirList.putString(f.getParent(), f.getParent());
+                        ///fileList.putString(f.getName(), f.getAbsolutePath());
+                        dirList.addObject(f.getParent(), dirBean);
+                        dirBean.add(f.getAbsolutePath());
                     } else if (fileType == DataID.MEDIA_TYPE_ID_AllFILE) {
-                        dirList.putString(f.getParent(), f.getParent());
-                        fileList.putString(f.getName(), f.getAbsolutePath());
+                        ///dirList.putString(f.getParent(), f.getParent());
+                        ///fileList.putString(f.getName(), f.getAbsolutePath());
+                        dirList.addObject(f.getParent(), dirBean);
+                        dirBean.add(f.getAbsolutePath());
                     }
                 } else {
                     ///dirList.putString(f.getName(), f.getAbsolutePath());
                     if (searchMode == DataID.MEDIA_TYPE_ID_AllDIR) {
-                        getSubDirList(f.getAbsolutePath(), dirList, fileList, searchMode, fileType);
+                        getSubDirList(f.getAbsolutePath(), dirList, searchMode, fileType);
                     }
                 }
             }
         }
     }
 
-    public static void getAllSubMediaDirList(Context context, String topDir, ObjectList dirList, ObjectList fileList, int searchMode, int fileType) {//,int showMod
+    public static ObjectList getAllSubMediaDirList(Context context, String topDir, int searchMode, int fileType) {//,int showMod
         File file = new File(topDir);
         File[] fileArray = null;
         if (file.exists() && file.isDirectory()) fileArray = file.listFiles();
         ObjectList objectList = new ObjectList();
+        ObjectList dirList = new ObjectList();
+
         if (EmptyString(topDir) || "/".equals(topDir)) objectList = getTopLevelDir(context);
 
         if (objectList.getCount() > 0 || fileArray == null) {
             for (HashMap.Entry<String, Object> entry : objectList.getAll().entrySet()) {
-                getSubDirList(entry.getValue().toString(), dirList, fileList, searchMode, fileType);
+                getSubDirList(entry.getValue().toString(), dirList, searchMode, fileType);
             }
         } else {
-            getSubDirList(file.getAbsolutePath(), dirList, fileList, searchMode, fileType);
+            getSubDirList(file.getAbsolutePath(), dirList, searchMode, fileType);
         }
+        return dirList;
+    }
+
+    public static List<DirBean> getAllSubDirList(Context context, String topDir, int searchMode, int fileType) {//,int showMod
+        List<DirBean> list = new ArrayList<>();
+        ObjectList dirList = getAllSubMediaDirList(context, topDir, searchMode, fileType);
+        for (Map.Entry<String, Object> entity : dirList.getAll().entrySet()) {
+            list.add((DirBean) entity.getValue());
+        }
+        return list;
     }
 
     public static boolean isExternalStorageDocument(Uri uri) {

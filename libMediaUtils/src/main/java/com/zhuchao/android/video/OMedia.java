@@ -616,16 +616,16 @@ public class OMedia implements PlayerCallback {
         if (isPlayerReady()) FPlayer.setWindowSize(width, height);
     }
 
-    public String getPathName() {
-        return movie.getSrcUrl();
+    public void setRestorePlay(boolean restorePlay) {
+        this.restorePlay = restorePlay;
     }
 
     public String getName() {
         return movie.getName();
     }
 
-    public void setRestorePlay(boolean restorePlay) {
-        this.restorePlay = restorePlay;
+    public String getPathName() {
+        return movie.getSrcUrl();
     }
 
     public int getVideoWidth() {

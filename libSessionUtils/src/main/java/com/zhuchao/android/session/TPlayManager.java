@@ -87,7 +87,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
 
     private final VideoList mPlayingList = new VideoList();
     private final VideoList mPlayingHistoryList = new VideoList();
-    private final VideoList mFavouriteList = new VideoList();
+    private final VideoList mFavouriteList = new VideoList();//收藏
 
     private final ObjectList mArtistList = new ObjectList();
     private ObjectList mAlbumList = new ObjectList();
@@ -129,6 +129,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
             ///MMLog.d(TAG,"Init play manager "+TAppProcessUtils.getProcessName(context));
             initialMyMediaAidlInterface(mContext);
         }
+        loadFromFile();
     }
 
     public void updateMusicsToPlayList() {
@@ -189,22 +190,17 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         this.mUserCallback = callback;
     }
 
-    public boolean isPlaying() {
+    public boolean isLocalPlaying() {
         if (oMediaPlaying == null) {
             return false;
         }
+        int sta = oMediaPlaying.getPlayStatus();
+        return sta >= PlaybackEvent.Status_Opening && sta <= PlaybackEvent.Status_Playing;
+    }
 
-        if (hasPlayAidlProxy() && oMediaPlaying.isAudio()) {
-            try {
-                return getMyMediaAidlInterface().isPlaying();
-            } catch (RemoteException e) {
-                ///throw new RuntimeException(e);
-                return false;
-            }
-        } else {
-            int sta = oMediaPlaying.getPlayStatus();
-            return sta >= PlaybackEvent.Status_Opening && sta <= PlaybackEvent.Status_Playing;
-        }
+    public boolean isPlaying() {
+        if (isLocalPlaying()) return true;
+        else return isAidlProxyPlaying();
     }
 
     public synchronized void restartPlay() {
@@ -213,11 +209,36 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
             MMLog.log(TAG, "There is no media to restartPlay!");
             return;
         }
-        //stopPlay();
-        playingLock = false;
+        playingLock = false;//stopPlay();
         MMLog.log(TAG, "restartPlay " + oMediaPlaying.getPathName());
         startPlay(oMediaPlaying);
         playingLock = playingLock_old;
+    }
+
+    private void stopLocalPlayer() {
+        if (isLocalPlaying()) oMediaPlaying.stop();
+    }
+
+    private void stopProxyPlayer() {
+        if (hasPlayAidlProxy()) {
+            try {
+                getMyMediaAidlInterface().playStop();
+            } catch (RemoteException e) {
+                ///throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public void setTime(long time) {
+        if (hasPlayAidlProxy() && isAidlProxyPlaying()) {
+            try {
+                getMyMediaAidlInterface().setTime(time);
+            } catch (RemoteException e) {
+                ///throw new RuntimeException(e);
+            }
+        } else if (oMediaPlaying != null) {
+            oMediaPlaying.setTime(time);
+        }
     }
 
     public synchronized void startPlay(OMedia oMedia) {
@@ -239,8 +260,11 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
 
         if (hasPlayAidlProxy() && oMedia.isAudio()) {//后台代理播放
             mediaAidlProxyInterfaceAction(MESSAGE_EVENT_OCTOPUS_PLAY, oMedia);
-            this.oMediaPlaying = oMedia;
+            mPlayingHistoryList.add(new OMedia(oMedia.getPathName()));
+            stopLocalPlayer();//停止本地播放
             return;
+        } else {
+            stopProxyPlayer();
         }
 
         if (playingLock && oMediaPlaying != null) {
@@ -257,10 +281,11 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         this.oMediaPlaying.with(mContext);
         this.oMediaPlaying.setMagicNumber(magicNumber);
         this.oMediaPlaying.callback(this);
+
         ///if (surfaceView == null)
-        ///    MMLog.log(TAG, "surfaceView = null");
+        /// MMLog.log(TAG, "surfaceView = null");
         ///else
-        ///    MMLog.log(TAG, "surfaceView = " + surfaceView.toString());
+        /// MMLog.log(TAG, "surfaceView = " + surfaceView.toString());
 
         oMediaPlaying.setScale(0);
         oMediaPlaying.setAspectRatio(null);
@@ -372,19 +397,17 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
             MMLog.log(TAG, "playPause() not allowed to do this now");
             return;
         }
-
         lStartTick_Play = System.currentTimeMillis();
 
-        if (hasPlayAidlProxy()) {
+        if ((isAidlProxyPaused() || isAidlProxyPlaying())) {
             mediaAidlProxyInterfaceAction(MESSAGE_EVENT_OCTOPUS_PLAY_PAUSE, oMediaPlaying);
-            if (oMediaPlaying == null) return;
-        }
-
-        if (oMediaPlaying == null) {
-            autoPlay();
             return;
         }
 
+        if (oMediaPlaying == null) {
+            if (!hasPlayAidlProxy()) autoPlay();
+            return;
+        }
         MMLog.log(TAG, "playPause() playStatus = " + oMediaPlaying.getPlayStatus());
         switch (oMediaPlaying.getPlayStatus()) {
             ///case PlaybackEvent.Status_NothingIdle:
@@ -413,10 +436,11 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
                 break;
             case PlaybackEvent.Status_Ended:
             case PlaybackEvent.Status_Error:
-                playNext();//play next
+                if (!hasPlayAidlProxy()) playNext();//play next
                 break;
             case PlaybackEvent.Status_NothingIdle:
             default:
+                if (!hasPlayAidlProxy()) autoPlay();
                 break;
         }
     }
@@ -586,7 +610,6 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     }
 
     public ObjectList getArtistList() {
-
         return mArtistList;
     }
 
@@ -708,6 +731,24 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         Collection<Object> objects = allPlayLists.getAllObject();
         for (Object o : objects) {
             videoList.loadAllRawMediaFrom((VideoList) o);
+        }
+        return videoList;
+    }
+
+    public VideoList getAllMusic() {
+        VideoList videoList = new VideoList();
+        Collection<Object> objects = allPlayLists.getAllObject();
+        for (Object o : objects) {
+            videoList.loadAllRawAudioFrom((VideoList) o);
+        }
+        return videoList;
+    }
+
+    public VideoList getAllVideo() {
+        VideoList videoList = new VideoList();
+        Collection<Object> objects = allPlayLists.getAllObject();
+        for (Object o : objects) {
+            videoList.loadAllRawVideoFrom((VideoList) o);
         }
         return videoList;
     }
@@ -998,6 +1039,30 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     private IMyMediaAidlInterface tIMyMediaAidlInterface = null;
     private boolean tIMyMediaAidlInterfaceIsBound = false;
 
+    public boolean isAidlProxyPaused() {
+        if (hasPlayAidlProxy()) {
+            int status = 0;
+            try {
+                status = getMyMediaAidlInterface().getPlayerStatus();
+            } catch (RemoteException e) {
+                ///throw new RuntimeException(e);
+            }
+            return status == PlaybackEvent.Status_Paused;
+        }
+        return false;
+    }
+
+    public boolean isAidlProxyPlaying() {
+        if (hasPlayAidlProxy()) {
+            try {
+                return getMyMediaAidlInterface().isPlaying();
+            } catch (RemoteException e) {
+                ///throw new RuntimeException(e);
+            }
+        }
+        return false;
+    }
+
     private boolean hasPlayAidlProxy() {
         return tIMyMediaAidlInterfaceIsBound && (tIMyMediaAidlInterface != null);
     }
@@ -1109,15 +1174,16 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         return videoList;
     }
 
-    private void disconnectedMyAidlService(Context context) {
+    public void disconnectedMyAidlService(Context context) {
 
-        if (tIMyMediaAidlInterface != null && tIMyMediaAidlInterface.asBinder().isBinderAlive()) {
+        if (tIMyMediaAidlInterface != null) {///&& tIMyMediaAidlInterface.asBinder().isBinderAlive()
             try {
                 tIMyMediaAidlInterface.playStop();
                 context.unbindService(mMediaServiceConnection);
                 tIMyMediaAidlInterface.unregisterListener(mIMyMediaAidlInterfaceListener);
                 tIMyMediaAidlInterface = null;
                 tIMyMediaAidlInterfaceIsBound = false;
+                MMLog.d(TAG, "Disconnect aidl proxy connection!");
             } catch (RemoteException e) {
                 //throw new RuntimeException(e);
             }
@@ -1174,6 +1240,18 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
             tMediaManager.updateMedias();
         }
     }
+    private void updateArtistAndAlbum(VideoList videoList) {
+        OMedia oMedia = null;
+        //for (Map.Entry<String, Object> entry : mAllSessions.getAll().entrySet())
+        {
+            //for (HashMap.Entry<String, Object> m : ((LiveVideoSession) entry.getValue()).getAllVideos().getMap().entrySet())
+            for (HashMap.Entry<String, Object> m : videoList.getMap().entrySet()) {
+                oMedia = (OMedia) m.getValue();
+                if (oMedia.getMovie().getAlbum() != null) mAlbumList.putString(oMedia.getMovie().getAlbum(), oMedia.getMovie().getAlbum());
+                if (oMedia.getMovie().getArtist() != null) mArtistList.putString(oMedia.getMovie().getArtist(), oMedia.getMovie().getArtist());
+            }
+        }
+    }
 
     public void saveToFile() {
         if (mFavouriteList.getCount() > 100) mFavouriteList.deleteFrom(mFavouriteList.getFirstItem(), mFavouriteList.getCount() - 100);
@@ -1188,21 +1266,9 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         mPlayingHistoryList.loadFromFile(mContext, "Medias_History");
     }
 
-    private void updateArtistAndAlbum(VideoList videoList) {
-        OMedia oMedia = null;
-        //for (Map.Entry<String, Object> entry : mAllSessions.getAll().entrySet())
-        {
-            //for (HashMap.Entry<String, Object> m : ((LiveVideoSession) entry.getValue()).getAllVideos().getMap().entrySet())
-            for (HashMap.Entry<String, Object> m : videoList.getMap().entrySet()) {
-                oMedia = (OMedia) m.getValue();
-                if (oMedia.getMovie().getAlbum() != null) mAlbumList.putString(oMedia.getMovie().getAlbum(), oMedia.getMovie().getAlbum());
-                if (oMedia.getMovie().getArtist() != null) mArtistList.putString(oMedia.getMovie().getArtist(), oMedia.getMovie().getArtist());
-            }
-        }
-    }
-
     public void free() {
         try {
+            saveToFile();
             if (getPlayingMedia() != null) getPlayingMedia().free();
             allPlayLists.clear();
             Cabinet.getEventBus().unRegisterEventObserver(this);

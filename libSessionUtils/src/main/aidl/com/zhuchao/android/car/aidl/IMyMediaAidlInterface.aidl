@@ -14,6 +14,8 @@ interface IMyMediaAidlInterface {
     void unregisterListener(IMyAidlInterfaceListener iMyAidlInterfaceListener);
     void sendMessage(in PEventCourier Msg);
 
+    void setMagic(int magic);
+    void setTime(long time);
     void pausePlay();
     void playPause();
     void playNext();
@@ -23,5 +25,6 @@ interface IMyMediaAidlInterface {
     void playStopFreeFree();
     void startPlay(String fileName);
     boolean isPlaying();
+    int getPlayerStatus();
     List<PMovie> getMediaList(int MsgID);
 }

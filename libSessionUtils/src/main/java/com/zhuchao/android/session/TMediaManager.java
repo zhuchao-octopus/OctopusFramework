@@ -52,9 +52,9 @@ public class TMediaManager implements SessionCallback {
     private Map<String, String> mMobileUSBDiscs = new HashMap<String, String>();
     ///private GlobalBroadcastReceiver mUSBBroadcastReceiver = null;//new USBReceiver();
     ///private MyBroadcastReceiver mFileReceiver = null;//new USBReceiver();
-    private boolean mThreadLock1 = false;
-    private boolean mThreadLock2 = false;
-    private boolean mThreadLock3 = false;
+    ///private boolean mThreadLock1 = false;
+    ///private boolean mThreadLock2 = false;
+    ///private boolean mThreadLock3 = false;
     ///private int initStage = 0;//0 从网络， 1 //从本地, >=3 已经初始化完成
     private TMediaManager tMediaManager = null;
 
@@ -184,111 +184,20 @@ public class TMediaManager implements SessionCallback {
     }
 
     public void initSessionFromLocal() {
-        if (mThreadLock1) return;
-        new Thread() {
-            public void run() {
-                mThreadLock1 = true;
-                //MMLog.log(TAG, "init Local SessionContent 本地媒体库");
-                ///LiveVideoSession lSession = null;
-                ///lSession = new LiveVideoSession(TMediaManager.this);
-                mLocalVideoSession.initMediasFromLocal(mContext, DataID.MEDIA_TYPE_ID_VIDEO);
-                addLocalSessionToSessions("本地视频", mLocalVideoSession);
-
-                ///lSession = new LiveVideoSession(TMediaManager.this);
-                mLocalAudioSession.initMediasFromLocal(mContext, DataID.MEDIA_TYPE_ID_AUDIO);
-                addLocalSessionToSessions("本地音乐", mLocalAudioSession);
-
-                updateArtistAndAlbum(mLocalVideoSession);
-                updateArtistAndAlbum(mLocalAudioSession);
-                userSessionCallback(mLocalVideoSession, MessageEvent.MESSAGE_EVENT_LOCAL_VIDEO, "本地视频");
-                userSessionCallback(mLocalAudioSession, MessageEvent.MESSAGE_EVENT_LOCAL_AUDIO, "本地音乐");
-                mThreadLock1 = false;
-            }
-        }.start();
+        singleTaskSearchLocalDisc();
     }
 
     //第一次重置式初始化
     public void initSessionFromMobileDisc() {
-        if (mThreadLock2) return;
-        ///if (mUSBBroadcastReceiver == null) registerUSBBroadcastReceiver();
-        new Thread() {
-            public void run() {
-                mThreadLock2 = true;
-                mMobileUSBDiscs = FileUtils.getMobileDiscName(mContext);
-                if (mMobileUSBDiscs.isEmpty()) {
-                    ///MMLog.log(TAG, "No usb memory was found!");
-                    ///mMobileUSBVideoSession.getAllVideos().clear();
-                    ///mMobileUSBAudioSession.getAllVideos().clear();
-                    ///userSessionCallback(mMobileUSBVideoSession, MessageEvent.MESSAGE_EVENT_USB_VIDEO, null);
-                    ///userSessionCallback(mMobileUSBAudioSession, MessageEvent.MESSAGE_EVENT_USB_AUDIO, null);
-                    mThreadLock2 = false;
-                    return;
-                }
-                ///移除所有本地移动分类
-                /*
-                Iterator<Map.Entry<Integer, LiveVideoSession>> it = mAllSessions.entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry<Integer, LiveVideoSession> entry = (Map.Entry<Integer, LiveVideoSession>) it.next();
-                    if (entry.getKey() < DataID.SESSION_SOURCE_LOCAL_INTERNAL) it.remove();
-                }*/
-                ///mMobileUSBVideoSession.getAllVideos().clear();
-                ///mMobileUSBAudioSession.getAllVideos().clear();
-                for (Map.Entry<String, String> entry : mMobileUSBDiscs.entrySet()) {
-                    singleTaskSearchMobileDisc(entry.getKey(), entry.getValue());
-                }
-                mThreadLock2 = false;
-            }
-        }.start();
+        mMobileUSBDiscs = FileUtils.getMobileDiscName(mContext);
+        for (Map.Entry<String, String> entry : mMobileUSBDiscs.entrySet()) {
+            singleTaskSearchMobileDisc(entry.getKey(), entry.getValue());
+        }
     }
 
     @SuppressLint("SdCardPath")
     private void initSDSessionFromPath() {//"/sdcard/"
-        if (mThreadLock3) return;
-        String sd_path = "/sdcard/";
-        new Thread() {
-            public void run() {
-                mThreadLock3 = true;
-                mSDVideoSession.getAllVideos().clear();
-                mSDAudioSession.getAllVideos().clear();
-                mSDVideoSession.initMediasFromPath(mContext, sd_path, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO, mSDVideoSession, mSDAudioSession);
-                updateArtistAndAlbum(mSDVideoSession);
-                updateArtistAndAlbum(mSDAudioSession);
-                userSessionCallback(mSDVideoSession, MessageEvent.MESSAGE_EVENT_SD_VIDEO, sd_path);
-                userSessionCallback(mSDAudioSession, MessageEvent.MESSAGE_EVENT_SD_AUDIO, sd_path);
-                mThreadLock3 = false;
-            }
-        }.start();
-    }
-
-    private void initSessionFromPath(final String path) {
-        if (mThreadLock3) return;
-        if (path == null) return;
-        new Thread() {
-            public void run() {
-                mThreadLock3 = true;
-                mFileVideoSession.clear();
-                mFileVideoSession.initMediasFromPath(mContext, path, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO);
-                userSessionCallback(mFileVideoSession, MessageEvent.MESSAGE_EVENT_FILES, path);
-                mThreadLock3 = false;
-            }
-        }.start();
-    }
-
-    public void scanFilesFromPath(Context context, String filePath, List<String> FileList) {
-        if (mThreadLock3) return;
-        if (filePath == null) return;
-        //if (FileList == null) return;
-        if (!FileUtils.existDirectory(filePath)) return;
-        //registerFileBroadcastReceiver();
-        mFileVideoSession.clear();
-        new Thread() {
-            public void run() {
-                mThreadLock3 = true;
-                mFileVideoSession.initFilesFromPath(mContext, filePath, FileList);
-                userSessionCallback(mFileVideoSession, MessageEvent.MESSAGE_EVENT_FILES, filePath);
-                mThreadLock3 = false;
-            }
-        }.start();
+        singleTaskSearchLocalSD();
     }
 
     private void initMobileSessionContent(final String DeviceName, final String DevicePath) {
@@ -300,17 +209,51 @@ public class TMediaManager implements SessionCallback {
         LiveVideoSession mMobileUSBAudioSession = new LiveVideoSession(TMediaManager.this);
 
         ///mSession.initMediasFromUSB(mContext, DevicePath, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO, mMobileUSBVideoSession, mMobileUSBAudioSession);
-        mSession.initMediasFromPath(mContext, DevicePath, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO, mMobileUSBVideoSession, mMobileUSBAudioSession);
+        ///mSession.initMediasFromPath(mContext, DevicePath, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO, mMobileUSBVideoSession, mMobileUSBAudioSession);
+        mSession.synchronizationInitMediasFromPath(mContext, DevicePath, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO,
+                mMobileUSBVideoSession, mMobileUSBAudioSession,
+                mLocalVideoSession,mLocalAudioSession);
         addLocalSessionToSessions(makeSessionName(DeviceName, DataID.MEDIA_TYPE_ID_VIDEO), mMobileUSBVideoSession);
         addLocalSessionToSessions(makeSessionName(DeviceName, DataID.MEDIA_TYPE_ID_AUDIO), mMobileUSBAudioSession);
 
         updateArtistAndAlbum(mMobileUSBVideoSession);
         updateArtistAndAlbum(mMobileUSBAudioSession);
-
+        ///synchronizationMediaLibrary();
         userSessionCallback(mMobileUSBVideoSession, MessageEvent.MESSAGE_EVENT_USB_VIDEO, DeviceName + ":" + DevicePath);
         userSessionCallback(mMobileUSBAudioSession, MessageEvent.MESSAGE_EVENT_USB_AUDIO, DeviceName + ":" + DevicePath);
     }
 
+    private void synchronizationMediaLibrary()///无需同步
+    {
+        TTask tTask = TTaskManager.getSingleTaskFor(TAG + ".synchronization.MediaLibrary").resetAll();
+        if (!tTask.isBusy()) {
+            tTask.invoke(tag ->
+            {
+                LiveVideoSession mSession;
+                for (Map.Entry<String, Object> entry : mAllSessions.getAll().entrySet()) {
+                    mSession = ((LiveVideoSession) entry.getValue());
+                    for (HashMap.Entry<String, Object> m : mSession.getAllVideos().getMap().entrySet())
+                    {
+                        OMedia oMedia = (OMedia) m.getValue();
+                        if(oMedia.isAudio())
+                        {
+                            OMedia oMedia_a = mLocalAudioSession.getVideoList().findByPath(oMedia.getPathName());
+                            if (oMedia_a == null){
+                                mLocalAudioSession.getVideoList().add(oMedia);
+                            }
+                        }
+                        else if(oMedia.isVideo())
+                        {
+                            OMedia oMedia_a = mLocalVideoSession.getVideoList().findByPath(oMedia.getPathName());
+                            if (oMedia_a == null){
+                                mLocalVideoSession.getVideoList().add(oMedia);
+                            }
+                        }
+                    }
+                }
+            }).startAgain();
+        }
+    }
     private void userSessionCallback(LiveVideoSession liveVideoSession, int mobileSessionId, String message)//DeviceName + ":" + DevicePath
     {
         if (mUserSessionCallback != null) {///通知本地播放器
@@ -348,10 +291,6 @@ public class TMediaManager implements SessionCallback {
                 mAllSessions.addObject(String.valueOf(entry.getKey()), liveVideoSession);
             }
         }
-    }
-
-    private void updateCategorySession() { //顶层分类信息，顶层分类会话
-
     }
 
     private void updateCategorySessionContent() {//获取分类下面的内容
@@ -413,82 +352,6 @@ public class TMediaManager implements SessionCallback {
         }
         return null;
     }
-
-    /*private void registerFileBroadcastReceiver() {
-        if (mFileReceiver == null) mFileReceiver = new MyBroadcastReceiver();
-        else return;
-        try {
-            IntentFilter filter = new IntentFilter();
-            filter.addAction("com.zhuchao.android.action.MEDIAFILE_SCAN");
-            filter.addAction("com.zhuchao.android.action.FILE_SCAN");
-            mContext.registerReceiver(mFileReceiver, filter);
-        } catch (Exception e) {
-            MMLog.e(TAG, String.valueOf(e));
-        }
-    }*/
-    /*
-    private void registerUSBBroadcastReceiver() {
-        //if (mUSBBroadcastReceiver == null) mUSBBroadcastReceiver = new GlobalBroadcastReceiver();
-
-        if (mUSBBroadcastReceiver == null) mUSBBroadcastReceiver = new MyBroadcastReceiver();
-        else return;
-        try {
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(Intent.ACTION_MEDIA_SHARED);     //如果SDCard未安装,并通过USB大容量存储共享返回
-            intentFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);    //表明sd对象是存在并具有读/写权限
-            intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);  //SDCard已卸掉,如果SDCard是存在但没有被安装
-            intentFilter.addAction(Intent.ACTION_MEDIA_CHECKING);   //表明对象正在磁盘检查
-            intentFilter.addAction(Intent.ACTION_MEDIA_EJECT);      //物理的拔出 SDCARD
-            intentFilter.addAction(Intent.ACTION_MEDIA_REMOVED);    //完全拔出
-            intentFilter.addDataScheme("file");
-            intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-            intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-
-            //intentFilter.addAction(UsbManager.ACTION_USB_STATE);
-            intentFilter.addAction(UsbManager.ACTION_USB_ACCESSORY_ATTACHED);
-            intentFilter.addAction(UsbManager.ACTION_USB_ACCESSORY_DETACHED);
-            mContext.registerReceiver(mUSBBroadcastReceiver, intentFilter);
-        } catch (Exception e) {
-            MMLog.e(TAG, String.valueOf(e));
-        }
-    }*/
-    /*
-    class MyBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {  //mStorageManager = (StorageManager) context.getSystemService(Activity.STORAGE_SERVICE);
-            Bundle bundle = intent.getExtras();
-            Uri data = intent.getData();
-            MMLog.d(TAG, TAG + " action=" + intent.getAction());
-            try {
-                switch (intent.getAction()) {
-                    //case UsbManager.ACTION_USB_DEVICE_ATTACHED:
-                    case Intent.ACTION_MEDIA_MOUNTED:
-                        ///if (bundle != null) {
-                        ///    for (String key : bundle.keySet())
-                        ///        MMLog.log(TAG, "USB attached, " + key + ":" + bundle.toString());
-                        ///} else MMLog.log(TAG, "USB attached, " + intent.toString() + "," + data);
-                        ///if (data != null) MMLog.log(TAG, "USB Url = " + data);
-                        mMyHandler.sendEmptyMessage(MessageEvent.MESSAGE_EVENT_USB_MOUNTED);
-                        //initSessionFromMobileDisc();
-                        break;
-                    case UsbManager.ACTION_USB_DEVICE_DETACHED:
-                    case UsbManager.ACTION_USB_ACCESSORY_DETACHED:
-                        ;
-                        break;
-                    case Intent.ACTION_MEDIA_UNMOUNTED:
-                        ///if (bundle != null) {
-                        ///    for (String key : bundle.keySet())
-                        ///        MMLog.log(TAG, "USB device detached, " + key + ":" + bundle.toString());
-                        ///}
-                        mMyHandler.sendEmptyMessage(MessageEvent.MESSAGE_EVENT_USB_MOUNTED);
-                        ;
-                        break;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
 
     @Override
     public void OnSessionComplete(int session_id, String result, int count) {
@@ -553,6 +416,23 @@ public class TMediaManager implements SessionCallback {
         }
     };
 
+    public void singleTaskSearchLocalDisc() {
+        TTask tTask = TTaskManager.getSingleTaskFor(TAG + ".LocalDisc").resetAll();
+        if (!tTask.isBusy()) {
+            tTask.invoke(tag -> {
+                mLocalVideoSession.initMediasFromLocal(mContext, DataID.MEDIA_TYPE_ID_VIDEO);
+                ///addLocalSessionToSessions("本地视频", mLocalVideoSession);
+                mLocalAudioSession.initMediasFromLocal(mContext, DataID.MEDIA_TYPE_ID_AUDIO);
+                ///addLocalSessionToSessions("本地音乐", mLocalAudioSession);
+
+                updateArtistAndAlbum(mLocalVideoSession);
+                updateArtistAndAlbum(mLocalAudioSession);
+                userSessionCallback(mLocalVideoSession, MessageEvent.MESSAGE_EVENT_LOCAL_VIDEO, "本地视频");
+                userSessionCallback(mLocalAudioSession, MessageEvent.MESSAGE_EVENT_LOCAL_AUDIO, "本地音乐");
+            }).startAgain();
+        }
+    }
+
     public void singleTaskSearchMobileDisc(final String finalDeviceName, final String finalDevicePath) {
         ///MMLog.d(TAG,finalDeviceName +" 1 "+finalDevicePath);
         if (FileUtils.EmptyString(finalDeviceName) || !FileUtils.existDirectory(finalDevicePath)) return;
@@ -560,6 +440,26 @@ public class TMediaManager implements SessionCallback {
         TTask tTask = TTaskManager.getSingleTaskFor(TAG + "." + finalDeviceName).resetAll();
         if (!tTask.isBusy()) {
             tTask.invoke(tag -> initMobileSessionContent(finalDeviceName, finalDevicePath)).startAgain();
+        }
+    }
+
+    public void singleTaskSearchLocalSD() {
+        TTask tTask = TTaskManager.getSingleTaskFor(TAG + ".SD").resetAll();
+        @SuppressLint("SdCardPath") String sd_path = "/sdcard/";
+        if (!tTask.isBusy()) {
+            tTask.invoke(tag -> {
+                mSDVideoSession.getAllVideos().clear();
+                mSDAudioSession.getAllVideos().clear();
+                ///mSDVideoSession.initMediasFromPath(mContext, sd_path, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO, mSDVideoSession, mSDAudioSession);
+                mSDVideoSession.synchronizationInitMediasFromPath(mContext, sd_path, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO,
+                        mSDVideoSession, mSDAudioSession,
+                        mLocalVideoSession,mLocalAudioSession);
+
+                updateArtistAndAlbum(mSDVideoSession);
+                updateArtistAndAlbum(mSDAudioSession);
+                userSessionCallback(mSDVideoSession, MessageEvent.MESSAGE_EVENT_SD_VIDEO, sd_path);
+                userSessionCallback(mSDAudioSession, MessageEvent.MESSAGE_EVENT_SD_AUDIO, sd_path);
+            }).startAgain();
         }
     }
 
@@ -627,11 +527,8 @@ public class TMediaManager implements SessionCallback {
                 intent = (Intent) courierInterface.getObj();
                 bundle = intent.getExtras();
                 data = intent.getData();
-                ///MMLog.d(TAG, "Intent=" + intent.toString());
                 if (data != null) {
-                    usbPath = data.getPath();
-                    ///MMLog.d(TAG, "usbPath=" + usbPath);
-                    ///singleTaskSearchMobileDisc(getUSBNameByValue(usbPath), usbPath);
+                    singleTaskSearchLocalDisc();
                 }
                 break;
         }
