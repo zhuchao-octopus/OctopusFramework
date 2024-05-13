@@ -68,6 +68,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 
 public class FileUtils {
     private final static String TAG = "FileUtils";
@@ -100,6 +101,11 @@ public class FileUtils {
         } catch (InterruptedException e) {
             //throw new RuntimeException(e);
         }
+    }
+
+    public static int getRandom(int bound) {
+        Random random = new Random();
+        return random.nextInt(bound);
     }
 
     public static boolean EmptyString(String str) {
@@ -606,10 +612,9 @@ public class FileUtils {
     public static List<String> getDirMediaFiles(String filePath, int fileType) {
         List<String> filesList = new ArrayList<String>();
         File file = new File(filePath);
-        if (file.exists() && file.isDirectory())
-        {
+        if (file.exists() && file.isDirectory()) {
             File[] files = file.listFiles();
-            if(files == null) return filesList;
+            if (files == null) return filesList;
 
             for (File f : files) {
                 if (fileType == DataID.MEDIA_TYPE_ID_VIDEO && MediaFile.isVideoFile(f.getAbsolutePath())) {
@@ -1376,7 +1381,7 @@ public class FileUtils {
             for (HashMap.Entry<String, Object> entry : objectList.getAll().entrySet()) {
                 getSubDirList(entry.getValue().toString(), dirList, searchMode, fileType);
             }
-        } else if (file.exists() && file.isDirectory()){
+        } else if (file.exists() && file.isDirectory()) {
             getSubDirList(file.getAbsolutePath(), dirList, searchMode, fileType);
         }
         return dirList;

@@ -35,6 +35,7 @@ import com.zhuchao.android.car.aidl.PEventCourier;
 import com.zhuchao.android.car.aidl.PMovie;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.EventCourier;
+import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MessageEvent;
 import com.zhuchao.android.fbase.ObjectList;
@@ -63,7 +64,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     ///private boolean oMediaLoading = false;
     private PlayerCallback mUserCallback = null;
     private int playOrder = DataID.PLAY_MANAGER_PLAY_ORDER2;
-    private int autoPlaySource = DataID.SESSION_SOURCE_NONE;
+    private int autoPlaySource = DataID.SESSION_SOURCE_FAVORITELIST;
     private long lStartTick_Play = 0;
     private long lStartTick_Next = 0;
     private long lStartTick_Pre = 0;
@@ -92,6 +93,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     private final ObjectList mArtistList = new ObjectList();
     private ObjectList mAlbumList = new ObjectList();
     private TMediaManager tMediaManager = null;///由于代理的原因需要额外初始化
+    private boolean isClientProxy = false;
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public final String PLAY_LIST_NAME_PLAY_LIST = "play.list";
@@ -107,7 +109,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     public synchronized static TPlayManager getInstance(Context context) {
         if (tPlayManager == null && context != null) {
             tPlayManager = new TPlayManager(context, null);
-            tPlayManager.setPlayOrder(DataID.PLAY_MANAGER_PLAY_ORDER2);//循环顺序播放
+            ///tPlayManager.setPlayOrder(DataID.PLAY_MANAGER_PLAY_ORDER2);//循环顺序播放
             tPlayManager.setAutoPlaySource(DataID.SESSION_SOURCE_FAVORITELIST);//自动播放源列表
         }
         return tPlayManager;
@@ -138,7 +140,10 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         loadFromFile();
         if (!TAppProcessUtils.getProcessName(context).equals(MessageEvent.MESSAGE_EVENT_AIDL_PROCESS_SERVICE_NAME)) {
             ///MMLog.d(TAG,"Init play manager "+TAppProcessUtils.getProcessName(context));
+            isClientProxy = true;
             initialMyMediaAidlInterface(mContext);
+        } else {
+            isClientProxy = false;
         }
     }
 
@@ -280,6 +285,8 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         this.oMediaPlaying = oMedia;
         this.oMediaPlaying.with(mContext);
         this.oMediaPlaying.setMagicNumber(magicNumber);
+
+
         this.oMediaPlaying.callback(this);
 
         ///if (surfaceView == null)
@@ -452,11 +459,16 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
             return;
         }
         lStartTick_Next = System.currentTimeMillis();
-        OMedia oo = getNextAvailable();//获取下一个有效的资源
 
-        if (oo != null) {
-            MMLog.log(TAG, "Go to next " + oo.getPathName());
-            startPlay(oo);
+        OMedia oMedia = null;
+        if (playOrder == DataID.PLAY_MANAGER_PLAY_ORDER5)
+            oMedia = getRandomOMediaFromPlayLists();///随机模式获取下一个随机对象
+        else
+            oMedia = getNextAvailable();//获取下一个有效的资源
+
+        if (oMedia != null) {
+            MMLog.log(TAG, "Go to next " + oMedia.getPathName());
+            startPlay(oMedia);
         } else {
             MMLog.log(TAG, "Next is null,start auto play");
             autoPlay();
@@ -471,10 +483,14 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         }
         lStartTick_Pre = System.currentTimeMillis();
 
-        OMedia oo = getPreAvailable();//获取上一个有效的资源
-        if (oo != null) {
-            MMLog.log(TAG, "Go to prev = " + oo.getPathName());
-            startPlay(oo);
+        OMedia oMedia = null;
+        if (playOrder == DataID.PLAY_MANAGER_PLAY_ORDER5)
+            oMedia = getRandomOMediaFromPlayLists();///随机模式获取下一个随机对象
+        else
+            oMedia = getPreAvailable();//获取上一个有效的资源
+        if (oMedia != null) {
+            MMLog.log(TAG, "Go to prev = " + oMedia.getPathName());
+            startPlay(oMedia);
         } else {
             MMLog.log(TAG, "Prev is  null,start auto play");
             autoPlay();
@@ -542,6 +558,35 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
 
     public void deleteALLPlayList() {
         allPlayLists.clear();
+    }
+
+    public ObjectList getAllPlayLists() {
+        return allPlayLists;
+    }
+
+    public void createPlayingListOrder(VideoList videoList) {
+        String name = "VideoList_" + FileUtils.getRandom(10000);
+        allPlayLists.clear();
+        allPlayLists.addObject(name, videoList);
+        videoList.updateLinkOrder();
+    }
+
+    public void createPlayingListOrder(String name, VideoList videoList) {
+        if (FileUtils.EmptyString(name)) {
+            name = "VideoList_" + FileUtils.getRandom(10000);
+        }
+        allPlayLists.clear();
+        allPlayLists.addObject(name, videoList);
+        videoList.updateLinkOrder();
+    }
+
+    public void createPlayingListOrder(String name, VideoList videoList, boolean append) {
+        if (FileUtils.EmptyString(name)) {
+            name = "VideoList_" + FileUtils.getRandom(10000);
+        }
+        if (!append) allPlayLists.clear();
+        allPlayLists.addObject(name, videoList);
+        videoList.updateLinkOrder();
     }
 
     public VideoList getLocalMediaVideos() {
@@ -708,6 +753,15 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         return null;
     }
 
+    public OMedia getOMediaFromPlayLists(Movie movie) {
+        Collection<Object> objects = allPlayLists.getAllObject();
+        for (Object o : objects) {
+            OMedia oMedia = ((VideoList) o).findByMovie(movie);
+            if (oMedia != null) return oMedia;
+        }
+        return null;
+    }
+
     public OMedia getFirstOMediaFromPlayLists() {
         Collection<Object> objects = allPlayLists.getAllObject();
         for (Object o : objects) {
@@ -789,7 +843,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     }
 
     @Override
-    public void onEventPlayerStatus(PlayerStatusInfo playerStatusInfo) {
+    public void onEventPlayerStatus(PlayerStatusInfo playerStatusInfo) {///oMediaPlaying callback 当前播放的callback
         if (this.mUserCallback != null && oMediaPlaying != null) {
             //this.callback.OnEventCallBack(EventType, TimeChanged, LengthChanged, PositionChanged, OutCount, ChangedType, ChangedID, Buffering, Length);
             Message msg = playHandler.obtainMessage();
@@ -798,15 +852,22 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
             msg.what = playerStatusInfo.getEventType();
             msg.arg1 = (int) playerStatusInfo.getPositionChanged();
             msg.arg2 = (int) playerStatusInfo.getLengthChanged();
-            playHandler.sendMessage(msg);
+            playHandler.sendMessage(msg);//UI 层
         }
+        if (isClientProxy) //服务端不负责调度管理  ///本地CALLBACK
+        {
+            LocalScheduling(playerStatusInfo);
+        }
+    }
+
+    private void LocalScheduling(PlayerStatusInfo playerStatusInfo) {
         switch (playerStatusInfo.getEventCode()) {//media.class 原生事件
             case PlaybackEvent.Buffering:
             case PlaybackEvent.EndReached:
                 break;
             case PlaybackEvent.Playing:
                 if (videoOutHeight > 10 && videoOutWidth > 10) {
-                    MMLog.log(TAG, "onEventPlayerStatus set video size to " + videoOutWidth + ":" + videoOutHeight);
+                    MMLog.log(TAG, "LocalScheduling set video size to " + videoOutWidth + ":" + videoOutHeight);
                     setWindowSize(videoOutWidth, videoOutHeight);
                 }
                 break;
@@ -815,7 +876,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
             case PlaybackEvent.Status_NothingIdle:
                 ///if (autoPlaySource >= DataID.SESSION_SOURCE_ALL) //立即跳转到收藏列表
                 ///{
-                ///MMLog.log(TAG, "OnEventCallBack.EventType = " + playerStatusInfo.getEventType() + ", " + oMediaPlaying.getPathName());
+                ///MMLog.log(TAG, "LocalScheduling.EventType = " + playerStatusInfo.getEventType() + ", " + oMediaPlaying.getPathName());
                 ///playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                 ///}
                 break;
@@ -839,14 +900,14 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
             case PlaybackEvent.MediaChanged:
                 break;
             case PlaybackEvent.Status_Error:
-                MMLog.log(TAG, "OnEventCallBack.EventType.Status_Error stop play " + oMediaPlaying.getPathName());
+                MMLog.log(TAG, "LocalScheduling.EventType.Status_Error stop play " + oMediaPlaying.getPathName());
                 break;
             case PlaybackEvent.Status_Ended:
                 if (playerStatusInfo.getLastError() == PlaybackEvent.Status_Error) {//处理错误
                     if (oMediaPlaying == null) break;
                     playerStatusInfo.setLastError(PlaybackEvent.Status_Ended);
                     if (tryCountForError > 0 && tryPlayCount > 0) {
-                        MMLog.d(TAG, "OnEventCallBack.EventType.Status_Error try again " + oMediaPlaying.getPathName());
+                        MMLog.d(TAG, "LocalScheduling.EventType.Status_Error try again " + oMediaPlaying.getPathName());
                         playEventHandler(DataID.PLAY_MANAGER_PLAY_ORDER4);
                         tryPlayCount--;
                     } else {
@@ -854,7 +915,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
                     }
                 } else {
                     tryPlayCount = tryCountForError;
-                    MMLog.i(TAG, "OnEventCallBack.EventType.Status_Ended " + oMediaPlaying.getPathName());
+                    MMLog.i(TAG, "LocalScheduling.EventType.Status_Ended " + oMediaPlaying.getPathName());
                     playEventHandler(playOrder);//继续播放，跳到上一首或下一首
                 }
                 break;
@@ -893,34 +954,8 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what) {
-                case MessageEvent.MESSAGE_EVENT_LOCAL_VIDEO:
-                case MessageEvent.MESSAGE_EVENT_LOCAL_AUDIO:
-                case MessageEvent.MESSAGE_EVENT_USB_VIDEO:
-                case MessageEvent.MESSAGE_EVENT_USB_AUDIO:
-                case MessageEvent.MESSAGE_EVENT_SD_VIDEO:
-                case MessageEvent.MESSAGE_EVENT_SD_AUDIO:
-                    if (mUserCallback != null) {
-                        PlayerStatusInfo StatusInfo = new PlayerStatusInfo();
-                        StatusInfo.setEventType(MessageEvent.MESSAGE_EVENT_MEDIA_LIBRARY);
-                        StatusInfo.setEventCode(msg.what);
-                        mUserCallback.onEventPlayerStatus(StatusInfo);
-                    }
-                    return;
-            }
-
             PlayerStatusInfo playerStatusInfo = (PlayerStatusInfo) msg.obj;
-            if (oMediaPlaying == null || oMediaPlaying.getFPlayer() == null || playerStatusInfo == null) return;
-            switch (playerStatusInfo.getEventType()) {
-                case PlaybackEvent.Status_NothingIdle:
-                case PlaybackEvent.Status_Opening:
-                case PlaybackEvent.Status_Buffering:
-                case PlaybackEvent.Status_Playing:
-                case PlaybackEvent.Status_Ended:
-                case PlaybackEvent.Status_Error:
-                    break;
-            }
-            if (mUserCallback != null) mUserCallback.onEventPlayerStatus(playerStatusInfo);
+            if (mUserCallback != null && playerStatusInfo != null) mUserCallback.onEventPlayerStatus(playerStatusInfo);
         }
     };
 
@@ -1138,19 +1173,27 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         }
 
         @Override
-        public void onMessageMusice(int MsgId, int status, long timeChanged, long length, String filePathName) {
+        public void onMessageMusic(int MsgId, int status, long timeChanged, long length, PMovie pMovie) {
+
             PlayerStatusInfo playerStatusInfo = new PlayerStatusInfo();
             playerStatusInfo.setEventType(MsgId);
             playerStatusInfo.setTimeChanged(timeChanged);
             playerStatusInfo.setLength(length);
             playerStatusInfo.setEventCode(MESSAGE_EVENT_OCTOPUS_AIDL_PLAYING_STATUS);
             if (oMediaPlaying != null) {
-                if (!Objects.equals(oMediaPlaying.getPathName(), filePathName)) oMediaPlaying = getOMediaFromPlayLists(filePathName);
+                if (!Objects.equals(oMediaPlaying.getPathName(), pMovie.getSrcUrl())) oMediaPlaying = getOMediaFromPlayLists(pMovie);
             } else {
-                oMediaPlaying = getOMediaFromPlayLists(filePathName);
+                oMediaPlaying = getOMediaFromPlayLists(pMovie.getSrcUrl());
+            }
+            if (oMediaPlaying != null) {
+                if (oMediaPlaying.getMovie().getDuration() == 0) oMediaPlaying.getMovie().setDuration(length);
+                oMediaPlaying.setPlayStatus(status);
+                onEventPlayerStatus(playerStatusInfo);//呼叫本地状态机，解析解析状态
+            } else {
+                MMLog.d(TAG, "onMessageMusic error " + pMovie.getSrcUrl());
             }
             ///if (oMediaPlaying != null) MMLog.d(TAG, playerStatusInfo.toString() + "," + filePathName);
-            if (mUserCallback != null) mUserCallback.onEventPlayerStatus(playerStatusInfo);
+            ///if (mUserCallback != null) mUserCallback.onEventPlayerStatus(playerStatusInfo);
         }
     };
 

@@ -53,7 +53,7 @@ public class DataID {
     public static final int PLAY_MANAGER_PLAY_ORDER2 = PLAY_MANAGER_PLAY_ORDER1 + 1;
     public static final int PLAY_MANAGER_PLAY_ORDER3 = PLAY_MANAGER_PLAY_ORDER2 + 1;
     public static final int PLAY_MANAGER_PLAY_ORDER4 = PLAY_MANAGER_PLAY_ORDER3 + 1;
-    public static final int PLAY_MANAGER_PLAY_ORDER5 = PLAY_MANAGER_PLAY_ORDER4 + 1;
+    public static final int PLAY_MANAGER_PLAY_ORDER5 = PLAY_MANAGER_PLAY_ORDER4 + 1;///随机模式
     public static final int PLAY_MANAGER_PLAY_ORDER6 = PLAY_MANAGER_PLAY_ORDER5 + 1;
 
     public static final int TASK_STATUS_NONE = 300;

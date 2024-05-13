@@ -87,8 +87,7 @@ public class VideoList {
         mFirstItem = null;
         mLastItem = null;
         OMedia oMediaPrev = null;
-        for (HashMap.Entry<String, Object> m : mFHashMap.entrySet())
-        {
+        for (HashMap.Entry<String, Object> m : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) m.getValue();
             if (oMedia == null) {
                 return;
@@ -97,9 +96,7 @@ public class VideoList {
                 mFirstItem = oMedia;
                 oMedia.setNext(oMedia);
                 oMedia.setPre(oMedia);
-            }
-            else
-            {
+            } else {
                 if (oMediaPrev != null) {
                     oMedia.setPre(oMediaPrev);
                     oMedia.setNext(mFirstItem);
@@ -206,10 +203,18 @@ public class VideoList {
         return (OMedia) mFHashMap.get(md5Key);
     }
 
+    public OMedia findByMovie(Movie movie) {
+        String md5Key = FileUtils.MD5(movie.getSrcUrl());
+        OMedia oMedia = (OMedia) mFHashMap.get(md5Key);
+        if(oMedia == null) return null;
+        if (oMedia.getMovie().equals(movie)) return oMedia;
+        else return null;
+    }
+
     public OMedia findAny() {
-        Random generator = new Random();
+        int random = FileUtils.getRandom(getCount());
         Object[] values = mFHashMap.values().toArray();
-        Object randomValue = values[generator.nextInt(values.length)];
+        Object randomValue = values[random];
         return (OMedia) randomValue;
     }
 
@@ -388,7 +393,7 @@ public class VideoList {
     public void printAllByIndex() {
         for (int i = 0; i < getCount(); i++) {
             OMedia oMedia = findByIndex(i);
-            if (oMedia != null) MMLog.log(TAG, mListName+" "+i + ":" + oMedia.getPathName());
+            if (oMedia != null) MMLog.log(TAG, mListName + " " + i + ":" + oMedia.getPathName());
             else MMLog.log(TAG, "null");
         }
     }
@@ -396,10 +401,8 @@ public class VideoList {
     public void printFollow() {
         if (getCount() <= 0) return;
         OMedia oMedia = mFirstItem;
-        for (int i = 0; i < getCount(); i++)
-        {
-            if (oMedia != null)
-            {
+        for (int i = 0; i < getCount(); i++) {
+            if (oMedia != null) {
                 MMLog.log(TAG, i + ":↓" + oMedia.getPathName());
                 oMedia = oMedia.getNext();
                 if (oMedia == null) {

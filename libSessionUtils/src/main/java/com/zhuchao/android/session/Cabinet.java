@@ -30,6 +30,7 @@ import androidx.annotation.Nullable;
 import com.zhuchao.android.car.aidl.IMyAidlInterface;
 import com.zhuchao.android.car.aidl.IMyAidlInterfaceListener;
 import com.zhuchao.android.car.aidl.PEventCourier;
+import com.zhuchao.android.car.aidl.PMovie;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.MMLog;
@@ -81,8 +82,8 @@ public class Cabinet {
 
     public synchronized static TPlayManager getPlayManager() {
         tPlayManager = TPlayManager.getInstance(MApplication.getAppContext());
-        tPlayManager.setPlayOrder(DataID.PLAY_MANAGER_PLAY_ORDER2);//循环顺序播放
-        tPlayManager.setAutoPlaySource(DataID.SESSION_SOURCE_FAVORITELIST);//自动播放源列表
+        ///tPlayManager.setPlayOrder(DataID.PLAY_MANAGER_PLAY_ORDER2);//循环顺序播放
+        ///tPlayManager.setAutoPlaySource(DataID.SESSION_SOURCE_FAVORITELIST);//自动播放源列表
         return tPlayManager;
     }
 
@@ -173,7 +174,7 @@ public class Cabinet {
         }
 
         @Override
-        public void onMessageMusice(int MsgId, int status, long timeChanged, long length, String filePathName) throws RemoteException {
+        public void onMessageMusic(int MsgId, int status, long timeChanged, long length, PMovie pMovie) throws RemoteException {
 
         }
     };

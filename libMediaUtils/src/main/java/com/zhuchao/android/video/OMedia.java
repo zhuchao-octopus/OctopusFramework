@@ -56,6 +56,7 @@ public class OMedia implements PlayerCallback {
 
     private float playRate = 1;
     private long playTime = 0;
+    private int playStatus = PlaybackEvent.Status_NothingIdle;
     private int videoOutWidth = 0;
     private int videoOutHeight = 0;
     protected int magicNumber = 0;
@@ -432,8 +433,7 @@ public class OMedia implements PlayerCallback {
     }
 
     private void setCallback(PlayerCallback callBack) {
-        this.callback = callBack;
-        if (isPlayerReady()) FPlayer.setCallback(this);
+        this.callback = callBack;//用户 callback
     }
 
     public OMedia setPlayTime(long mLastPlayTime) {
@@ -472,6 +472,10 @@ public class OMedia implements PlayerCallback {
     public int getVolume() {
         if (isPlayerReady()) return FPlayer.getVolume();
         return 0;
+    }
+
+    public void setPlayStatus(int playStatus) {
+        this.playStatus = playStatus;
     }
 
     public void fastForward(int x) {
@@ -526,7 +530,7 @@ public class OMedia implements PlayerCallback {
 
     public int getPlayStatus() {
         if (isPlayerReady()) return FPlayer.getPlayerStatus();
-        else return PlaybackEvent.Status_NothingIdle;
+        else return playStatus;
     }
 
     public void setTime(long time) {
@@ -555,6 +559,7 @@ public class OMedia implements PlayerCallback {
 
     public long getLength() {
         if (isPlayerReady()) return FPlayer.getLength();
+        else if (movie != null) return movie.getDuration();
         else return 0;
     }
 
@@ -761,6 +766,7 @@ public class OMedia implements PlayerCallback {
             ///    FPlayer = PlayerManager.getSingleMPlayer(context, this);
             ///    break;
         }
+        if (isPlayerReady()) FPlayer.setCallback(this);//本地callback
         MMLog.d(TAG, "GetPlayer() MagicNumber = " + magicNumber + ", FPlayer = " + FPlayer.getTAG());
 
     }
