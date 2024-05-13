@@ -60,9 +60,12 @@ public class MessageEvent {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //组件名称
+    public final static String OCTOPUS_COMPONENT_NAME_MIDDLE_SERVICE = "com.zhuchao.android.car.service";
     public final static String MESSAGE_EVENT_AIDL_PROCESS_SERVICE_NAME = "com.zhuchao.android.car";
     public final static String MESSAGE_EVENT_AIDL_PACKAGE_NAME = "com.zhuchao.android.car";
     public final static String MESSAGE_EVENT_AIDL_CANBOX_CLASS_NAME = "com.zhuchao.android.car.service.CanboxService";
     public final static String MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME = "com.zhuchao.android.car.service.MultimService";
     public final static String MESSAGE_EVENT_AIDL_BT_CLASS_NAME = "com.zhuchao.android.car.service.BtService";
+
+
 }

@@ -102,7 +102,6 @@ public class Cabinet {
             initialEventBus();
             initialPlayManager(context);
             ///initialMyCarAidlInterface(context);
-
         } catch (Exception e) {
             MMLog.e(TAG, e.toString());
         }

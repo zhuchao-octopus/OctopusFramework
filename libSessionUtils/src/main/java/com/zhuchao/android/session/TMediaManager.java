@@ -79,7 +79,7 @@ public class TMediaManager implements SessionCallback {
         ///registerUSBBroadcastReceiver();
         ///Data.setOplayerSessionRootUrl(hostPath);
         ///mCategorySession = new LiveVideoSession(DataID.SESSION_SOURCE_NONE, this);
-        mNetCategorySession.setUserSessionCallback(this);
+        ///mNetCategorySession.setUserSessionCallback(this);
         MMLog.d(TAG, "Initial TMediaManager!");
     }
 
@@ -256,14 +256,16 @@ public class TMediaManager implements SessionCallback {
     }
     private void userSessionCallback(LiveVideoSession liveVideoSession, int mobileSessionId, String message)//DeviceName + ":" + DevicePath
     {
+        ///先更新本地播放管理
         if (mUserSessionCallback != null) {///通知本地播放器
             if (liveVideoSession != null)
                 mUserSessionCallback.OnSessionComplete(mobileSessionId, message, liveVideoSession.getAllVideos().getCount());
             else mUserSessionCallback.OnSessionComplete(mobileSessionId, message, 0);
         }
-        ///通知本地总线
-        ///Cabinet.getEventBus().post(new EventCourier(this.getClass(), mobileSessionId));
-        Cabinet.getEventBus().post(new PEventCourier(this.getClass(), mobileSessionId));//通知IPC,通知外部客户端
+        ///通知本地总线，通过代理更新客户端
+        PEventCourier pEventCourier = new PEventCourier(this.getClass(), mobileSessionId);
+        pEventCourier.setTarget(MessageEvent.OCTOPUS_COMPONENT_NAME_MIDDLE_SERVICE);//消息发往代理PROXY
+        Cabinet.getEventBus().post(pEventCourier);//通知IPC,通知外部客户端
     }
 
     ///增加本地分类
@@ -514,9 +516,11 @@ public class TMediaManager implements SessionCallback {
                         if (FileUtils.EmptyString(usbName)) {
                             mAllSessions.delete(makeSessionName(usbName, DataID.MEDIA_TYPE_ID_VIDEO));
                             mAllSessions.delete(makeSessionName(usbName, DataID.MEDIA_TYPE_ID_AUDIO));
+                            userSessionCallback(null, MessageEvent.MESSAGE_EVENT_USB_VIDEO, usbName + ":" + subName2);
+                            userSessionCallback(null, MessageEvent.MESSAGE_EVENT_USB_AUDIO, usbName + ":" + subName2);
                         }
                     }
-                    userSessionCallback(null, MessageEvent.MESSAGE_EVENT_USB_UNMOUNT, usbName + ":" + subName2);
+
                     ///for (String key : bundle.keySet())
                     ///    MMLog.log(TAG, "USB:" + key + ":" + bundle.toString() + " " + subName2);
                 }

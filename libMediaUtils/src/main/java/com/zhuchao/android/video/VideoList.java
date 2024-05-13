@@ -37,7 +37,8 @@ import java.util.Objects;
 import java.util.Random;
 
 public class VideoList {
-    private String TAG = "VideoList";
+    private final String TAG = "VideoList";
+    private String mListName = "VideoList";
     private NormalCallback mRequestCallBack = null;
     private OMedia mFirstItem = null;
     private OMedia mLastItem = null;
@@ -67,7 +68,7 @@ public class VideoList {
         return mFHashMap;
     }
 
-    public void updateSingleLinkAll() {
+    public void updateSingleLinkOrder() {
         OMedia fVideo = findByIndex(0);
         for (int i = 0; i < getCount(); i++) {
             OMedia o = findByIndex(i);
@@ -82,25 +83,32 @@ public class VideoList {
         }
     }
 
-    public void updateLinkAll() {
+    public void updateLinkOrder() {
         mFirstItem = null;
         mLastItem = null;
         OMedia oMediaPrev = null;
-        for (HashMap.Entry<String, Object> m : mFHashMap.entrySet()) {
+        for (HashMap.Entry<String, Object> m : mFHashMap.entrySet())
+        {
             OMedia oMedia = (OMedia) m.getValue();
+            if (oMedia == null) {
+                return;
+            }
             if (mFirstItem == null) {
                 mFirstItem = oMedia;
-                mLastItem = oMedia;
                 oMedia.setNext(oMedia);
                 oMedia.setPre(oMedia);
-            } else {
-                oMedia.setPre(oMediaPrev);
-                if (oMediaPrev != null) oMediaPrev.setNext(oMedia);
+            }
+            else
+            {
+                if (oMediaPrev != null) {
+                    oMedia.setPre(oMediaPrev);
+                    oMedia.setNext(mFirstItem);
+                    oMediaPrev.setNext(oMedia);
+                }
             }
             oMediaPrev = oMedia;
+            mLastItem = oMedia;
         }
-        mLastItem = oMediaPrev;
-        mLastItem.setNext(mFirstItem);
     }
 
     public void add(OMedia oMedia) {
@@ -319,12 +327,12 @@ public class VideoList {
         mFHashMap.clear();
     }
 
-    public String getTAG() {
-        return TAG;
+    public String getListName() {
+        return mListName;
     }
 
-    public void setTAG(String TAG) {
-        this.TAG = TAG;
+    public void setListName(String mListName) {
+        this.mListName = mListName;
     }
 
     public boolean exist(String filePathName) {
@@ -369,7 +377,7 @@ public class VideoList {
 
     public void printAll() {
         int i = 0;
-        MMLog.d(TAG, "Print all medias count:" + getCount());
+        MMLog.d(TAG, mListName + " Print all medias count:" + getCount());
         for (HashMap.Entry<String, Object> m : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) m.getValue();
             MMLog.log(TAG, i + ":" + oMedia.getPathName());
@@ -380,7 +388,7 @@ public class VideoList {
     public void printAllByIndex() {
         for (int i = 0; i < getCount(); i++) {
             OMedia oMedia = findByIndex(i);
-            if (oMedia != null) MMLog.log(TAG, i + ":" + oMedia.getPathName());
+            if (oMedia != null) MMLog.log(TAG, mListName+" "+i + ":" + oMedia.getPathName());
             else MMLog.log(TAG, "null");
         }
     }
@@ -388,17 +396,19 @@ public class VideoList {
     public void printFollow() {
         if (getCount() <= 0) return;
         OMedia oMedia = mFirstItem;
-        for (int i = 0; i < getCount(); i++) {
-            if (oMedia != null) {
+        for (int i = 0; i < getCount(); i++)
+        {
+            if (oMedia != null)
+            {
                 MMLog.log(TAG, i + ":↓" + oMedia.getPathName());
                 oMedia = oMedia.getNext();
                 if (oMedia == null) {
                     MMLog.log(TAG, "null");
                     break;
                 }
-                if (oMedia.equals(mLastItem)) MMLog.log(TAG, "printFollow() done");
             }
         }
+        ///if (oMedia.equals(mLastItem)) MMLog.log(TAG, "printFollow() done");
     }
 
     public void loadFromDir(String dirPath, int FileType) {
@@ -457,7 +467,7 @@ public class VideoList {
             String fileDir = String.valueOf(context.getCacheDir()) + "/";//"/sdcard/Octopus/";
             String filePathName = fileDir + fileName; //FileUtils.getDirBaseExternalStorageDirectory(".octopus") + "/" + fileName;
             FileUtils.MakeDirsExists(Objects.requireNonNull(fileDir));
-            MMLog.d(TAG, "save to " + filePathName);
+            MMLog.d(TAG, mListName + " save to " + filePathName);
             StringBuilder stringBuffer = new StringBuilder();
             FileWriter fw = new FileWriter(filePathName);
 
@@ -482,6 +492,7 @@ public class VideoList {
         //String line = System.getProperty("line.separator");
         String fileDir = String.valueOf(context.getCacheDir()) + "/";//"/sdcard/Octopus/";
         String filePathName = fileDir + fileName;
+        MMLog.d(TAG, mListName + " load from " + filePathName);
         if (FileUtils.existFile(filePathName)) {
             List<String> newList = FileUtils.ReadTxtFile(filePathName);
             for (String str : newList) {

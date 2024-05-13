@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class PEventCourier implements Parcelable {
     private final String from;
-    private final String target;
-    private final int id;
+    private String target;
+    private int id;
     private byte[] datas = {0};
     private ArrayList<String> mStrings = new ArrayList<>();
 
@@ -67,6 +67,10 @@ public class PEventCourier implements Parcelable {
 
     public String getTarget() {
         return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
     }
 
     public int getId() {
