@@ -1365,18 +1365,18 @@ public class FileUtils {
 
     public static ObjectList getAllSubMediaDirList(Context context, String topDir, int searchMode, int fileType) {//,int showMod
         File file = new File(topDir);
-        File[] fileArray = null;
-        if (file.exists() && file.isDirectory()) fileArray = file.listFiles();
+        ///File[] fileArray = null;
+        ///if (file.exists() && file.isDirectory()) fileArray = file.listFiles();
         ObjectList objectList = new ObjectList();
         ObjectList dirList = new ObjectList();
 
         if (EmptyString(topDir) || "/".equals(topDir)) objectList = getTopLevelDir(context);
 
-        if (objectList.getCount() > 0 || fileArray == null) {
+        if (objectList.getCount() > 0) {
             for (HashMap.Entry<String, Object> entry : objectList.getAll().entrySet()) {
                 getSubDirList(entry.getValue().toString(), dirList, searchMode, fileType);
             }
-        } else {
+        } else if (file.exists() && file.isDirectory()){
             getSubDirList(file.getAbsolutePath(), dirList, searchMode, fileType);
         }
         return dirList;
