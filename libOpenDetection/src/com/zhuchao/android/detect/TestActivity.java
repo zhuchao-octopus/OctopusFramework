@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FdActivity extends CameraActivity implements CvCameraViewListener2 {
+public class TestActivity extends CameraActivity implements CvCameraViewListener2 {
     private static final String TAG = "OCVSample::Activity";
     private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
     public static final int JAVA_DETECTOR = 0;
@@ -53,7 +53,7 @@ public class FdActivity extends CameraActivity implements CvCameraViewListener2 
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////
-    public FdActivity() {
+    public TestActivity() {
         mDetectorName = new String[2];
         mDetectorName[JAVA_DETECTOR] = "Java";
         mDetectorName[NATIVE_DETECTOR] = "Native (tracking)";

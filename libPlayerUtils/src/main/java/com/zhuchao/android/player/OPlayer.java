@@ -2,11 +2,16 @@ package com.zhuchao.android.player;
 
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 
+import static org.videolan.libvlc.interfaces.IMedia.Slave.Type.Audio;
+import static org.videolan.libvlc.interfaces.IMedia.Track.Type.Text;
+import static org.videolan.libvlc.interfaces.IMedia.Track.Type.Video;
+
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.view.SurfaceView;
 import android.view.TextureView;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 
@@ -40,7 +45,7 @@ import java.util.Map;
     }
  */
 
-public class OPlayer extends PlayControl {
+public class OPlayer extends PlayControl implements View.OnLayoutChangeListener {///implements VLCPlayer.VLCPlayerCallback
     private final String TAG = "OPlayer";
     private MediaPlayer mMediaPlayer = null;
     private Media media = null;
@@ -300,6 +305,7 @@ public class OPlayer extends PlayControl {
 
             mTextureView = null;
             mSurfaceView = surfaceView;
+            mSurfaceView.addOnLayoutChangeListener(this);
             MMLog.log(TAG, "setSurfaceView successfully");
         } catch (Exception e) {
             //e.printStackTrace();
@@ -581,15 +587,15 @@ public class OPlayer extends PlayControl {
     public Map<Integer, String> getAudioTracks() {
         Map<Integer, String> mtd = new HashMap<Integer, String>();
         if (mMediaPlayer == null) return mtd;
-
+        /*
         MediaPlayer.TrackDescription[] TrackDescriptions = mMediaPlayer.getAudioTracks();
         if (TrackDescriptions == null) return mtd;
 
         for (MediaPlayer.TrackDescription td : TrackDescriptions) {
             mtd.put(td.id, td.name);
         }
+        */
 
-    /*
         int i = 0;
         Media.Track[] TrackDescriptions = mMediaPlayer.getTracks(Audio);
         for (Media.Track tracks : TrackDescriptions) {
@@ -607,7 +613,7 @@ public class OPlayer extends PlayControl {
         for (Media.Track tracks : TrackDescriptions) {
             mtd.put(i, tracks.id + " " + tracks.name + " " + tracks.type);
             i++;
-        }*/
+        }
 
         return mtd;
     }
@@ -620,8 +626,8 @@ public class OPlayer extends PlayControl {
 
     public void setAudioTrack(int index) {
         if (mMediaPlayer == null) return;
-        mMediaPlayer.setAudioTrack(index);
-        ///mMediaPlayer.selectTrack(String.valueOf(index));//.setAudioTrack(index);
+        ///mMediaPlayer.setAudioTrack(index);
+        mMediaPlayer.selectTrack(String.valueOf(index));//.setAudioTrack(index);
     }
 
     @Override
@@ -639,8 +645,28 @@ public class OPlayer extends PlayControl {
         return 0;
     }
 
+    @Override
+    public void startRecording(String filePath) {
+        if(mMediaPlayer != null)
+          mMediaPlayer.record(filePath);
+    }
+
+    @Override
+    public void stopRecording() {
+        if (mMediaPlayer == null)
+            return;
+        mMediaPlayer.record(null);
+    }
+
     public void setCallback(PlayerCallback callback) {
         this.playerEventCallBack = callback;
+    }
+
+    @Override
+    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        int newWidth = right - left;
+        int newHeight = bottom - top;
+        mMediaPlayer.getVLCVout().setWindowSize(newWidth, newHeight);
     }
 
     class IVLCVoutCallBack implements IVLCVout.Callback, IVLCVout.OnNewVideoLayoutListener {

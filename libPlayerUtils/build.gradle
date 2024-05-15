@@ -12,9 +12,9 @@ ext {
     //def LIBVLC_AAR = 'libvlc-all-3.5.0-eap8.aar' //PUBLISH_VERSION = '>=1.2'
     //PUBLISH_VERSION = '2.6' //v2.6 stable
 
-    PUBLISH_VERSION = '2.9' //libvlc-3.5.4-armeabi-v7a-release.aar
+    ////PUBLISH_VERSION = '2.9' //libvlc-3.5.4-armeabi-v7a-release.aar
 
-    ///PUBLISH_VERSION = '3.0' //libvlc-all-4.0.0-eap15.aar
+    PUBLISH_VERSION = '3.0' //libvlc-all-4.0.0-eap9.aar
 }
 
 afterEvaluate {
@@ -41,6 +41,9 @@ android {
     defaultConfig {
         minSdk 24
         targetSdk 34
+        ndk {
+            abiFilters /*"x86", */ "armeabi-v7a", "arm64-v8a" /*, "armeabi", "armabi-v7a", "x86_64", "mips", "mips64"*/
+        }
     }
 
     publishing {
@@ -74,11 +77,13 @@ dependencies {
     implementation project(path: ':libJOSUtils')
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     api files('libs/clink210.jar')
-    ///compileOnly files('libs/libvlc-all-4.0.0-eap15.aar')
-    compileOnly files('libs/libvlc-3.5.4-armeabi-v7a-release.aar')
+    ///compileOnly files('libs/libvlc-3.5.4-armeabi-v7a-release.aar')
+    compileOnly files('libs/libvlc-all-4.0.0-eap9.aar')
 
-    //compileOnly 'org.videolan.android:libvlc-all:3.5.0-eap8'
-    //implementation group: 'org.videolan.android', name: 'libvlc-all', version: '4.0.0-eap8'
-    //implementation group: 'org.videolan.android', name: 'libvlc-all', version: '3.5.1'
-    //implementation project(path: ':libDecodeCore')
+    ///implementation 'org.videolan.android:libvlc-all:4.0.0-eap9'
+    ///compileOnly 'org.videolan.android:libvlc-all:3.5.0-eap8'
+    ///implementation 'org.videolan.android:libvlc-all:3.3.1'
+    ///implementation group: 'org.videolan.android', name: 'libvlc-all', version: '4.0.0-eap8'
+    ///implementation group: 'org.videolan.android', name: 'libvlc-all', version: '3.5.1'
+    ///implementation project(path: ':libDecodeCore')
 }

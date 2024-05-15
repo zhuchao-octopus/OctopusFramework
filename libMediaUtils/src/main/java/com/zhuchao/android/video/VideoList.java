@@ -253,7 +253,7 @@ public class VideoList {
         VideoList audioList1 = new VideoList();
         for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) oo.getValue();
-            if (artist.equals(oMedia.getMovie().getArtist())) audioList1.add(new OMedia(oMedia.getMovie()));
+            if (artist.equals(oMedia.getMovie().getArtist())) audioList1.addRow(oMedia);
         }
         return audioList1;
     }
@@ -262,7 +262,7 @@ public class VideoList {
         VideoList audioList1 = new VideoList();
         for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
             OMedia oMedia = (OMedia) oo.getValue();
-            if (album.equals(oMedia.getMovie().getAlbum())) audioList1.add(new OMedia(oMedia.getMovie()));
+            if (album.equals(oMedia.getMovie().getAlbum())) audioList1.addRow(oMedia);
         }
         return audioList1;
     }

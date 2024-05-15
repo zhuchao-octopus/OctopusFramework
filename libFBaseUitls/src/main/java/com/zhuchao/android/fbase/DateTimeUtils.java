@@ -220,4 +220,59 @@ public class DateTimeUtils {
         return dateFormat.format(new Date(millisecond));
     }
 
+
+    public static void setSystemTime(Context context, int hour, int minute) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, hour);
+        c.set(Calendar.MINUTE, minute);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+
+        long when = c.getTimeInMillis();
+
+        if (when / 1000 < Integer.MAX_VALUE) {
+            ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).setTime(when);
+        }
+    }
+
+    public static void setSystemDate(Context context, int year, int month, int day) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.DAY_OF_MONTH, day);
+
+        long when = c.getTimeInMillis();
+
+        if (when / 1000 < Integer.MAX_VALUE) {
+            ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).setTime(when);
+        }
+    }
+
+    public static boolean isDateTimeAuto(Context context) {
+        try {
+            return android.provider.Settings.Global.getInt(context.getContentResolver(), android.provider.Settings.Global.AUTO_TIME) > 0;
+        } catch (Settings.SettingNotFoundException e) {
+            ///e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static String getDefaultTimeZone() {
+        return TimeZone.getDefault().getDisplayName();
+    }
+
+    public static void setTimeZone(String timeZone) {
+        final Calendar now = Calendar.getInstance();
+        TimeZone tz = TimeZone.getTimeZone(timeZone);
+        now.setTimeZone(tz);
+    }
+
+    public static boolean isTimeZoneAuto(Context context) {
+        try {
+            return android.provider.Settings.Global.getInt(context.getContentResolver(), android.provider.Settings.Global.AUTO_TIME_ZONE) > 0;
+        } catch (Settings.SettingNotFoundException e) {
+            ///e.printStackTrace();
+            return false;
+        }
+    }
 }

@@ -508,6 +508,16 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
     }
 
     @Override
+    public void startRecording(String filePath) {
+
+    }
+
+    @Override
+    public void stopRecording() {
+
+    }
+
+    @Override
     public void pushTo(String filePath, boolean duplicated) {
 
     }

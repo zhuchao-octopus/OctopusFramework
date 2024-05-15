@@ -343,18 +343,18 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
     private void processEnterState(int state) {
         Log.d(TAG, "call processEnterState: " + state);
         switch (state) {
-            case STARTED:
+            case STARTED -> {
                 onEnterStartedState();
                 if (mListener != null) {
                     mListener.onCameraViewStarted(mFrameWidth, mFrameHeight);
                 }
-                break;
-            case STOPPED:
+            }
+            case STOPPED -> {
                 onEnterStoppedState();
                 if (mListener != null) {
                     mListener.onCameraViewStopped();
                 }
-                break;
+            }
         }
         ;
     }
@@ -362,12 +362,8 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
     private void processExitState(int state) {
         Log.d(TAG, "call processExitState: " + state);
         switch (state) {
-            case STARTED:
-                onExitStartedState();
-                break;
-            case STOPPED:
-                onExitStoppedState();
-                break;
+            case STARTED -> onExitStartedState();
+            case STOPPED -> onExitStoppedState();
         }
         ;
     }

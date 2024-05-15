@@ -1,6 +1,7 @@
 package com.zhuchao.android.session;
 
 import static android.content.Context.BIND_AUTO_CREATE;
+import static com.zhuchao.android.fbase.FileUtils.MD5;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_PACKAGE_NAME;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_MULTIMEDIA_SERVICE;
@@ -90,8 +91,9 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     private final VideoList mPlayingHistoryList = new VideoList();
     private final VideoList mFavouriteList = new VideoList();//收藏
 
-    private final ObjectList mArtistList = new ObjectList();
+    private ObjectList mArtistList = new ObjectList();
     private ObjectList mAlbumList = new ObjectList();
+    private ObjectList mAlbumListID = new ObjectList();
     private TMediaManager tMediaManager = null;///由于代理的原因需要额外初始化
     private boolean isClientProxy = false;
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -461,10 +463,8 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         lStartTick_Next = System.currentTimeMillis();
 
         OMedia oMedia = null;
-        if (playOrder == DataID.PLAY_MANAGER_PLAY_ORDER5)
-            oMedia = getRandomOMediaFromPlayLists();///随机模式获取下一个随机对象
-        else
-            oMedia = getNextAvailable();//获取下一个有效的资源
+        if (playOrder == DataID.PLAY_MANAGER_PLAY_ORDER5) oMedia = getRandomOMediaFromPlayLists();///随机模式获取下一个随机对象
+        else oMedia = getNextAvailable();//获取下一个有效的资源
 
         if (oMedia != null) {
             MMLog.log(TAG, "Go to next " + oMedia.getPathName());
@@ -484,10 +484,8 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         lStartTick_Pre = System.currentTimeMillis();
 
         OMedia oMedia = null;
-        if (playOrder == DataID.PLAY_MANAGER_PLAY_ORDER5)
-            oMedia = getRandomOMediaFromPlayLists();///随机模式获取下一个随机对象
-        else
-            oMedia = getPreAvailable();//获取上一个有效的资源
+        if (playOrder == DataID.PLAY_MANAGER_PLAY_ORDER5) oMedia = getRandomOMediaFromPlayLists();///随机模式获取下一个随机对象
+        else oMedia = getPreAvailable();//获取上一个有效的资源
         if (oMedia != null) {
             MMLog.log(TAG, "Go to prev = " + oMedia.getPathName());
             startPlay(oMedia);
@@ -662,6 +660,10 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         return mAlbumList;
     }
 
+    public ObjectList getAlbumListID() {
+        return mAlbumListID;
+    }
+
     public void setWindowSize(int width, int height) {
         if (oMediaPlaying != null) {
             oMediaPlaying.setWindowSize(width, height);
@@ -744,79 +746,129 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         return null;
     }
 
-    public OMedia getOMediaFromPlayLists(String urlPath) {
-        Collection<Object> objects = allPlayLists.getAllObject();
-        for (Object o : objects) {
-            OMedia oMedia = ((VideoList) o).findByPath(urlPath);
-            if (oMedia != null) return oMedia;
-        }
-        return null;
-    }
-
-    public OMedia getOMediaFromPlayLists(Movie movie) {
-        Collection<Object> objects = allPlayLists.getAllObject();
-        for (Object o : objects) {
-            OMedia oMedia = ((VideoList) o).findByMovie(movie);
-            if (oMedia != null) return oMedia;
-        }
-        return null;
-    }
-
-    public OMedia getFirstOMediaFromPlayLists() {
-        Collection<Object> objects = allPlayLists.getAllObject();
-        for (Object o : objects) {
-            OMedia oMedia = ((VideoList) o).getFirstItem();
-            if (oMedia != null) return oMedia;
-        }
-        return null;
-    }
-
-    public OMedia getRandomOMediaFromPlayLists() {
-        Collection<Object> objects = allPlayLists.getAllObject();
-        for (Object o : objects) {
-            OMedia oMedia = ((VideoList) o).findAny();
-            if (oMedia != null) return oMedia;
-        }
-        return null;
-    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public VideoList getAllMedia() {
         VideoList videoList = new VideoList();
-        Collection<Object> objects = allPlayLists.getAllObject();
-        for (Object o : objects) {
-            videoList.loadAllRawMediaFrom((VideoList) o);
-        }
+        ///Collection<Object> objects = allPlayLists.getAllObject();
+        ///for (Object o : objects) {
+        ///    videoList.loadAllRawMediaFrom((VideoList) o);
+        ///}
+        videoList.loadAllRawAudioFrom(mLocalMediaAudios);
+        videoList.loadAllRawVideoFrom(mLocalMediaVideos);
         return videoList;
     }
 
     public VideoList getAllMusic() {
         VideoList videoList = new VideoList();
-        Collection<Object> objects = allPlayLists.getAllObject();
-        for (Object o : objects) {
-            videoList.loadAllRawAudioFrom((VideoList) o);
-        }
-        return videoList;
+        ///Collection<Object> objects = allPlayLists.getAllObject();
+        ///for (Object o : objects) {
+        ///    videoList.loadAllRawAudioFrom((VideoList) o);
+        ///}
+        ///videoList.loadAllRawAudioFrom(mLocalMediaAudios);
+        return mLocalMediaAudios;
     }
 
     public VideoList getAllVideo() {
-        VideoList videoList = new VideoList();
-        Collection<Object> objects = allPlayLists.getAllObject();
-        for (Object o : objects) {
-            videoList.loadAllRawVideoFrom((VideoList) o);
-        }
-        return videoList;
+        ///VideoList videoList = new VideoList();
+        ///Collection<Object> objects = allPlayLists.getAllObject();
+        ///for (Object o : objects) {
+        ///    videoList.loadAllRawVideoFrom((VideoList) o);
+        ///}
+        return mLocalMediaVideos;
     }
 
     public int getAllMediaCount() {
-        if (allPlayLists.getCount() <= 0) return 0;
-        int count = 0;
-        Collection<Object> objects = allPlayLists.getAllObject();
-        for (Object o : objects) {
-            count = count + ((VideoList) o).getCount();
-        }
-        return count;
+        ///if (allPlayLists.getCount() <= 0) return 0;
+        ///int count = 0;
+        ///Collection<Object> objects = allPlayLists.getAllObject();
+        ///for (Object o : objects) {
+        ///    count = count + ((VideoList) o).getCount();
+        ///}
+        return mLocalMediaAudios.getCount() + mLocalMediaVideos.getCount();
     }
 
+    public OMedia searchMediaFromMediaLibrary(String filePathName) {
+        OMedia oMedia = null;
+        if (FileUtils.EmptyString(filePathName)) return null;
+        oMedia = mLocalMediaVideos.findByPath(filePathName);
+        if (oMedia != null) return oMedia;
+        oMedia = mLocalMediaAudios.findByPath(filePathName);
+        return oMedia;
+    }
+
+    public OMedia searchMediaFromMediaLibrary(Movie movie) {
+        OMedia oMedia = null;
+        if (movie == null || FileUtils.EmptyString(movie.getSrcUrl())) return null;
+
+        oMedia = mLocalMediaVideos.findByMovie(movie);
+        if (oMedia != null) return oMedia;
+        oMedia = mLocalMediaAudios.findByMovie(movie);
+        if (oMedia != null) return oMedia;
+
+        oMedia = mLocalMediaVideos.findByPath(movie.getSrcUrl());
+        if (oMedia != null) return oMedia;
+        oMedia = mLocalMediaAudios.findByPath(movie.getSrcUrl());
+        return oMedia;
+    }
+
+    public OMedia getOMediaFromPlayLists(String urlPath) {
+
+        try {
+            Collection<Object> objects = allPlayLists.getAllObject();
+            for (Object o : objects) {
+                OMedia oMedia = ((VideoList) o).findByPath(urlPath);
+                if (oMedia != null) return oMedia;
+            }
+        } catch (Exception e) {
+            MMLog.e(TAG, String.valueOf(e));
+        }
+        return null;
+    }
+
+    public OMedia getOMediaFromPlayLists(Movie movie) {
+        try {
+            Collection<Object> objects = allPlayLists.getAllObject();
+            for (Object o : objects) {
+                OMedia oMedia = ((VideoList) o).findByMovie(movie);
+                if (oMedia != null) return oMedia;
+            }
+        } catch (Exception e) {
+            MMLog.e(TAG, String.valueOf(e));
+        }
+        return null;
+    }
+
+    public OMedia getFirstOMediaFromPlayLists() {
+        try {
+            Collection<Object> objects = allPlayLists.getAllObject();
+            for (Object o : objects) {
+                OMedia oMedia = ((VideoList) o).getFirstItem();
+                if (oMedia != null) return oMedia;
+            }
+        } catch (Exception e) {
+            MMLog.e(TAG, String.valueOf(e));
+        }
+        return null;
+    }
+
+    public OMedia getRandomOMediaFromPlayLists() {
+        try {
+            Collection<Object> objects = allPlayLists.getAllObject();
+            for (Object o : objects) {
+                OMedia oMedia = ((VideoList) o).findAny();
+                if (oMedia != null) return oMedia;
+            }
+        } catch (Exception e) {
+            MMLog.e(TAG, String.valueOf(e));
+        }
+        return null;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////
     public synchronized void autoPlay() {
         if (isPlaying()) return;
         autoPlay(autoPlaySource);
@@ -1002,7 +1054,8 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
                     break;
             }
             mAlbumList = tMediaManager.getAlbumList();
-            mAlbumList = tMediaManager.getAlbumList();
+            mAlbumListID = tMediaManager.getAlbumListID();
+            mArtistList = tMediaManager.getArtistList();
             playHandler.sendEmptyMessage(session_id);
             Cabinet.getEventBus().post(new EventCourier(session_id));//通知本地UI外部数据加载完毕
         }
@@ -1071,9 +1124,10 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
                 updateArtistAndAlbum(mLocalMediaAudios);
                 updateArtistAndAlbum(mLocalUSBMediaAudios);
                 updateArtistAndAlbum(mLocalSDMediaAudios);
-                updateAllPlayList();
                 break;
         }
+        MMLog.d(TAG, "Update Aidl mAlbumList.count=" + mAlbumList.getCount());
+        MMLog.d(TAG, "Update Aidl mArtistList.count=" + mArtistList.getCount());
         Cabinet.getEventBus().post(new EventCourier(pEventCourier.getId()));//通知本地UI外部数据加载完毕
     }
 
@@ -1180,17 +1234,21 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
             playerStatusInfo.setTimeChanged(timeChanged);
             playerStatusInfo.setLength(length);
             playerStatusInfo.setEventCode(MESSAGE_EVENT_OCTOPUS_AIDL_PLAYING_STATUS);
-            if (oMediaPlaying != null) {
-                if (!Objects.equals(oMediaPlaying.getPathName(), pMovie.getSrcUrl())) oMediaPlaying = getOMediaFromPlayLists(pMovie);
+
+            if (oMediaPlaying != null) {///曲库搜索
+                if (!Objects.equals(oMediaPlaying.getPathName(), pMovie.getSrcUrl())) oMediaPlaying = searchMediaFromMediaLibrary(pMovie);
             } else {
-                oMediaPlaying = getOMediaFromPlayLists(pMovie.getSrcUrl());
+                oMediaPlaying = searchMediaFromMediaLibrary(pMovie);
             }
-            if (oMediaPlaying != null) {
+            if (oMediaPlaying == null)///播放列表搜索
+                oMediaPlaying = getOMediaFromPlayLists(pMovie.getSrcUrl());
+
+            if (oMediaPlaying != null) {///匹配代理端曲库信息
                 if (oMediaPlaying.getMovie().getDuration() == 0) oMediaPlaying.getMovie().setDuration(length);
                 oMediaPlaying.setPlayStatus(status);
                 onEventPlayerStatus(playerStatusInfo);//呼叫本地状态机，解析解析状态
             } else {
-                MMLog.d(TAG, "onMessageMusic error " + pMovie.getSrcUrl());
+                MMLog.d(TAG, "onMessageMusic lost information " + pMovie.getSrcUrl());
             }
             ///if (oMediaPlaying != null) MMLog.d(TAG, playerStatusInfo.toString() + "," + filePathName);
             ///if (mUserCallback != null) mUserCallback.onEventPlayerStatus(playerStatusInfo);
@@ -1208,7 +1266,9 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     public VideoList transformToVideoList(List<String> list) {
         VideoList videoList = new VideoList();
         for (String str : list) {
-            videoList.add(str);
+            OMedia oMedia = searchMediaFromMediaLibrary(str);
+            if (oMedia != null) videoList.add(oMedia);
+            else videoList.add(str);
         }
         return videoList;
     }
@@ -1316,10 +1376,15 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         //for (Map.Entry<String, Object> entry : mAllSessions.getAll().entrySet())
         {
             //for (HashMap.Entry<String, Object> m : ((LiveVideoSession) entry.getValue()).getAllVideos().getMap().entrySet())
-            for (HashMap.Entry<String, Object> m : videoList.getMap().entrySet()) {
+            for (HashMap.Entry<String, Object> m : videoList.getMap().entrySet())
+            {
                 oMedia = (OMedia) m.getValue();
-                if (oMedia.getMovie().getAlbum() != null) mAlbumList.putString(oMedia.getMovie().getAlbum(), oMedia.getMovie().getAlbum());
-                if (oMedia.getMovie().getArtist() != null) mArtistList.putString(oMedia.getMovie().getArtist(), oMedia.getMovie().getArtist());
+                if (oMedia.getMovie().getAlbum() != null) {
+                    mAlbumList.putString(oMedia.getMovie().getAlbum(), oMedia.getMovie().getAlbum());
+                    mAlbumListID.putInt(oMedia.getMovie().getAlbum(),oMedia.getMovie().getSource_id());
+                }
+                if (oMedia.getMovie().getArtist() != null)
+                    mArtistList.putString((oMedia.getMovie().getArtist()), oMedia.getMovie().getArtist());
             }
         }
     }

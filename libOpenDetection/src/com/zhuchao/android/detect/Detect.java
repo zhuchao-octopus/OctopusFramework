@@ -12,7 +12,7 @@ import org.opencv.core.Mat;
 
 public class Detect implements CameraBridgeViewBase.CvCameraViewListener2 {
     private final String TAG = "Detect";
-    private Context mContext;
+    private final Context mContext;
     //private NormalCallback normalCallback;
     private BaseLoaderCallback mLoaderCallback;
     private OnOpenCVInitListener mOnOpenCVInitListener;
@@ -64,7 +64,7 @@ public class Detect implements CameraBridgeViewBase.CvCameraViewListener2 {
         };
     }
 
-    public void tryInitializeOCVLoader() {
+    private void tryInitializeOCVLoader() {
         if (!OpenCVLoader.initDebug()) {
             MMLog.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, mContext, mLoaderCallback);

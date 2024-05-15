@@ -53,14 +53,6 @@ android {
 
 dependencies {
 
-    //implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.20") {
-    //        because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
-    //    }
-    //    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20") {
-    //        because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
-    //    }
-
-
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
 

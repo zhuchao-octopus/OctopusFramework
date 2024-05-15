@@ -34,11 +34,9 @@ public class CameraActivity extends Activity {
     protected void onStart() {
         super.onStart();
         boolean havePermission = true;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
-                havePermission = false;
-            }
+        if (checkSelfPermission(CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+            havePermission = false;
         }
         if (havePermission) {
             onCameraPermissionGranted();
@@ -46,7 +44,6 @@ public class CameraActivity extends Activity {
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.M)
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             onCameraPermissionGranted();

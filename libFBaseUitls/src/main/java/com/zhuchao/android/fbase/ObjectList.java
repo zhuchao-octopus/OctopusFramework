@@ -97,6 +97,15 @@ public class ObjectList {
         return values[generator.nextInt(values.length)];
     }
 
+    public String getStringKeyByValue(String value)
+    {
+        for (Map.Entry<String, Object> entity : mFHashMap.entrySet()) {
+            if (entity.getValue().equals(value)) {
+               return entity.getKey();
+            }
+        }
+        return null;
+    }
     public boolean exist(String Name) {
         return mFHashMap.containsKey(Name);
     }
@@ -315,12 +324,12 @@ public class ObjectList {
 
     public void saveAsPersistent() {
         Set<Map.Entry<String, Object>> set = mFHashMap.entrySet();
-        for (Map.Entry<String, Object> stringObjectEntry : set) {
-            //stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
-            //jsonObject.put(((Map.Entry<?, ?>) stringObjectEntry).getKey().toString(),
-            //        ((Map.Entry<?, ?>) stringObjectEntry).getValue());
+        ///for (Map.Entry<String, Object> stringObjectEntry : set) {
+            ///stringBuffer.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(" : ").append(((Map.Entry<?, ?>) stringObjectEntry).getValue()).append(line);
+            ///jsonObject.put(((Map.Entry<?, ?>) stringObjectEntry).getKey().toString(),
+            ///        ((Map.Entry<?, ?>) stringObjectEntry).getValue());
 
-        }
+        ///}
     }
 
     public void saveToFile(String filePathName) {

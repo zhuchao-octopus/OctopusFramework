@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.SET_TIME" />
+
+    <uses-permission android:name="android.permission.SET_TIME_ZONE" />
+
     <application>
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -49,6 +49,7 @@ public class TMediaManager implements SessionCallback {
     ///private int mMobileSessionId = DataID.SESSION_SOURCE_LOCAL_INTERNAL;
     private final ObjectList mArtistList = new ObjectList();
     private final ObjectList mAlbumList = new ObjectList();
+    private final ObjectList mAlbumListID = new ObjectList();
     private Map<String, String> mMobileUSBDiscs = new HashMap<String, String>();
     ///private GlobalBroadcastReceiver mUSBBroadcastReceiver = null;//new USBReceiver();
     ///private MyBroadcastReceiver mFileReceiver = null;//new USBReceiver();
@@ -174,6 +175,10 @@ public class TMediaManager implements SessionCallback {
         return mAlbumList;
     }
 
+    public ObjectList getAlbumListID() {
+        return mAlbumListID;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////
     public void startMediaScanning(String scanDir) {
@@ -210,9 +215,7 @@ public class TMediaManager implements SessionCallback {
 
         ///mSession.initMediasFromUSB(mContext, DevicePath, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO, mMobileUSBVideoSession, mMobileUSBAudioSession);
         ///mSession.initMediasFromPath(mContext, DevicePath, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO, mMobileUSBVideoSession, mMobileUSBAudioSession);
-        mSession.synchronizationInitMediasFromPath(mContext, DevicePath, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO,
-                mMobileUSBVideoSession, mMobileUSBAudioSession,
-                mLocalVideoSession,mLocalAudioSession);
+        mSession.synchronizationInitMediasFromPath(mContext, DevicePath, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO, mMobileUSBVideoSession, mMobileUSBAudioSession, mLocalVideoSession, mLocalAudioSession);
         addLocalSessionToSessions(makeSessionName(DeviceName, DataID.MEDIA_TYPE_ID_VIDEO), mMobileUSBVideoSession);
         addLocalSessionToSessions(makeSessionName(DeviceName, DataID.MEDIA_TYPE_ID_AUDIO), mMobileUSBAudioSession);
 
@@ -227,25 +230,20 @@ public class TMediaManager implements SessionCallback {
     {
         TTask tTask = TTaskManager.getSingleTaskFor(TAG + ".synchronization.MediaLibrary").resetAll();
         if (!tTask.isBusy()) {
-            tTask.invoke(tag ->
-            {
+            tTask.invoke(tag -> {
                 LiveVideoSession mSession;
                 for (Map.Entry<String, Object> entry : mAllSessions.getAll().entrySet()) {
                     mSession = ((LiveVideoSession) entry.getValue());
-                    for (HashMap.Entry<String, Object> m : mSession.getAllVideos().getMap().entrySet())
-                    {
+                    for (HashMap.Entry<String, Object> m : mSession.getAllVideos().getMap().entrySet()) {
                         OMedia oMedia = (OMedia) m.getValue();
-                        if(oMedia.isAudio())
-                        {
+                        if (oMedia.isAudio()) {
                             OMedia oMedia_a = mLocalAudioSession.getVideoList().findByPath(oMedia.getPathName());
-                            if (oMedia_a == null){
+                            if (oMedia_a == null) {
                                 mLocalAudioSession.getVideoList().add(oMedia);
                             }
-                        }
-                        else if(oMedia.isVideo())
-                        {
+                        } else if (oMedia.isVideo()) {
                             OMedia oMedia_a = mLocalVideoSession.getVideoList().findByPath(oMedia.getPathName());
-                            if (oMedia_a == null){
+                            if (oMedia_a == null) {
                                 mLocalVideoSession.getVideoList().add(oMedia);
                             }
                         }
@@ -254,6 +252,7 @@ public class TMediaManager implements SessionCallback {
             }).startAgain();
         }
     }
+
     private void userSessionCallback(LiveVideoSession liveVideoSession, int mobileSessionId, String message)//DeviceName + ":" + DevicePath
     {
         ///先更新本地播放管理
@@ -316,8 +315,12 @@ public class TMediaManager implements SessionCallback {
             //for (HashMap.Entry<String, Object> m : ((LiveVideoSession) entry.getValue()).getAllVideos().getMap().entrySet())
             for (HashMap.Entry<String, Object> m : liveVideoSession.getAllVideos().getMap().entrySet()) {
                 oMedia = (OMedia) m.getValue();
-                if (oMedia.getMovie().getAlbum() != null) mAlbumList.putString(oMedia.getMovie().getAlbum(), oMedia.getMovie().getAlbum());
+                if (oMedia.getMovie().getAlbum() != null) {
+                    mAlbumList.putString(oMedia.getMovie().getAlbum(), oMedia.getMovie().getAlbum());
+                    mAlbumListID.putInt(oMedia.getMovie().getAlbum(), oMedia.getMovie().getSource_id());
+                }
                 if (oMedia.getMovie().getArtist() != null) mArtistList.putString(oMedia.getMovie().getArtist(), oMedia.getMovie().getArtist());
+
             }
         }
     }
@@ -453,9 +456,7 @@ public class TMediaManager implements SessionCallback {
                 mSDVideoSession.getAllVideos().clear();
                 mSDAudioSession.getAllVideos().clear();
                 ///mSDVideoSession.initMediasFromPath(mContext, sd_path, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO, mSDVideoSession, mSDAudioSession);
-                mSDVideoSession.synchronizationInitMediasFromPath(mContext, sd_path, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO,
-                        mSDVideoSession, mSDAudioSession,
-                        mLocalVideoSession,mLocalAudioSession);
+                mSDVideoSession.synchronizationInitMediasFromPath(mContext, sd_path, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO, mSDVideoSession, mSDAudioSession, mLocalVideoSession, mLocalAudioSession);
 
                 updateArtistAndAlbum(mSDVideoSession);
                 updateArtistAndAlbum(mSDAudioSession);
