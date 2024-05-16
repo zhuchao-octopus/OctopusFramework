@@ -54,7 +54,7 @@ public class RecordVideoMode {
     private Toast mToast;
     private boolean mRelease = false;
     private boolean mStartRecording = false;
-    private int mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+    private int mCameraId = 0;
     private StorageManager mStorageManager;
     private String mFileDir;
     private long mMaxFileSize;

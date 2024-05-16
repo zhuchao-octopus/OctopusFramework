@@ -96,14 +96,14 @@ public class RecordVideoService extends Service implements SurfaceHolder.Callbac
         unregisterReceiver(mReceiver);
         mHandler.removeMessages(MSG_START_RECORD);
         mHandler.removeMessages(MSG_STOP_RECORD);
-        mHandler.removeCallbacks(mStartRecordRunable);
-        mHandler.removeCallbacks(mStopRecordRunable);
+        mHandler.removeCallbacks(mStartRecordRunnable);
+        mHandler.removeCallbacks(mStopRecordRunnable);
         if (null != mRecordVideoMode) mRecordVideoMode.releaseVideoRecorder();
         releaseView();
     }
 
     private void publish() {
-        if (DEBUG) Log.d(TAG, "publish: " + mRecordVideoServiceImp);
+        ///if (DEBUG) Log.d(TAG, "publish: " + mRecordVideoServiceImp);
         ///ServiceManager.addService(Context.RECORDVIDEO_SERVICE, mRecordVideoServiceImp);
     }
 
@@ -186,7 +186,7 @@ public class RecordVideoService extends Service implements SurfaceHolder.Callbac
         if (null == mRecordVideoMode) {
             mRecordVideoMode = new RecordVideoMode(mContext, mSurfaceHolder);
         }
-        mRecordVideoMode.updateSurfaceHoler(mSurfaceHolder);
+        mRecordVideoMode.updateSurfaceHolder(mSurfaceHolder);
         mHandler.removeMessages(MSG_START_RECORD);
         mHandler.sendEmptyMessageDelayed(MSG_START_RECORD, 3000);
 
@@ -199,7 +199,7 @@ public class RecordVideoService extends Service implements SurfaceHolder.Callbac
         if (null == mRecordVideoMode) {
             mRecordVideoMode = new RecordVideoMode(mContext, mSurfaceHolder);
         }
-        mRecordVideoMode.updateSurfaceHoler(mSurfaceHolder);
+        mRecordVideoMode.updateSurfaceHolder(mSurfaceHolder);
     }
 
     @Override
@@ -218,7 +218,7 @@ public class RecordVideoService extends Service implements SurfaceHolder.Callbac
         }
     };
 
-    private Runnable mStopRecordRunnable = new Runnable() {
+    private final Runnable mStopRecordRunnable = new Runnable() {
         @Override
         public void run() {
             if (null != mRecordVideoMode) {

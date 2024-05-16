@@ -42,7 +42,7 @@ public class FaceDetector {
     private int mDetectorType = JAVA_DETECTOR;
     private int mAbsoluteFaceSize = 0;
     private float mRelativeFaceSize = 0.2f;
-    private String faceFileSavedPath;
+    private String mFaceFileSavedPath;
     private OnDetectorListener mOnFaceDetectorListener;
 
 
@@ -57,7 +57,7 @@ public class FaceDetector {
         mRgba = new Mat();
         faces = new MatOfRect();
 
-        faceFileSavedPath = FileUtils.getDirBaseExternalStorageDirectory("com.zhuchao.face");
+        mFaceFileSavedPath = FileUtils.getDirBaseExternalStorageDirectory("com.zhuchao.face");
         ///String parentDir = FileUtils.getFilePathFromPathName(filePathName);
         ///FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
     }
@@ -97,6 +97,13 @@ public class FaceDetector {
         return this;
     }
 
+    public String getFaceFileSavedPath() {
+        return mFaceFileSavedPath;
+    }
+
+    public void setFaceFileSavedPath(String faceFileSavedPath) {
+        this.mFaceFileSavedPath = faceFileSavedPath;
+    }
 
     public void setMinFaceSize(float faceSize) {
         mRelativeFaceSize = faceSize;
@@ -169,7 +176,7 @@ public class FaceDetector {
         String millSecs = DateTimeUtils.getCurrentTime2();
         int temp = (int) (Math.random() * 1000);
         StringBuilder outputImgName = new StringBuilder();
-        outputImgName.append(faceFileSavedPath).append("/").append(millSecs).append(temp).append(".jpg");
+        outputImgName.append(mFaceFileSavedPath).append("/").append(millSecs).append(temp).append(".jpg");
         if (face != null) {
             Imgcodecs.imwrite(outputImgName.toString(), face);
             //logger.info(">>>>>>write image into->" + outputDir);
