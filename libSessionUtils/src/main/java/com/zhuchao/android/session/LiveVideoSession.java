@@ -218,7 +218,7 @@ public class LiveVideoSession implements SessionCallback {
                 movie.setSize(lmusic.getSize());
                 movie.setDuration(lmusic.getDuration());
                 OMedia oMedia = new OMedia(movie);
-                mVideoList.addRow(oMedia);
+                mVideoList.update(oMedia);
             }
         }
 

@@ -3,7 +3,6 @@ package com.zhuchao.android.session;
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 
 import android.os.Build;
-import android.os.Message;
 
 import androidx.annotation.RequiresApi;
 

@@ -53,6 +53,10 @@ public class MessageEvent {
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_PAUSE = "com.octopus.android.action.PAUSE";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_NEXT = "com.octopus.android.action.NEXT";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_PREV = "com.octopus.android.action.PREVIOUS";
+
+    public static final String MESSAGE_EVENT_OCTOPUS_ACTION_RECORDER = "com.octopus.android.action.RECORDER";
+    public static final String MESSAGE_EVENT_OCTOPUS_ACTION_RECORDER_START = "com.octopus.android.action.RECORDER.START";
+    public static final String MESSAGE_EVENT_OCTOPUS_ACTION_RECORDER_STOP = "com.octopus.android.action.RECORDER.STOP";
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///第三方消息事件
     public final static String MESSAGE_EVENT_LINK_Z = "com.zjinnova.zlink";

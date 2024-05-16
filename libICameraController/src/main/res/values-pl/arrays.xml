@@ -69,7 +69,7 @@
         <item>preference_preview_size_wysiwyg</item>
     </string-array>
     <string-array name="preference_touch_capture_entries">
-        <item>Wyłączone</item>
+        <item>Wyłączono</item>
         <item>Pojedyncze dotknięcie</item>
         <item>Podwójne dotknięcie</item>
     </string-array>
@@ -169,7 +169,7 @@
         <item>preference_stamp_timeformat_none</item>
     </string-array>
     <string-array name="preference_stamp_gpsformat_entries">
-        <item>Domyślny</item>
+        <item>Domyślnie</item>
         <item>Stopnie/minuty/sekundy</item>
         <item>Brak</item>
     </string-array>
@@ -242,16 +242,6 @@
         <item>audio_mono</item>
         <item>audio_stereo</item>
     </string-array>
-    <string-array name="preference_audio_control_entries">
-        <item>Wyłączone</item>
-        <item>Głośny dźwięk</item>
-        <item>Komenda głosowa: \"cheese\"</item>
-    </string-array>
-    <string-array name="preference_audio_control_values">
-        <item>none</item>
-        <item>noise</item>
-        <item>voice</item>
-    </string-array>
     <string-array name="preference_save_zulu_time_entries">
         <item>Czas lokalny</item>
         <item>UTC (Zulu)</item>
@@ -271,7 +261,7 @@
     <string-array name="preference_expo_bracketing_stops_entries">
         <item>-0.5 do +0.5</item>
         <item>-1 do +1</item>
-        <item>-2    do +2</item>
+        <item>-2 do +2</item>
         <item>-3 do +3</item>
     </string-array>
     <string-array name="preference_expo_bracketing_stops_values">

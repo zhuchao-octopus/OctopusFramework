@@ -11,7 +11,6 @@ import android.util.Log;
 import com.zhuchao.android.fbase.DateTimeUtils;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
-import com.zhuchao.android.fbase.eventinterface.NormalCallback;
 import com.zhuchao.android.libOpenDetection.R;
 
 import org.opencv.android.CameraBridgeViewBase;
@@ -29,35 +28,29 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class FaceDetector extends Detect {
+public class FaceDetector {
     private final String TAG = "FaceDetector";
-    private Context mContext;
+    private final Context mContext;
+    private final MatOfRect faces;
+    public  final int JAVA_DETECTOR = 0;
+    public  final int NATIVE_DETECTOR = 1;
+    private final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
     private Mat mRgba;
     private Mat mGray;
-    private MatOfRect faces;
-
-    private File mCascadeFile;
     private CascadeClassifier mJavaDetector;
     private DetectionBasedTracker mNativeDetector;
-
-    private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
-    public static final int JAVA_DETECTOR = 0;
-    public static final int NATIVE_DETECTOR = 1;
-    public int mDetectorType = JAVA_DETECTOR;
-    public String[] mDetectorName;
-
-    private float mRelativeFaceSize = 0.2f;
+    private int mDetectorType = JAVA_DETECTOR;
     private int mAbsoluteFaceSize = 0;
-
-    private OnDetectorListener mOnFaceDetectorListener;
+    private float mRelativeFaceSize = 0.2f;
     private String faceFileSavedPath;
+    private OnDetectorListener mOnFaceDetectorListener;
+
 
     public FaceDetector(Context context) {
-        super(context, null);
         mContext = context;
-        mDetectorName = new String[2];
-        mDetectorName[JAVA_DETECTOR] = "Java";
-        mDetectorName[NATIVE_DETECTOR] = "Native (tracking)";
+        ///mDetectorName = new String[2];
+        ///mDetectorName[JAVA_DETECTOR] = "Java";
+        ///mDetectorName[NATIVE_DETECTOR] = "Native (tracking)";
         setMinFaceSize(0.2f);
         setDetectorType(JAVA_DETECTOR);
         mGray = new Mat();
@@ -65,21 +58,18 @@ public class FaceDetector extends Detect {
         faces = new MatOfRect();
 
         faceFileSavedPath = FileUtils.getDirBaseExternalStorageDirectory("com.zhuchao.face");
-        //String parentDir = FileUtils.getFilePathFromPathName(filePathName);
-        //FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
+        ///String parentDir = FileUtils.getFilePathFromPathName(filePathName);
+        ///FileUtils.CheckDirsExists(Objects.requireNonNull(parentDir));
     }
 
-    public static synchronized FaceDetector create(Context context) {
-        return new FaceDetector(context);
-    }
-
-    public FaceDetector initialize(NormalCallback normalCallback) {
+    public FaceDetector initialFaceDetector(OnDetectorListener onDetectorListener) {
+        mOnFaceDetectorListener = onDetectorListener;
         System.loadLibrary("detection_based_tracker");
         try {
             // load cascade file from application resources
             InputStream inputStream = mContext.getResources().openRawResource(R.raw.lbpcascade_frontalface);
             File cascadeDir = mContext.getDir("cascade", Context.MODE_PRIVATE);
-            mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
+            File mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
             FileOutputStream fileOutputStream = new FileOutputStream(mCascadeFile);
 
             byte[] buffer = new byte[4096];
@@ -94,9 +84,9 @@ public class FaceDetector extends Detect {
 
             mJavaDetector = new CascadeClassifier(mCascadeFile.getAbsolutePath());
             if (mJavaDetector.empty()) {
-                MMLog.e(TAG, "Failed to load cascade classifier");
+                MMLog.d(TAG, "Failed to load cascade classifier");
                 mJavaDetector = null;
-            } else MMLog.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
+            } else MMLog.d(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
 
             mNativeDetector = new DetectionBasedTracker(mCascadeFile.getAbsolutePath(), 0);
             cascadeDir.delete();
@@ -104,7 +94,6 @@ public class FaceDetector extends Detect {
             //e.printStackTrace();
             MMLog.e(TAG, "Failed to load cascade. Exception thrown: " + e);
         }
-
         return this;
     }
 
@@ -117,38 +106,19 @@ public class FaceDetector extends Detect {
     public void setDetectorType(int type) {
         if (mDetectorType != type) {
             mDetectorType = type;
-
             if (type == NATIVE_DETECTOR) {
-                Log.i(TAG, "Detection Based Tracker enabled");
+                MMLog.d(TAG, "Detection Based Tracker enabled");
                 mNativeDetector.start();
             } else {
-                Log.i(TAG, "Cascade detector enabled");
+                MMLog.d(TAG, "Cascade detector enabled");
                 mNativeDetector.stop();
             }
         }
     }
 
-    public void free() {
-        mGray.release();
-        mRgba.release();
-        faces.release();
-    }
-
-    @Override
-    public void onCameraViewStarted(int width, int height) {
-
-    }
-
-    @Override
-    public void onCameraViewStopped() {
-
-    }
-
-    @Override
-    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+    public void decodeFace(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
-
         if (mAbsoluteFaceSize == 0) {
             int height = mGray.rows();
             if (Math.round(height * mRelativeFaceSize) > 0) {
@@ -157,12 +127,12 @@ public class FaceDetector extends Detect {
             mNativeDetector.setMinFaceSize(mAbsoluteFaceSize);
         }
 
-        if ((mDetectorType == JAVA_DETECTOR) && (mJavaDetector != null)) {
-
-            mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
-                    new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
-
-            /*mJavaDetector.detectMultiScale(mGray, // 要检查的灰度图像
+        switch (mDetectorType) {
+            case JAVA_DETECTOR:
+                if (mJavaDetector != null) {
+                    mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                            new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
+                /*mJavaDetector.detectMultiScale(mGray, // 要检查的灰度图像
                     faces, // 检测到的人脸
                     1.1, // 表示在前后两次相继的扫描中，搜索窗口的比例系数。默认为1.1即每次搜索窗口依次扩大10%;
                     10, // 默认是3 控制误检测，表示默认几次重叠检测到人脸，才认为人脸存在
@@ -172,11 +142,17 @@ public class FaceDetector extends Detect {
                             | CV_HAAR_DO_CANNY_PRUNING, //CV_HAAR_DO_CANNY_PRUNING ,// CV_HAAR_SCALE_IMAGE, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
                     new Size(mAbsoluteFaceSize, mAbsoluteFaceSize),
                     new Size(mGray.width(), mGray.height()));
-            */
-        } else if (mDetectorType == NATIVE_DETECTOR) {
-            if (mNativeDetector != null) mNativeDetector.detect(mGray, faces);
-        } else {
-            Log.e(TAG, "Detection method is not selected!");
+                 */
+                }
+                break;
+            case NATIVE_DETECTOR:
+                if (mNativeDetector != null) {
+                    mNativeDetector.detect(mGray, faces);
+                }
+                break;
+            default:
+                Log.e(TAG, "Detection method is not selected!");
+                break;
         }
         // 检测到人脸
         Rect[] facesArray = faces.toArray();
@@ -186,10 +162,9 @@ public class FaceDetector extends Detect {
                 mOnFaceDetectorListener.onFace(mRgba, rect);
             }
         }
-        return mRgba;
     }
 
-    private void saveFace(Mat face) {
+    public void saveFace(Mat face) {
         //long millSecs = System.currentTimeMillis();
         String millSecs = DateTimeUtils.getCurrentTime2();
         int temp = (int) (Math.random() * 1000);
@@ -201,4 +176,9 @@ public class FaceDetector extends Detect {
         }
     }
 
+    public void free() {
+        mGray.release();
+        mRgba.release();
+        faces.release();
+    }
 }

@@ -8,7 +8,7 @@
 
     <string name="on">Вкл</string>
     <string name="off">Выкл</string>
-
+    
     <string name="choose_save_location">Выберите папку для сохранения:</string>
     <string name="clear_folder_history">Очистить историю папки</string>
     <string name="clear_folder_history_question">Очистить историю папки?</string>
@@ -57,7 +57,7 @@
     <string name="color_effect">Цветовой эффект</string>
     <string name="scene_mode">Сцена</string>
     <string name="white_balance">Баланс белого</string>
-
+    
     <string name="angle">Угол</string>
     <string name="direction">Направление</string>
     <string name="failed_to_open_camera_1">Не удалось открыть камеру</string>
@@ -68,10 +68,10 @@
     <string name="free_memory">Память</string>
     <string name="screen_lock_message_1">[Заблокировано:</string>
     <string name="screen_lock_message_2">Проведите по экрану, чтобы разблокировать]</string>
-
+    
     <string name="failed_to_stamp">Не удалось добавить отметку</string>
     <string name="metres_abbreviation">м</string>
-
+    
     <string name="preference_category_camera_effects">Эффекты</string>
     <string name="preference_auto_stabilise">Автостабилизация</string>
     <string name="preference_auto_stabilise_summary">Изображение будет стабилизироваться. Не рекомендуется на слабых устройствах</string>
@@ -166,7 +166,7 @@
     <string name="preference_keep_display_on_summary">Если включено, экран не будет выключаться, пока Open Camera открыта</string>
     <string name="preference_max_brightness">Максимальная яркость</string>
     <string name="preference_max_brightness_summary">Включение максимальной яркости во время съемки</string>
-
+    
     <string name="preference_category_camera_quality">Качество фото и видео</string>
     <string name="preference_screen_photo_settings">Настройки фото…</string>
     <string name="preference_screen_video_settings">Настройки видео…</string>
@@ -189,9 +189,9 @@
     <string name="preference_textstamp">Подписывать фото</string>
     <string name="preference_textstamp_summary">Добавлять текст на фотографию</string>
     <string name="preference_stamp_fontsize">Размер шрифта</string>
-    <string name="preference_stamp_fontsize_summary">Размер шрифта для добавляемого на фотографию текста</string>
+    <string name="preference_stamp_fontsize_summary">Размер шрифта для добавляемого на фотографию текста\n%s</string>
     <string name="preference_stamp_font_color">Цвет</string>
-    <string name="preference_stamp_font_color_summary">Цвет текста добавляемого на фотографию</string>
+    <string name="preference_stamp_font_color_summary">Цвет текста добавляемого на фотографию\n%s</string>
     <string name="preference_stamp_style">Стиль</string>
     <string name="preference_stamp_style_summary">Стиль текста добавляемого на фотографию\n%s</string>
     <string name="preference_background_photo_saving">Использовать фоновый поток</string>
@@ -221,7 +221,7 @@
     <string name="preference_record_audio_channels_summary">Настройка моно или стереозвука (стерео доступно не на всех устройствах)</string>
     <string name="preference_video_flash">Вспышка во время записи видео</string>
     <string name="preference_video_flash_summary">Если включено, вспышка будет включаться/выключаться при записи видео (можно использовать, чтобы выполнить запись на расстоянии)</string>
-
+    
     <string name="preference_category_online">Разное</string>
     <string name="preference_online_help">Помощь в Интернете</string>
     <string name="preference_online_help_summary">Открыть веб-сайт Open Camera в вашем браузере</string>
@@ -238,7 +238,7 @@
     <string name="about_available">Доступно</string>
     <string name="about_not_available">Недоступно</string>
     <string name="about_copy_to_clipboard">Копировать в буфер</string>
-
+    
     <string name="take_photo">Сделать фото</string>
     <string name="gallery">Галерея</string>
     <string name="exposure">Экспозиция</string>
@@ -251,7 +251,7 @@
     <string name="switch_to_photo">Переключиться в режим фото</string>
     <string name="trash">Удалить последний снимок</string>
     <string name="share">Поделиться</string>
-
+    
     <string name="parent_folder">Родительская папка</string>
     <string name="new_folder">Новая папка</string>
     <string name="cant_write_folder">Невозможно записать в эту папку</string>
@@ -303,7 +303,7 @@
     <string name="permission_rationale_title">Требуется разрешение</string>
     <string name="permission_rationale_camera">Требуется разрешение на доступ к камере для ее включения</string>
     <string name="permission_rationale_location">Требуется разрешение на определение местоположения для геотеггинга (хранение информации о местоположении
-        внутри фото и видео). Разрешение на определение местоположения также требуется для подключения к устройствам удаленного управления по Bluetooth LE.</string>
+        внутри фото и видео). Разрешение на определение местоположения также требуется для подключения к устройствам удаленного управления по Bluetooth LE (Android 11 or earlier).</string>
 
     <string name="preference_category_photo_debugging">Настройки отладки</string>
     <string name="preference_category_video_debugging">Настройки отладки</string>
@@ -892,10 +892,8 @@
     <string name="preference_camera_api_old">Оригинальный API камеры</string>
     <string name="preference_camera_api_camera2">Camera2 API</string>
 
-    <string name="preference_audio_control_summary">Снимать фото/видео при обнаружении шума или по голосовой команде.
+    <string name="preference_audio_control_summary">Снимать фото/видео при обнаружении шума.
         Если включено, используйте экранную кнопку микрофона для запуска/остановки слушания.
-        Важно: настройка голосовой команды использует службу распознавания речи Android. При использовании этой опции аудиоданные
-        могут быть переданы на удаленные серверы для распознавания речи.
         \n%s</string>
 
     <!-- beware of string being too long to display! -->
@@ -973,5 +971,9 @@
 
     <string name="preference_comment_ypr">Сохранять связанную систему координат</string>
     <string name="preference_comment_ypr_summary">Сохранять связанную систему координат устройства в EXIF фото в комментарии пользователя (только для формата JPEG)</string>
+
+    <string name="preference_audio_control_none">Нет</string>
+    <string name="preference_audio_control_noise">Громкий шум</string>
+    <string name="preference_audio_control_voice">Голосовая команда: \"cheese\"</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
 
 </resources>

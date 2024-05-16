@@ -8,7 +8,7 @@
 
     <string name="on">Bật</string> <!-- whether a setting is turned on, e.g., "Auto-level: On" -->
     <string name="off">Tắt</string> <!-- whether a setting is turned off, e.g., "Auto-level: Off" -->
-
+    
     <string name="choose_save_location">Chọn vị trí lưu:</string>
     <string name="clear_folder_history">Xóa lịch sử thư mục</string>
     <string name="clear_folder_history_question">Bạn có chắc muốn xóa lịch sử thư mục không?</string>
@@ -57,7 +57,7 @@
     <string name="color_effect">Hiệu ứng màu</string>
     <string name="scene_mode">Chế độ cảnh</string>
     <string name="white_balance">Cân bằng trắng</string>
-
+    
     <string name="angle">Góc</string>
     <string name="direction">Hướng</string>
     <string name="failed_to_open_camera_1">KHÔNG THỂ MỞ MÁY ẢNH.</string>
@@ -68,10 +68,10 @@
     <string name="free_memory">Bộ nhớ khả dụng</string>
     <string name="screen_lock_message_1">[ĐÃ KHÓA:</string>
     <string name="screen_lock_message_2">Trượt để mở khóa]</string>
-
+    
     <string name="failed_to_stamp">Không thể đóng dấu hình ảnh</string>
     <string name="metres_abbreviation">m</string> <!-- symbol short for metres -->
-
+    
     <string name="preference_category_camera_effects">Hiệu ứng máy ảnh</string>
     <string name="preference_auto_stabilise">Chống rung tự động</string>
     <string name="preference_auto_stabilise_summary">Hình ảnh sẽ được tự động điều chỉnh để đạt mức cân bằng (chụp ảnh sẽ chậm hơn và có thể bị lỗi trên các thiết bị có bộ nhớ quá thấp)</string>
@@ -165,7 +165,7 @@
     <string name="preference_keep_display_on_summary">Nếu kích hoạt, màn hình sẽ không tắt khi Giao diện người dùng chính của Open Camera đang hoạt động</string>
     <string name="preference_max_brightness">Buộc độ sáng tối đa</string>
     <string name="preference_max_brightness_summary">Bắt buộc màn hình hiển thị ở độ sáng tối đa, thay vì mặc định của thiết bị</string>
-
+    
     <string name="preference_category_camera_quality">Cài đặt ảnh và video</string>
     <string name="preference_screen_photo_settings">Cài đặt ảnh</string>
     <string name="preference_screen_video_settings">Cài đặt video</string>
@@ -188,9 +188,9 @@
     <string name="preference_textstamp">Văn bản tùy chỉnh</string>
     <string name="preference_textstamp_summary">Gắn vào ảnh một văn bản tùy chỉnh</string>
     <string name="preference_stamp_fontsize">Kích thước phông</string>
-    <string name="preference_stamp_fontsize_summary">Kích thước phông chữ được sử dụng khi gắn văn bản vào ảnh</string>
+    <string name="preference_stamp_fontsize_summary">Kích thước phông chữ được sử dụng khi gắn văn bản vào ảnh\n%s</string>
     <string name="preference_stamp_font_color">Màu phông</string>
-    <string name="preference_stamp_font_color_summary">Màu phông chữ được sử dụng khi gắn văn bản vào ảnh</string>
+    <string name="preference_stamp_font_color_summary">Màu phông chữ được sử dụng khi gắn văn bản vào ảnh\n%s</string>
     <string name="preference_stamp_style">Kiểu văn bản</string>
     <string name="preference_stamp_style_summary">Kiểu văn bản được sử dụng khi gắn vào ảnh\n%s</string>
     <string name="preference_background_photo_saving">Chạy dưới nền</string>
@@ -220,7 +220,7 @@
     <string name="preference_record_audio_channels_summary">Thiết lập âm thanh đơn hoặc nổi (chỉ hỗ trợ âm thanh nổi trên một số thiết bị)</string>
     <string name="preference_video_flash">Nháy đèn flash khi quay video</string>
     <string name="preference_video_flash_summary">Nếu kích hoạt, đèn flash sẽ nháy khi quay video (có thể được sử dụng để cảnh báo camera vẫn đang quay ở khoảng cách xa)</string>
-
+    
     <string name="preference_category_online">Xem thêm</string>
     <string name="preference_online_help">Trợ giúp trực tuyến</string>
     <string name="preference_online_help_summary">Truy cập trang chủ Open Camera bằng trình duyệt của bạn</string>
@@ -237,7 +237,7 @@
     <string name="about_available">Khả dụng</string>
     <string name="about_not_available">Không khả dụng</string>
     <string name="about_copy_to_clipboard">Chép vào bảng tạm</string>
-
+    
     <string name="take_photo">Chụp ảnh</string>
     <string name="gallery">Thư viện</string>
     <string name="exposure">Phơi sáng</string>
@@ -250,7 +250,7 @@
     <string name="switch_to_photo">Chuyển sang chế độ ảnh</string>
     <string name="trash">Xóa ảnh cuối</string>
     <string name="share">Chia sẻ ảnh</string>
-
+    
     <string name="parent_folder">Thư mục gốc</string>
     <string name="new_folder">Thư mục mới</string>
     <string name="cant_write_folder">Không thể ghi vào thư mục này</string>
@@ -291,7 +291,7 @@
     <string name="photo_mode_hdr">HDR</string> <!-- keep short, as this shows in the popup menu -->
     <string name="photo_mode_expo_bracketing">EXPO</string> <!-- keep short, as this shows in the popup menu -->
     <string name="photo_mode_expo_bracketing_full">Phơi sáng mở rộng</string>
-    <!-- keep short, as this shows in the popup menu; shouldn't be translated -->
+     <!-- keep short, as this shows in the popup menu; shouldn't be translated -->
     <string name="photo_mode_fast_burst_full">Chụp nhanh</string>
     <string name="photo_mode_noise_reduction">NR</string> <!-- keep short, as this shows in the popup menu; probably shouldn't be translated? -->
     <string name="photo_mode_noise_reduction_full">Giảm nhiễu</string>
@@ -784,4 +784,9 @@
     <string name="preference_immersive_mode_navigation">Chỉ ẩn các nút điều hướng</string>
     <string name="preference_immersive_mode_gui">Ẩn giao diện người dùng</string>
     <string name="preference_immersive_mode_everything">Ẩn mọi thứ</string>
+
+    <string name="preference_audio_control_none">Không</string>
+    <string name="preference_audio_control_noise">Tiếng động lớn</string>
+    <string name="preference_audio_control_voice">Tiếng cheese</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+
 </resources>

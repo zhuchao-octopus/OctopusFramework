@@ -8,7 +8,7 @@
 
     <string name="on">Vkl.</string> <!-- whether a setting is turned on, e.g., "Auto-level: On" -->
     <string name="off">Izk.</string> <!-- whether a setting is turned off, e.g., "Auto-level: Off" -->
-
+    
     <string name="choose_save_location">Izberite mesto za shranjevanje:</string>
     <string name="clear_folder_history">Počisti zgodovino mape</string>
     <string name="clear_folder_history_question">Počisti zgodovino mape?</string>
@@ -41,7 +41,7 @@
     <string name="started_recording_video">Snemanje videoposnetka se je začelo.</string>
     <string name="sorry">Oprostite</string>
     <string name="failed_to_save_photo">Shranjevanje fotografije je spodletelo.</string>
-    <string name="failed_to_save_photo_raw">Shranjevanje fotografije v obliki RAW je spodletelo.</string>
+	<string name="failed_to_save_photo_raw">Shranjevanje fotografije v obliki RAW je spodletelo.</string>
     <string name="failed_to_auto_stabilise">Samodejna izravnava je spodletela.</string>
     <string name="failed_to_start_camera_preview">Zagon predogleda fotoaparata je spodletel.</string>
     <string name="taking_photo">Slikanje fotografije.</string>
@@ -57,7 +57,7 @@
     <string name="color_effect">Barvni učinek</string>
     <string name="scene_mode">Način prizora</string>
     <string name="white_balance">Ravnovesje beline</string>
-
+    
     <string name="angle">Kot</string>
     <string name="direction">Smer</string>
     <string name="failed_to_open_camera_1">ODPIRANJE FOTOAPARATA JE SPODLETELO.</string>
@@ -68,10 +68,10 @@
     <string name="free_memory">Nezased.</string>
     <string name="screen_lock_message_1">[ZAKLENJENO:</string>
     <string name="screen_lock_message_2">povlecite za odklepanje]</string>
-
+    
     <string name="failed_to_stamp">Dodajanje časovnega žiga na fotografijo je spodletelo.</string>
     <string name="metres_abbreviation">m</string> <!-- symbol short for metres -->
-
+    
     <string name="preference_category_camera_effects">Učinki fotoaparata</string>
     <string name="preference_auto_stabilise">Samodejno izravnaj</string>
     <string name="preference_auto_stabilise_summary">Slike bodo zavrtene za samodejno vodoravno poravnavo (samo fotografije - slikanje fotografij je počasnejše in lahko spodleti na napravah s premalo pomnilnika)</string>
@@ -107,7 +107,7 @@
     <string name="preference_shutter_sound_summary">Predvajaj zvok ob slikanju fotografije</string>
     <string name="preference_volume_keys">Gumba za glasnost</string>
     <string name="preference_audio_control">Možnosti nadzora zvoka</string>
-    <!-- preference_audio_control_summary defined below -->
+	<!-- preference_audio_control_summary defined below -->
     <string name="preference_audio_noise_control_sensitivity">Nadzor občutljivosti zvoka</string>
     <string name="preference_audio_noise_control_sensitivity_summary">Občutljivost ravni za možnost zvoka (glasen zvok)</string>
     <string name="preference_save_location">Mesto za shranjevanje</string>
@@ -117,7 +117,7 @@
     <string name="preference_save_photo_prefix_summary">Predpona imena datotek fotografij</string>
     <string name="preference_save_video_prefix">Predpona shranjenih videoposnetkov</string>
     <string name="preference_save_video_prefix_summary">Predpona imena datotek videoposnetkov</string>
-    <string name="preference_save_zulu_time">Oblika časa za ime datoteke</string>
+	<string name="preference_save_zulu_time">Oblika časa za ime datoteke</string>
     <string name="preference_show_when_locked">Prikaži fotoaparat, ko je zaklenjeno</string>
     <string name="preference_show_when_locked_summary">Če je omogočeno, se bo Open Camera še vedno prikazoval nad zaklenjenim zaslonom (še vedno boste morali odkleniti za dostop do nastavitev, galerije itd.)</string>
     <string name="preference_startup_focus">Izvedi samodejno ostrenje ob zagonu</string>
@@ -166,7 +166,7 @@
     <string name="preference_keep_display_on_summary">Če je omogočeno, se zaslon ne bo izklopil, ko je glavni up. vmesnik Open Camere dejaven</string>
     <string name="preference_max_brightness">Vsili največjo svetlost</string>
     <string name="preference_max_brightness_summary">Vsili največjo svetlost zaslona in ne uporabi privzete svetlosti</string>
-
+    
     <string name="preference_category_camera_quality">Nastavitve za fotografije in videoposnetke</string>
     <string name="preference_screen_photo_settings">Nastavitve za fotografije …</string>
     <string name="preference_screen_video_settings">Nastavitve za videoposnetke …</string>
@@ -174,7 +174,7 @@
     <string name="preference_resolution">Ločljivost fotoaparata</string>
     <string name="preference_quality">Kakovost slik</string>
     <string name="preference_quality_summary">Nastavite kakovost shranjenih slik JPEG ali WebP (privzeta vrednost je 90 %%).  Nima učinka na obliko PNG.\n%s</string> <!-- '%' is encoded as '%%' - a single % can crash devices, and this isn't picked up by Android Lint! -->
-    <string name="preference_raw">RAW</string>
+	<string name="preference_raw">RAW</string>
     <string name="preference_location">Shrani podatke o lokaciji (označevanje z zemljepisno lego)</string>
     <string name="preference_location_summary">Shrani podatke o lokaciji GPS v fotografijah/videoposnetkih (v fotografijah se podatki o lokaciji lahko shranijo samo pri oblikah JPEG in DNG)</string>
     <string name="preference_gps_direction">Shrani smer neba</string>
@@ -189,9 +189,9 @@
     <string name="preference_textstamp">Besedilo po meri</string>
     <string name="preference_textstamp_summary">Na fotografije dodaj žig z besedilom po meri</string>
     <string name="preference_stamp_fontsize">Velikost pisave</string>
-    <string name="preference_stamp_fontsize_summary">Velikost pisave žiga z besedilom</string>
+    <string name="preference_stamp_fontsize_summary">Velikost pisave žiga z besedilom\n%s</string>
     <string name="preference_stamp_font_color">Barva pisave</string>
-    <string name="preference_stamp_font_color_summary">Barva pisave žiga z besedilom</string>
+    <string name="preference_stamp_font_color_summary">Barva pisave žiga z besedilom\n%s</string>
     <string name="preference_stamp_style">Slog besedila</string>
     <string name="preference_stamp_style_summary">Slog besedila žiga\n%s</string>
     <string name="preference_background_photo_saving">Uporabi nit v ozadju</string>
@@ -221,7 +221,7 @@
     <string name="preference_record_audio_channels_summary">Določite mono ali stereo za snemanje zvoka (stereo je podprt samo na nekaterih napravah)</string>
     <string name="preference_video_flash">Svetilka med snemanjem videoposnetkov</string>
     <string name="preference_video_flash_summary">Če je omogočeno, se bo ob snemanju videoposnetkov vklopila/izklopila svetilka (se lahko uporabi za prepoznavanje delovanja kamere na razdaljo)</string>
-
+    
     <string name="preference_category_online">Razno</string>
     <string name="preference_online_help">Spletna pomoč</string>
     <string name="preference_online_help_summary">Zaženi spletno stran Open Camera v brskalniku</string>
@@ -238,7 +238,7 @@
     <string name="about_available">Na voljo</string>
     <string name="about_not_available">Ni na voljo</string>
     <string name="about_copy_to_clipboard">Kopiraj na odložišče</string>
-
+    
     <string name="take_photo">Posnemi fotografijo</string>
     <string name="gallery">Galerija</string>
     <string name="exposure">Osvetlitev</string>
@@ -251,7 +251,7 @@
     <string name="switch_to_photo">Preklopi na način za fotografije</string>
     <string name="trash">Izbriši zadnjo sliko</string>
     <string name="share">Deli fotografijo</string>
-
+    
     <string name="parent_folder">Nadrejena mapa</string>
     <string name="new_folder">Nova mapa</string>
     <string name="cant_write_folder">V to mapo ni mogoče pisati.</string>
@@ -262,8 +262,8 @@
 
     <string name="saf_select_save_location">Izberite mesto za shranjevanje.</string>
     <string name="saf_cancelled">Ogrodje za dostop do pomnilniške naprave je preklicano.</string>
-    <string name="saf_permission_failed">Ni mogoče shraniti v to mapo.</string>
-
+	<string name="saf_permission_failed">Ni mogoče shraniti v to mapo.</string>
+    
     <!-- the permission names such as Microphone should match what Android calls them in the App permission settings -->
     <string name="permission_record_audio_not_available">Dovoljenje za mikrofon ni na voljo.</string>
     <string name="permission_location_not_available">Dovoljenje za lokacijo ni na voljo.</string>
@@ -273,14 +273,14 @@
 
     <string name="max_filesize">Največja velikost datoteke</string>
     <string name="mb_abbreviation">MB</string> <!-- symbol short for megabytes -->
-    <string name="gb_abbreviation">GB</string> <!-- symbol short for gigabytes -->
-
+	<string name="gb_abbreviation">GB</string> <!-- symbol short for gigabytes -->
+    
     <string name="audio_control_start">Začni zaznavati zvok</string>
     <string name="audio_control_stop">Ustavi zaznavanje zvoka</string>
     <string name="speech_recognizer_started">Recite \"cheese\".</string>
     <string name="audio_listener_started">Naredite glasen zvok.</string>
-
-    <string name="auto_stabilise_info">Samodejna poravnava bo zavrtela fotografije, da bodo videti poravnane.\n\nUpoštevajte, da se bo ločljivost slik rahlo zmanjšala (zaradi zahtevanega vrtenja in obrezovanja).</string>
+	
+	<string name="auto_stabilise_info">Samodejna poravnava bo zavrtela fotografije, da bodo videti poravnane.\n\nUpoštevajte, da se bo ločljivost slik rahlo zmanjšala (zaradi zahtevanega vrtenja in obrezovanja).</string>
     <string name="raw_info">Datoteke DNG vsebujejo nestisnjene in neobdelane podatke iz fotoaparata.\n\nVečina programov za galerijo ne prepozna oblike DNG, zato jo uporabljajte s posebnimi programi.\n\nUpoštevajte, da se bodo razne možnosti obdelave, kot sta "Dodaj žig" in "Samodejno izravnaj", uporabile samo za slike, ki niso v obliki DNG (JPEG itd.).</string>
     <string name="hdr_info">Način HDR je uporaben za posnetke z velikimi odstopanji v svetlosti.  Deluje tako, da zajame več posnetkov z različnimi osvetlitvami in jih potem združi v končno sliko.\n\nUpoštevajte, da HDR ni primeren za hitro gibajoče prizore in lahko povzroči barvna odstopanja.\n\nSlikanje fotografij v načinu HDR je počasnejše.</string>
 
@@ -294,7 +294,7 @@
     <string name="photo_mode_expo_bracketing_full">Stopnjevanje osvetlitve</string>
     <string name="photo_mode_fast_burst_full">Hitro zaporedje</string>
     <string name="photo_mode_noise_reduction">NR</string> <!-- keep short, as this shows in the popup menu; probably shouldn't be translated? -->
-    <string name="photo_mode_noise_reduction_full">Zmanjševanje šuma</string>
+	<string name="photo_mode_noise_reduction_full">Zmanjševanje šuma</string>
     <string name="preference_category_stamp">Dodaj žig</string>
     <string name="preference_hdr_save_expo">Shrani vse slike za način HDR</string>
     <string name="preference_hdr_save_expo_summary">Če je omogočeno, bodo ob uporabi načina HDR posnete tri osnovne slike kot tudi končna slika HDR.  Upoštevajte, da bo shranevanje počasnejše, še posebno, če uporabljate možnosti, kot sta \"Dodaj žig\" ali samodejno izravnavo.</string>
@@ -304,10 +304,10 @@
     <string name="permission_rationale_camera">Za omogočanje fotoaparata je zahtevano dovoljenje za fotoaparat.</string>
     <string name="permission_rationale_record_audio">Za snemanje videoposnetkov z zvokom in uporabo možnosti \"Nadzor zvoka\" je zahtevano dovoljenje za mikrofon.</string>
     <string name="permission_rationale_location">Za označevanje z zemljepisno lego (shranjevanje podatkov o zemljepisni legi
-		v fotografijah in videoposnetkih) je zahtevano dovoljenje za lokacijo.  To dovoljenje je zahtevano tudi za povezavo z napravami za oddaljeni nador Bluetooth LE.</string>
-
-    <string name="preference_category_photo_debugging">Možnosti razhroščevanja</string>
-    <string name="preference_category_video_debugging">Možnosti razhroščevanja</string>
+		v fotografijah in videoposnetkih) je zahtevano dovoljenje za lokacijo.  To dovoljenje je zahtevano tudi za povezavo z napravami za oddaljeni nador Bluetooth LE  (Android 11 or earlier).</string>
+	
+	<string name="preference_category_photo_debugging">Možnosti razhroščevanja</string>
+	<string name="preference_category_video_debugging">Možnosti razhroščevanja</string>
     <string name="preference_camera2_fake_flash">Uporabi nadomestni način bliskavice</string>
     <string name="preference_camera2_fake_flash_summary">Omogočite, če se vaša naprava neobičajno vede z API-jem Camera2</string>
 
@@ -315,52 +315,52 @@
     <string name="preference_expo_bracketing_n_images_summary">Število slik stopnjevanja osvetlitve\n%s</string>
     <string name="preference_expo_bracketing_stops">Korak stopnjevanja osvetlitve</string>
     <string name="preference_expo_bracketing_stops_summary">Število pozitivnih/negativnih korakov za najtemnejšo/najsvetlejšo sliko\n%s</string>
-
-    <string name="preference_nr_save">Izvirne slike zmanjševanja šuma</string>
+	
+	<string name="preference_nr_save">Izvirne slike zmanjševanja šuma</string>
     <string name="preference_nr_save_summary">Ali naj se izvirne slike shranijo v načinu zmanjševanja šuma.  Upoštevajte, da se bodo pri tem slike shranjevale dalj časa.\n%s</string>
 
     <string name="preference_nr_save_no">Ne shrani izvirnih slik</string>
     <string name="preference_nr_save_single">Shrani eno izvirno sliko</string>
     <string name="preference_nr_save_all">Shrani vse izvirne slike (počasno)</string>
-
-    <string name="seconds_abbreviation">s</string> <!-- short for seconds -->
+	
+	<string name="seconds_abbreviation">s</string> <!-- short for seconds -->
 
     <string name="video_no_free_space">Ni dovolj nezasedenega prostora za snemanje videoposnetka.</string>
-    <string name="video_power_critical">Videoposnetek se je ustavil.\nRaven baterije je kritično nizka.</string>
+	<string name="video_power_critical">Videoposnetek se je ustavil.\nRaven baterije je kritično nizka.</string>
     <string name="preference_video_low_power_check">Preveri za kritično stanje baterije</string>
     <string name="preference_video_low_power_check_summary">Ustavi snemanje videoposnetka, če je raven baterije kritično nizka.  Zmanjša tveganje okvare videoposnetka, če se naprava izklopi zaradi pomanjkanja energije</string>
-
-    <string name="dark">Temna</string> <!-- exposure compensation dark -->
+	
+	<string name="dark">Temna</string> <!-- exposure compensation dark -->
     <string name="bright">Svetla</string> <!-- exposure compensation bright -->
     <string name="exposure_shutter_speed">Hitrost zaklopa</string>
-
-    <string name="camera_error">Resna napaka fotoaparata</string>
-
-    <string name="preference_camera2_fast_burst">Omogoči hitro zaporedje HDR/osvetlitve</string>
+	
+	<string name="camera_error">Resna napaka fotoaparata</string>
+	
+	<string name="preference_camera2_fast_burst">Omogoči hitro zaporedje HDR/osvetlitve</string>
     <string name="preference_camera2_fast_burst_summary">Omogoča hitrejše slikanje fotografij s HDR-om/stopnjevanjem osvetlitvami.  Onemogočite, če ima vaša naprava pri slikanju fotografij z načinoma HDR/stopnjevanje osvetlitve težave.</string>
-
-    <string name="camera">Fotoaparat</string>
-    <string name="record_video">Posnemi videoposnetek</string>
+	
+	<string name="camera">Fotoaparat</string>
+	<string name="record_video">Posnemi videoposnetek</string>
     <string name="selfie">Samoposnetek</string>
 
     <string name="preference_front_camera_mirror">Zrcaljenje sprednjega fotoaparata</string>
     <string name="preference_front_camera_mirror_summary">Ali naj se ob uporabi sprednjega fotoaparata nastale slike zrcalijo\n%s</string>
-
-    <string name="preference_calibrate_level">Umeri kot ravni</string>
+	
+	<string name="preference_calibrate_level">Umeri kot ravni</string>
     <string name="preference_calibrate_level_summary">Ta možnost umeri pospeškomer naprave za pravilno delovanje samodejne poravnave in prikaza ravni/kota na zaslonu.</string>
     <string name="preference_calibrate_level_dialog">Napravo postavite na ravno vodoravno površino in izberite Umeri.\n\nPritisnite Ponastavi za odstranitev umerjanja iz naprave.\n\nPritisnite gumb Nazaj za preklic.</string>
     <string name="preference_calibrate_level_calibrate">Umeri</string>
     <string name="preference_calibrate_level_reset">Ponastavi</string>
     <string name="preference_calibrate_level_calibrated">Raven je umerjena.</string>
     <string name="preference_calibrate_level_calibration_reset">Umerejanje ravni je ponastavljeno.</string>
-
-    <string name="photo_mode_dro">DRO</string>
-
-    <string name="preference_show_pitch_lines">Prikaži višinske črte</string>
+	
+	<string name="photo_mode_dro">DRO</string>
+	
+	<string name="preference_show_pitch_lines">Prikaži višinske črte</string>
     <string name="preference_show_pitch_lines_summary">Prikaži vodoravne višinske črte</string>
-    <string name="preference_show_geo_direction_lines">Prikaži črte smeri neba</string>
+	<string name="preference_show_geo_direction_lines">Prikaži črte smeri neba</string>
     <string name="preference_show_geo_direction_lines_summary">Prikaži črte smeri neba</string>
-    <string name="preference_video_subtitle">Podnapisi</string>
+	<string name="preference_video_subtitle">Podnapisi</string>
     <string name="preference_video_subtitle_summary">Ustvari datoteko podnapisov (.srt) s podatki o času, datumu in tudi GPS-u, če sta lokacija in smer omogočena\n%s</string>
 
     <string name="duration_unlimited">Neomejeno</string>
@@ -387,21 +387,21 @@
     <string name="duration_30m">30 min.</string>
     <string name="duration_45m">45 min.</string>
     <string name="duration_1h">1 ura</string>
-
-    <string name="preference_show_take_photo">Prikaži ikono za slikanje fotografije</string>
+	
+	<string name="preference_show_take_photo">Prikaži ikono za slikanje fotografije</string>
     <string name="preference_show_take_photo_summary">Prikaži ikono za slikanje fotografij in snemanje videoposnetkov.  Uporabno, če ima vaša naprava fizični sprožilec, ki bi ga raje uporabili.</string>
-
-    <string name="video_pause">Premor videoposnetka</string>
+	
+	<string name="video_pause">Premor videoposnetka</string>
     <string name="video_resume">Nadaljevanje videoposnetka</string>
     <string name="pause_video">Premor snemanja</string>
     <string name="resume_video">Nadaljuj snemanje</string>
-
-    <string name="capturing">Zajemanje …</string>
-
-    <string name="audio_listener_failed">Začenjanje zaznavanja zvoka je spodletelo.</string>
-    <string name="failed_to_process_hdr">Ustvarjanje slike HDR je spodletelo.</string>
-
-    <string name="white_balance_auto">Samodejno</string>
+	
+	<string name="capturing">Zajemanje …</string>
+	
+	<string name="audio_listener_failed">Začenjanje zaznavanja zvoka je spodletelo.</string>
+	<string name="failed_to_process_hdr">Ustvarjanje slike HDR je spodletelo.</string>
+	
+	<string name="white_balance_auto">Samodejno</string>
     <string name="white_balance_cloudy">Oblačno</string>
     <string name="white_balance_daylight">Dnevna svetloba</string>
     <string name="white_balance_fluorescent">Fluorescenčno</string>
@@ -437,10 +437,10 @@
     <string name="color_effect_sepia">Sepija</string>
     <string name="color_effect_solarize">Solariziraj</string>
     <string name="color_effect_whiteboard">Bela tabla</string>
-
-    <string name="whats_new">Novosti:</string>
+	
+	<string name="whats_new">Novosti:</string>
     <string name="donate">Daruj</string>
-
+	
     <!-- for accessibility, these strings for face detection will typically be spoken, e.g., through Google Talkback -->
     <string name="face_detected">obraz</string>
     <string name="faces_detected">obrazi</string>
@@ -448,13 +448,13 @@
     <string name="right_of_screen">na desni strani zaslona</string>
     <string name="top_of_screen">na zgornji strani zaslona</string>
     <string name="bottom_of_screen">na spodnji strani zaslona</string>
-    <string name="centre_of_screen">na sredini</string>
-
-    <string name="high_speed">Visoka hitrost</string> <!-- in the sense of high speed video frame rates -->
+	<string name="centre_of_screen">na sredini</string>
+	
+	<string name="high_speed">Visoka hitrost</string> <!-- in the sense of high speed video frame rates -->
 
     <string name="preference_video_fps_default">Privzeta</string>
-
-    <string name="preference_category_exif_tags">Oznake EXIF po meri</string>
+	
+	<string name="preference_category_exif_tags">Oznake EXIF po meri</string>
     <string name="preference_exif_artist">Avtor</string>
     <string name="preference_exif_artist_summary">Besedilo, ki se shrani med metapodatke slike v oznako "Avtor" (samo oblika JPEG)</string>
     <string name="preference_exif_copyright">Avtorske pravice</string>
@@ -464,15 +464,15 @@
 
     <string name="preference_raw_no">Ne</string>
     <string name="preference_raw_yes">Običajno in DNG (RAW)</string>
-    <string name="preference_raw_only">Samo DNG (RAW)</string>
+	<string name="preference_raw_only">Samo DNG (RAW)</string>
 
     <string name="preference_stamp_dateformat_default">Privzeta</string>
     <string name="preference_stamp_dateformat_yyyymmdd">yyyy-mm-dd</string>
     <string name="preference_stamp_dateformat_ddmmyyyy">dd.mm.yyyy</string>
     <string name="preference_stamp_dateformat_mmddyyyy">mm/dd/yyyy</string>
     <string name="preference_stamp_dateformat_none">Brez</string>
-
-    <string name="preference_fast_burst_n_images">Št. fotografij</string>
+	
+	<string name="preference_fast_burst_n_images">Št. fotografij</string>
     <string name="preference_fast_burst_n_images_entries_2">2</string>
     <string name="preference_fast_burst_n_images_entries_3">3</string>
     <string name="preference_fast_burst_n_images_entries_4">4</string>
@@ -513,11 +513,11 @@
     <string name="flash_on">Bliskavica je vklopljena.</string>
     <string name="flash_torch">Svetilka</string>
     <string name="flash_red_eye">Zm. uč. rdečih oči</string>
-    <string name="flash_frontscreen_auto">Sam. zaslonska bliskavica</string>
+	<string name="flash_frontscreen_auto">Sam. zaslonska bliskavica</string>
     <string name="flash_frontscreen_on">Zaslonska bliskavica je vklopljena</string>
     <string name="flash_frontscreen_torch">Zaslonska svetilka</string>
-
-    <string name="preference_antibanding">Odstranjevanje pasov</string>
+	
+	<string name="preference_antibanding">Odstranjevanje pasov</string>
     <string name="preference_antibanding_summary">Algoritmi za pomoč pri utripanju svetlobe.\n%s</string>
     <string name="anti_banding_auto">Samodejno</string>
     <string name="anti_banding_50hz">50 Hz</string>
@@ -550,7 +550,7 @@
     <string name="preference_record_audio_src_mic">Zunanji mikrofon (če je prisoten)</string>
     <string name="preference_record_audio_src_default">Privzeti vir zvoka</string>
     <string name="preference_record_audio_src_voice_communication">Optimizirano za glasovne klice</string>
-    <string name="preference_record_audio_src_voice_recognition">Optimizirano za prepoznavanje glasu</string>
+	<string name="preference_record_audio_src_voice_recognition">Optimizirano za prepoznavanje glasu</string>
     <string name="preference_record_audio_src_unprocessed">Neobdelano</string>
 
     <string name="preference_video_bitrate_default">Privzeta</string>
@@ -577,10 +577,10 @@
     <string name="preference_video_bitrate_80000000">80 Mb/s</string>
     <string name="preference_video_bitrate_90000000">90 Mb/s</string>
     <string name="preference_video_bitrate_100000000">100 Mb/s</string>
-    <string name="preference_video_bitrate_150000000">150Mbps</string>
+	<string name="preference_video_bitrate_150000000">150Mbps</string>
     <string name="preference_video_bitrate_200000000">200Mbps</string>
-
-    <string name="no_burst">brez taporedja</string> <!-- string for burst mode not being supported for a resolution -->
+	
+	<string name="no_burst">brez taporedja</string> <!-- string for burst mode not being supported for a resolution -->
 
     <string name="preference_show_video_max_amp">Prikaži merilnik ravni zvoka</string>
     <string name="preference_show_video_max_amp_summary">Ali naj se med snemanjem videoposnetkov na zaslonu prikaže raven zvoka</string>
@@ -651,7 +651,7 @@
     <string name="preference_burst_mode_unlimited">Neomejeno</string>
 
     <string name="preference_burst_interval_no_delay">Brez zakasnitve</string>
-    <string name="preference_burst_interval_0_5s">0,5 s</string>
+	<string name="preference_burst_interval_0_5s">0,5 s</string>
     <string name="preference_burst_interval_1s">1 s</string>
     <string name="preference_burst_interval_2s">2 s</string>
     <string name="preference_burst_interval_3s">3 s</string>
@@ -675,11 +675,11 @@
     <string name="preference_video_max_filesize_300mb">300 MB</string>
     <string name="preference_video_max_filesize_500mb">500 MB</string>
     <string name="preference_video_max_filesize_1gb">1 GB</string>
-    <string name="preference_video_max_filesize_2gb">2 GB</string>
+	<string name="preference_video_max_filesize_2gb">2 GB</string>
     <string name="preference_video_max_filesize_5gb">5 GB</string>
     <string name="preference_video_max_filesize_9gb">9 GB</string>
-
-    <string name="cancelled_focus_bracketing">Stopnjevanje globine ostrenja je preklicano.</string>
+	
+	<string name="cancelled_focus_bracketing">Stopnjevanje globine ostrenja je preklicano.</string>
 
     <string name="preference_crop_guide_none">Brez</string>
     <string name="preference_crop_guide_1">1 (1:1)</string>
@@ -689,7 +689,7 @@
     <string name="preference_crop_guide_1_5">1,5 (3:2)</string>
     <string name="preference_crop_guide_1_78">1,78 (16:9)</string>
     <string name="preference_crop_guide_1_85">1,85 (37:20)</string>
-    <string name="preference_crop_guide_2">2 (2:1)</string>
+	<string name="preference_crop_guide_2">2 (2:1)</string>
     <string name="preference_crop_guide_2_33">2,33 (21:9)</string>
     <string name="preference_crop_guide_2_35">2,35 (47:20)</string>
     <string name="preference_crop_guide_2_4">2,4 (12:5)</string>
@@ -701,8 +701,8 @@
     <string name="preference_audio_noise_control_sensitivity_m1">-1</string>
     <string name="preference_audio_noise_control_sensitivity_m2">-2</string>
     <string name="preference_audio_noise_control_sensitivity_m3">-3 (nizka občutljivost)</string>
-
-    <string name="preference_hdr_contrast_enhancement">Izboljšava kontrasta HDR</string>
+	
+	<string name="preference_hdr_contrast_enhancement">Izboljšava kontrasta HDR</string>
     <string name="preference_hdr_contrast_enhancement_summary">Kdaj naj se uporabi algoritem za izboljšavo kontrasta v načinu HDR.  To lahko izboljša videz v primerih zelo visokega dinamičnega razpona prizora in rezultatom doda "HDR-videz".\n%s</string>
     <string name="preference_hdr_contrast_enhancement_off">Izk.</string>
     <string name="preference_hdr_contrast_enhancement_smart">Pametno</string>
@@ -744,9 +744,9 @@
 
     <string name="preference_ui_placement_left">Up. vmesnik za levičarje</string>
     <string name="preference_ui_placement_right">Up. vmesnik za desničarje</string>
-    <string name="preference_ui_placement_top">Ikone na vrhu (pokončno)</string>
-
-    <string name="preference_show_face_detection">Prikaži ikono za zaznavane obrazov</string>
+	<string name="preference_ui_placement_top">Ikone na vrhu (pokončno)</string>
+	
+	    <string name="preference_show_face_detection">Prikaži ikono za zaznavane obrazov</string>
     <string name="preference_show_face_detection_summary">Ali naj se na zaslonu prikaže ikona za omogočanje/onemogočanje zaznavanja obrazov</string>
     <string name="face_detection_enable">Omogoči zaznavanje obrazov</string> <!-- for "ContentDescription" (used for accessibility, e.g., Google Talkback) -->
     <string name="face_detection_disable">Onemogoči zaznavanje obrazov</string> <!-- for "ContentDescription" (used for accessibility, e.g., Google Talkback) -->
@@ -862,11 +862,11 @@
 
     <string name="preference_stamp_style_shadowed">Osenčeno besedilo</string>
     <string name="preference_stamp_style_plain">Golo besedilo</string>
-    <string name="preference_stamp_style_background">Besedilo z osenčenim ozadjem</string>
-
-    <string name="image_saving_notification">Shranjevanje slik …</string>
-
-    <string name="finish_panorama">Dokončaj panoramo</string>
+	<string name="preference_stamp_style_background">Besedilo z osenčenim ozadjem</string>
+	
+	<string name="image_saving_notification">Shranjevanje slik …</string>
+	
+	    <string name="finish_panorama">Dokončaj panoramo</string>
     <string name="cancel_panorama">Prekliči panoramo</string>
     <string name="panorama_cancelled">Panorama je preklicana.</string>
     <string name="failed_to_process_panorama">Ustvarjanje panoramske slike je spodletelo.</string>
@@ -894,10 +894,8 @@
     <string name="preference_camera_api_old">Izvirni API fotoaparata</string>
     <string name="preference_camera_api_camera2">API Camera2</string>
 
-    <string name="preference_audio_control_summary">Posnemite fotografijo/videposnetek, ko naprava zazna zvok ali glasovni ukaz.
+    <string name="preference_audio_control_summary">Posnemite fotografijo/videposnetek, ko naprava zazna zvok.
         Ko je omogočeno, uporabite zaslonski gumb za mikrofon, da vklopite/izklopite zaznavo zvoka.
-        Upoštevajte, da  možnost glasovnega ukaza uporablja Androidovo storitev za prepoznavanje govora: med uporabo te možnosti se bodo
-        podatki verjetno poslali na oddaljene strežnike, da se opravi prepoznavanje govora.
         \n%s</string>
 
     <!-- beware of string being too long to display! -->
@@ -932,12 +930,12 @@
     <string name="preference_video_profile_gamma_2_8">2,8</string>
 
     <string name="preference_immersive_mode_off">Izk.</string>
-    <string name="preference_immersive_mode_low_profile">Zatemni samo zaslonnske navidezne gumbe za krmarjenje</string>
+	<string name="preference_immersive_mode_low_profile">Zatemni samo zaslonnske navidezne gumbe za krmarjenje</string>
     <string name="preference_immersive_mode_navigation">Skrij samo zaslonske navidezne gumbe za krmarjenje</string>
     <string name="preference_immersive_mode_gui">Skrij gr. up. vmsnik</string>
     <string name="preference_immersive_mode_everything">Skrij vse</string>
-
-    <string name="preference_ghost_image_alpha">Prosojnost prekrivne slike</string>
+	
+	<string name="preference_ghost_image_alpha">Prosojnost prekrivne slike</string>
     <string name="preference_ghost_image_alpha_summary">Vrednost alfa pri uporabi prekrivne slike.  Nižja vrednost pomeni večjo prosojnost.\n%s</string>
 
     <string name="preference_zebra_stripes_foreground_color">Ospredna barva zebrinih črt</string>
@@ -977,4 +975,9 @@
     <string name="preference_comment_ypr_summary">V uporabniško opombo Exif v fotografiji shrani odklon, naklon in nagib naprave (samo oblika JPEG)</string>
 
     <string name="array_seekbar_preference_seekbar">Iskalna vrstica za spremembo trenutne vrednosti nastavitve</string>
+
+    <string name="preference_audio_control_none">Brez</string>
+    <string name="preference_audio_control_noise">Glasen zvok</string>
+    <string name="preference_audio_control_voice">Glasovni ukaz: \"cheese\"</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+
 </resources>

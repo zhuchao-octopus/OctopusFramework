@@ -76,7 +76,7 @@
         <item>자동 안정화 켜기/끄기</item>
         <item>기기 볼륨 변경</item>
         <item>아무것도 하지 않기</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_volume_keys_values">
         <item>volume_take_photo</item>
         <item>volume_focus</item>
@@ -89,7 +89,7 @@
     <string-array name="preference_rotate_preview_entries">
         <item>회전하지 않음</item>
         <item>180도 회전</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_rotate_preview_values">
         <item>0</item>
         <item>180</item>

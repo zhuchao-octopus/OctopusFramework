@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Generic xml for use with creating the UI for PopupView.addArrayOptionsToPopup().
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generic xml for use with creating the UI for PopupView.addArrayOptionsToPopup().
     Further customisations are done programatically in code.
     Important not to create TextViews dynamically in code, due to Google Play emoji policy...
     -->
@@ -11,18 +12,19 @@
     <Button
         android:id="@+id/button_left"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
+        android:layout_height="wrap_content"
+        />
     <TextView
         android:id="@+id/text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"
         android:gravity="center"
-        android:textColor="#ffffffff" />
-
+        android:textColor="#ffffffff"
+        />
     <Button
         android:id="@+id/button_right"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        />
 </LinearLayout>

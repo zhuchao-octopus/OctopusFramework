@@ -8,7 +8,7 @@
 
     <string name="on">On</string> <!-- whether a setting is turned on, e.g., "Auto-level: On" -->
     <string name="off">Off</string> <!-- whether a setting is turned off, e.g., "Auto-level: Off" -->
-
+    
     <string name="choose_save_location">Επιλέξτε την τοποθεσία αποθήκευσης:</string>
     <string name="clear_folder_history">Εκκαθάριση ιστορικού του φακέλου</string>
     <string name="clear_folder_history_question">Να εκκαθαριστεί το ιστορικό του φακέλου?</string>
@@ -56,7 +56,7 @@
     <string name="color_effect">Επίδραση χρώματος</string>
     <string name="scene_mode">Λειτουργία σκηνής</string>
     <string name="white_balance">Λευκή ισορροπία</string>
-
+    
     <string name="angle">Γωνία</string>
     <string name="direction">Κατεύθυνση</string>
     <string name="failed_to_open_camera_1">ΑΠΟΤΥΧΙΑ ΑΝΟΙΓΜΑΤΟς ΚΑΜΕΡΑΣ.</string>
@@ -67,10 +67,10 @@
     <string name="free_memory">Ελέυθερο</string>
     <string name="screen_lock_message_1">[Μπλοκάρισμα:</string>
     <string name="screen_lock_message_2">Πατήστε για ξεμπλοκάρισμα]</string>
-
+    
     <string name="failed_to_stamp">Αποτυχία προσθήκης σφραγγίδας στην φωτογραφία</string>
     <string name="metres_abbreviation">μ</string> <!-- symbol short for metres -->
-
+    
     <string name="preference_category_camera_effects">Εφέ κάμερας</string>
     <string name="preference_auto_stabilise">Αυτόματο Επίπεδο</string>
     <string name="preference_auto_stabilise_summary">Οι εικόνες θα πρέπει να εναλλάσσονται έτσι ώστε να είναι ενεργό το αυτόματο επίπεδο (μόνο για φωτογραφίες) (τραβήξτε φωτογραφίες πιο αργά, γιατί μπορεί να αποτύχει σε συσκευές με χαμηλή μνήμη)</string>
@@ -164,7 +164,7 @@
     <string name="preference_keep_display_on_summary">Αν ενεργοποιηθεί αυτή η ρύθμιση, η οθόνη της συσκευής σας δεν θα σβήσει</string>
     <string name="preference_max_brightness">Μέγιστη φωτεινότητα</string>
     <string name="preference_max_brightness_summary">Ενεργοποίηση της μέγιστης φωτεινότητας, αντι της προεπιλεγμένης</string>
-
+    
     <string name="preference_category_camera_quality">Ρυθμίσεις φωτογραφίας και βίντεο</string>
     <string name="preference_screen_photo_settings">Ρυθμίσεις φωτογραφίας…</string>
     <string name="preference_screen_video_settings">Ρυθμίσεις βίντεο…</string>
@@ -187,9 +187,9 @@
     <string name="preference_textstamp">Προσαρμοσμένο κείμενο</string>
     <string name="preference_textstamp_summary">Προσθήκη σφραγίδας με προσαρμοσμένο κείμενο</string>
     <string name="preference_stamp_fontsize">Μέγεθος γραματοσειράς</string>
-    <string name="preference_stamp_fontsize_summary">Μεγέθος γραμματοσειράς για χρήση στις σφραγίδες</string>
+    <string name="preference_stamp_fontsize_summary">Μεγέθος γραμματοσειράς για χρήση στις σφραγίδες\n%s</string>
     <string name="preference_stamp_font_color">Χρώμα γραμματοσειράς</string>
-    <string name="preference_stamp_font_color_summary">Χρώμα γραμματοσειράς για χρήση στις σφραγίδες</string>
+    <string name="preference_stamp_font_color_summary">Χρώμα γραμματοσειράς για χρήση στις σφραγίδες\n%s</string>
     <string name="preference_stamp_style">Στυλ κειμένου</string>
     <string name="preference_stamp_style_summary">Στυλ κειμένου για χρήση στις σφραγίδες\n%s</string>
     <string name="preference_background_photo_saving">Χρήση νήματος φόντου</string>
@@ -219,7 +219,7 @@
     <string name="preference_record_audio_channels_summary">Καθορισμός μονοφωνικής ή στερεοφωνικής καταγραφής ήχου (ο ήχος στέρεο υποστηρίζεται μόνο σε ορισμένες συσκευές)</string>
     <string name="preference_video_flash">Φλας κατά την καταγραφή βίντεο</string>
     <string name="preference_video_flash_summary">Ενεργοποίηση τού φλας κατά την καταγραφή των βίντεο (μπορεί να χρησιμοποιηθεί αν γίνεται καταγραφή από απόσταση)</string>
-
+    
     <string name="preference_category_online">Διάφορα</string>
     <string name="preference_online_help">Διαδικτυακή Βοήθεια</string>
     <string name="preference_online_help_summary">Ανοιγμα της Open Camera ιστοσελίδας στο πρόγραμμα περιηγησής σας</string>
@@ -236,7 +236,7 @@
     <string name="about_available">Διαθέσιμο</string>
     <string name="about_not_available">Μη διαθέσιμο</string>
     <string name="about_copy_to_clipboard">Αντιγραφή στην πρόχειρη μνήμη</string>
-
+    
     <string name="take_photo">Λήψη φωτογραφίας</string>
     <string name="gallery">Συλλογή</string>
     <string name="exposure">Έκθεση</string>
@@ -249,7 +249,7 @@
     <string name="switch_to_photo">Μετάβαση στην φωτογραφική λειτουργία</string>
     <string name="trash">Διαγραφή της τελευταίας φωτογραφίας</string>
     <string name="share">Κοινοποίηση φωτογραφίας</string>
-
+    
     <string name="parent_folder">Γονικός φάκελος</string>
     <string name="new_folder">Νέος φάκελος</string>
     <string name="cant_write_folder">Αδυναμία εγγραφής σε αυτό τον φάκελο</string>

@@ -1,16 +1,9 @@
 package com.zhuchao.android.session;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-
-import androidx.core.app.ActivityCompat;
 
 import com.zhuchao.android.fbase.MMLog;
 
@@ -19,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BlueToothManager {
-    private static final String TAG="BlueToothManager";
+    private static final String TAG = "BlueToothManager";
     public static final int STATUS_OFF = 0;
     public static final int STATUS_ON = 1;
     public static final int STATUS_CONNECT = 2;
@@ -30,13 +23,13 @@ public class BlueToothManager {
     //已连接/绑定设备列表
     public static Set<BluetoothDevice> mBondedDevices = new HashSet<>();
 
-    private static void getBluetoothAdapter()
-    {
+    private static void getBluetoothAdapter() {
         if (mBluetoothAdapter == null) mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         ///LocalBluetoothManager mBluetoothManager = LocalBluetoothManager.getInstance(null, null);
         ///已连接+绑定设备列表
         ///Set<BluetoothDevice> bondedDevices = mBluetoothManager.getBluetoothAdapter().getBondedDevices();
     }
+
     @SuppressLint("MissingPermission")
     public static void OnOff(Context mContext) {
         getBluetoothAdapter();
@@ -48,6 +41,7 @@ public class BlueToothManager {
             ///mContext.startActivity(intent);
         } else if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_OFF) mBluetoothAdapter.enable();
     }
+
     @SuppressLint("MissingPermission")
     public static int getBlueToothStatus() {
         getBluetoothAdapter();
@@ -56,7 +50,7 @@ public class BlueToothManager {
         }
         mBondedDevices = mBluetoothAdapter.getBondedDevices();
         for (BluetoothDevice device : mBondedDevices) {
-            MMLog.d(TAG,"BT:"+device.toString());
+            MMLog.d(TAG, "BT:" + device.toString());
         }
         if (mBondedDevices == null || mBondedDevices.size() == 0) {
             return STATUS_ON;
@@ -65,7 +59,7 @@ public class BlueToothManager {
         } else {
             return STATUS_ON;
         }
-        
+
     }
 
     // 设置蓝牙可见性
@@ -93,6 +87,7 @@ public class BlueToothManager {
         }
         return false;
     }
+
     @SuppressLint("MissingPermission")
     private static boolean bluetoothIsConnect2() {
         getBluetoothAdapter();
@@ -104,6 +99,7 @@ public class BlueToothManager {
         }
         return false;
     }
+
     @SuppressLint("MissingPermission")
     public static boolean isBtConnectedDeviceByMac(String btMac) {
         getBluetoothAdapter();

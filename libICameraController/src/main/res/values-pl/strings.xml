@@ -4,24 +4,22 @@
     <string name="action_settings">Ustawienia</string>
     <string name="action_popup">Ustawienia wyskakujących okienek</string>
     <string name="intro_ok">OK (Ta wiadomość nie pokaże się ponownie)</string>
-    <string name="on">Włączono</string>
-    <!-- whether a setting is turned on, e.g., "Auto-level: On" -->
-    <string name="off">Wyłączono</string>
-    <!-- whether a setting is turned off, e.g., "Auto-level: Off" -->
+
+    <string name="on">Włączono</string> <!-- whether a setting is turned on, e.g., "Auto-level: On" -->
+    <string name="off">Wyłączono</string> <!-- whether a setting is turned off, e.g., "Auto-level: Off" -->
+
     <string name="choose_save_location">Wybierz miejsce zapisywania:</string>
     <string name="clear_folder_history">Wyczyść historię folderów</string>
     <string name="clear_folder_history_question">Wyczyścić historię folderów?</string>
     <string name="choose_another_folder">Wybierz inny folder</string>
     <string name="changed_save_location">Zmieniono miejsce zapisywania na:</string>
     <string name="stopped_recording_video">Zatrzymano nagrywanie filmu</string>
-    <string name="repeats_to_go">pozostało powtórzeń</string>
-    <!--    intentionally starts lower case -->
+    <string name="repeats_to_go">pozostało powtórzeń</string> <!--    intentionally starts lower case -->
     <string name="failed_to_reconnect_camera">Nie udało się połączyć z aparatem</string>
     <string name="video_may_be_corrupted">Błąd, nagranie może być uszkodzone</string>
-    <string name="not_supported">Niewspierane na Twoim urządzeniu</string>
-    <!--    intentionally starts lower case -->
-    <string name="video_error_unknown">Nieznany błąd, wideo wstrzymane</string>
-    <string name="video_error_server_died">Błąd serwera, wideo wstrzymane</string>
+    <string name="not_supported">Niewspierane na twoim urządzeniu</string> <!--    intentionally starts lower case -->
+    <string name="video_error_unknown">Nieznany błąd, wstrzymano wideo</string>
+    <string name="video_error_server_died">Błąd serwera, wstrzymano wideo</string>
     <string name="video_max_duration">Nagranie osiągnęło maksymalną długość</string>
     <string name="video_max_filesize">Nagranie osiągnęło maksymalny rozmiar pliku</string>
     <string name="exposure_compensation">Korekta ekspozycji</string>
@@ -32,8 +30,8 @@
     <string name="back_camera">Tylny aparat</string>
     <string name="photo">Zdjęcie</string>
     <string name="video">Film</string>
-    <string name="exposure_locked">Ekspozycja zablokowana</string>
-    <string name="exposure_unlocked">Ekspozycja odblokowana</string>
+    <string name="exposure_locked">Zablokowano ekspozycję</string>
+    <string name="exposure_unlocked">Odblokowano ekspozycję</string>
     <string name="cancelled_timer">Anulowano samowyzwalacz</string>
     <string name="cancelled_repeat_mode">Anulowano serię</string>
     <string name="started_timer">Włączono timer</string>
@@ -42,7 +40,7 @@
     <string name="started_recording_video">Rozpoczęto nagrywanie wideo</string>
     <string name="sorry">Niestety</string>
     <string name="failed_to_save_photo">Nie udało się zapisać zdjęcia</string>
-    <string name="failed_to_save_photo_raw">Nie udało się zapisać zdjęcia w RAW</string>
+    <string name="failed_to_save_photo_raw">Nie udało się zapisać zdjęcia jako RAW</string>
     <string name="failed_to_auto_stabilise">Nie udało się wypoziomować</string>
     <string name="failed_to_start_camera_preview">Nie udało się uruchomić podglądu aparatu</string>
     <string name="taking_photo">Robienie zdjęcia</string>
@@ -53,7 +51,7 @@
     <string name="screen_is_locked">Ekran zablokowany\nprzesuń palcem, aby odblokować</string>
     <string name="unlocked">Odblokowano</string>
     <string name="auto_stabilise_not_supported">Autopoziomowanie niedostępne\nna tym urządzeniu</string>
-    <string name="audio_disabled">Dźwięk wyłączony</string>
+    <string name="audio_disabled">Wyłączono dźwięk</string>
     <string name="max_duration">Maksymalny czas trwania</string>
     <string name="color_effect">Efekt koloru</string>
     <string name="scene_mode">Tryb scenerii</string>
@@ -67,26 +65,26 @@
     <string name="iso">ISO</string>
     <string name="zoom">Przybliżenie</string>
     <string name="free_memory">Wolne</string>
-    <string name="screen_lock_message_1">[ZABLOKOWANE:</string>
+    <string name="screen_lock_message_1">[ZABLOKOWANO:</string>
     <string name="screen_lock_message_2">Przesuń palcem, aby odblokować]</string>
     <string name="failed_to_stamp">Nie udało się dodać stempla</string>
     <string name="metres_abbreviation">m</string> <!-- symbol short for metres -->
 
     <string name="preference_category_camera_effects">Efekty aparatu</string>
     <string name="preference_auto_stabilise">Autopoziomowanie</string>
-    <string name="preference_auto_stabilise_summary">Zdjęcia będą obracane i wyrównywane do poziomu (wolniejszy zapis zdjęcia, może się nie udać na urządzeniach z małą ilością pamięci)</string>
+    <string name="preference_auto_stabilise_summary">Zdjęcia będą obracane i wyrównywane do poziomu (wolniejszy zapis zdjęcia, może nie działać na urządzeniach z małą ilością pamięci)</string>
     <string name="preference_color_effect">Nałóż efekt kolorystyczny</string>
     <string name="preference_color_effect_summary">Nakłada efekt kolorystyczny na zdjęcie</string>
     <string name="preference_scene_mode">Zastosuj tryb scenerii</string>
-    <string name="preference_scene_mode_summary">Optymalizuj zdjęcie dla innych scenerii</string>
+    <string name="preference_scene_mode_summary">Optymalizuje zdjęcie dla innych scenerii</string>
     <string name="preference_white_balance">Ustaw balans bieli</string>
-    <string name="preference_white_balance_summary">Wybierz to ustawienie, aby dopasować balans bieli</string>
+    <string name="preference_white_balance_summary">Dopasowuje balans bieli</string>
     <string name="preference_iso">Ustaw czułość ISO</string>
     <string name="preference_iso_summary">Wyższa wartość oznacza większą czułość na światło (może nie działać na niektórych urządzeniach)</string>
     <string name="preference_exposure">Ustaw korektę ekspozycji</string>
     <string name="preference_exposure_summary">Ustaw 0 dla domyślnej korekty ekspozycji</string>
     <string name="preference_lock_orientation">Zablokuj orientację zdjęcia/filmu</string>
-    <string name="preference_lock_orientation_summary">Jeśli ustawione, orientacja urządzenia będzie ignorowana, priorytet będzie miała wybrana opcja\n%s</string>
+    <string name="preference_lock_orientation_summary">Jeśli włączono, orientacja urządzenia będzie ignorowana, priorytet będzie miała wybrana opcja\n%s</string>
     <string name="preference_face_detection">Wykrywanie twarzy</string>
     <string name="preference_face_detection_summary">Używa wykrywania twarzy zamiast obszarów ostrości</string>
 
@@ -100,15 +98,15 @@
     <string name="preference_burst_interval">Interwał Serii</string>
     <string name="preference_screen_camera_controls_more">Więcej ustawień aparatu…</string>
     <string name="preference_touch_capture">Dotknij, aby zrobić zdjęcie</string>
-    <string name="preference_touch_capture_summary">Zrób zdjęcie poprzez pojedyncze lub podwójne dotknięcie</string>
+    <string name="preference_touch_capture_summary">Robi zdjęcie poprzez pojedyncze lub podwójne dotknięcie</string>
     <string name="preference_pause_preview">Pauza po zrobieniu zdjęcia</string>
-    <string name="preference_pause_preview_summary">Wstrzymaj podgląd po zrobieniu zdjęcia, z możliwością udostępnienia lub usunięcia</string>
+    <string name="preference_pause_preview_summary">Wstrzymuje podgląd po zrobieniu zdjęcia, z możliwością udostępnienia lub usunięcia</string>
     <string name="preference_shutter_sound">Dźwięk migawki</string>
     <string name="preference_shutter_sound_summary">Odtwarza dźwięk podczas robienia zdjęcia</string>
     <string name="preference_volume_keys">Klawisze głośności</string>
     <string name="preference_audio_control">Aktywacja za pomocą dźwięków</string>
-    <string name="preference_audio_noise_control_sensitivity">Wrażliwość sterowania dźwiękiem</string>
-    <string name="preference_audio_noise_control_sensitivity_summary">Poziom wrażliwości na głośne dźwięki aktywujące aparat</string>
+    <string name="preference_audio_noise_control_sensitivity">Czułość sterowania dźwiękiem</string>
+    <string name="preference_audio_noise_control_sensitivity_summary">Poziom czułości na głośne dźwięki aktywujące aparat</string>
     <string name="preference_save_location">Lokalizacja zapisu</string>
     <string name="preference_save_location_summary">Folder, do którego będą zapisywane pliki</string>
     <string name="preference_using_saf_summary">Używa Storage Access Framework do zapisu plików zdjęć i filmów</string>
@@ -117,8 +115,8 @@
     <string name="preference_save_video_prefix">Przedrostek nazw filmów</string>
     <string name="preference_save_video_prefix_summary">Przedrostek używany w nazwach plików filmów</string>
     <string name="preference_save_zulu_time">Format czasu w nazwie pliku</string>
-    <string name="preference_show_when_locked">Pokaż aparat gdy zablokowany</string>
-    <string name="preference_show_when_locked_summary">Jeśli włączone, aplikacja Open Camera będzie widoczna ponad ekranem blokady (dostęp do opcji, galerii itp. wymaga odblokowania)</string>
+    <string name="preference_show_when_locked">Pokaż aparat, gdy zablokowany</string>
+    <string name="preference_show_when_locked_summary">Jeśli włączono, aplikacja Open Camera będzie widoczna ponad ekranem blokady (dostęp do opcji, galerii itp. wymaga odblokowania)</string>
     <string name="preference_startup_focus">Automatyczna ostrość podczas uruchamiania</string>
     <string name="preference_startup_focus_summary">Autofokus będzie uruchamiany podczas włączania aplikacji. Jeśli występuje problem z włączaniem lampy błyskowej podczas uruchamiania, wyłącz tę opcję</string>
     <string name="preference_lock_video">Blokuj ekranu podczas nagrywania filmu</string>
@@ -163,7 +161,7 @@
     <string name="preference_take_photo_border">Ramka</string>
     <string name="preference_take_photo_border_summary">Wyświetla ramkę wokół ekranu po wykonaniu zdjęcia</string>
     <string name="preference_keep_display_on">Utrzymuj ekran włączony</string>
-    <string name="preference_keep_display_on_summary">Ekran nie wyłączy się jeśli główny ekran aplikacji Open Camera będzie aktywny</string>
+    <string name="preference_keep_display_on_summary">Ekran nie wyłączy się jeśli aplikacja Open Camera będzie aktywna</string>
     <string name="preference_max_brightness">Wymuś maksymalną jasność</string>
     <string name="preference_max_brightness_summary">Wymusza maksymalną jasność ekranu pomijając ustawienie systemu operacyjnego urządzenia</string>
     <string name="preference_category_camera_quality">Ustawienia zdjęć i filmów</string>
@@ -189,18 +187,18 @@
     <string name="preference_textstamp">Własny tekst</string>
     <string name="preference_textstamp_summary">Określa własny tekst na stemplu</string>
     <string name="preference_stamp_fontsize">Rozmiar czcionki</string>
-    <string name="preference_stamp_fontsize_summary">Rozmiar czcionki używanej do stemplowania zdjęcia</string>
+    <string name="preference_stamp_fontsize_summary">Rozmiar czcionki używanej do stemplowania zdjęcia\n%s</string>
     <string name="preference_stamp_font_color">Kolor czcionki</string>
-    <string name="preference_stamp_font_color_summary">Kolor czcionki używanej do stemplowania zdjęcia</string>
+    <string name="preference_stamp_font_color_summary">Kolor czcionki używanej do stemplowania zdjęcia\n%s</string>
     <string name="preference_stamp_style">Styl tekstu</string>
     <string name="preference_stamp_style_summary">Określa styl tekstu stempla\n%s</string>
     <string name="preference_background_photo_saving">Użyj wątku w tle</string>
     <string name="preference_background_photo_saving_summary">Używa wątku aplikacji działającego w tle do zapisu zdjęć (dla szybszego działania)</string>
-    <string name="video_quality">Rozdzielczość Wideo</string>
+    <string name="video_quality">Rozdzielczość wideo</string>
     <string name="preference_force_video_4k">Wymuś nagrywanie filmów 4K UHD (działa tylko na niektórych urządzeniach)</string>
     <string name="preference_force_video_4k_summary">Włącza rozdzielczość 3840x2160 przy nagrywaniu filmów z tylnego aparatu. Ta opcja to hack, który pozwala urządzeniom z obsługą 4K na nagrywanie filmów w 4K, mimo zablokowania takiej możliwości dla niefirmowych aplikacji nagrywających. Nie ma gwarancji, że to zadziała, proszę przetestować.</string>
     <string name="preference_video_stabilization">Cyfrowa stabilizacja obrazu</string>
-    <string name="preference_video_stabilization_summary">Stabilizacja redukuje wstrząsy wywołane ruchem urządzenia. Działa podczas podglądu oraz nagrywania filmów. Ta funkcja może być zbędna, jeżeli urządzenie zostało wyposażone w optyczną stabilizację obrazu (OIS)</string>
+    <string name="preference_video_stabilization_summary">Redukuje wstrząsy wywołane ruchem urządzenia. Działa podczas podglądu oraz nagrywania filmów. Ta funkcja może być zbędna, jeżeli urządzenie zostało wyposażone w optyczną stabilizację obrazu (OIS)</string>
     <string name="preference_video_bitrate">Bitrate filmów (przybliżony)</string>
     <string name="preference_video_bitrate_summary">Ustawia przybliżony bitrate filmów (wyższa wartość oznacza lepszą jakość, ale zabiera więcej pamięci; ustawienie nieobsługiwanego bitrate może spowodować błąd zapisu)\n%s</string>
     <string name="preference_video_fps">Częstotliwość klatek (przybliżona)</string>
@@ -214,18 +212,18 @@
     <string name="preference_video_restart_max_filesize">Restart nagrywania według rozmiaru</string>
     <string name="preference_video_restart_max_filesize_summary">Nagrywanie wznowi się automatycznie, gdy rozmiar pliku osiągnie ustawioną maksymalną wartość</string>
     <string name="preference_record_audio">Nagrywanie z dźwiękiem</string>
-    <string name="preference_record_audio_summary">Nagrywanie filmu wraz z dźwiękiem</string>
+    <string name="preference_record_audio_summary">Nagrywa film wraz z dźwiękiem</string>
     <string name="preference_record_audio_src">Źródło dźwięku</string>
     <string name="preference_record_audio_src_summary">Wybór mikrofonu, z którego będzie nagrywany dźwięk\n%s</string>
     <string name="preference_record_audio_channels">Źródło dźwięku</string>
     <string name="preference_record_audio_channels_summary">Wybór między dźwiękiem mono a stereo (dostępne tylko na niektórych urządzeniach)</string>
     <string name="preference_video_flash">Błysk podczas nagrywania</string>
-    <string name="preference_video_flash_summary">Jeśli włączone, lampa błyskowa będzie się włączać i wyłączać (przydatne w przypadku gdy chcemy z większej odległości stwierdzić czy kamera wciąż nagrywa)</string>
+    <string name="preference_video_flash_summary">Jeśli włączono, lampa błyskowa będzie się włączać i wyłączać (przydatne w przypadku gdy chcemy z większej odległości stwierdzić czy kamera wciąż nagrywa)</string>
     <string name="preference_category_online">Różne</string>
     <string name="preference_online_help">Pomoc on-line</string>
     <string name="preference_online_help_summary">Otwiera stronę aplikacji Open Camera w przeglądarce internetowej</string>
     <string name="preference_donate">Przekaż darowiznę</string>
-    <string name="preference_donate_summary">Jeśli spodobała Ci się ta aplikacja rozważ przekazanie darowizny, która wesprze rozwój aplikacji. Możesz to zrobić poprzez zakup specjalnej aplikacji - dotknij tutaj aby otworzyć stronę. Dzięki!</string>
+    <string name="preference_donate_summary">Jeśli spodobała ci się ta aplikacja rozważ przekazanie darowizny, która wesprze rozwój aplikacji. Możesz to zrobić poprzez zakup specjalnej aplikacji - dotknij tutaj, aby otworzyć stronę. Dzięki!</string>
     <string name="preference_use_camera2">Camera2 API</string>
     <string name="preference_use_camera2_summary">Włącza interfejs Camera2 API, który oferuje wiele dodatkowych funkcji, ale może działać niepoprawnie na niektórych urządzeniach (powoduje restart aplikacji)</string>
     <string name="preference_about">O aplikacji</string>
@@ -285,17 +283,17 @@
     <string name="preference_category_stamp">Stempel zdjęcia</string>
     <string name="preference_hdr_save_expo">Zapisz wszystkie zdjęcia dla HDR</string>
     <string name="preference_hdr_save_expo_summary">W trybie HDR zapisuje wszystkie zdjęcia, które posłużyły do powstania obrazu HDR. Może to spowodować wolniejszy zapis, zwłaszcza przy włączonej opcji stemplowania lub autopoziomowania.</string>
-    <string name="no_permission">POZWOLENIA NIE SĄ DOSTĘPNE</string>
+    <string name="no_permission">POZWOLENIA NIEDOSTĘPNE</string>
     <string name="permission_rationale_title">Wymagane pozwolenie</string>
     <string name="permission_rationale_camera">Wymagane pozwolenie na dostęp do aparatu</string>
     <string name="preference_category_photo_debugging">Opcje debugowania</string>
     <string name="preference_category_video_debugging">Opcje debugowania</string>
     <string name="preference_camera2_fake_flash">Użyj alternatywnej lampy błyskowej</string>
-    <string name="preference_camera2_fake_flash_summary">Włącz jeśli w Twoim urządzeniu lampa błyskowa przejawia dziwne zachowanie z Camera2 API</string>
+    <string name="preference_camera2_fake_flash_summary">Włącz jeśli w twoim urządzeniu lampa błyskowa przejawia dziwne zachowanie z Camera2 API</string>
     <string name="preference_expo_bracketing_n_images">Bracketing ekspozycji</string>
     <string name="preference_expo_bracketing_n_images_summary">Ilość obrazów w trybie bracketingu\n%s</string>
     <string name="preference_expo_bracketing_stops">Stopniowanie Bracketingu</string>
-    <string name="preference_expo_bracketing_stops_summary">Jaki ustawić zakres wartości dla jaśniejszej/ciemniejszej ekspozycji\n%s</string>
+    <string name="preference_expo_bracketing_stops_summary">Ustawia zakres wartości dla jaśniejszej/ciemniejszej ekspozycji\n%s</string>
     <string name="video_no_free_space">Brak wystarczającej ilości pamięci, aby nagrać film</string>
     <string name="video_power_critical">Filmowanie zatrzymane\nKrytyczny poziom baterii</string>
     <string name="preference_video_low_power_check">Sprawdzanie niskiego poziomu baterii</string>
@@ -305,7 +303,7 @@
     <string name="exposure_shutter_speed">Czas migawki</string>
     <string name="camera_error">Poważny błąd aparatu</string>
     <string name="preference_camera2_fast_burst">Szybka seria (HDR/bracketing)</string>
-    <string name="preference_camera2_fast_burst_summary">Pozwala na szybsze wykonywanie zdjęć HDR lub bracketing. Wyłącz, jeśli na Twoim urządzeniu powoduje błędy.</string>
+    <string name="preference_camera2_fast_burst_summary">Pozwala na szybsze wykonywanie zdjęć HDR lub bracketing. Wyłącz, jeśli na twoim urządzeniu powoduje błędy.</string>
     <string name="camera">Aparat</string>
     <string name="record_video">Nagraj film</string>
     <string name="selfie">Autoportret</string>
@@ -320,11 +318,11 @@
     <string name="preference_calibrate_level_calibration_reset">Reset kalibracji poziomu</string>
     <string name="photo_mode_dro">DRO</string>
     <string name="preference_show_pitch_lines">Linie pochylenia</string>
-    <string name="preference_show_pitch_lines_summary">Wyświetla poziome linie przechylenia</string>
+    <string name="preference_show_pitch_lines_summary">Wyświetla poziome linie podziałki</string>
     <string name="preference_show_geo_direction_lines">Linie kompasu</string>
     <string name="preference_show_geo_direction_lines_summary">Wyświetla linie kierunkowe kompasu</string>
     <string name="preference_video_subtitle">Napisy</string>
-    <string name="preference_video_subtitle_summary">Tworzy napisy (w formacie SRT), w których zostaną zapisane: data, czas i dane GPS (jeśli włączone)\n%s</string>
+    <string name="preference_video_subtitle_summary">Tworzy napisy (w formacie SRT), w których zostaną zapisane: data, czas i dane GPS (jeśli włączono)\n%s</string>
     <string name="duration_unlimited">Bez limitu</string>
     <string name="duration_3s">3 sekundy</string>
     <string name="duration_5s">5 sekund</string>
@@ -351,8 +349,8 @@
     <string name="duration_1h">1 godzina</string>
     <string name="preference_show_take_photo">Zrób zdjęcie</string>
     <string name="preference_show_take_photo_summary">Pokazuje przycisk do robienia zdjęć i nagrywania filmów. Można go wyłączyć na urządzeniach, które posiadają fizyczny przycisk aparatu.</string>
-    <string name="video_pause">Film wstrzymany</string>
-    <string name="video_resume">Film wznowiony</string>
+    <string name="video_pause">Wstrzymano film</string>
+    <string name="video_resume">Wznowiono film</string>
     <string name="pause_video">Wstrzymaj filmowanie</string>
     <string name="resume_video">Wznów filmowanie</string>
     <string name="capturing">Przechwytywanie…</string>
@@ -377,11 +375,11 @@
     <string name="preference_stamp_dateformat_none">Brak</string>
 
     <string name="flash_off">Lampa wyłączona</string>
-    <string name="flash_auto">Lampa auto</string>
+    <string name="flash_auto">Lampa automatyczna</string>
     <string name="flash_on">Lampa włączona</string>
     <string name="flash_torch">Latarka</string>
-    <string name="flash_red_eye">Czerwone oczy</string>
-    <string name="flash_frontscreen_auto">Błysk ekranowy auto</string>
+    <string name="flash_red_eye">Redukcja czerwonych oczu</string>
+    <string name="flash_frontscreen_auto">Błysk ekranowy automatyczny</string>
     <string name="flash_frontscreen_on">Błysk ekranowy włączony</string>
 
     <string name="preference_video_bitrate_default">Domyślnie</string>
@@ -444,7 +442,7 @@
     <string name="preference_burst_interval_1h">1h</string>
     <string name="preference_burst_interval_2h">2h</string>
 
-    <string name="preference_video_max_filesize_default">Domyślny urządzenia</string>
+    <string name="preference_video_max_filesize_default">Domyślnie dla urządzenia</string>
     <string name="preference_video_max_filesize_100mb">100MB</string>
     <string name="preference_video_max_filesize_200mb">200MB</string>
     <string name="preference_video_max_filesize_300mb">300MB</string>
@@ -473,7 +471,7 @@
     <string name="preference_audio_noise_control_sensitivity_0">0 (domyślnie)</string>
     <string name="preference_audio_noise_control_sensitivity_m1">-1</string>
     <string name="preference_audio_noise_control_sensitivity_m2">-2</string>
-    <string name="preference_audio_noise_control_sensitivity_m3">-3 (nika czułość)</string>
+    <string name="preference_audio_noise_control_sensitivity_m3">-3 (niska czułość)</string>
 
     <string name="preference_ui_placement_left">Interfejs dla leworęcznych</string>
     <string name="preference_ui_placement_right">Interfejs dla praworęcznych</string>
@@ -524,8 +522,8 @@
 
     <string name="preference_video_capture_rate">Szybkość</string>
     <string name="preference_video_capture_rate_normal">Normalnie</string>
-    <string name="slow_motion_enabled">Zwolnione tempo włączone</string>
-    <string name="slow_motion_disabled">Zwolnione tempo wyłączone</string>
+    <string name="slow_motion_enabled">Włączono zwolnione tempo</string>
+    <string name="slow_motion_disabled">Wyłączono zwolnione tempo</string>
 
     <string name="flash_frontscreen_torch">Ekranowa latarka</string>
 
@@ -537,7 +535,7 @@
     <string name="anti_banding_off">Wyłącz</string>
 
     <string name="preference_ghost_image">Efekt "ducha"</string>
-    <string name="preference_ghost_image_summary">Nakłada obraz, aby pomóc w wyrównaiu.\n%s</string>
+    <string name="preference_ghost_image_summary">Nakłada obraz, aby pomóc w wyrównaniu.\n%s</string>
     <string name="preference_ghost_image_off">Wyłączony</string>
     <string name="preference_ghost_image_last">Ostatnie zrobione zdjęcie</string>
     <string name="preference_ghost_image_selected">Wybrane zdjęcie</string>
@@ -546,9 +544,9 @@
     <string name="saf_permission_failed_open_image">Nie można otworzyć tego obrazu</string>
 
     <string name="preference_camera2_photo_video_recording">Zezwalaj na zdjęcia podczas nagrywania filmu</string>
-    <string name="preference_camera2_photo_video_recording_summary">Umożliwia robienie zdjęć podczas nagrywania filmów. Wyłącz tę opcję, jeśli występują problemy z nagrywaniem wideo przy włączonym interfejsie Camera2 API na Twoim urządzeniu.</string>
+    <string name="preference_camera2_photo_video_recording_summary">Umożliwia robienie zdjęć podczas nagrywania filmów. Wyłącz tę opcję, jeśli występują problemy z nagrywaniem wideo przy włączonym interfejsie Camera2 API na twoim urządzeniu.</string>
 
-    <string name="preference_video_log">Profile Wideo</string>
+    <string name="preference_video_log">Profile wideo</string>
     <string name="preference_video_log_summary">Ustaw standardowy lub płaski profil obrazu dla trybu wideo\n%s</string>
     <string name="preference_video_log_off">Domyślny</string>
     <string name="preference_video_log_fine">Log (Drobny)</string>
@@ -579,7 +577,7 @@
     <string name="focus_bracketing_add_infinity">Dodaj nieskończoną odległość</string>
 
     <string name="magnetic_accuracy_title">Dokładność kompasu</string>
-    <string name="magnetic_accuracy_info">Kompas Twojego urządzenia wymaga kalibracji, aby poprawić jego dokładność. Można to zrobić, poruszając urządzenie ruchem ósemkowym.\n\nAktualna dokładność:</string>
+    <string name="magnetic_accuracy_info">Kompas twojego urządzenia wymaga kalibracji, aby poprawić jego dokładność. Można to zrobić, poruszając urządzenie ruchem ósemkowym.\n\nAktualna dokładność:</string>
 
     <string name="accuracy_unreliable">Niedokładny</string>
     <string name="accuracy_low">Niski</string>
@@ -628,10 +626,10 @@
     <string name="preference_hdr_contrast_enhancement_smart">Sprytna</string>
     <string name="preference_hdr_contrast_enhancement_always">Zawsze</string>
 
-    <string name="preference_video_output_format">Format Wideo</string>
+    <string name="preference_video_output_format">Format wideo</string>
     <string name="preference_video_output_format_summary">Format plików wideo, audio oraz kodeki\n%s</string>
 
-    <string name="preference_video_output_format_default">Domyślny</string>
+    <string name="preference_video_output_format_default">Domyślnie</string>
     <string name="preference_video_output_format_mpeg4_h264">MPEG4 H264</string>
     <string name="preference_video_output_format_mpeg4_hevc">MPEG4 HEVC</string>
     <string name="preference_video_output_format_3gpp">3GPP</string>
@@ -640,7 +638,7 @@
     <string name="preference_screen_settings_manager">Menedżer ustawień</string>
 
     <string name="preference_save_settings">Zapisz ustawienia</string>
-    <string name="preference_save_settings_summary">Zapisuje wszystkie ustawienia aplikacji Open Camera w pliku</string>
+    <string name="preference_save_settings_summary">Zapisuje wszystkie ustawienia aplikacji Open Camera do pliku</string>
     <string name="preference_save_settings_filename">Nazwa zapisanych ustawień</string>
 
     <string name="preference_restore_settings">Przywróć ustawienia</string>
@@ -662,12 +660,12 @@
     <string name="preference_nr_mode_normal">Normalny</string>
     <string name="preference_nr_mode_low_light">Słabe oświetlenie</string>
 
-    <string name="preference_show_face_detection">Wykrywanie twarzy</string>
+       <string name="preference_show_face_detection">Wykrywanie twarzy</string>
     <string name="preference_show_face_detection_summary">Wyświetla ikonę na ekranie do włączania lub wyłączania wykrywania twarzy</string>
     <string name="face_detection_enable">Włącz wykrywanie twarzy</string> <!-- for "ContentDescription" (used for accessibility, e.g., Google Talkback) -->
     <string name="face_detection_disable">Wyłącz wykrywanie twarzy</string> <!-- for "ContentDescription" (used for accessibility, e.g., Google Talkback) -->
-    <string name="face_detection_enabled">Wykrywanie twarzy włączone</string>
-    <string name="face_detection_disabled">Wykrywanie twarzy wyłączone</string>
+    <string name="face_detection_enabled">Włączono wykrywanie twarzy</string>
+    <string name="face_detection_disabled">Wyłączono wykrywanie twarzy</string>
 
     <string name="preference_show_auto_level">Automatyczne poziomowanie</string>
     <string name="preference_show_auto_level_summary">Wyświetla ikonę na ekranie do włączania lub wyłączania automatycznego poziomowania. Gdy automatyczne poziomowanie jest włączone, zdjęcia będą obracane, tak aby były automatycznie wyrównane z horyzontem.</string>
@@ -678,8 +676,8 @@
     <string name="preference_show_stamp_summary">Wyświetla ikonę na ekranie do włączania lub wyłączania stempla fotograficznego</string>
     <string name="stamp_enable">Włącz stemplowanie zdjęć</string> <!-- for "ContentDescription" (used for accessibility, e.g., Google Talkback) -->
     <string name="stamp_disable">Wyłącz stemplowanie zdjęć</string> <!-- for "ContentDescription" (used for accessibility, e.g., Google Talkback) -->
-    <string name="stamp_enabled">Stemplowanie zdjęć włączone</string>
-    <string name="stamp_disabled">Stemplowanie zdjęć wyłączone</string>
+    <string name="stamp_enabled">Włączono stemplowanie zdjęć</string>
+    <string name="stamp_disabled">Wyłączono stemplowanie zdjęć</string>
 
     <string name="preference_show_textstamp">Własny stempel tekstowy</string>
     <string name="preference_show_textstamp_summary">Pokazuje ikonę na ekranie do określenia własnego tekstu, który ma zostać umieszczony na zdjęciu</string>
@@ -688,8 +686,8 @@
     <string name="preference_show_white_balance_lock_summary">Wyświetla na ekranie ikonę do blokowania lub odblokowywania automatycznego balansu bieli</string>
     <string name="white_balance_lock">Zablokuj balans bieli</string>
     <string name="white_balance_unlock">Odblokuj balans bieli</string>
-    <string name="white_balance_locked">Balans bieli zablokowany</string>
-    <string name="white_balance_unlocked">Balans bieli odblokowany</string>
+    <string name="white_balance_locked">Zablokowano balans bieli</string>
+    <string name="white_balance_unlocked">Odblokowano balans bieli</string>
 
     <string name="preference_show_exposure_lock">Blokada automatycznej ekspozycji</string>
     <string name="preference_show_exposure_lock_summary">Wyświetla ikonę na ekranie do blokowania lub odblokowywania ekspozycji</string>
@@ -748,7 +746,7 @@
     <string name="preference_zebra_stripes_99pc">99%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
     <string name="preference_zebra_stripes_100pc">100%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
 
-
+    
     <string name="preference_focus_peaking">Uwydatnienie ostrości</string>
     <string name="preference_focus_peaking_summary">Jeśli ta opcja jest włączona, na ostrych krawędziach (konturach) zostaną pokazane podświetlenia. Jest to przydatne przede wszystkim przy ręcznym ustawianiu ostrości i może pomóc w określeniu, które obszary obrazu są ostre.\n%s</string>
     <string name="preference_focus_peaking_off">Wyłączono</string>
@@ -791,7 +789,7 @@
     <string name="preference_panorama_crop">Automatyczne kadrowanie panoramy</string>
     <string name="preference_panorama_crop_summary">W trybie panoramy: Usuwa faliste granice\n%s</string>
 
-    <string name="panorama_info">Aby zrobić zdjęcie panoramiczne, trzymając urządzenie pionowo dotknij przycisk "Zrób zdjęcie". Następnie skieruj urządzenie w lewo lub w prawo, tak aby białe kółko (na środku ekranu) pokryło się z niebieską kropką. Po przechwyceniu każdego nowego zdjęcia kieruj urządzenie, aby zakryć po kolei każdą nową niebieską kropkę.\n\nDotknij ikonkę "fajki", aby zapisać panoramę, lub ikonę "krzyżyka", aby anulować.\n\nPamiętaj, że przetwarzanie i zapisywanie zdjęć panoramicznych może zająć trochę czasu.</string>
+    <string name="panorama_info">Aby zrobić zdjęcie panoramiczne, trzymając urządzenie pionowo dotknij przycisku "Zrób zdjęcie". Następnie skieruj urządzenie w lewo lub w prawo tak, aby białe kółko (na środku ekranu) pokryło się z niebieską kropką. Po przechwyceniu każdego nowego zdjęcia kieruj urządzenie, aby zakryć po kolei każdą nową niebieską kropkę.\n\nDotknij ikonkę "fajki", aby zapisać panoramę, lub ikonę "krzyżyka", aby anulować.\n\nPamiętaj, że przetwarzanie i zapisywanie zdjęć panoramicznych może zająć trochę czasu.</string>
 
     <string name="preference_panorama_save">Oryginalne zdjęcia w trybie panoramy</string>
     <string name="preference_panorama_save_summary">Zapisuje oryginalne obrazy w trybie panoramy. Pamiętaj, że spowolni to zapisywanie zdjęć panoramicznych. Daje także możliwość zapisania pliku XML, co może być przydatne przy zgłaszaniu problemów z panoramą.\n%s</string>
@@ -811,15 +809,13 @@
     <string name="preference_camera_api_old">Oryginalny interfejs (Camera API)</string>
     <string name="preference_camera_api_camera2">Camera2 API</string>
 
-    <string name="preference_audio_control_summary">Rób zdjęcia/nagrywaj filmy po wykryciu hałasu lub na polecenie głosowe.
+    <string name="preference_audio_control_summary">Rób zdjęcia/nagrywaj filmy po wykryciu hałasu.
         Po włączeniu użyj przycisku mikrofonu na ekranie, aby rozpocząć/zatrzymać nasłuchiwanie.
-        Zwróć uwagę, że opcja polecenia głosowego korzysta z usługi rozpoznawania mowy systemu Android: podczas korzystania z tej opcji dane dźwiękowe prawdopodobnie będą
-        wysyłane do zdalnych serwerów w celu wykonania rozpoznawania mowy.
         \n%s</string>
 
     <!-- beware of string being too long to display! -->
     <string name="preference_stamp_geo_address_summary">Jeśli to możliwe, uzyskaj adres z lokalizacji GPS (do stempla, lub napisów do filmów).
-        Jeśli ta opcja jest włączona, Twoje urządzenie będzie przesyłało dane o lokalizacji przez Internet do strony trzeciej
+        Jeśli ta opcja jest włączona, twoje urządzenie będzie przesyłało dane o lokalizacji przez Internet do strony trzeciej
         w celu konwersji współrzędnych GPS na adres. Zobacz stronę https://developer.android.com/reference/android/location/Geocoder .
         Ta funkcja nie gwarantuje dostępności ani dokładności. Nie ma gwarancji, że wyniki będą znaczące lub poprawne.
         \n%s</string>
@@ -868,13 +864,13 @@
     <string name="preference_zebra_stripes_color_white">Biały</string>
 
     <string name="external_camera">Aparat zewnętrzny</string>
-    <string name="ultrawide">Bardzo szeroki</string>
+    <string name="ultrawide">Ultra szeroki</string>
 
     <string name="switch_to_external_camera">Przełącz na aparat zewnętrzny</string>
     <string name="switch_to_unknown_camera">Przełącz aparat</string>
     <string name="switch_multi_camera">Przełączaj się między wieloma aparatami</string>
     <string name="preference_multi_cam_button">Ikona wielu aparatów</string>
-    <string name="preference_multi_cam_button_summary">Jeśli ta opcja jest włączona, użyj oddzielnych przycisków do przełączania między przednimi/tylnymi aparatami oraz do przełączania między wieloma przednimi/tylnymi kamerami. Jeśli jest wyłączona, ikona Przełącz aparat będzie przełączać się między wszystkimi aparatami.</string>
+    <string name="preference_multi_cam_button_summary">Jeśli ta opcja jest włączona, użyj oddzielnych przycisków do przełączania między przednimi/tylnymi aparatami oraz do przełączania między wieloma przednimi/tylnymi kamerami. Jeśli jest wyłączona, ikona "Przełącz aparat" będzie przełączać między wszystkimi aparatami.</string>
 
     <string name="preference_show_camera_id">Pokaż ID aparatu</string>
     <string name="preference_show_camera_id_summary">Wyświetla aktualny numer ID aparatu na ekranie</string>
@@ -890,11 +886,11 @@
     <string name="error_features_slow_motion">Zwolnione tempo</string>
 
     <string name="preference_comment_ypr">Przechowuj odchylenie, nachylenie i przechylenie</string>
-    <string name="preference_comment_ypr_summary">Zapisz odchylenie, nachylenie i przechylenie urządzenia w komentarzu użytkownika Exif do zdjęcia (tylko format JPEG)</string>
+    <string name="preference_comment_ypr_summary">Zapisuje odchylenie, nachylenie i przechylenie urządzenia w komentarzu użytkownika Exif do zdjęcia (tylko format JPEG)</string>
 
     <string name="array_seekbar_preference_seekbar">Pasek do zmiany bieżącej wartości preferencji</string>
 
-    <string name="white_balance_auto">Automatyczny</string>
+    <string name="white_balance_auto">Automatycznie</string>
     <string name="white_balance_cloudy">Pochmurno</string>
     <string name="white_balance_daylight">Światło dzienne</string>
     <string name="white_balance_fluorescent">Świetlówka</string>
@@ -915,8 +911,8 @@
     <string name="scene_mode_party">Impreza</string>
     <string name="scene_mode_portrait">Portret</string>
     <string name="scene_mode_snow">Śnieg</string>
-    <string name="scene_mode_sports">Sporty</string>
-    <string name="scene_mode_steady_photo">Stateczne zdjęcie</string>
+    <string name="scene_mode_sports">Sport</string>
+    <string name="scene_mode_steady_photo">Statyczne zdjęcie</string>
     <string name="scene_mode_sunset">Zachód słońca</string>
     <string name="scene_mode_theatre">Teatr</string>
 
@@ -943,4 +939,37 @@
     <string name="centre_of_screen">w środku</string>
 
     <string name="high_speed">Duża prędkość</string> <!-- in the sense of high speed video frame rates -->
+
+    <string name="preference_audio_control_none">Wyłączono</string>
+    <string name="preference_audio_control_noise">Głośny dźwięk</string>
+    <string name="preference_audio_control_voice">Komenda głosowa: \"cheese\"</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+
+    <string name="preference_camera2_dummy_capture_hack">Włącz pozorną korektę HDR/ekspozycji</string>
+    <string name="preference_camera2_dummy_capture_hack_summary">Spróbuj włączyć tę opcję, jeśli w twoim urządzeniu występują problemy z wykonywaniem zdjęć w trybach HDR lub Ekspo (jeśli zdjęcia ekspo mają taką samą wartość ekspozycji). Ma to znaczenie tylko wtedy, gdy włączona jest także poniższa opcja "Szybka seria HDR/bracketing.</string>
+
+    <string name="permission_rationale_bluetooth_scan_connect">Uprawnienia do skanowania/połączenia Bluetooth są wymagane do wykrywania i łączenia się z urządzeniami zdalnego sterowania Bluetooth LE.</string>
+    <string name="unknown_device_no_permission">Nieznane urządzenie (niedostępne zezwolenie na połączenie Bluetooth)</string>
+
+    <string name="photo_mode_x_auto">X-Auto</string> <!-- keep short, as this shows in the popup menu -->
+    <string name="photo_mode_x_auto_full">Rozszerzenie: Auto</string>
+    <string name="photo_mode_x_hdr">X-HDR</string> <!-- keep short, as this shows in the popup menu -->
+    <string name="photo_mode_x_hdr_full">Rozszerzenie: HDR</string>
+    <string name="photo_mode_x_night">X-Noc</string> <!-- keep short, as this shows in the popup menu -->
+    <string name="photo_mode_x_night_full">Rozszerzenie: Night</string>
+    <string name="photo_mode_x_bokeh">X-Bokeh</string> <!-- keep short, as this shows in the popup menu -->
+    <string name="photo_mode_x_bokeh_full">Rozszerzenie: Bokeh</string>
+    <string name="photo_mode_x_beauty">X-Bty</string> <!-- keep short, as this shows in the popup menu -->
+    <string name="photo_mode_x_beauty_full">Rozszerzenie: Piękno / Retusz twarzy</string>
+
+    <string name="preference_hdr_tonemapping">Mapowanie tonalne HDR</string>
+    <string name="preference_hdr_tonemapping_summary">Algorytm używany do mapowania tonów w trybie zdjęć HDR\n%s</string>
+    <string name="preference_hdr_tonemapping_clamp">Prosty clamp</string>
+    <string name="preference_hdr_tonemapping_exponential">Wykładniczo</string>
+    <string name="preference_hdr_tonemapping_default">Domyślnie</string>
+
+    <string name="preference_remove_device_exif">Usuń dane EXIF urządzenia</string>
+    <string name="preference_remove_device_exif_summary">Czy usuwać metadane EXIF urządzenia ze zdjęć JPEG. Nie spowoduje to usunięcia znaczników exif zastosowanych w innych ustawieniach, które stosują metadane EXIF (np. lokalizacja/geotagowanie). Te inne opcje są niezależne i zastąpią to ustawienie. Nie dotyczy to zdjęć RAW/DNG oraz filmów.\n%s</string>
+    <string name="preference_remove_device_exif_off">Nie usuwaj danych EXIF urządzenia</string>
+    <string name="preference_remove_device_exif_on">Usuń dane EXIF urządzenia</string>
+    <string name="preference_remove_device_exif_keep_datetime">Usuń z wyjątkiem daty/godziny</string>
 </resources>

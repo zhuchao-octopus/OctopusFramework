@@ -76,7 +76,7 @@
         <item>Avto stabilləşməni işə sal/bağla</item>
         <item>Cihazın səs səviyyəsini dəyiş</item>
         <item>Heç nə etmə</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_volume_keys_values">
         <item>volume_take_photo</item>
         <item>volume_focus</item>
@@ -89,7 +89,7 @@
     <string-array name="preference_rotate_preview_entries">
         <item>Fırlanmasın</item>
         <item>180 dərəcə fırlat</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_rotate_preview_values">
         <item>0</item>
         <item>180</item>

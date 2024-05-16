@@ -2,9 +2,6 @@ package com.zhuchao.android.session;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.view.WindowManager;
 
@@ -15,6 +12,7 @@ public class MApplication extends Application {
     private static final String TAG = "MApplication";
     protected static Context appContext = null;//需要使用的上下文对象
     public static WindowManager.LayoutParams LayoutParams = new WindowManager.LayoutParams();
+
     public static Context getAppContext() {
         return appContext;
     }
@@ -27,15 +25,12 @@ public class MApplication extends Application {
         String sdkVersion = String.valueOf(Build.VERSION.SDK_INT);
         /////////////////////////////////////////////////////////////////////////////////
         //初始化各模块组件
-        MMLog.d(TAG,"START.. application for "+ appName +" sdk.version="+sdkVersion);
+        MMLog.d(TAG, "START.. application for " + appName + " sdk.version=" + sdkVersion);
         GlobalBroadcastReceiver.registerGlobalBroadcastReceiver(this);
-        if(appName!=null && appName.contains("com.zhuchao.android.car"))
-        {
+        if (appName != null && appName.contains("com.zhuchao.android.car")) {
             MMLog.d(TAG, "Initial few modules for " + TAppProcessUtils.getCurrentProcessNameAndId(this) + " ");
             Cabinet.InitialBaseModules(this);
-        }
-        else
-        {
+        } else {
             MMLog.d(TAG, "Initial all modules for " + TAppProcessUtils.getCurrentProcessNameAndId(this) + " ");
             Cabinet.InitialAllModules(this);
         }
@@ -61,7 +56,7 @@ public class MApplication extends Application {
     public void onTerminate() {
         GlobalBroadcastReceiver.unregisterGlobalBroadcastReceiver(this);
         Cabinet.FreeModules(this);
-        MMLog.d("MApplication","onTerminate! "+ TAppProcessUtils.getCurrentProcessNameAndId(this));
+        MMLog.d("MApplication", "onTerminate! " + TAppProcessUtils.getCurrentProcessNameAndId(this));
         super.onTerminate();
     }
 

@@ -8,7 +8,7 @@
 
     <string name="on">On</string> <!-- whether a setting is turned on, e.g., "Auto-level: On" -->
     <string name="off">Off</string> <!-- whether a setting is turned off, e.g., "Auto-level: Off" -->
-
+    
     <string name="choose_save_location">Choose save location:</string>
     <string name="clear_folder_history">Clear folder history</string>
     <string name="clear_folder_history_question">Clear folder history?</string>
@@ -43,7 +43,7 @@
     <string name="failed_to_save_photo">Failed to save photo</string>
     <string name="failed_to_save_photo_raw">Failed to save RAW photo</string>
     <string name="failed_to_auto_stabilise">Failed to auto-level</string>
-    <string name="failed_to_start_camera_preview">Failed to start camera cameraPreview</string>
+    <string name="failed_to_start_camera_preview">Failed to start camera preview</string>
     <string name="taking_photo">Taking photo</string>
     <string name="failed_to_take_picture">Failed to take picture</string>
     <string name="location_not_available">GPS location not available</string>
@@ -57,7 +57,7 @@
     <string name="color_effect">Color effect</string>
     <string name="scene_mode">Scene mode</string>
     <string name="white_balance">White balance</string>
-
+    
     <string name="angle">Angle</string>
     <string name="direction">Direction</string>
     <string name="failed_to_open_camera_1">FAILED TO OPEN CAMERA.</string>
@@ -68,10 +68,10 @@
     <string name="free_memory">Free</string>
     <string name="screen_lock_message_1">[LOCKED:</string>
     <string name="screen_lock_message_2">Swipe to unlock]</string>
-
+    
     <string name="failed_to_stamp">Failed to stamp info to photo</string>
     <string name="metres_abbreviation">m</string> <!-- symbol short for metres -->
-
+    
     <string name="preference_category_camera_effects">Camera Effects</string>
     <string name="preference_auto_stabilise">Auto-level</string>
     <string name="preference_auto_stabilise_summary">Images will be rotated so they are automatically level (photos only) (slower to take photos, and may fail on devices with too low memory)</string>
@@ -100,7 +100,7 @@
     <string name="preference_burst_interval">Repeat mode interval</string>
     <string name="preference_screen_camera_controls_more">More camera controls…</string>
     <string name="preference_touch_capture">Touch to capture</string>
-    <string name="preference_touch_capture_summary">Take a photo just by touching or double-tapping the cameraPreview</string>
+    <string name="preference_touch_capture_summary">Take a photo or record video just by touching or double-tapping the preview</string>
     <string name="preference_pause_preview">Pause after taking photo</string>
     <string name="preference_pause_preview_summary">Pause the screen after taking a photo, with the option to share or delete the photo</string>
     <string name="preference_shutter_sound">Shutter sound</string>
@@ -125,8 +125,8 @@
     <string name="preference_startup_focus_summary">Whether to auto-focus when Open Camera is started. If you have the problem of flash turning on when starting, disable this option</string>
     <string name="preference_lock_video">Lock screen when recording video</string>
     <string name="preference_lock_video_summary">When recording video, the GUI will be locked to prevent accidentally stopping recording. Swipe the screen to unlock. Note that video recording will always stop if the app goes into background or the screen is blanked.</string>
-    <string name="preference_rotate_preview">Rotate cameraPreview</string>
-    <string name="preference_rotate_preview_summary">Option to rotate the cameraPreview (won\'t affect resultant photos/videos)\n%s</string>
+    <string name="preference_rotate_preview">Rotate preview</string>
+    <string name="preference_rotate_preview_summary">Option to rotate the preview (won\'t affect resultant photos/videos)\n%s</string>
     <string name="preference_screen_gui">On screen GUI…</string>
     <string name="preference_preview_size">Preview size</string>
     <string name="preference_ui_placement">UI placement</string>
@@ -167,7 +167,7 @@
     <string name="preference_keep_display_on_summary">If enabled, the screen won\'t switch off while the main Open Camera UI is active</string>
     <string name="preference_max_brightness">Force maximum brightness</string>
     <string name="preference_max_brightness_summary">Force screen display to be at maximum brightness, rather than device default</string>
-
+    
     <string name="preference_category_camera_quality">Photo and Video Settings</string>
     <string name="preference_screen_photo_settings">Photo settings…</string>
     <string name="preference_screen_video_settings">Video settings…</string>
@@ -190,9 +190,9 @@
     <string name="preference_textstamp">Custom text</string>
     <string name="preference_textstamp_summary">Stamp photos with a custom text</string>
     <string name="preference_stamp_fontsize">Font size</string>
-    <string name="preference_stamp_fontsize_summary">Font size to use when stamping text onto photos</string>
+    <string name="preference_stamp_fontsize_summary">Font size to use when stamping text onto photos\n%s</string>
     <string name="preference_stamp_font_color">Font color</string>
-    <string name="preference_stamp_font_color_summary">Font color to use when stamping text onto photos</string>
+    <string name="preference_stamp_font_color_summary">Font color to use when stamping text onto photos\n%s</string>
     <string name="preference_stamp_style">Text style</string>
     <string name="preference_stamp_style_summary">Style to use when stamping text onto photos\n%s</string>
     <string name="preference_background_photo_saving">Use background thread</string>
@@ -201,7 +201,7 @@
     <string name="preference_force_video_4k">Force 4K UHD video (only works on some devices)</string>
     <string name="preference_force_video_4k_summary">Enable 3840x2160 resolution for video recording on back camera - this option is a hack that may allow 4K devices on 4K cameras that don\'t expose the option to 3rd party camera apps. This isn\'t guaranteed to work, please test before working.</string>
     <string name="preference_video_stabilization">Enable digital video stabilization</string>
-    <string name="preference_video_stabilization_summary">Video stabilization reduces the shaking due to the motion of the camera in both the cameraPreview and in recorded videos. This may be unnecessary if your device supports optical image stabilization (OIS).</string>
+    <string name="preference_video_stabilization_summary">Video stabilization reduces the shaking due to the motion of the camera in both the preview and in recorded videos. This may be unnecessary if your device supports optical image stabilization (OIS).</string>
     <string name="preference_video_bitrate">Video bitrate (approx)</string>
     <string name="preference_video_bitrate_summary">Set the approximate bitrate of videos (higher means better quality, but takes up more disk space; may cause video recording to fail if bitrate not supported)\n%s</string>
     <string name="preference_video_fps">Video frame rate (approx)</string>
@@ -222,7 +222,7 @@
     <string name="preference_record_audio_channels_summary">Specify mono or stereo for recording audio (stereo only supported on some devices)</string>
     <string name="preference_video_flash">Flash while recording video</string>
     <string name="preference_video_flash_summary">If enabled, flash will switch on/off when recording video (can be used to tell camera is still recording at a distance)</string>
-
+    
     <string name="preference_category_online">Misc</string>
     <string name="preference_online_help">Online help</string>
     <string name="preference_online_help_summary">Launch the Open Camera website in your browser</string>
@@ -239,7 +239,7 @@
     <string name="about_available">Available</string>
     <string name="about_not_available">Not available</string>
     <string name="about_copy_to_clipboard">Copy to clipboard</string>
-
+    
     <string name="take_photo">Take Photo</string>
     <string name="gallery">Gallery</string>
     <string name="exposure">Exposure</string>
@@ -252,7 +252,7 @@
     <string name="switch_to_photo">Switch to photo mode</string>
     <string name="trash">Delete Last Picture</string>
     <string name="share">Share Photo</string>
-
+    
     <string name="parent_folder">Parent Folder</string>
     <string name="new_folder">New Folder</string>
     <string name="cant_write_folder">Can\'t write to this folder</string>
@@ -307,7 +307,7 @@
     <string name="permission_rationale_storage">Storage read/write permission is required to save resultant files such as photos or videos</string>
     <string name="permission_rationale_record_audio">Microphone permission is required to record video with audio, as well as use the \"Audio control\" options</string>
     <string name="permission_rationale_location">Location permission is required for geotagging (storing location data in
-        photos and videos). Location permission is also required for connecting to Bluetooth LE remote control devices.</string>
+        photos and videos, including stamp and subtitles options). Location permission is also required (at least for Android 11 and earlier) for connecting to Bluetooth LE remote control devices.</string>
 
     <string name="preference_category_photo_debugging">Debugging options</string>
     <string name="preference_category_video_debugging">Debugging options</string>
@@ -825,7 +825,7 @@
     <string name="preference_histogram_lightness">Lightness (Average of min-max)</string>
 
     <string name="preference_zebra_stripes">Show zebra stripes</string>
-    <string name="preference_zebra_stripes_summary">If this option is enabled, zebra stripes will be drawn on-screen showing where the camera cameraPreview is over exposed.\n%s</string>
+    <string name="preference_zebra_stripes_summary">If this option is enabled, zebra stripes will be drawn on-screen showing where the camera preview is over exposed.\n%s</string>
     <string name="preference_zebra_stripes_off">Off</string>
     <string name="preference_zebra_stripes_70pc">70%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
     <string name="preference_zebra_stripes_80pc">80%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
@@ -846,7 +846,7 @@
 
     <string name="remaining">Remaining</string> <!-- images remaining for "processing" -->
 
-    <string name="preference_preview">Camera cameraPreview…</string>
+    <string name="preference_preview">Camera preview…</string>
 
     <string name="cycle_flash">Cycle flash</string>
     <string name="preference_show_cycle_flash">Show flash icon</string>
@@ -899,10 +899,8 @@
     <string name="preference_camera_api_old">Original camera API</string>
     <string name="preference_camera_api_camera2">Camera2 API</string>
 
-    <string name="preference_audio_control_summary">Take photo/video when a noise is detected, or on voice command.
+    <string name="preference_audio_control_summary">Take photo/video when a noise is detected.
         When enabled, use the on-screen microphone button to start/stop listening.
-        Note the voice command option uses the Android speech recognition service: when using this option, audio data is likely to
-        be sent to remote servers to perform speech recognition.
         \n%s</string>
 
     <!-- beware of string being too long to display! -->
@@ -986,7 +984,39 @@
 
     <string name="array_seekbar_preference_seekbar">Seekbar to change current preference value</string>
 
-    <string name="my_edittext_preference_edittext">Edittext for current preference value</string>
+    <string name="preference_audio_control_none">None</string>
+    <string name="preference_audio_control_noise">Loud noise</string>
+    <string name="preference_audio_control_voice">Voice command: \"cheese\"</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+
+    <string name="preference_camera2_dummy_capture_hack">Enable dummy capture HDR/expo fix</string>
+    <string name="preference_camera2_dummy_capture_hack_summary">Try enabling this if your device has problems when taking photos with HDR or Expo photo modes (if expo images come out with same exposures). Only relevant if fast HDR/expo option below is also enabled.</string>
+
+    <string name="permission_rationale_bluetooth_scan_connect">Bluetooth scan/connect permissions are required for discovering and connecting to Bluetooth LE remote control devices.</string>
+    <string name="unknown_device_no_permission">Unknown device (bluetooth connect permission not available)</string>
+
+    <string name="photo_mode_x_auto">X-Auto</string> <!-- keep short, as this shows in the popup menu -->
+    <string name="photo_mode_x_auto_full">Extension: Auto</string>
+    <string name="photo_mode_x_hdr">X-HDR</string> <!-- keep short, as this shows in the popup menu -->
+    <string name="photo_mode_x_hdr_full">Extension: HDR</string>
+    <string name="photo_mode_x_night">X-Night</string> <!-- keep short, as this shows in the popup menu -->
+    <string name="photo_mode_x_night_full">Extension: Night</string>
+    <string name="photo_mode_x_bokeh">X-Bokeh</string> <!-- keep short, as this shows in the popup menu -->
+    <string name="photo_mode_x_bokeh_full">Extension: Bokeh</string>
+    <string name="photo_mode_x_beauty">X-Bty</string> <!-- keep short, as this shows in the popup menu -->
+    <string name="photo_mode_x_beauty_full">Extension: Beauty / Face Retouch</string>
+
+    <string name="preference_hdr_tonemapping">HDR tonemapping</string>
+    <string name="preference_hdr_tonemapping_summary">Algorithm to use for tonemapping in HDR photo mode\n%s</string>
+    <string name="preference_hdr_tonemapping_clamp">Simple clamp</string>
+    <string name="preference_hdr_tonemapping_exponential">Exponential</string>
+    <string name="preference_hdr_tonemapping_default">Default</string>
+    <string name="preference_hdr_tonemapping_aces" translatable="false">ACES</string>
+
+    <string name="preference_remove_device_exif">Remove device EXIF data</string>
+    <string name="preference_remove_device_exif_summary">Whether to remove device EXIF metadata from JPEG photos. This will not remove exif tags applied by other settings that apply EXIF metadata (e.g. location/geotagging). Those other options are independent and will override this setting. RAW/DNG and videos are not affected.\n%s</string>
+    <string name="preference_remove_device_exif_off">Don\'t remove device EXIF data</string>
+    <string name="preference_remove_device_exif_on">Remove device EXIF data</string>
+    <string name="preference_remove_device_exif_keep_datetime">Remove except date/time</string>
 
     <!-- The following strings should not be translated (and shouldn't be included in language-specific strings.xml), in case they need updating -->
 
@@ -1003,8 +1033,9 @@
         &lt;br/&gt;Location permission is requested in order to deliver the optional geotagging features (for photos and videos,
         including stamp and subtitles options).
         When relevant option(s) are enabled, your device location will be stored in photo/video/subtitle files.
-        Location permission is also requested in order to connect to Bluetooth remote control devices.
-        Bluetooth permission is used to allow the optional feature to enable Bluetooth remote control devices.
+        &lt;br/&gt;Bluetooth permissions are used to allow the optional feature to discover and connect to Bluetooth LE remote control devices;
+        the Bluetooth remote control feature also requires location permission (on Android 11 or earlier) or
+        Nearby Devices permission (on Android 12 or later).
         &lt;br/&gt;Resultant data such as photos or videos can be shared with
         other apps if you use the share option in Open Camera, or when Open Camera is called by
         another app on your device, or when you use the Storage Access Framework option to save
@@ -1013,26 +1044,14 @@
         does not transmit personal or sensitive information to me.
         &lt;br/&gt;Since Open Camera also uses operating system APIs, you should review relevant privacy policies
         such as for your device, manufacturer, operating system and/or Google accounts. For example:
-        &lt;br/&gt;*The optional voice control option uses the Android speech recognition service. When enabled,
-        audio data is likely to be sent to remote servers by Android to perform speech recognition.
-        This is subject to the Data Processing Addendum for Products where Google is a Data Processor,
-        located at https://privacy.google.com/businesses/gdprprocessorterms/ , as updated from time to time.
-        &lt;br/&gt;*The \"addresses\" option for photo stamp or video subtitles uses the Android Geocoder API.
-        When this option is enabled, in order to deliver this functionality the API transmits your device location data across the Internet to a
-        third party (which may depend on what "backend services" are installed on your device).
         &lt;br/&gt;*Apps/services such as cloud services on your device may auto-upload photos and videos that are saved on your device.
         &lt;br/&gt;If you have inquiries about my privacy policy, please contact me by email at
         &lt;a href=\"mailto:mark.harman.apps@gmail.com?subject=Open%20Camera%20privacy%20policy\"&gt;mark.harman.apps@gmail.com&lt;/a&gt;.
     </string>
 
-    <string name="speech_recognizer_extra_info" translatable="false">
-        (Your audio may be sent to remote\n
-        servers by Android to perform speech\n
-        recognition.)</string>
-
     <string name="preference_screen_licences" translatable="false">Open Source licences</string>
     <string name="preference_licence_open_camera" translatable="false">Open Camera</string>
-    <string name="preference_licence_open_camera_text" translatable="false">Open Camera is © 2013–2022 Mark Harman, released under the GPL v3 or later. Tap here for full licence text and terms of service.</string>
+    <string name="preference_licence_open_camera_text" translatable="false">Open Camera is © 2013–2023 Mark Harman, released under the GPL v3 or later. Tap here for full licence text and terms of service.</string>
     <string name="preference_licence_androidx" translatable="false">AndroidX libraries</string>
     <string name="preference_licence_androidx_text" translatable="false">Open Camera uses the AndroidX/Jetpack libraries
         under the Apache license version 2.0. Tap here for full licence text.</string>
@@ -1050,10 +1069,16 @@
     <string name="whats_new_text" translatable="false">
         <small>[This dialog is shown when Open Camera is updated. You can disable it under
             Settings/On screen GUI/Show What\'s New dialog.]</small>
-        \n\n<b>v1.49.2:</b>\n
+        \n\n<b>v1.52:</b>\n
         <ul>
-            <li>Fixed crash for NR photo mode on some devices since version 1.49.\n</li>
-            <li>Support for latest emoji (e.g. for custom text stamp).\n</li>
+            <li>Improvements for pinch zooming.\n</li>
+            <li>Fixes for split-screen and multi-window mode.\n</li>
+            <li>Support for zoom and on-screen ISO/exposure display when using camera vendor extensions (for supported Android 13+ devices).\n</li>
+            <li>\"Touch to capture\" option now supports starting and stopping video.\n</li>
+            <li>Applied a 2s timeout for focusing with original camera API.\n</li>
+            <li>Improved performance for NR photo mode.\n</li>
+            <li>No longer cancel panorama when rotating device too far in wrong direction.\n</li>
+            <li>Various other improvements and bug fixes.\n</li>
         </ul>
     </string>
 </resources>

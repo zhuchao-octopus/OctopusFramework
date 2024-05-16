@@ -8,7 +8,7 @@
 
     <string name="on">Actif</string> <!-- whether a setting is turned on, e.g., "Auto-stabilise: On" -->
     <string name="off">Inactif</string> <!-- whether a setting is turned off, e.g., "Auto-stabilise: Off" -->
-
+    
     <string name="choose_save_location">Sélectionnez le dossier d\'enregistrement\u00A0: </string>
     <string name="clear_folder_history">Effacer l\'historique des dossiers</string>
     <string name="clear_folder_history_question">Effacer l\'historique des dossiers\u00A0?</string>
@@ -56,7 +56,7 @@
     <string name="color_effect">Effet de couleur</string>
     <string name="scene_mode">Mode scène</string>
     <string name="white_balance">Balance des blancs</string>
-
+    
     <string name="angle">Angle</string>
     <string name="direction">Direction</string>
     <string name="failed_to_open_camera_1">IMPOSSIBLE D\'OUVRIR LA CAMÉRA.</string>
@@ -67,10 +67,10 @@
     <string name="free_memory">Libre</string>
     <string name="screen_lock_message_1">[VERROUILLÉE\u00A0: </string>
     <string name="screen_lock_message_2">balayez pour déverrouiller]</string>
-
+    
     <string name="failed_to_stamp">Impossible d\'ajouter les informations dans la photo</string>
     <string name="metres_abbreviation">m</string> <!-- symbol short for metres -->
-
+    
     <string name="preference_category_camera_effects">Effets photo</string>
     <string name="preference_auto_stabilise">Auto-stabilisateur</string>
     <string name="preference_auto_stabilise_summary">Les photos seront pivotées de sorte qu\'elles soient automatiquement de niveau (photos seulement) (plus lent pour prendre des photos, et peut échouer sur les appareils avec trop peu de mémoire)</string>
@@ -163,7 +163,7 @@
     <string name="preference_keep_display_on_summary">Si activé, l\'appareil ne se mettra pas en veille tant qu\'Open Camera sera actif</string>
     <string name="preference_max_brightness">Forcer la luminosité maximale</string>
     <string name="preference_max_brightness_summary">Affichage de l\'écran avec une luminosité au maximum, plutôt que la valeur par défaut du périphérique</string>
-
+    
     <string name="preference_category_camera_quality">Paramètres photo et vidéo</string>
     <string name="preference_screen_photo_settings">Paramètres photo…</string>
     <string name="preference_screen_video_settings">Paramètres vidéo…</string>
@@ -185,9 +185,9 @@
     <string name="preference_textstamp">Texte personnalisé</string>
     <string name="preference_textstamp_summary">Incruste un texte personnalisé sur la photo</string>
     <string name="preference_stamp_fontsize">Taille de la police</string>
-    <string name="preference_stamp_fontsize_summary">Taille de la utilisée lors de l\'incrustation de texte sur les photos</string>
+    <string name="preference_stamp_fontsize_summary">Taille de la utilisée lors de l\'incrustation de texte sur les photos\n%s</string>
     <string name="preference_stamp_font_color">Couleur de la police</string>
-    <string name="preference_stamp_font_color_summary">Couleur de la police utilisée pour l\'incrustation de texte sur les photos</string>
+    <string name="preference_stamp_font_color_summary">Couleur de la police utilisée pour l\'incrustation de texte sur les photos\n%s</string>
     <string name="preference_stamp_style">Format du texte</string>
     <string name="preference_stamp_style_summary">Format du texte utilisé pour l\'incrustation de texte sur les photos\n%s</string>
     <string name="video_quality">Résolution vidéo</string>
@@ -216,7 +216,7 @@
     <string name="preference_record_audio_channels_summary">Spécifiez mono ou stéréo pour l\'enregistrement audio (stéréo uniquement pris en charge sur certains appareils)</string>
     <string name="preference_video_flash">Clignoter pendant l\'enregistrement vidéo</string>
     <string name="preference_video_flash_summary">Si activé, le flash se met en marche/arrêt lors de l\'enregistrement vidéo (peut être utile pour indiquer que l\'appareil est en train d\'enregistrer à distance)</string>
-
+    
     <string name="preference_category_online">Divers</string>
     <string name="preference_online_help">Aide en ligne</string>
     <string name="preference_online_help_summary">Ouvre le site web de Open Camera dans votre navigateur</string>
@@ -233,7 +233,7 @@
     <string name="about_available">Disponible</string>
     <string name="about_not_available">Non disponible</string>
     <string name="about_copy_to_clipboard">Copier dans le presse-papier</string>
-
+    
     <string name="take_photo">Prendre une photo</string>
     <string name="gallery">Gallerie</string>
     <string name="exposure">Exposition</string>
@@ -246,7 +246,7 @@
     <string name="switch_to_photo">Passer en mode photo</string>
     <string name="trash">Effacer la dernière photo</string>
     <string name="share">Partager la photo</string>
-
+    
     <string name="parent_folder">Dossier parent</string>
     <string name="new_folder">Nouveau dossier</string>
     <string name="cant_write_folder">Ne peux pas écrire dans ce dossier</string>
@@ -449,4 +449,9 @@
     <string name="preference_immersive_mode_navigation">Masquer uniquement les boutons de navigation virtuelle de l\'écran</string>
     <string name="preference_immersive_mode_gui">Masquer l\'interface graphique</string>
     <string name="preference_immersive_mode_everything">Tout masquer</string>
+
+    <string name="preference_audio_control_none">Aucun</string>
+    <string name="preference_audio_control_noise">Bruit fort</string>
+    <string name="preference_audio_control_voice">Commande vocale : « cheese »</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+
 </resources>

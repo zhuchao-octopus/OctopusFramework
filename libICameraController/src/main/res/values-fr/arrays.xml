@@ -72,7 +72,7 @@
         <item>Désactivé</item>
         <item>Tape simple</item>
         <item>Tape double</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_touch_capture_values">
         <item>none</item>
         <item>single</item>
@@ -86,7 +86,7 @@
         <item>Auto-stabilisateur on/off</item>
         <item>Modifier le volume de l\'appareil</item>
         <item>Ne rien faire</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_volume_keys_values">
         <item>volume_take_photo</item>
         <item>volume_focus</item>
@@ -99,7 +99,7 @@
     <string-array name="preference_rotate_preview_entries">
         <item>Ne pas tourner</item>
         <item>Pivoter de 180 degrés</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_rotate_preview_values">
         <item>0</item>
         <item>180</item>
@@ -123,7 +123,7 @@
     <string-array name="preference_grid_entries">
         <item>Aucune</item>
         <item>Grille 3x3</item>
-        <item>Phi 3x3</item>
+		<item>Phi 3x3</item>
         <item>Grille 4x2 </item>
         <item>Réticule</item>
         <item>D\'or (1)</item>
@@ -241,15 +241,5 @@
         <item>audio_default</item>
         <item>audio_mono</item>
         <item>audio_stereo</item>
-    </string-array>
-    <string-array name="preference_audio_control_entries">
-        <item>Aucun</item>
-        <item>Bruit fort</item>
-        <item>Commande vocale : « cheese »</item>
-    </string-array>
-    <string-array name="preference_audio_control_values">
-        <item>none</item>
-        <item>noise</item>
-        <item>voice</item>
     </string-array>
 </resources>

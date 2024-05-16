@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="com.octopus.android.action.OCTOPUS.PERMISSION"/>
+    <uses-permission android:name="com.octopus.android.action.OCTOPUS.PERMISSION" />
 
     <application>
         <receiver
@@ -19,6 +19,7 @@
                 <action android:name="com.octopus.android.action.OCTOPUS_HELLO" />
                 <action android:name="com.zhuchao.android.action.FILE_SCAN" />
                 <action android:name="com.zhuchao.android.action.MEDIAFILE_SCAN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>

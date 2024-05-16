@@ -72,7 +72,7 @@
         <item>Dokunma yok</item>
         <item>Tek dokunuş</item>
         <item>İki kez dokunuş</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_touch_capture_values">
         <item>none</item>
         <item>single</item>
@@ -86,7 +86,7 @@
         <item>Oto-stabilize açık/kapalı</item>
         <item>Cihaz sesini değiştir</item>
         <item>Eylem yok</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_volume_keys_values">
         <item>volume_take_photo</item>
         <item>volume_focus</item>
@@ -99,7 +99,7 @@
     <string-array name="preference_rotate_preview_entries">
         <item>Döndürme yok</item>
         <item>180 derece döndür</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_rotate_preview_values">
         <item>0</item>
         <item>180</item>

@@ -242,16 +242,6 @@
         <item>audio_mono</item>
         <item>audio_stereo</item>
     </string-array>
-    <string-array name="preference_audio_control_entries">
-        <item>Keine</item>
-        <item>Lautes Geräusch</item>
-        <item>Sprachkommando: \"cheese\"</item>
-    </string-array>
-    <string-array name="preference_audio_control_values">
-        <item>none</item>
-        <item>noise</item>
-        <item>voice</item>
-    </string-array>
     <string-array name="preference_save_zulu_time_entries">
         <item>Ortszeit</item>
         <item>UTC- (Zulu-) Zeit</item>

@@ -72,7 +72,7 @@
         <item>無</item>
         <item>點一次拍照</item>
         <item>點兩次拍照</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_touch_capture_values">
         <item>none</item>
         <item>single</item>
@@ -86,7 +86,7 @@
         <item>切換自動水平開/關</item>
         <item>變更裝置音量</item>
         <item>什麼都不做</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_volume_keys_values">
         <item>volume_take_photo</item>
         <item>volume_focus</item>
@@ -99,7 +99,7 @@
     <string-array name="preference_rotate_preview_entries">
         <item>不旋轉</item>
         <item>旋轉 180 度</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_rotate_preview_values">
         <item>0</item>
         <item>180</item>
@@ -241,16 +241,6 @@
         <item>audio_default</item>
         <item>audio_mono</item>
         <item>audio_stereo</item>
-    </string-array>
-    <string-array name="preference_audio_control_entries">
-        <item>無</item>
-        <item>大的聲音</item>
-        <item>音訊指令：「cheese」</item> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
-    </string-array>
-    <string-array name="preference_audio_control_values">
-        <item>none</item>
-        <item>noise</item>
-        <item>voice</item>
     </string-array>
     <string-array name="preference_save_zulu_time_entries">
         <item>本地時間</item>

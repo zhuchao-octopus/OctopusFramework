@@ -189,9 +189,9 @@
     <string name="preference_textstamp">Підпис фото</string>
     <string name="preference_textstamp_summary">Додавання тексту на фотографію</string>
     <string name="preference_stamp_fontsize">Розмір шрифту</string>
-    <string name="preference_stamp_fontsize_summary">Розмір шрифту для тексту, що додаватиметься на фотографію</string>
+    <string name="preference_stamp_fontsize_summary">Розмір шрифту для тексту, що додаватиметься на фотографію\n%s</string>
     <string name="preference_stamp_font_color">Колір</string>
-    <string name="preference_stamp_font_color_summary">Колір для тексту, що додаватиметься на фотографію</string>
+    <string name="preference_stamp_font_color_summary">Колір для тексту, що додаватиметься на фотографію\n%s</string>
     <string name="preference_stamp_style">Стиль</string>
     <string name="preference_stamp_style_summary">Стиль для тексту, що додаватиметься на фотографію\n%s</string>
     <string name="preference_background_photo_saving">Використовувати фоновий потік</string>
@@ -210,6 +210,7 @@
     <string name="preference_video_restart">Записати нове відео, коли буде досягнуто ліміту</string>
     <string name="preference_video_restart_summary">При досягненні ліміту тривалості, буде записано нове відео. (стільки разів, скільки ви вказали)\n%s</string>
     <string name="preference_video_max_filesize">Максимальний розмір файлу відео</string>
+
 
 
     <string name="preference_record_audio">Запис звуку</string>
@@ -279,6 +280,9 @@
     <string name="audio_listener_started">Створіть сильний шум</string>
 
 
+
+
+
     <string name="dont_show_again">Надалі не показувати</string>
 
     <string name="photo_mode">Режим фото</string>
@@ -291,14 +295,28 @@
     <string name="preference_hdr_save_expo">Зберішати всі зображення в режимі HDR</string>
 
 
+
+
+
+
+
+
+
     <string name="preference_category_photo_debugging">Налаштування відлагодження</string>
     <string name="preference_category_video_debugging">Налаштування відлагодження</string>
+
+
+
+
+
+
 
 
     <string name="seconds_abbreviation">с</string> <!-- short for seconds -->
 
     <string name="video_no_free_space">Недостатньо вільного міця для запису відео</string>
     <string name="video_power_critical">Запис відео зупинено\nКритично низький рівень заряду батареї</string>
+
 
 
     <string name="dark">Темніше</string> <!-- exposure compensation dark -->
@@ -308,9 +326,13 @@
     <string name="camera_error">Суттєва помилка камери</string>
 
 
+
+
     <string name="camera">Камера</string>
     <string name="record_video">Записати відео</string>
     <string name="selfie">Селфі</string>
+
+
 
 
     <string name="preference_calibrate_level">Калібрувати рівень кута</string>
@@ -322,6 +344,12 @@
     <string name="preference_calibrate_level_calibration_reset">Скидання калібровки рівня</string>
 
     <string name="photo_mode_dro">DRO</string>
+
+
+
+
+
+
 
 
     <string name="duration_unlimited">Без обмеження</string>
@@ -348,6 +376,8 @@
     <string name="duration_30m">30 хвилин</string>
     <string name="duration_45m">45 хвилин</string>
     <string name="duration_1h">Година</string>
+
+
 
 
     <string name="video_pause">Запис відео призупинено</string>
@@ -478,4 +508,9 @@
     <string name="preference_immersive_mode_navigation">Приховати кнопки навігації</string>
     <string name="preference_immersive_mode_gui">Приховати GUI</string>
     <string name="preference_immersive_mode_everything">Приховати все</string>
+
+    <string name="preference_audio_control_none">Немає</string>
+    <string name="preference_audio_control_noise">Низький шум</string>
+    <string name="preference_audio_control_voice">Голосова команда: \"сир\"</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+
 </resources>

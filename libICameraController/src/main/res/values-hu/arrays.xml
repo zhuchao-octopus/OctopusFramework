@@ -72,7 +72,7 @@
         <item>Nincs</item>
         <item>Egy érintés</item>
         <item>Dupla érintés</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_touch_capture_values">
         <item>none</item>
         <item>single</item>
@@ -99,7 +99,7 @@
     <string-array name="preference_rotate_preview_entries">
         <item>Ne forgassa</item>
         <item>Forgatás 180 fokkal</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_rotate_preview_values">
         <item>0</item>
         <item>180</item>
@@ -241,16 +241,6 @@
         <item>audio_default</item>
         <item>audio_mono</item>
         <item>audio_stereo</item>
-    </string-array>
-    <string-array name="preference_audio_control_entries">
-        <item>Nincs</item>
-        <item>Hangos zaj</item>
-        <item>Hangutasítás: \"csíííz\"</item>
-    </string-array>
-    <string-array name="preference_audio_control_values">
-        <item>none</item>
-        <item>noise</item>
-        <item>voice</item>
     </string-array>
     <string-array name="preference_save_zulu_time_entries">
         <item>Helyi idő</item>

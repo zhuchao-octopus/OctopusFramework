@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 public class VideoList {
     private final String TAG = "VideoList";
@@ -114,7 +113,7 @@ public class VideoList {
         if (mFHashMap.size() == 0) mFirstItem = oMedia;
 
         if (mLastItem != null) {//依次连接
-            mLastItem.setNext(oMedia);
+            mLastItem.setNext(oMedia);///加到最后
             oMedia.setPre(mLastItem);
         }
         if (mFirstItem != null) {//首尾连接
@@ -145,6 +144,15 @@ public class VideoList {
         if (oMedia == null) return;
         if (mFHashMap.containsKey(oMedia.md5())) return;
         if (mFHashMap.size() == 0) mFirstItem = oMedia;
+        if (mLastItem == null) mLastItem = oMedia;
+        mFHashMap.put(oMedia.md5(), oMedia);
+        if (mRequestCallBack != null) mRequestCallBack.onEventRequest(TAG, getCount());
+    }
+
+    public void update(OMedia oMedia) {
+        if (oMedia == null) return;
+        ///if (mFHashMap.containsKey(oMedia.md5())) return;
+        if (mFHashMap.size() == 0 || mFHashMap == null) mFirstItem = oMedia;
         if (mLastItem == null) mLastItem = oMedia;
         mFHashMap.put(oMedia.md5(), oMedia);
         if (mRequestCallBack != null) mRequestCallBack.onEventRequest(TAG, getCount());
@@ -206,7 +214,7 @@ public class VideoList {
     public OMedia findByMovie(Movie movie) {
         String md5Key = FileUtils.MD5(movie.getSrcUrl());
         OMedia oMedia = (OMedia) mFHashMap.get(md5Key);
-        if(oMedia == null) return null;
+        if (oMedia == null) return null;
         if (oMedia.getMovie().equals(movie)) return oMedia;
         else return null;
     }

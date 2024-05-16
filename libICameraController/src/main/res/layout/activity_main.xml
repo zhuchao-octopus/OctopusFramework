@@ -3,24 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity" >
 
     <FrameLayout
-        android:id="@+id/cameraPreview"
+        android:id="@+id/preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
-
+        android:layout_centerInParent="true"
+        />
+    
     <ImageButton
         android:id="@+id/take_photo"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@null"
-        android:contentDescription="@string/take_photo"
-        android:onClick="clickedTakePhoto"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:padding="10dp"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/take_photo_selector" />
+        android:contentDescription="@string/take_photo"
+        app:srcCompat="@drawable/take_photo_selector"
+        android:onClick="clickedTakePhoto"
+        android:background="@null"
+        />
 
     <ImageButton
         android:id="@+id/switch_camera"
@@ -33,7 +35,8 @@
         android:onClick="clickedSwitchCamera"
         android:background="@drawable/circle_background"
         android:backgroundTint="@color/icons_background_tint"
-        android:backgroundTintMode="src_in" />
+        android:backgroundTintMode="src_in"
+        />
 
     <ImageButton
         android:id="@+id/switch_multi_camera"
@@ -50,7 +53,8 @@
         android:background="@drawable/circle_background"
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <ImageButton
         android:id="@+id/pause_video"
@@ -62,7 +66,8 @@
         app:srcCompat="@drawable/ic_pause_circle_outline_white_48dp"
         android:onClick="clickedPauseVideo"
         android:background="@null"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <ImageButton
         android:id="@+id/cancel_panorama"
@@ -74,7 +79,8 @@
         app:srcCompat="@drawable/baseline_close_white_48"
         android:onClick="clickedCancelPanorama"
         android:background="@null"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <!-- alpha of 0.5 flags up Google Play prelaunch warning about contrast ratio too low (2.92; should be at least 3)-->
     <ImageButton
@@ -87,7 +93,8 @@
         app:srcCompat="@drawable/take_video"
         android:alpha="0.55"
         android:onClick="clickedSwitchVideo"
-        android:background="@null" />
+        android:background="@null"
+        />
 
     <ImageButton
         android:id="@+id/take_photo_when_video_recording"
@@ -99,7 +106,8 @@
         app:srcCompat="@drawable/take_photo_when_video_recording"
         android:onClick="clickedTakePhotoVideoSnapshot"
         android:background="@null"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <!-- n.b., need to specify a fixed width/height rather than wrap_content, so that MainUI.setFixedRotation()
         works okay (to help layout in portrait system orientation)
@@ -109,14 +117,16 @@
         android:contentDescription="@string/zoom"
         android:layout_width="160dp"
         android:layout_height="50dp"
-        android:alpha="0.5" />
+        android:alpha="0.5"
+        />
 
     <SeekBar
         android:id="@+id/zoom_seekbar"
         android:contentDescription="@string/zoom"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:background="@color/seekbar_background" />
+        android:background="@color/seekbar_background"
+        />
 
     <!-- n.b., layout_marginLeft set programmatically in DrawPreview -->
     <SeekBar
@@ -129,7 +139,8 @@
         android:layout_marginTop="0dp"
         android:layout_marginBottom="0dp"
         android:visibility="gone"
-        android:background="@color/seekbar_background" />
+        android:background="@color/seekbar_background"
+        />
 
     <!-- n.b., layout_marginLeft set programmatically in DrawPreview -->
     <SeekBar
@@ -142,7 +153,8 @@
         android:layout_marginTop="0dp"
         android:layout_marginBottom="0dp"
         android:visibility="gone"
-        android:background="@color/seekbar_background" />
+        android:background="@color/seekbar_background"
+        />
 
     <Button
         android:id="@+id/gui_anchor"
@@ -150,20 +162,26 @@
         android:layout_height="0dp"
         android:padding="1dp"
         android:scaleType="fitCenter"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        />
 
+    <!-- padding set to 0 to maximise the size of the thumbnail shown; background is transparent for
+        when the thumbnail aspect ratio doesn't match the button aspect ratio, to avoid showing a
+        shaded background
+        -->
     <ImageButton
         android:id="@+id/gallery"
-        android:layout_width="@dimen/onscreen_button_size"
-        android:layout_height="@dimen/onscreen_button_size"
-        android:padding="8dp"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:padding="0dp"
         android:scaleType="fitCenter"
         android:contentDescription="@string/gallery"
         app:srcCompat="@drawable/baseline_photo_library_white_48"
-        android:background="@color/icons_background"
+        android:background="#00000000"
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
-        android:onClick="clickedGallery" />
+        android:onClick="clickedGallery"
+        />
 
     <ImageButton
         android:id="@+id/settings"
@@ -176,7 +194,8 @@
         android:background="@color/icons_background"
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
-        android:onClick="clickedSettings" />
+        android:onClick="clickedSettings"
+        />
 
     <ImageButton
         android:id="@+id/popup"
@@ -189,8 +208,9 @@
         android:background="@color/icons_background"
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
-        android:onClick="clickedPopupSettings" />
-
+        android:onClick="clickedPopupSettings"
+        />
+    
     <ImageButton
         android:id="@+id/exposure"
         android:layout_width="@dimen/onscreen_button_size"
@@ -203,7 +223,8 @@
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
         android:onClick="clickedExposure"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <ImageButton
         android:id="@+id/exposure_lock"
@@ -217,7 +238,8 @@
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
         android:onClick="clickedExposureLock"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
 
     <ImageButton
@@ -232,7 +254,8 @@
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
         android:onClick="clickedWhiteBalanceLock"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <ImageButton
         android:id="@+id/cycle_raw"
@@ -246,7 +269,8 @@
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
         android:onClick="clickedCycleRaw"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <ImageButton
         android:id="@+id/store_location"
@@ -260,7 +284,8 @@
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
         android:onClick="clickedStoreLocation"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <!--<ImageButton
         android:id="@+id/switch_video"
@@ -302,7 +327,8 @@
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
         android:onClick="clickedTextStamp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <ImageButton
         android:id="@+id/stamp"
@@ -316,7 +342,8 @@
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
         android:onClick="clickedStamp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <ImageButton
         android:id="@+id/auto_level"
@@ -330,7 +357,8 @@
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
         android:onClick="clickedAutoLevel"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <ImageButton
         android:id="@+id/cycle_flash"
@@ -344,7 +372,8 @@
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
         android:onClick="clickedCycleFlash"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <ImageButton
         android:id="@+id/face_detection"
@@ -358,7 +387,8 @@
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
         android:onClick="clickedFaceDetection"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <ImageButton
         android:id="@+id/audio_control"
@@ -372,7 +402,8 @@
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
         android:onClick="clickedAudioControl"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <ImageButton
         android:id="@+id/kraken_icon"
@@ -385,7 +416,8 @@
         android:background="@color/icons_background"
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <!-- should be at left-most -->
     <ImageButton
@@ -400,7 +432,8 @@
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
         android:onClick="clickedTrash"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <ImageButton
         android:id="@+id/share"
@@ -414,7 +447,8 @@
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
         android:onClick="clickedShare"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <LinearLayout
         android:id="@+id/sliders_container"
@@ -424,20 +458,24 @@
         android:layout_centerVertical="true"
         android:orientation="vertical"
         android:background="@color/seekbar_background"
-        android:visibility="gone">
+        android:visibility="gone"
+        >
 
         <RelativeLayout
             android:id="@+id/iso_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="gone">
+            android:visibility="gone"
+            >
 
             <RelativeLayout
                 android:id="@+id/iso_buttons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"></RelativeLayout>
+                android:layout_gravity="center"
+                >
+            </RelativeLayout>
 
         </RelativeLayout>
 
@@ -446,14 +484,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="gone">
+            android:visibility="gone"
+            >
 
             <ImageView
                 android:id="@+id/exposure_seekbar_text"
                 android:contentDescription="@string/exposure_compensation"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                app:srcCompat="@drawable/ic_exposure_white_48dp" />
+                app:srcCompat="@drawable/ic_exposure_white_48dp"
+                />
 
             <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
             <SeekBar
@@ -464,7 +504,8 @@
                 android:layout_toRightOf="@+id/exposure_seekbar_text"
                 android:layout_alignTop="@+id/exposure_seekbar_text"
                 android:layout_alignBottom="@+id/exposure_seekbar_text"
-                android:alpha="0.9" />
+                android:alpha="0.9"
+                />
 
             <ZoomControls
                 android:id="@+id/exposure_seekbar_zoom"
@@ -474,7 +515,8 @@
                 android:layout_alignLeft="@+id/exposure_seekbar"
                 android:layout_alignRight="@+id/exposure_seekbar"
                 android:gravity="center"
-                android:layout_below="@+id/exposure_seekbar" />
+                android:layout_below="@+id/exposure_seekbar"
+                />
         </RelativeLayout>
 
         <RelativeLayout
@@ -482,14 +524,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="gone">
+            android:visibility="gone"
+            >
 
             <ImageView
                 android:id="@+id/iso_seekbar_text"
                 android:contentDescription="@string/iso"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                app:srcCompat="@drawable/iso_icon" />
+                app:srcCompat="@drawable/iso_icon"
+                />
 
             <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
             <SeekBar
@@ -500,7 +544,8 @@
                 android:layout_toRightOf="@+id/iso_seekbar_text"
                 android:layout_alignTop="@+id/iso_seekbar_text"
                 android:layout_alignBottom="@+id/iso_seekbar_text"
-                android:alpha="0.9" />
+                android:alpha="0.9"
+                />
 
             <ImageView
                 android:id="@+id/exposure_time_seekbar_text"
@@ -508,7 +553,8 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_below="@+id/iso_seekbar"
-                app:srcCompat="@drawable/baseline_shutter_speed_white_48" />
+                app:srcCompat="@drawable/baseline_shutter_speed_white_48"
+                />
 
             <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
             <SeekBar
@@ -519,7 +565,8 @@
                 android:layout_toRightOf="@+id/exposure_time_seekbar_text"
                 android:layout_alignTop="@+id/exposure_time_seekbar_text"
                 android:layout_alignBottom="@+id/exposure_time_seekbar_text"
-                android:alpha="0.9" />
+                android:alpha="0.9"
+                />
 
         </RelativeLayout>
 
@@ -528,14 +575,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="gone">
+            android:visibility="gone"
+            >
 
             <ImageView
                 android:id="@+id/white_balance_seekbar_text"
                 android:contentDescription="@string/white_balance"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                app:srcCompat="@drawable/ic_colorize_white_48dp" />
+                app:srcCompat="@drawable/ic_colorize_white_48dp"
+                />
 
             <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
             <SeekBar
@@ -546,7 +595,8 @@
                 android:layout_toRightOf="@+id/white_balance_seekbar_text"
                 android:layout_alignTop="@+id/white_balance_seekbar_text"
                 android:layout_alignBottom="@+id/white_balance_seekbar_text"
-                android:alpha="0.9" />
+                android:alpha="0.9"
+                />
 
         </RelativeLayout>
 
@@ -555,20 +605,23 @@
     <FrameLayout
         android:id="@+id/locker"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
 
     <ScrollView
         android:id="@+id/popup_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fadeScrollbars="false" />
-
+        android:fadeScrollbars="false"
+        />
+    
     <ScrollView
         android:id="@+id/hide_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"
         android:visibility="gone"
-        android:importantForAccessibility="no" />
-
+        android:importantForAccessibility="no"
+        />
+    
 </RelativeLayout>

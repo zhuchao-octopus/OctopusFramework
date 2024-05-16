@@ -8,7 +8,7 @@
 
     <string name="on">Ligado</string> <!-- whether a setting is turned on, e.g., "Auto-stabilise: On" -->
     <string name="off">Desligado</string> <!-- whether a setting is turned off, e.g., "Auto-stabilise: Off" -->
-
+	
     <string name="choose_save_location">Escolha um local de armazenamento:</string>
     <string name="clear_folder_history">Limpar histórico de pastas?</string>
     <string name="clear_folder_history_question">Deseja mesmo limpar histórico de pastas?</string>
@@ -56,7 +56,7 @@
     <string name="color_effect">Efeito de cor</string>
     <string name="scene_mode">Modo de cena</string>
     <string name="white_balance">Balanço do branco</string>
-
+	
     <string name="angle">Ângulo</string>
     <string name="direction">Direção</string>
     <string name="failed_to_open_camera_1">FALHA AO INICIAR CÂMERA.</string>
@@ -67,10 +67,10 @@
     <string name="free_memory">Livre</string>
     <string name="screen_lock_message_1">[TRAVADO:</string>
     <string name="screen_lock_message_2">Deslize para destravar]</string>
-
+	
     <string name="failed_to_stamp">Falha ao estampar foto</string>
     <string name="metres_abbreviation">m</string> <!-- symbol short for metres -->
-
+	
     <string name="preference_category_camera_effects">Efeitos de Câmera</string>
     <string name="preference_auto_stabilise">Auto-estabilização</string>
     <string name="preference_auto_stabilise_summary">Imagens serão rotacionadas então elas serão estabilizadas automaticamente (Somente fotos) (Lerdo para tirar fotos e pode falhar em dispositivos com pouca memória)</string>
@@ -113,7 +113,7 @@
     <string name="preference_lock_video_summary">Trava a tela enquanto filma para prevenir falhas acidentais na filmagem. Deslize na tela para desbloquear.</string>
     <string name="preference_rotate_preview">Rotação de visualização</string>
     <string name="preference_rotate_preview_summary">Opção para rotacionar a visualização (não afetará o resultado das fotos/vídeos)\n%s</string>
-
+	
     <string name="preference_screen_gui">GUI na tela…</string>
     <string name="preference_preview_size">Tamanho de Visualização</string>
     <string name="preference_ui_placement">Orientação IU</string>
@@ -148,7 +148,7 @@
     <string name="preference_keep_display_on_summary">Se habilitada, a tela não desligará enquanto a IU do Open Camera estiver aberta</string>
     <string name="preference_max_brightness">Forçar brilho máximo</string>
     <string name="preference_max_brightness_summary">Força a exibição da tela a ser em brilho máximo, em vez de no padrão do dispositivo</string>
-
+	
     <string name="preference_category_camera_quality">Configurações de Foto e Vídeo</string>
     <string name="preference_screen_photo_settings">Configurações de Foto</string>
     <string name="preference_screen_video_settings">Configurações de Vídeo</string>
@@ -167,7 +167,7 @@
     <string name="preference_textstamp">Texto customizado</string>
     <string name="preference_textstamp_summary">Use uma marca d\'água personalizada para fotos</string>
     <string name="preference_stamp_fontsize">Tamanho da fonte</string>
-    <string name="preference_stamp_fontsize_summary">Tamanho da fonte usada na marca d\'água sobre as fotos</string>
+    <string name="preference_stamp_fontsize_summary">Tamanho da fonte usada na marca d\'água sobre as fotos\n%s</string>
     <string name="video_quality">Resolução do vídeo</string>
     <string name="preference_force_video_4k">Forçar resolução 4K UHD (experimental)</string>
     <string name="preference_force_video_4k_summary">Habilita a resolução 3840x2160 para gravação de vídeos na câmera traseira - isso funcionará se seu dispositivo suportar e pode falhar se não suportar!</string>
@@ -202,7 +202,7 @@
     <string name="about_available">Disponível</string>
     <string name="about_not_available">Não disponível</string>
     <string name="about_copy_to_clipboard">Copiar para área de transferência</string>
-
+	
     <string name="take_photo">Tirar Foto</string>
     <string name="gallery">Galeria</string>
     <string name="exposure">Exposição</string>
@@ -211,7 +211,7 @@
     <string name="flash_mode">Modo de Flash</string>
     <string name="trash">Deletar Última Foto</string>
     <string name="share">Compartilhar Foto</string>
-
+	
     <string name="parent_folder">Pasta Principal</string>
     <string name="new_folder">Nova Pasta</string>
     <string name="cant_write_folder">Impossível salvar nessa pasta</string>

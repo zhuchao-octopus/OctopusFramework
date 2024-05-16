@@ -8,7 +8,7 @@
 
     <string name="on">Ein</string> <!-- whether a setting is turned on, e.g., "Auto-stabilise: On" -->
     <string name="off">Aus</string> <!-- whether a setting is turned off, e.g., "Auto-stabilise: Off" -->
-
+    
     <string name="choose_save_location">Speicherort auswählen:</string>
     <string name="clear_folder_history">Ordnerhistorie löschen</string>
     <string name="clear_folder_history_question">Ordnerhistorie löschen?</string>
@@ -68,10 +68,10 @@
     <string name="free_memory">Frei</string>
     <string name="screen_lock_message_1">[GESPERRT:</string>
     <string name="screen_lock_message_2">Zum Entsperren wischen]</string>
-
+    
     <string name="failed_to_stamp">Fehler beim Stempeln des Fotos</string>
     <string name="metres_abbreviation">m</string> <!-- symbol short for metres -->
-
+    
     <string name="preference_category_camera_effects">Kameraeffekte</string>
     <string name="preference_auto_stabilise">Bildlagekorrektur</string>
     <string name="preference_auto_stabilise_summary">Die Aufnahme wird automatisch waagerecht ausgerichtet (nur bei Fotos, Aufnahme dauert länger und kann bei kleinem Gerätespeicher fehlschlagen)</string>
@@ -188,9 +188,9 @@
     <string name="preference_textstamp">Textstempel</string>
     <string name="preference_textstamp_summary">Definition eines eigenen Textstempels</string>
     <string name="preference_stamp_fontsize">Stempel-Schriftgröße</string>
-    <string name="preference_stamp_fontsize_summary">Einstellung der Stempel-Schriftgröße</string>
+    <string name="preference_stamp_fontsize_summary">Einstellung der Stempel-Schriftgröße\n%s</string>
     <string name="preference_stamp_font_color">Stempel-Schriftfarbe</string>
-    <string name="preference_stamp_font_color_summary">Einstellung der Stempel-Schriftfarbe</string>
+    <string name="preference_stamp_font_color_summary">Einstellung der Stempel-Schriftfarbe\n%s</string>
     <string name="preference_stamp_style">Stempelstil</string>
     <string name="preference_stamp_style_summary">Einstellung der Stempelart\n%s</string>
     <string name="preference_background_photo_saving">Benutze Hintergrund-Thread</string>
@@ -221,7 +221,7 @@
     <string name="preference_record_audio_channels_summary">Mono- oder Stereo-Aufnahme (Stereo wird nur von einigen Geräten unterstützt)</string>
     <string name="preference_video_flash">Blitzlicht während der Videoaufnahme</string>
     <string name="preference_video_flash_summary">Wenn aktiviert, blinkt der Blitz während der Videoaufnahme.</string>
-
+    
     <string name="preference_category_online">Verschiedenes</string>
     <string name="preference_online_help">Online-Hilfe</string>
     <string name="preference_online_help_summary">Öffne die Open Camera Website in deinem Browser</string>
@@ -238,7 +238,7 @@
     <string name="about_available">verfügbar</string>
     <string name="about_not_available">nicht verfügbar</string>
     <string name="about_copy_to_clipboard">In die Zwischenablage kopieren</string>
-
+    
     <string name="take_photo">Foto aufnehmen</string>
     <string name="gallery">Galerie</string>
     <string name="exposure">Belichtung</string>
@@ -251,7 +251,7 @@
     <string name="switch_to_photo">Umschalten in Kamera Modus</string>
     <string name="trash">Letztes Foto löschen</string>
     <string name="share">Foto teilen</string>
-
+    
     <string name="parent_folder">Übergeordnetes Verzeichnis</string>
     <string name="new_folder">Neuer Ordner</string>
     <string name="cant_write_folder">In diesem Ordner kann nicht gespeichert werden</string>
@@ -303,7 +303,7 @@
     <string name="permission_rationale_title">Berechtigung benötigt</string>
     <string name="permission_rationale_camera">Kamera Berechtigung wird benötigt um die Kamera zu aktivieren</string>
     <string name="permission_rationale_location">Location-Berechtigung für das Geotagging benötigt (Speicherung der Standortdaten in
-        Fotos und Videos). Location-Berechtigung wird auch benötigt, um eine Verbindung zu Bluetooth LE Fernbedienungen herzustellen.</string>
+        Fotos und Videos). Location-Berechtigung wird auch benötigt, um eine Verbindung zu Bluetooth LE Fernbedienungen herzustellen (Android 11 or earlier).</string>
 
     <string name="preference_category_photo_debugging">Debug-Optionen</string>
     <string name="preference_category_video_debugging">Debug-Optionen</string>
@@ -889,10 +889,8 @@
     <string name="preference_camera_api_old">Original Camera-API</string>
     <string name="preference_camera_api_camera2">Camera2-API</string>
 
-    <string name="preference_audio_control_summary">Foto/Video aufnehmen, wenn ein Geräusch oder Sprachbefehl erkannt wird.
+    <string name="preference_audio_control_summary">Foto/Video aufnehmen, wenn ein Geräusch erkannt wird.
         Wenn aktiviert, nutze die Mikrofon-Taste auf dem Bildschirm, um die Erkennung zu starten/stoppen.
-        Beachte, dass die Option den Android Spracherkennungsdienst verwendet: Durch die Aktivierung ist es möglich, dass Audiodaten
-        an entfernte Server gesendet werden, um die Spracherkennung durchzuführen.
         \n%s</string>
 
     <!-- beware of string being too long to display! -->
@@ -970,5 +968,9 @@
 
     <string name="preference_comment_ypr">Eigentliche Eulerwinkel speichern</string>
     <string name="preference_comment_ypr_summary">Speichern der drei Euler-Winkel (Drehlage des Geräts im EXIF Benutzerkommentar des Fotos (nur im JPEG-Format)</string>
+
+    <string name="preference_audio_control_none">Keine</string>
+    <string name="preference_audio_control_noise">Lautes Geräusch</string>
+    <string name="preference_audio_control_voice">Sprachkommando: \"cheese\"</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
 
 </resources>

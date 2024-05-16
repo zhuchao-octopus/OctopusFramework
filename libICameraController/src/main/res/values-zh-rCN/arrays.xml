@@ -72,7 +72,7 @@
         <item>无</item>
         <item>单击</item>
         <item>双击</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_touch_capture_values">
         <item>none</item>
         <item>single</item>
@@ -86,7 +86,7 @@
         <item>切换自动稳定开/关</item>
         <item>更改设备音量</item>
         <item>什么都不做</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_volume_keys_values">
         <item>volume_take_photo</item>
         <item>volume_focus</item>
@@ -99,7 +99,7 @@
     <string-array name="preference_rotate_preview_entries">
         <item>不旋转</item>
         <item>旋转 180 度</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_rotate_preview_values">
         <item>0</item>
         <item>180</item>
@@ -241,15 +241,5 @@
         <item>audio_default</item>
         <item>audio_mono</item>
         <item>audio_stereo</item>
-    </string-array>
-    <string-array name="preference_audio_control_entries">
-        <item>无</item>
-        <item>大的声音</item>
-        <item>语音命令: \"cheese\"</item>
-    </string-array>
-    <string-array name="preference_audio_control_values">
-        <item>none</item>
-        <item>noise</item>
-        <item>voice</item>
     </string-array>
 </resources>

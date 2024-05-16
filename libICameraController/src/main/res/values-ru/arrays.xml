@@ -72,7 +72,7 @@
         <item>Нет</item>
         <item>Одно касание</item>
         <item>Двойное касание</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_touch_capture_values">
         <item>none</item>
         <item>single</item>
@@ -99,7 +99,7 @@
     <string-array name="preference_rotate_preview_entries">
         <item>Не поворачивать</item>
         <item>Повернуть на 180 градусов</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_rotate_preview_values">
         <item>0</item>
         <item>180</item>
@@ -241,16 +241,6 @@
         <item>audio_default</item>
         <item>audio_mono</item>
         <item>audio_stereo</item>
-    </string-array>
-    <string-array name="preference_audio_control_entries">
-        <item>Нет</item>
-        <item>Громкий шум</item>
-        <item>Голосовая команда: \"cheese\"</item>
-    </string-array>
-    <string-array name="preference_audio_control_values">
-        <item>none</item>
-        <item>noise</item>
-        <item>voice</item>
     </string-array>
     <string-array name="preference_save_zulu_time_entries">
         <item>Местное время</item>

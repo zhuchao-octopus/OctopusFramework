@@ -8,7 +8,7 @@
 
     <string name="on">Be</string> <!-- whether a setting is turned on, e.g., "Auto-stabilise: On" -->
     <string name="off">Ki</string> <!-- whether a setting is turned off, e.g., "Auto-stabilise: Off" -->
-
+    
     <string name="choose_save_location">Válaszd ki a mentés helyét:</string>
     <string name="clear_folder_history">Könyvtárelőzmények törlése</string>
     <string name="clear_folder_history_question">Törlöd a könyvtárelőzményeket?</string>
@@ -57,7 +57,7 @@
     <string name="color_effect">Színhatás</string>
     <string name="scene_mode">Fotó üzemmód</string>
     <string name="white_balance">Fehéregyensúly</string>
-
+    
     <string name="angle">Szög</string>
     <string name="direction">Irány</string>
     <string name="failed_to_open_camera_1">NEM SIKERÜLT MEGNYITNI A KAMERÁT.</string>
@@ -68,10 +68,10 @@
     <string name="free_memory">Szabad</string>
     <string name="screen_lock_message_1">[Zárolva:</string>
     <string name="screen_lock_message_2">Csúsztasd a feloldáshoz]</string>
-
+    
     <string name="failed_to_stamp">Nem sikerült információkat írni a fotóba</string>
     <string name="metres_abbreviation">m</string> <!-- symbol short for metres -->
-
+    
     <string name="preference_category_camera_effects">Kamera hatások</string>
     <string name="preference_auto_stabilise">Auto-stabilizálás</string>
     <string name="preference_auto_stabilise_summary">A képek elforgatásra kerülnek, így automatikusan jó irányba fognak állni (csak fotók) (a fotózás kicsit lassabb, és kevés memóriájú eszközön sikertelen is lehet)</string>
@@ -165,7 +165,7 @@
     <string name="preference_keep_display_on_summary">Ha engedélyezve van, akkor a képernyő nem kapcsol ki, míg az Open Camera főképernyője aktív</string>
     <string name="preference_max_brightness">Maximális fényerő kényszerítése</string>
     <string name="preference_max_brightness_summary">A kijelző mindenképpen maximális fényerővel üzemel, az eszköz alapértelmezése helyett</string>
-
+    
     <string name="preference_category_camera_quality">Fotó és videó beállítások</string>
     <string name="preference_screen_photo_settings">Fotó beállítások…</string>
     <string name="preference_screen_video_settings">Videó beállítások…</string>
@@ -188,9 +188,9 @@
     <string name="preference_textstamp">Egyéni szöveg</string>
     <string name="preference_textstamp_summary">Képek feliratozása egyéni szöveggel</string>
     <string name="preference_stamp_fontsize">Betűméret</string>
-    <string name="preference_stamp_fontsize_summary">A feliratozás szövegének betűmérete</string>
+    <string name="preference_stamp_fontsize_summary">A feliratozás szövegének betűmérete\n%s</string>
     <string name="preference_stamp_font_color">Betűszín</string>
-    <string name="preference_stamp_font_color_summary">A feliratozás szövegének betűszíne</string>
+    <string name="preference_stamp_font_color_summary">A feliratozás szövegének betűszíne\n%s</string>
     <string name="preference_stamp_style">Szövegstílus</string>
     <string name="preference_stamp_style_summary">A feliratozás szövegének stílusa\n%s</string>
     <string name="preference_background_photo_saving">Háttérszál használata</string>
@@ -220,7 +220,7 @@
     <string name="preference_record_audio_channels_summary">Monó vagy sztereó hangfelvétel készítése (sztereó felvételre nem minden eszköz képes)</string>
     <string name="preference_video_flash">Villogás felvétel alatt</string>
     <string name="preference_video_flash_summary">Ha engedélyezve van, a vaku ki-be kapcsol a felvétel alatt (ezzel jelezhető, hogy egy kamera épp rögzít a távolban)</string>
-
+    
     <string name="preference_category_online">Egyéb</string>
     <string name="preference_online_help">Online súgó</string>
     <string name="preference_online_help_summary">Open Camera weboldal megnyitása böngészőben</string>
@@ -237,7 +237,7 @@
     <string name="about_available">Elérhető</string>
     <string name="about_not_available">Nem elérhető</string>
     <string name="about_copy_to_clipboard">Vágólapra másolás</string>
-
+    
     <string name="take_photo">Fotózás</string>
     <string name="gallery">Galéria</string>
     <string name="exposure">Expozíció</string>
@@ -250,7 +250,7 @@
     <string name="switch_to_photo">Váltás fotó módba</string>
     <string name="trash">Utolsó kép törlése</string>
     <string name="share">Fénykép megosztása</string>
-
+    
     <string name="parent_folder">Szülő könyvtár</string>
     <string name="new_folder">Új könyvtár</string>
     <string name="cant_write_folder">Nem lehet írni ebbe a könyvtárba</string>
@@ -261,7 +261,7 @@
 
     <string name="saf_select_save_location">Válaszd ki a mentés helyét</string>
     <string name="saf_cancelled">Storage Access Framework visszavonva</string>
-
+    
     <!-- the permission names such as Microphone should match what Android calls them in the App permission settings -->
     <string name="permission_record_audio_not_available">Mikrofon engedély nem érhető el</string>
     <string name="permission_location_not_available">Hely engedély nem érhető el</string>
@@ -504,4 +504,9 @@
     <string name="preference_immersive_mode_navigation">Csak a virtuális navigációs gombok elrejtése</string>
     <string name="preference_immersive_mode_gui">Kezelőfelület elrejtése</string>
     <string name="preference_immersive_mode_everything">Minden elrejtése</string>
+
+    <string name="preference_audio_control_none">Nincs</string>
+    <string name="preference_audio_control_noise">Hangos zaj</string>
+    <string name="preference_audio_control_voice">Hangutasítás: \"csíííz\"</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+
 </resources>

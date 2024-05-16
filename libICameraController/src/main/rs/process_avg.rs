@@ -1,5 +1,5 @@
 #pragma version(1)
-#pragma rs java_package_name(com.zhuchao.android.opencamera)
+#pragma rs java_package_name(net.sourceforge.opencamera)
 #pragma rs_fp_relaxed
 
 rs_allocation bitmap_orig;
@@ -86,7 +86,7 @@ float3 __attribute__((kernel)) avg_f(float3 pixel_avg_f, uint32_t x, uint32_t y)
             L += dot(diff, diff);
             diff = convert_float3(rsGetElementAt_uchar4(bitmap_orig, ix-2, iy+2).rgb) - convert_float3(rsGetElementAt_uchar4(bitmap_new, ox-2, oy+2).rgb);
             L += dot(diff, diff);
-            diff = convert_float3(rsGetElementAt_uchar4(bitmap_orig, ix-2, iy+2).rgb) - convert_float3(rsGetElementAt_uchar4(bitmap_new, ox+2, oy+2).rgb);
+            diff = convert_float3(rsGetElementAt_uchar4(bitmap_orig, ix+2, iy+2).rgb) - convert_float3(rsGetElementAt_uchar4(bitmap_new, ox+2, oy+2).rgb);
             L += dot(diff, diff);
 
             L /= n_pixels;

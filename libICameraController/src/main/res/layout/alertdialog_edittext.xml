@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Generic xml for use with AlertDialog where we want an EditText.
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generic xml for use with AlertDialog where we want an EditText.
     Used in several places, so customisations should be done programatically in code - this is
     also why we don't set a "hint" here in the XML; this should be done by the caller. Similarly
     for the autofillHints.
@@ -16,6 +17,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
-        tools:ignore="Autofill,LabelFor" />
+        tools:ignore="Autofill,LabelFor"
+        />
 
 </LinearLayout>

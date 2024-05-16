@@ -9,10 +9,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/TestApplication" />
             <option value="$PROJECT_DIR$/libDecodeCore" />
             <option value="$PROJECT_DIR$/libFBaseUitls" />
             <option value="$PROJECT_DIR$/libGPersistUtils" />
+            <option value="$PROJECT_DIR$/libICameraController" />
             <option value="$PROJECT_DIR$/libINetUtils" />
             <option value="$PROJECT_DIR$/libJOSUtils" />
             <option value="$PROJECT_DIR$/libMediaUtils" />

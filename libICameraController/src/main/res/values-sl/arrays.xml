@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="focus_mode_icons">
+	<string-array name="focus_mode_icons">
         <item>drawable/focus_mode_auto</item>
         <item>drawable/focus_mode_infinity</item>
         <item>drawable/baseline_filter_vintage_white_48</item>
@@ -217,7 +217,7 @@
         <item>22</item>
         <item>24</item>
     </string-array>
-    <string-array name="preference_stamp_style_entries">
+	<string-array name="preference_stamp_style_entries">
         <item>@string/preference_stamp_style_plain</item>
         <item>@string/preference_stamp_style_shadowed</item>
         <item>@string/preference_stamp_style_background</item>
@@ -263,17 +263,7 @@
         <item>audio_mono</item>
         <item>audio_stereo</item>
     </string-array>
-    <string-array name="preference_audio_control_entries">
-        <item>Brez</item>
-        <item>Glasen zvok</item>
-        <item>Glasovni ukaz: \"cheese\"</item> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
-    </string-array>
-    <string-array name="preference_audio_control_values">
-        <item>none</item>
-        <item>noise</item>
-        <item>voice</item>
-    </string-array>
-    <string-array name="preference_save_zulu_time_entries">
+	<string-array name="preference_save_zulu_time_entries">
         <item>Krajevni čas</item>
         <item>UTC (Zulu)</item>
     </string-array>
@@ -301,7 +291,7 @@
         <item>2</item>
         <item>3</item>
     </string-array>
-    <string-array name="preference_front_camera_mirror_entries">
+	<string-array name="preference_front_camera_mirror_entries">
         <item>Brez zrcaljenja</item>
         <item>Zrcali fotografijo</item>
     </string-array>
@@ -309,7 +299,7 @@
         <item>preference_front_camera_mirror_no</item>
         <item>preference_front_camera_mirror_photo</item>
     </string-array>
-    <string-array name="preference_video_subtitle_entries">
+	<string-array name="preference_video_subtitle_entries">
         <item>Brez podnapisov</item>
         <item>Zapiši podnapise</item>
     </string-array>

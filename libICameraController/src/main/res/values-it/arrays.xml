@@ -86,7 +86,7 @@
         <item>Stabilizzatore on/off</item>
         <item>Controllo volume dispositivo</item>
         <item>Non fare niente</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_volume_keys_values">
         <item>volume_take_photo</item>
         <item>volume_focus</item>
@@ -99,7 +99,7 @@
     <string-array name="preference_rotate_preview_entries">
         <item>Non ruotare</item>
         <item>Ruotare di 180 gradi</item>
-    </string-array>
+        </string-array>
     <string-array name="preference_rotate_preview_values">
         <item>0</item>
         <item>180</item>
@@ -133,7 +133,7 @@
         <item>Triangle (1)</item>
         <item>Triangle (2)</item>
         <item>Diagonals</item>
-    </string-array>
+   	</string-array>
     <string-array name="preference_grid_values">
         <item>preference_grid_none</item>
         <item>preference_grid_3x3</item>
@@ -242,16 +242,6 @@
         <item>audio_mono</item>
         <item>audio_stereo</item>
     </string-array>
-    <string-array name="preference_audio_control_entries">
-        <item>Nessuno</item>
-        <item>Rumore forte</item>
-        <item>Comando vocale: \"cheese\"</item>
-    </string-array>
-    <string-array name="preference_audio_control_values">
-        <item>none</item>
-        <item>noise</item>
-        <item>voice</item>
-    </string-array>
     <string-array name="preference_save_zulu_time_entries">
         <item>Orario locale</item>
         <item>UTC (Zulu)</item>
@@ -295,5 +285,5 @@
     <string-array name="preference_video_subtitle_values">
         <item>preference_video_subtitle_no</item>
         <item>preference_video_subtitle_yes</item>
-    </string-array>
+    </string-array>    
 </resources>

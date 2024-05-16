@@ -1,7 +1,6 @@
 package com.zhuchao.android.session;
 
 import static android.content.Context.BIND_AUTO_CREATE;
-import static com.zhuchao.android.fbase.FileUtils.MD5;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_PACKAGE_NAME;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_MULTIMEDIA_SERVICE;
@@ -1376,15 +1375,13 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         //for (Map.Entry<String, Object> entry : mAllSessions.getAll().entrySet())
         {
             //for (HashMap.Entry<String, Object> m : ((LiveVideoSession) entry.getValue()).getAllVideos().getMap().entrySet())
-            for (HashMap.Entry<String, Object> m : videoList.getMap().entrySet())
-            {
+            for (HashMap.Entry<String, Object> m : videoList.getMap().entrySet()) {
                 oMedia = (OMedia) m.getValue();
                 if (oMedia.getMovie().getAlbum() != null) {
                     mAlbumList.putString(oMedia.getMovie().getAlbum(), oMedia.getMovie().getAlbum());
-                    mAlbumListID.putInt(oMedia.getMovie().getAlbum(),oMedia.getMovie().getSource_id());
+                    mAlbumListID.putInt(oMedia.getMovie().getAlbum(), oMedia.getMovie().getSource_id());
                 }
-                if (oMedia.getMovie().getArtist() != null)
-                    mArtistList.putString((oMedia.getMovie().getArtist()), oMedia.getMovie().getArtist());
+                if (oMedia.getMovie().getArtist() != null) mArtistList.putString((oMedia.getMovie().getArtist()), oMedia.getMovie().getArtist());
             }
         }
     }

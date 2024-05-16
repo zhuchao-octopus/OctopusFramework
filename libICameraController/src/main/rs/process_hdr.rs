@@ -1,5 +1,5 @@
 #pragma version(1)
-#pragma rs java_package_name(com.zhuchao.android.opencamera)
+#pragma rs java_package_name(net.sourceforge.opencamera)
 #pragma rs_fp_relaxed
 
 rs_allocation bitmap0;
@@ -38,25 +38,25 @@ const float weight_scale_c = (float)((1.0-1.0/127.5)/127.5);
 const int tonemap_algorithm_clamp_c = 0;
 const int tonemap_algorithm_exponential_c = 1;
 const int tonemap_algorithm_reinhard_c = 2;
-const int tonemap_algorithm_filmic_c = 3;
+const int tonemap_algorithm_fu2_c = 3;
 const int tonemap_algorithm_aces_c = 4;
 
 int tonemap_algorithm = tonemap_algorithm_reinhard_c;
 
-// for Exponential:
+// for Exponential; should match setting in HDRProcessor.java:
 const float exposure = 1.2f;
 
 // for Reinhard:
 float tonemap_scale = 1.0f;
 
-// for Filmic Uncharted 2:
-const float filmic_exposure_bias = 2.0f / 255.0f;
+// for FU2; should match setting in HDRProcessor.java:
+const float fu2_exposure_bias = 2.0f / 255.0f;
 float W = 11.2f;
 
 // for various:
 float linear_scale = 1.0f;
 
-static float Uncharted2Tonemap(float x) {
+static float FU2Tonemap(float x) {
     const float A = 0.15f;
     const float B = 0.50f;
     const float C = 0.10f;
@@ -120,13 +120,13 @@ static uchar4 tonemap(float3 hdr) {
             }*/
             break;
         }
-        case tonemap_algorithm_filmic_c:
+        case tonemap_algorithm_fu2_c:
         {
-            // Filmic Uncharted 2
-            float white_scale = 255.0f / Uncharted2Tonemap(W);
-            float curr_r = Uncharted2Tonemap(filmic_exposure_bias * hdr.r);
-            float curr_g = Uncharted2Tonemap(filmic_exposure_bias * hdr.g);
-            float curr_b = Uncharted2Tonemap(filmic_exposure_bias * hdr.b);
+            // FU2 (Filmic)
+            float white_scale = 255.0f / FU2Tonemap(W);
+            float curr_r = FU2Tonemap(fu2_exposure_bias * hdr.r);
+            float curr_g = FU2Tonemap(fu2_exposure_bias * hdr.g);
+            float curr_b = FU2Tonemap(fu2_exposure_bias * hdr.b);
             curr_r *= white_scale;
             curr_g *= white_scale;
             curr_b *= white_scale;
@@ -138,6 +138,7 @@ static uchar4 tonemap(float3 hdr) {
         }
         case tonemap_algorithm_aces_c:
         {
+            // https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/ (released under public domain cc0)
             const float a = 2.51f;
             const float b = 0.03f;
             const float c = 2.43f;
@@ -194,8 +195,14 @@ uchar4 __attribute__((kernel)) hdr(uchar4 in, uint32_t x, uint32_t y) {
     }
     else {
         pixels[0] = in;
-        parameter_A[0] = parameter_A[mid_indx];
-        parameter_B[0] = parameter_B[mid_indx];
+        // Reading from the parameter_A1, parameter_B1 instead of the local arrays should be equivalent -
+        // but doing it this way fixes odd bug on some Galaxy devices (e.g., S10e) with Android 12 - HDR photos
+        // would come out black due to corrupt values in the local parameter_A, parameter_B arrays
+        // n.b., doesn't affect hdr_n()
+        //parameter_A[0] = parameter_A[mid_indx];
+        //parameter_B[0] = parameter_B[mid_indx];
+        parameter_A[0] = parameter_A1;
+        parameter_B[0] = parameter_B1;
     }
 
     // middle image is not offset
@@ -206,8 +213,11 @@ uchar4 __attribute__((kernel)) hdr(uchar4 in, uint32_t x, uint32_t y) {
     }
     else {
         pixels[2] = in;
-        parameter_A[2] = parameter_A[mid_indx];
-        parameter_B[2] = parameter_B[mid_indx];
+        // See note above about bug with some Galaxy devices and Android 12
+        //parameter_A[2] = parameter_A[mid_indx];
+        //parameter_B[2] = parameter_B[mid_indx];
+        parameter_A[2] = parameter_A1;
+        parameter_B[2] = parameter_B1;
     }
 
     float3 hdr = (float3){0.0f, 0.0f, 0.0f};
@@ -257,7 +267,25 @@ uchar4 __attribute__((kernel)) hdr(uchar4 in, uint32_t x, uint32_t y) {
         float avg = (rgb.r+rgb.g+rgb.b) / 3.0f;
         float diff = fabs( avg - 127.5f );
         float weight = 1.0f;
-        if( diff > safe_range_c ) {
+        if( avg <= 127.5f ) {
+            // We now intentionally have the weights be non-symmetric, and have the weight fall to 0
+            // faster for dark pixels than bright pixels. This fixes ghosting problems of testHDR62,
+            // where we have very dark regions where we get ghosting between the middle and bright
+            // images, and the image is too dark for the deghosting algorithm below to resolve this.
+            // We're better off using smaller weight, so that more of the pixel comes from the
+            // bright image.
+            // This also gives improved lighting/colour in: testHDR1, testHDR2, testHDR11,
+            // testHDR12, testHDR21, testHDR52.
+            const float range_low_c = 32.0f;
+            const float range_high_c = 48.0f;
+            if( avg <= range_low_c ) {
+                weight = 0.0f;
+            }
+            else if( avg <= range_high_c ) {
+                weight = (avg - range_low_c) / (range_high_c - range_low_c);
+            }
+        }
+        else if( diff > safe_range_c ) {
             // scaling chosen so that 0 and 255 map to a non-zero weight of 0.01
             weight = 1.0f - 0.99f * (diff - safe_range_c) / (127.5f - safe_range_c);
         }
@@ -492,7 +520,18 @@ uchar4 __attribute__((kernel)) hdr_n(uchar4 in, uint32_t x, uint32_t y) {
         float avg = (rgb.r+rgb.g+rgb.b) / 3.0f;
         float diff = fabs( avg - 127.5f );
         float weight = 1.0f;
-        if( diff > safe_range_c ) {
+        if( avg <= 127.5f ) {
+            // see comment for corresponding code in hdr()
+            const float range_low_c = 32.0f;
+            const float range_high_c = 48.0f;
+            if( avg <= range_low_c ) {
+                weight = 0.0f;
+            }
+            else if( avg <= range_high_c ) {
+                weight = (avg - range_low_c) / (range_high_c - range_low_c);
+            }
+        }
+        else if( diff > safe_range_c ) {
             // scaling chosen so that 0 and 255 map to a non-zero weight of 0.01
             weight = 1.0f - 0.99f * (diff - safe_range_c) / (127.5f - safe_range_c);
         }
@@ -541,6 +580,9 @@ uchar4 __attribute__((kernel)) hdr_n(uchar4 in, uint32_t x, uint32_t y) {
                 // there will be at least one more adjacent image to look at
                 avg = (rgb.r+rgb.g+rgb.b) / 3.0f;
                 diff = fabs( avg - 127.5f );
+
+                // n.b., we don't have the codepath here for "if( avg <= 127.5f )" - causes problems
+                // for testHDR_exp5 (black blotches)
                 if( diff > safe_range_c ) {
                     // scaling chosen so that 0 and 255 map to a non-zero weight of 0.01
                     weight *= 1.0f - 0.99f * (diff - safe_range_c) / (127.5f - safe_range_c);

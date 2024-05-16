@@ -8,7 +8,7 @@
 
     <string name="on">Açık</string> <!-- whether a setting is turned on, e.g., "Auto-stabilise: On" -->
     <string name="off">Kapalı</string> <!-- whether a setting is turned off, e.g., "Auto-stabilise: Off" -->
-
+    
     <string name="choose_save_location">Kayıt yerini seç:</string>
     <string name="clear_folder_history">Klasör geçmişini temizle</string>
     <string name="clear_folder_history_question">Klasör geçmişini temizlemek istiyor musunuz?</string>
@@ -56,7 +56,7 @@
     <string name="color_effect">Renk efekti</string>
     <string name="scene_mode">Sahne modu</string>
     <string name="white_balance">Beyaz dengesi</string>
-
+    
     <string name="angle">Açı</string>
     <string name="direction">Yön</string>
     <string name="failed_to_open_camera_1">KAMERA AÇMA HATASI.</string>
@@ -67,10 +67,10 @@
     <string name="free_memory">Boş</string>
     <string name="screen_lock_message_1">[KİLİTLENDİ:</string>
     <string name="screen_lock_message_2">Açmak için kaydırın]</string>
-
+    
     <string name="failed_to_stamp">Fotoğrafa tarih bilgisi ekleme hatası</string>
     <string name="metres_abbreviation">m</string> <!-- symbol short for metres -->
-
+    
     <string name="preference_category_camera_effects">Kamera Efektleri</string>
     <string name="preference_auto_stabilise">Otomatik-stabilize</string>
     <string name="preference_auto_stabilise_summary">Resimler otomatik seviyesindeyken (yalnızca fotoğraflarda) otomatik olarak döndürülecektir (fotoğraf çekme yavaşlar ve bazı telefonlarda çok düşük bellek hatası oluşabilir)</string>
@@ -157,7 +157,7 @@
     <string name="preference_keep_display_on_summary">Etkinleştirilirse, Open Camera kullanıcı arayüzü aktifken ekran kapanmayacaktır</string>
     <string name="preference_max_brightness">Maksimum parlaklık için zorla</string>
     <string name="preference_max_brightness_summary">Cihazın öntanımlı ayarına bakmaksızın ekran görüntüsünü maksimum parlaklık için zorlar</string>
-
+    
     <string name="preference_category_camera_quality">Fotoğraf ve Vidyo Ayarları</string>
     <string name="preference_screen_photo_settings">Fotoğraf ayarları…</string>
     <string name="preference_screen_video_settings">Vidyo ayarları…</string>
@@ -179,9 +179,9 @@
     <string name="preference_textstamp">Özel yazı ekleme</string>
     <string name="preference_textstamp_summary">Özel bir yazı ekleyerek fotoğrafları işaretle</string>
     <string name="preference_stamp_fontsize">Font(yazı) boyutu</string>
-    <string name="preference_stamp_fontsize_summary">Fotoğrafların üzerine eklendiğinde kullanılacak font(yazı)boyutu</string>
+    <string name="preference_stamp_fontsize_summary">Fotoğrafların üzerine eklendiğinde kullanılacak font(yazı)boyutu\n%s</string>
     <string name="preference_stamp_font_color">Yazı rengi</string>
-    <string name="preference_stamp_font_color_summary">Fotoğrafların üzerine eklendiğinde kullanılacak yazı rengi</string>
+    <string name="preference_stamp_font_color_summary">Fotoğrafların üzerine eklendiğinde kullanılacak yazı rengi\n%s</string>
     <string name="preference_stamp_style">Yazı stili</string>
     <string name="preference_stamp_style_summary">Fotoğrafların üzerine eklendiğinde kullanılacak yazı stili\n%s</string>
     <string name="video_quality">Vidyo çözünürlüğü</string>
@@ -206,7 +206,7 @@
     <string name="preference_record_audio_channels_summary">Ses kaydetmede kullanılacak kanalları mono ya da stereo özelleştir(stereo sadece bazı cihazlarda desteklenir)</string>
     <string name="preference_video_flash">vidyo kaydederken Flaşı aç</string>
     <string name="preference_video_flash_summary">Etkinleştirildiğinde, flaş vidyo kaydederken yanıp sönecektir(kameranın hala uzak bir yerde kayıt yaptığını anlamak için kullanılabilir)</string>
-
+    
     <string name="preference_category_online">Karışık</string>
     <string name="preference_online_help">Online yardım</string>
     <string name="preference_donate">Geliştirmeyi desteklemek için bağışta bulunun</string>
@@ -222,7 +222,7 @@
     <string name="about_available">Etkinleştir</string>
     <string name="about_not_available">Etkin değil</string>
     <string name="about_copy_to_clipboard">Clipboarda kopyala</string>
-
+    
     <string name="take_photo">Fotoğraf çek</string>
     <string name="gallery">Galeri</string>
     <string name="exposure">Pozlama</string>
@@ -231,7 +231,7 @@
     <string name="flash_mode">Flaş Modu</string>
     <string name="trash">Son Resmi Sil</string>
     <string name="share">Fotoğraf Paylaş</string>
-
+    
     <string name="parent_folder">Ana Klasör</string>
     <string name="new_folder">Yeni Klasör</string>
     <string name="cant_write_folder">Bu klasöre kaydetme izniniz yok</string>
@@ -242,7 +242,7 @@
 
     <string name="saf_select_save_location">Kaydedilecek konumu seçin</string>
     <string name="saf_cancelled">Storage Access Framework iptal edildi</string>
-
+    
     <!-- the permission names such as Microphone should match what Android calls them in the App permission settings -->
     <string name="permission_record_audio_not_available">Mikrofon izni etkin değil</string>
     <string name="permission_location_not_available">Konum izni etkin değil</string>

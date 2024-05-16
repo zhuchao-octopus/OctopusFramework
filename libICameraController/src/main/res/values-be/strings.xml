@@ -177,9 +177,9 @@
     <string name="preference_textstamp">Прызначыць тэкст</string>
     <string name="preference_textstamp_summary">Друкаваць на фотаздымках дадзены тэкст</string>
     <string name="preference_stamp_fontsize">Памер шрыфту</string>
-    <string name="preference_stamp_fontsize_summary">Памер шрыфту для друку на фотаздымках</string>
+    <string name="preference_stamp_fontsize_summary">Памер шрыфту для друку на фотаздымках\n%s</string>
     <string name="preference_stamp_font_color">Колер шрыфту</string>
-    <string name="preference_stamp_font_color_summary">Колер шрыфту для друку на фотаздымках</string>
+    <string name="preference_stamp_font_color_summary">Колер шрыфту для друку на фотаздымках\n%s</string>
     <string name="preference_stamp_style">Стыль тэксту</string>
     <string name="preference_stamp_style_summary">Стыль для друку на фотаздымках\n%s</string>
     <string name="video_quality">Раздзяляльная здольнасць відэа</string>

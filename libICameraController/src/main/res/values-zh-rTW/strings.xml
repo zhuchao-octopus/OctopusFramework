@@ -8,7 +8,7 @@
 
     <string name="on">開啟</string> <!-- whether a setting is turned on, e.g., "Auto-level: On" -->
     <string name="off">關閉</string> <!-- whether a setting is turned off, e.g., "Auto-level: Off" -->
-
+    
     <string name="choose_save_location">選擇儲存位置：</string>
     <string name="clear_folder_history">清除資料夾歷史</string>
     <string name="clear_folder_history_question">清除資料夾歷史？</string>
@@ -57,7 +57,7 @@
     <string name="color_effect">顏色效果</string>
     <string name="scene_mode">場景模式</string>
     <string name="white_balance">白平衡</string>
-
+    
     <string name="angle">角度</string>
     <string name="direction">方向</string>
     <string name="failed_to_open_camera_1">開啟相機失敗。</string>
@@ -68,10 +68,10 @@
     <string name="free_memory">可用記憶體</string>
     <string name="screen_lock_message_1">[已鎖定：</string>
     <string name="screen_lock_message_2">滑動以解鎖]</string>
-
+    
     <string name="failed_to_stamp">在照片上標記失敗</string>
     <string name="metres_abbreviation">公尺</string> <!-- symbol short for metres -->
-
+    
     <string name="preference_category_camera_effects">相機特效</string>
     <string name="preference_auto_stabilise">自動水平</string>
     <string name="preference_auto_stabilise_summary">圖片將被旋轉，使它們自動對準(僅照片) (拍照更慢，且可能在記憶體過低的裝置上失敗)</string>
@@ -166,7 +166,7 @@
     <string name="preference_keep_display_on_summary">如果開啟，當 Open Camera 的使用者介面啟動時，螢幕將不會關閉。</string>
     <string name="preference_max_brightness">強制最大亮度</string>
     <string name="preference_max_brightness_summary">強制螢幕以最大亮度顯示，而不是裝置預設值</string>
-
+    
     <string name="preference_category_camera_quality">照片和影片設定</string>
     <string name="preference_screen_photo_settings">照片設定…</string>
     <string name="preference_screen_video_settings">影片設定…</string>
@@ -189,9 +189,9 @@
     <string name="preference_textstamp">自訂文字</string>
     <string name="preference_textstamp_summary">用自訂文字標記照片</string>
     <string name="preference_stamp_fontsize">字型大小</string>
-    <string name="preference_stamp_fontsize_summary">當在照片上標記文字時使用的字型大小</string>
+    <string name="preference_stamp_fontsize_summary">當在照片上標記文字時使用的字型大小\n%s</string>
     <string name="preference_stamp_font_color">字型顏色</string>
-    <string name="preference_stamp_font_color_summary">當在照片上標記文字時使用的字型顏色</string>
+    <string name="preference_stamp_font_color_summary">當在照片上標記文字時使用的字型顏色\n%s</string>
     <string name="preference_stamp_style">文字樣式</string>
     <string name="preference_stamp_style_summary">當在照片上標記文字時使用的樣式\n%s</string>
     <string name="preference_background_photo_saving">使用背景執行緒</string>
@@ -221,7 +221,7 @@
     <string name="preference_record_audio_channels_summary">指定使用單聲道或立體聲來錄音 (立體聲只支援某些裝置)</string>
     <string name="preference_video_flash">錄影時閃光</string>
     <string name="preference_video_flash_summary">如果啟用，錄影時閃光將開啟/關閉 (在一段距離外可以用來判斷相機仍然在錄製)</string>
-
+    
     <string name="preference_category_online">其他</string>
     <string name="preference_online_help">線上說明</string>
     <string name="preference_online_help_summary">在瀏覽器中開啟 Open Camera 網站</string>
@@ -238,7 +238,7 @@
     <string name="about_available">可用</string>
     <string name="about_not_available">不可用</string>
     <string name="about_copy_to_clipboard">複製到剪貼簿</string>
-
+    
     <string name="take_photo">拍照</string>
     <string name="gallery">相簿</string>
     <string name="exposure">曝光</string>
@@ -251,7 +251,7 @@
     <string name="switch_to_photo">切換到照片模式</string>
     <string name="trash">刪除上一張照片</string>
     <string name="share">分享照片</string>
-
+    
     <string name="parent_folder">上層資料夾</string>
     <string name="new_folder">新資料夾</string>
     <string name="cant_write_folder">不能寫入這個資料夾</string>
@@ -304,7 +304,7 @@
     <string name="permission_rationale_camera">需要相機權限來啟用相機</string>
     <string name="permission_rationale_record_audio">錄製具有音訊的影片和語音控制需要麥克風權限</string>
     <string name="permission_rationale_location">地理標記需要位置權限（在照片和影片中儲存位置資訊）。
-        連線到藍牙低功耗遠端控制裝置也需要位置權限。</string>
+        連線到藍牙低功耗遠端控制裝置也需要位置權限  (Android 11 or earlier)。</string>
 
     <string name="preference_category_photo_debugging">除錯選項</string>
     <string name="preference_category_video_debugging">除錯選項</string>
@@ -893,10 +893,8 @@
     <string name="preference_camera_api_old">原本的 camera API</string>
     <string name="preference_camera_api_camera2">Camera2 API</string>
 
-    <string name="preference_audio_control_summary">當偵測到聲音或是或音訊指令時拍照/錄影。
+    <string name="preference_audio_control_summary">檢測到聲音時拍照/錄像。
         當啟用時，使用螢幕上的麥克風按鈕來開始/停止監聽。
-        注意音訊指令選項會使用 Android 語音辨識服務：當使用這個選項時，
-音訊資料可能會可能會被傳送到遠端伺服器來進行語音辨識。
         \n%s</string>
 
     <!-- beware of string being too long to display! -->
@@ -974,5 +972,9 @@
 
     <string name="preference_comment_ypr">儲存偏擺 (yaw)、俯仰 (pitch) 及翻滾 (roll)</string>
     <string name="preference_comment_ypr_summary">在照片的 Exif user comment 中儲存裝置的偏擺 (yaw)、俯仰 (pitch) 及翻滾 (roll)（只有在 JPEG 格式）</string>
+
+    <string name="preference_audio_control_none">無</string>
+    <string name="preference_audio_control_noise">大的聲音</string>
+    <string name="preference_audio_control_voice">音訊指令：「cheese」</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
 
 </resources>

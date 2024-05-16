@@ -13,9 +13,9 @@ include ':libMediaUtils'
 include ':libSessionUtils'
 
 //include ':libEventInterface'
-//include ':libICameraController'
+include ':libICameraController'
 include ':libOpenComputerVision'
 include ':libOpenDetection'
 
-include ':TestApplication'
+///include ':TestApplication'
 

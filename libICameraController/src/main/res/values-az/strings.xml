@@ -157,7 +157,7 @@
     <string name="preference_textstamp">Mətn möhürü</string>
     <string name="preference_textstamp_summary">Şəkil üzərində xüsusi mətn yaz</string>
     <string name="preference_stamp_fontsize">Şrift ölçüsü</string>
-    <string name="preference_stamp_fontsize_summary">Şəkil üzərində mətn yazısı üçün şriftin ölçüsü</string>
+    <string name="preference_stamp_fontsize_summary">Şəkil üzərində mətn yazısı üçün şriftin ölçüsü\n%s</string>
     <string name="video_quality">Video keyfiyyəti</string>
     <string name="preference_force_video_4k">Video keyfiyyəti 4K UHD (eksperimental)</string>
     <string name="preference_force_video_4k_summary">Arxa kamera üçün 3840х2160 ölçüsü seçiləcək və yalnız cihaz verilən formatı dəstəklədiyi zaman işləyəcək!</string>

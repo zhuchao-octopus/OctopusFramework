@@ -8,5 +8,5 @@
     <style name="AppBaseTheme" parent="@style/Theme.AppCompat.NoActionBar">
         <!-- API 14 theme customizations can go here. -->
     </style>
-
+    
 </resources>

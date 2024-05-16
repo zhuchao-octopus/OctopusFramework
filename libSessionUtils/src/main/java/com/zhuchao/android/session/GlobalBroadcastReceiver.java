@@ -17,7 +17,6 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Bundle;
 
 import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.MMLog;
@@ -34,6 +33,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_PAIRING_CANCEL = "android.bluetooth.device.action.PAIRING_CANCEL";
     public static GlobalBroadcastReceiver mGlobalBroadcastReceiver = null;
     public static final String ACTION_MEDIA_SCANNER_SCAN_DIR = "android.intent.action.MEDIA_SCANNER_SCAN_DIR";
+
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     public synchronized static void registerGlobalBroadcastReceiver(Context context) {
         if (mGlobalBroadcastReceiver == null) {
@@ -186,7 +186,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
-    public static void startMediaScanning(Context context,String scanDir) {
+    public static void startMediaScanning(Context context, String scanDir) {
         Intent scanIntent = new Intent(ACTION_MEDIA_SCANNER_SCAN_DIR);
         scanIntent.setData(Uri.fromFile(new File(scanDir)));
         context.sendBroadcast(scanIntent);

@@ -8,7 +8,7 @@
 
     <string name="on">Acceso</string> <!-- whether a setting is turned on, e.g., "Auto-level: On" -->
     <string name="off">Spento</string> <!-- whether a setting is turned off, e.g., "Auto-level: Off" -->
-
+    
     <string name="choose_save_location">Scegli la posizione di salvataggio:</string>
     <string name="clear_folder_history">Pulisci la cronologia delle cartelle</string>
     <string name="clear_folder_history_question">Pulire la cronologia delle cartelle?</string>
@@ -57,7 +57,7 @@
     <string name="color_effect">Effetto Colore</string>
     <string name="scene_mode">Modalità di scena</string>
     <string name="white_balance">Bilanciamento bianco</string>
-
+    
     <string name="angle">Angolo</string>
     <string name="direction">Direzione</string>
     <string name="failed_to_open_camera_1">ERRORE NELL\'APRIRE LA FOTOCAMERA.</string>
@@ -68,10 +68,10 @@
     <string name="free_memory">Libera</string>
     <string name="screen_lock_message_1">[BLOCCATO:</string>
     <string name="screen_lock_message_2">Trascina per sbloccare]</string>
-
+    
     <string name="failed_to_stamp">Salvataggio timbro sulla foto fallito</string>
     <string name="metres_abbreviation">m</string> <!-- symbol short for metres -->
-
+    
     <string name="preference_category_camera_effects">Effetti fotocamera</string>
     <string name="preference_auto_stabilise">Auto-stabilizzazione</string>
     <string name="preference_auto_stabilise_summary">Le immagini saranno ruotate in modo da raddrizzarle automaticamente (solo per le foto) (è più lento per fare foto e può fallire su dispositivi con poca memoria)</string>
@@ -166,7 +166,7 @@
     <string name="preference_keep_display_on_summary">Se abilitato, il display non viene spento fintanto che l\'interfaccia principale di Open Camera è attiva</string>
     <string name="preference_max_brightness">Forza luminosità massima</string>
     <string name="preference_max_brightness_summary">Imposta lo schermo al massimo della luminosità, invece di usare le impostazioni predefinite</string>
-
+    
     <string name="preference_category_camera_quality">Impostazioni Foto e Video</string>
     <string name="preference_screen_photo_settings">Impostazioni Foto…</string>
     <string name="preference_screen_video_settings">Impostazioni Video…</string>
@@ -189,9 +189,9 @@
     <string name="preference_textstamp">Testo personalizzato</string>
     <string name="preference_textstamp_summary">Applica il timbro sulle foto con testo personalizzato</string>
     <string name="preference_stamp_fontsize">Dimensione carattere</string>
-    <string name="preference_stamp_fontsize_summary">Dimensione del carattere da utilizzare per il testo del timbro sulle foto</string>
+    <string name="preference_stamp_fontsize_summary">Dimensione del carattere da utilizzare per il testo del timbro sulle foto\n%s</string>
     <string name="preference_stamp_font_color">Colore carattere</string>
-    <string name="preference_stamp_font_color_summary">Colore del carattere da utilizzare per il testo del timbro sulle foto</string>
+    <string name="preference_stamp_font_color_summary">Colore del carattere da utilizzare per il testo del timbro sulle foto\n%s</string>
     <string name="preference_stamp_style">Stile testo</string>
     <string name="preference_stamp_style_summary">Stile da utilizzare per il testo del timbro sulle foto\n%s</string>
     <string name="preference_background_photo_saving">Usa processo in background</string>
@@ -221,7 +221,7 @@
     <string name="preference_record_audio_channels_summary">Specifica modalità mono o stereo per la registrazione audio (modalità stereo supportata solo su alcuni modelli)</string>
     <string name="preference_video_flash">Flash durante la registrazione video</string>
     <string name="preference_video_flash_summary">Se abilitato, il flash sarà acceso/spento quando si registra il video (può essere usato per capire a distanza se la telecamera sta ancora registrando)</string>
-
+    
     <string name="preference_category_online">Varie</string>
     <string name="preference_online_help">Aiuto online</string>
     <string name="preference_online_help_summary">Apre il sito web di Open Camera nel browser</string>
@@ -238,7 +238,7 @@
     <string name="about_available">Disponibile</string>
     <string name="about_not_available">Non disponibile</string>
     <string name="about_copy_to_clipboard">Copia negli appunti</string>
-
+    
     <string name="take_photo">Scatta foto</string>
     <string name="gallery">Galleria</string>
     <string name="exposure">Esposizione</string>
@@ -251,7 +251,7 @@
     <string name="switch_to_photo">Passa alla modalità foto</string>
     <string name="trash">Cancella ultima immagine</string>
     <string name="share">Condividi foto</string>
-
+    
     <string name="parent_folder">Cartella superiore</string>
     <string name="new_folder">Nuova cartella</string>
     <string name="cant_write_folder">Non puoi scrivere in questa cartella</string>
@@ -302,7 +302,7 @@
     <string name="no_permission">PERMESSO NON DISPONIBILE</string>
     <string name="permission_rationale_title">Richiesto permesso</string>
     <string name="permission_rationale_camera">Il permesso di utilizzo della fotocamera è necessario per abilitare la fotocamera</string>
-    <string name="permission_rationale_location">Per utilizzare il geotagging è richiesto il permesso di rilevamento della posizione (necessario anche per collegarsi a dispositivi di controllo Bluetooth LE)</string>
+    <string name="permission_rationale_location">Per utilizzare il geotagging è richiesto il permesso di rilevamento della posizione (Android 11 or earlier: necessario anche per collegarsi a dispositivi di controllo Bluetooth LE)</string>
 
     <string name="preference_category_photo_debugging">Opzioni di debugging</string>
     <string name="preference_category_video_debugging">Opzioni di debugging</string>
@@ -892,10 +892,8 @@
     <string name="preference_camera_api_old">API originale della fotocamera</string>
     <string name="preference_camera_api_camera2">API Camera2</string>
 
-    <string name="preference_audio_control_summary">Scatta foto/video quando viene rilevato un rumore, o su comando vocale.
+    <string name="preference_audio_control_summary">Scatta foto/video quando viene rilevato un rumore.
         Quando è abilitato, usa il pulsante del microfono sullo schermo per avviare/interrompere l\'ascolto.
-        Nota che l\'opzione comando vocale utilizza il servizio di riconoscimento vocale di Android: quando si utilizza questa
-        opzione, i dati audio possono essere inviati a server remoti per eseguire il riconoscimento vocale.
         \n%s</string>
 
     <!-- beware of string being too long to display! -->
@@ -975,5 +973,9 @@
     <string name="preference_comment_ypr_summary">Salva imbardata, beccheggio e rollio del dispositivo nei commenti utente dei metadati Exif delle foto (solo formato JPEG)</string>
 
     <string name="array_seekbar_preference_seekbar">Barra per cambiare il valore attuale di preferenza</string>
+
+    <string name="preference_audio_control_none">Nessuno</string>
+    <string name="preference_audio_control_noise">Rumore forte</string>
+    <string name="preference_audio_control_voice">Comando vocale: \"cheese\"</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
 
 </resources>
