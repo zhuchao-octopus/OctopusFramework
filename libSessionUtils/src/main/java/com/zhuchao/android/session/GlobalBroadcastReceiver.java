@@ -3,6 +3,7 @@ package com.zhuchao.android.session;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_CANBOX_CLASS_NAME;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_PACKAGE_NAME;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_RECORDER_CLASS_NAME;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothA2dp;
@@ -94,9 +95,14 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                 Intent intent1 = new Intent();
                 intent1.setComponent(new ComponentName(MESSAGE_EVENT_AIDL_PACKAGE_NAME, MESSAGE_EVENT_AIDL_CANBOX_CLASS_NAME));
                 context.startService(intent1);
+
                 Intent intent2 = new Intent();
                 intent2.setComponent(new ComponentName(MESSAGE_EVENT_AIDL_PACKAGE_NAME, MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME));
                 context.startService(intent2);
+
+                Intent intent3 = new Intent();
+                intent3.setComponent(new ComponentName(MESSAGE_EVENT_AIDL_PACKAGE_NAME, MESSAGE_EVENT_AIDL_RECORDER_CLASS_NAME));
+                context.startService(intent3);
                 break;
             case MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_HELLO:
                 MMLog.mm(null);

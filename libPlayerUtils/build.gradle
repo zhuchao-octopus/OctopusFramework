@@ -72,11 +72,12 @@ android {
 }
 
 dependencies {
+    api files('libs/clink210.jar')
     implementation project(path: ':libFBaseUitls')
     implementation project(path: ':libINetUtils')
     implementation project(path: ':libJOSUtils')
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    api files('libs/clink210.jar')
+
     ///compileOnly files('libs/libvlc-3.5.4-armeabi-v7a-release.aar')
     compileOnly files('libs/libvlc-all-4.0.0-eap9.aar')
 

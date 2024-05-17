@@ -44,7 +44,7 @@ public class MessageEvent {
 
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_CANBOX_SERVICE = "com.zhuchao.android.car.action.CANBOX_SERVICE";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_MULTIMEDIA_SERVICE = "com.zhuchao.android.car.action.MULTIMEDIA_SERVICE";
-
+    public static final String MESSAGE_EVENT_OCTOPUS_ACTION_RECORD_SERVICE = "com.zhuchao.android.car.action.RECORDER_SERVICE";
     public static final String MESSAGE_EVENT_MACHINE_ACTION_CONFIG_UPDATE = "com.octopus.android.MachineConfig_update";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_DISABLE_AUTO_PLAY = "com.octopus.android.action.DISABLE_AUTO_PLAY";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_AUTO_PLAY = "com.octopus.android.action.AUTO_PLAY";
@@ -70,6 +70,7 @@ public class MessageEvent {
     public final static String MESSAGE_EVENT_AIDL_CANBOX_CLASS_NAME = "com.zhuchao.android.car.service.CanboxService";
     public final static String MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME = "com.zhuchao.android.car.service.MultimService";
     public final static String MESSAGE_EVENT_AIDL_BT_CLASS_NAME = "com.zhuchao.android.car.service.BtService";
+    public final static String MESSAGE_EVENT_AIDL_RECORDER_CLASS_NAME = "com.zhuchao.android.car.service.RecordService";
 
 
 }

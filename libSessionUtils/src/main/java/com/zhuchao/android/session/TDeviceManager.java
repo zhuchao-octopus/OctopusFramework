@@ -20,10 +20,10 @@ public class TDeviceManager {
         this.uartFinder = new SerialPortFinder();
     }
 
-    public synchronized TUartFile getDevice(String devicePath, int baudrate) {
+    public synchronized TUartFile getDevice(String devicePath, int baudRate) {
         TUartFile tUartFile = (TUartFile) deviceList.getObject(devicePath);
         if (tUartFile == null) {
-            tUartFile = new TUartFile(devicePath, baudrate);
+            tUartFile = new TUartFile(devicePath, baudRate);
             deviceList.addItem(devicePath, tUartFile);
         }
         return tUartFile;

@@ -94,20 +94,20 @@ public class UtilCarKey {
 
             }
         }
-        if (mBTType != MachineConfig.VAULE_BT_TYPE_PARROT) {
+        if (mBTType != MachineConfig.VAULE_BT_TYPE_PARROT)
+        {
             boolean sendToCarPlay = false;
             String car_play = Util.getProperty("car_play_connect");
             Log.d("UtilCarKey", "car_play::" + car_play);
             if ("1".equals(car_play)) {
-                //				String top = AppConfig.getTopActivity();
-                //				if (top != null && top.contains("com.suding.speedplay")) {
+                //String top = AppConfig.getTopActivity();
+                //if (top != null && top.contains("com.suding.speedplay")) {
                 sendKeyToZlink(context, 1500);
                 sendToCarPlay = true;
-                //				}
+                //}
             }
 
             if (!sendToCarPlay) {
-
                 if (isTXZViInstalled(context, "com.txznet.smartadapter")) {
                     try {
                         context.sendBroadcast(new Intent("txz.intent.action.smartwakeup.triggerRecordButton").setPackage("com.txznet.txz"));

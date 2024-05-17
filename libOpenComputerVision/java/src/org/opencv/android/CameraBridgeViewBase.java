@@ -58,9 +58,9 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
     public static final int RGBA = 1;
     public static final int GRAY = 2;
 
-    public CameraBridgeViewBase(Context context, int cameraId) {
+    public CameraBridgeViewBase(Context context) {
         super(context);
-        mCameraType = cameraId;
+        mCameraType = CAMERA_ID_ANY;
         getHolder().addCallback(this);
         mMaxWidth = MAX_UNSPECIFIED;
         mMaxHeight = MAX_UNSPECIFIED;

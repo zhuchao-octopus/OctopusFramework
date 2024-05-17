@@ -17,5 +17,5 @@ include ':libICameraController'
 include ':libOpenComputerVision'
 include ':libOpenDetection'
 
-///include ':TestApplication'
+include ':TestApplication'
 

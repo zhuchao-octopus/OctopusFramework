@@ -55,8 +55,8 @@ public class JavaCamera2View extends CameraBridgeViewBase {
     private HandlerThread mBackgroundThread;
     protected Handler mBackgroundHandler;
 
-    public JavaCamera2View(Context context, int cameraId) {
-        super(context, cameraId);
+    public JavaCamera2View(Context context) {
+        super(context);
     }
 
     public JavaCamera2View(Context context, AttributeSet attrs) {
@@ -93,10 +93,10 @@ public class JavaCamera2View extends CameraBridgeViewBase {
                 Log.e(LOGTAG, "initializeCamera Error: camera isn't detected.");
                 return false;
             }
-            for (String cameraID : camList) {
-                //CameraCharacteristics character = manager.getCameraCharacteristics(cameraID);
-                Log.i(LOGTAG, "getCameraIdList() = " + cameraID);
-            }
+            ///for (String cameraID : camList) {
+                ///CameraCharacteristics character = manager.getCameraCharacteristics(cameraID);
+                ///Log.i(LOGTAG, "getCameraIdList() = " + cameraID);
+            ///}
             if (mCameraType == CameraBridgeViewBase.CAMERA_ID_ANY) {
                 mCameraID = camList[mCameraIndex];
             } else {
@@ -187,8 +187,8 @@ public class JavaCamera2View extends CameraBridgeViewBase {
                     image.close();
                 }
             }, mBackgroundHandler);
-            Surface surface = mImageReader.getSurface();
 
+            Surface surface = mImageReader.getSurface();
             mPreviewRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mPreviewRequestBuilder.addTarget(surface);
 

@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.os.StatFs;
 import android.os.storage.StorageManager;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
@@ -206,6 +207,13 @@ public class FileUtils {
         return Partitions;
     }
 
+    public static long getAvailableInternalStorageSpace() {
+        File path = Environment.getDataDirectory();
+        StatFs statFs = new StatFs(path.getPath());
+        long blockSize = statFs.getBlockSizeLong();
+        long availableBlocks = statFs.getAvailableBlocksLong();
+        return availableBlocks * blockSize;
+    }
 
     private static void makeFilePath(String filePath, String fileName) {
         File file;
