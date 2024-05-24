@@ -1,7 +1,7 @@
 /**
  * Copyright 2019 bejson.com
  */
-package com.zhuchao.android.session.PaserBean;
+package com.zhuchao.android.session.BeanItem;
 
 
 import com.zhuchao.android.video.Movie;

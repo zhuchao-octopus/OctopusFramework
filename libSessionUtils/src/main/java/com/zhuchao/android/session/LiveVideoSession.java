@@ -11,7 +11,7 @@ import com.zhuchao.android.fbase.MediaFile;
 import com.zhuchao.android.fbase.bean.LMusic;
 import com.zhuchao.android.fbase.bean.LVideo;
 import com.zhuchao.android.fbase.eventinterface.SessionCallback;
-import com.zhuchao.android.session.PaserBean.MovieListBean;
+import com.zhuchao.android.session.BeanItem.MovieListBean;
 import com.zhuchao.android.video.Movie;
 import com.zhuchao.android.video.OMedia;
 import com.zhuchao.android.video.VideoList;

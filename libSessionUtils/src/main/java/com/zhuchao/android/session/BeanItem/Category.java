@@ -1,4 +1,4 @@
-package com.zhuchao.android.session.PaserBean;
+package com.zhuchao.android.session.BeanItem;
 
 import java.io.Serializable;
 

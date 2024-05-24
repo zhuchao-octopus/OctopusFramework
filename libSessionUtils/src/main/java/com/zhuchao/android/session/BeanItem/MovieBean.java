@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.zhuchao.android.session.PaserBean;
+package com.zhuchao.android.session.BeanItem;
 
 /*
  * Movie class represents video entity with videoName, description, image thumbs and video url.

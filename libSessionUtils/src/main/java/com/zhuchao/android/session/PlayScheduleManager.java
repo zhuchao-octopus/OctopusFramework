@@ -9,8 +9,8 @@ import com.google.gson.JsonSyntaxException;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.eventinterface.SessionCallback;
-import com.zhuchao.android.session.PaserBean.ScheduleVideoBean;
-import com.zhuchao.android.session.PaserBean.ScheduleVideoRootBean;
+import com.zhuchao.android.session.BeanItem.ScheduleVideoBean;
+import com.zhuchao.android.session.BeanItem.ScheduleVideoRootBean;
 import com.zhuchao.android.video.ScheduleMedia;
 
 import java.io.File;

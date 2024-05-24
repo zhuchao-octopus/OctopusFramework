@@ -1,4 +1,4 @@
-package com.zhuchao.android.session;
+package com.zhuchao.android.session.recorder;
 
 import android.media.MediaRecorder;
 

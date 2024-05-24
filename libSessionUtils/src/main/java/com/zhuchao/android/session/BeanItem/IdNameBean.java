@@ -1,8 +1,6 @@
-package com.zhuchao.android.session.PaserBean;
+package com.zhuchao.android.session.BeanItem;
 
 public class IdNameBean {
-
-
     private int id;
     private String name;
     private int status;

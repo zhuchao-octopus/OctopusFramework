@@ -1,4 +1,4 @@
-package com.zhuchao.android.session;
+package com.zhuchao.android.session.base;
 
 import android.Manifest;
 import android.content.Intent;
@@ -6,17 +6,24 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.session.Cabinet;
 
 import java.util.Map;
 
@@ -92,4 +99,28 @@ public class BaseActivity extends AppCompatActivity {
         ///intent.putExtra("EXTRA_DATA", "Some Data");  // 传递额外的数据
         startActivity(intent);
     }
+
+    public void setColor(TextView textView, int colorResId) {
+        textView.setTextColor(ContextCompat.getColor(this, colorResId));
+    }
+
+    public void replaceFragment(@IdRes int containerViewId, @NonNull Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(containerViewId, fragment);
+        fragmentTransaction.commit();
+    }
+
+    public void switchFragment(@IdRes int containerViewId, @NonNull Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        // 附加新的Fragment，如果它已添加过
+        if (fragment.isAdded()) {
+            fragmentTransaction.attach(fragment);
+        } else {
+            fragmentTransaction.add(containerViewId, fragment);
+        }
+        fragmentTransaction.commit();
+    }
+
 }

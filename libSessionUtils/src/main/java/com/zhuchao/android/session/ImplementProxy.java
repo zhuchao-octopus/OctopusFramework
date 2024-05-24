@@ -11,8 +11,8 @@ import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.eventinterface.HttpCallback;
 import com.zhuchao.android.net.HttpUtils;
-import com.zhuchao.android.session.PaserBean.IdNameBean;
-import com.zhuchao.android.session.PaserBean.MovieListBean;
+import com.zhuchao.android.session.BeanItem.IdNameBean;
+import com.zhuchao.android.session.BeanItem.MovieListBean;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

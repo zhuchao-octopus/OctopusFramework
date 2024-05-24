@@ -1,7 +1,7 @@
 /**
  * Copyright 2019 bejson.com
  */
-package com.zhuchao.android.session.PaserBean;
+package com.zhuchao.android.session.BeanItem;
 
 /**
  * Auto-generated: 2019-04-20 17:47:10
