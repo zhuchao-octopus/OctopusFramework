@@ -43,7 +43,7 @@ public class LiveVideoSession implements SessionCallback {
     private int sessionId = DataID.SESSION_SOURCE_NONE;//会话ID
     private SessionCallback userSessionCallback = null;//会话回调
     private ImplementProxy implementProxy = null;//new ImplementProxy();执行代理
-    private VideoList mVideoList = new VideoList(null);//会话内容
+    private VideoList mVideoList = new VideoList();//会话内容
     private Map<Integer, String> videoTypeNameList = new TreeMap<Integer, String>();
     private int mPageIndexOrVid = 1;
     private int mTotalPages = 1;

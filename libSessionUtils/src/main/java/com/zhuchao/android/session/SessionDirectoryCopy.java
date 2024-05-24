@@ -37,7 +37,7 @@ public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
                 tMainTask.getProperties().putString("finderStatus", "finderEnd");
                 tMainTask.unPark();
             }
-            if (tMainTask.getCallBackHandler() != null) tMainTask.getCallBackHandler().onEventTask(tMainTask, Index);
+            if (tMainTask.getCallBackHandler() != null) tMainTask.getCallBackHandler().onEventTaskFinished(tMainTask, Index);
         }
     });
 
@@ -256,7 +256,7 @@ public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
         MMLog.i(TAG, "start to copy files ...");
         startCopyDirectory();
 
-        if (tMainTask.getCallBackHandler() != null) tMainTask.getCallBackHandler().onEventTask(tMainTask, DataID.TASK_STATUS_FINISHED_ALL);
+        if (tMainTask.getCallBackHandler() != null) tMainTask.getCallBackHandler().onEventTaskFinished(tMainTask, DataID.TASK_STATUS_FINISHED_ALL);
     }
 
     private void startCopyDirectory() {
@@ -307,9 +307,9 @@ public class SessionDirectoryCopy implements TTaskInterface, InvokeInterface {
             });
             fTask.callbackHandler(new TaskCallback() {
                 @Override
-                public void onEventTask(Object obj, int status) {
+                public void onEventTaskFinished(Object obj, int status) {
                     synchronized (tTaskThreadPool) {
-                        if (tMainTask.getCallBackHandler() != null) tMainTask.getCallBackHandler().onEventTask(obj, status);
+                        if (tMainTask.getCallBackHandler() != null) tMainTask.getCallBackHandler().onEventTaskFinished(obj, status);
                         tTaskThreadPool.deleteTask((TTask) obj);
                     }
                     ///LockSupport.unpark(tMainTask);

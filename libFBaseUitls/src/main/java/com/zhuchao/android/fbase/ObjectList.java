@@ -33,6 +33,7 @@ public class ObjectList {
     }
 
     public void addItem(String Name, Object Obj) {
+        mFHashMap.remove(Name);
         mFHashMap.put(Name, Obj);
     }
 

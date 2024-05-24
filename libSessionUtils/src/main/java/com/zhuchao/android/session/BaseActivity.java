@@ -1,8 +1,54 @@
 package com.zhuchao.android.session;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import com.zhuchao.android.fbase.MMLog;
+
+import java.util.Map;
 
 public class BaseActivity extends AppCompatActivity {
+    private ActivityResultLauncher<String[]> requestMultiplePermissionsLauncher;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestMultiplePermissionsLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), new ActivityResultCallback<Map<String, Boolean>>() {
+            @Override
+            public void onActivityResult(Map<String, Boolean> result) {
+                Boolean readExternalStorageGranted = result.getOrDefault(Manifest.permission.READ_EXTERNAL_STORAGE, false);
+                Boolean writeExternalStorageGranted = result.getOrDefault(Manifest.permission.WRITE_EXTERNAL_STORAGE, false);
+
+                if (readExternalStorageGranted != null && readExternalStorageGranted && writeExternalStorageGranted != null && writeExternalStorageGranted) {
+                    ///Toast.makeText(BaseActivity.this, "Permissions Granted", Toast.LENGTH_SHORT).show();
+                    /// Permission is granted, proceed with your logic
+                    MMLog.d("BaseActivity", "Permission is granted, proceed with your logic");
+                } else {
+                    ///Toast.makeText(BaseActivity.this, "Permissions Denied", Toast.LENGTH_SHORT).show();
+                    /// Permission is denied, show a message or handle it accordingly
+                    ///showPermissionsDeniedDialog();
+                    MMLog.e("BaseActivity", "Permission is denied, show a message or handle it accordingly");
+                }
+            }
+        });
+        if (!hasPermissions()) {
+            requestPermissions();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -13,5 +59,37 @@ public class BaseActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Cabinet.getEventBus().unRegisterEventObserver(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    private boolean hasPermissions() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermissions() {
+        requestMultiplePermissionsLauncher.launch(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE});
+    }
+
+    private void showPermissionsDeniedDialog() {
+        new AlertDialog.Builder(this).setTitle("Permissions Required").setMessage("This app needs storage permissions to function correctly. Please grant the required permissions in the app settings.").setPositiveButton("Go to Settings", (dialog, which) -> {
+            // Redirect to app settings
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", getPackageName(), null);
+            intent.setData(uri);
+            startActivity(intent);
+        }).setNegativeButton("Cancel", (dialog, which) -> {
+            // User chose to cancel
+            Toast.makeText(BaseActivity.this, "Permissions denied. The app may not function correctly.", Toast.LENGTH_SHORT).show();
+        }).show();
+    }
+
+    public void openLocalActivity(Class<?> cls) {
+        Intent intent = new Intent(this, cls);
+        ///intent.putExtra("EXTRA_DATA", "Some Data");  // 传递额外的数据
+        startActivity(intent);
     }
 }

@@ -396,7 +396,7 @@ public class OMedia implements PlayerCallback {
 
     public void stopFree_t() {
         if (tTask_stop.isBusy()) {
-            MMLog.i(TAG, "call stopFree_t(), but player is busy!!");
+            MMLog.i(TAG, "Call stopFree_t(), but player is busy!!");
             return;
         }
         tTask_play.freeFree();
@@ -441,7 +441,7 @@ public class OMedia implements PlayerCallback {
         return this;
     }
 
-    public OMedia getPre() {
+    public OMedia getPrev() {
         return preOMedia;
     }
 
@@ -767,7 +767,7 @@ public class OMedia implements PlayerCallback {
             ///    break;
         }
         if (isPlayerReady()) FPlayer.setCallback(this);//本地callback
-        MMLog.d(TAG, "GetPlayer() MagicNumber = " + magicNumber + ", FPlayer = " + FPlayer.getTAG());
+        MMLog.d(TAG, "GetPlayer() MagicNumber=" + magicNumber + ",FPlayer = " + FPlayer.getTAG());
 
     }
 

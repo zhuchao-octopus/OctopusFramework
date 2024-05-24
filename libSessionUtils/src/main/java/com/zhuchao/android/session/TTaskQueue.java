@@ -121,7 +121,7 @@ public class TTaskQueue {
                 doTTask.getProperties().putInt("result_status", DataID.TASK_STATUS_SUCCESS);
                 doTTask.callbackHandler(new TaskCallback() {
                     @Override
-                    public void onEventTask(Object obj, int status) {
+                    public void onEventTaskFinished(Object obj, int status) {
                         if (status == DataID.TASK_STATUS_SUCCESS || status == DataID.TASK_STATUS_FINISHED_STOP) {
                             ///主题任务完成了，队列不干预任务的生命周期
                             ///tTaskQueue.unPark();
@@ -165,9 +165,9 @@ public class TTaskQueue {
         //队列工作完毕的回调
         tTaskQueue.callbackHandler(new TaskCallback() {
             @Override
-            public void onEventTask(Object obj, int status) {
+            public void onEventTaskFinished(Object obj, int status) {
                 if (status == DataID.TASK_STATUS_FINISHED_STOP) {
-                    if (tTaskQueueCallback != null) tTaskQueueCallback.onEventTask(obj, status);
+                    if (tTaskQueueCallback != null) tTaskQueueCallback.onEventTaskFinished(obj, status);
                 }
             }
         });

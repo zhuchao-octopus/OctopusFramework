@@ -24,6 +24,10 @@ android {
         versionName "1.06"
         flavorDimensions "dimen"
         applicationId "com.zhuchao.android.wms"
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            abiFilters  "armeabi-v7a", "arm64-v8a"
+        }
     }
 
     buildTypes {
@@ -40,6 +44,9 @@ android {
         }
     }
     flavorDimensions 'Flavors_Dimen1'
+    buildFeatures {
+        viewBinding true
+    }
 
     android.applicationVariants.configureEach { variant ->
         variant.outputs.configureEach {
@@ -49,18 +56,56 @@ android {
             }
         }
     }
+
+    packagingOptions {
+        resources {
+            pickFirsts += ['META-INF/native-image/android-x86_64/jnijavacpp/jni-config.json', 'META-INF/native-image/android-x86_64/jnijavacpp/reflect-config.json', 'META-INF/native-image/android-x86/jnijavacpp/jni-config.json', 'META-INF/native-image/android-x86/jnijavacpp/reflect-config.json', 'META-INF/native-image/android-arm64/jnijavacpp/jni-config.json', 'META-INF/native-image/android-arm64/jnijavacpp/reflect-config.json', 'META-INF/native-image/android-arm/jnijavacpp/jni-config.json', 'META-INF/native-image/android-arm/jnijavacpp/reflect-config.json', 'META-INF/native-image/ios-x86_64/jnijavacpp/reflect-config.json']
+        }
+        exclude 'META-INF/native-image/android-x86/jnijavacpp/jni-config.json'
+        exclude 'META-INF/native-image/android-x86_64/jnijavacpp/jni-config.json'
+        exclude 'META-INF/native-image/macosx-arm64/jnijavacpp/jni-config.json'
+        exclude 'META-INF/native-image/macosx-x86_64/jnijavacpp/jni-config.json'
+        exclude 'META-INF/native-image/ios-arm64/jnijavacpp/jni-config.json'
+        exclude 'META-INF/native-image/ios-x86_64/jnijavacpp/jni-config.json'
+
+        exclude 'META-INF/native-image/linux-arm64/jnijavacpp/jni-config.json'
+        exclude 'META-INF/native-image/linux-ppc64le/jnijavacpp/jni-config.json'
+        exclude 'META-INF/native-image/linux-x86/jnijavacpp/jni-config.json'
+        exclude 'META-INF/native-image/linux-x86_64/jnijavacpp/jni-config.json'
+        exclude 'META-INF/native-image/linux-armhf/jnijavacpp/jni-config.json'
+
+        exclude 'META-INF/native-image/windows-x86/jnijavacpp/jni-config.json'
+        exclude 'META-INF/native-image/windows-x86_64/jnijavacpp/jni-config.json'
+
+        exclude 'META-INF/native-image/windows-x86/jnijavacpp/reflect-config.json'
+        exclude 'META-INF/native-image/windows-x86_64/jnijavacpp/reflect-config.json'
+
+        exclude 'META-INF/native-image/macosx-x86_64/jnijavacpp/reflect-config.json'
+        exclude 'META-INF/native-image/macosx-arm64/jnijavacpp/reflect-config.json'
+        exclude 'META-INF/native-image/ios-arm64/jnijavacpp/reflect-config.json'
+
+        exclude 'META-INF/native-image/linux-armhf/jnijavacpp/reflect-config.json'
+        exclude 'META-INF/native-image/linux-x86/jnijavacpp/reflect-config.json'
+        exclude 'META-INF/native-image/linux-x86_64/jnijavacpp/reflect-config.json'
+        exclude 'META-INF/native-image/linux-ppc64le/jnijavacpp/reflect-config.json'
+        exclude 'META-INF/native-image/linux-arm64/jnijavacpp/reflect-config.json'
+        exclude 'META-INF/native-image/ios-x86_64/jnijavacpp/reflect-config.json'
+        ///exclude 'META-INF/native-image/android-arm/jnijavacpp/reflect-config.json'
+    }
 }
 
 dependencies {
-
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
-
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-
+    implementation project(path: ':libOpenComputerVision')
     implementation project(path: ':libFBaseUitls')
     implementation project(path: ':libSessionUtils')
+    implementation project(path: ':libICameraController')
+    implementation project(path: ':libOpenDetection')
+
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.10.0'
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    testImplementation 'junit:junit:4.13.2'
 
 }

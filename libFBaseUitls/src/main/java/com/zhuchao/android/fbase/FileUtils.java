@@ -11,6 +11,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -27,8 +28,8 @@ import androidx.annotation.RequiresApi;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.zhuchao.android.fbase.bean.DirBean;
 import com.zhuchao.android.fbase.bean.FileBean;
+import com.zhuchao.android.fbase.bean.FolderBean;
 import com.zhuchao.android.fbase.bean.ImgFolderBean;
 import com.zhuchao.android.fbase.bean.LMusic;
 import com.zhuchao.android.fbase.bean.LVideo;
@@ -965,6 +966,33 @@ public class FileUtils {
         return bitmap;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static Bitmap getVideoFrame(int frameIndex, String videoPath) {
+        try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
+            retriever.setDataSource(videoPath);
+            return retriever.getFrameAtTime(frameIndex, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static Bitmap getVideoFrame(int frameIndex, String videoPath, int width, int height) {
+        try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
+            retriever.setDataSource(videoPath);
+            Bitmap frameBitmap = retriever.getFrameAtTime(frameIndex, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+
+            if (frameBitmap != null) {
+                frameBitmap = Bitmap.createScaledBitmap(frameBitmap, width, height, false);
+            }
+            return frameBitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     ///* 从文件当中获取专辑封面位图
     public static Bitmap getMusicThumbnail(Context context, long music_id, long album_id) {
         Bitmap bitmap = null;
@@ -1354,9 +1382,12 @@ public class FileUtils {
         Map<String, String> hashMap;
         ObjectList objectList = new ObjectList();
         hashMap = getMobileDiscName(context);
-        objectList.putString("Local Storage", "/storage/emulated/0");
+        FolderBean folderBean = new FolderBean("0", "/storage/emulated/0");
+        objectList.addObject("0", folderBean);
         for (Map.Entry<String, String> entity : hashMap.entrySet()) {
-            objectList.putString(entity.getKey(), entity.getValue());
+            folderBean = new FolderBean(entity.getKey(), entity.getValue());
+            ///objectList.putString(entity.getKey(), entity.getValue());
+            objectList.addObject(entity.getKey(), folderBean);
         }
         return objectList;
     }
@@ -1370,25 +1401,25 @@ public class FileUtils {
             for (File f : fileArray) {
                 if (f.isFile()) {
                     String dirName = f.getParent();
-                    DirBean dirBean = (DirBean) dirList.getObject(dirName);
-                    if (dirBean == null) {
-                        dirBean = new DirBean(Objects.requireNonNull(f.getParentFile()).getName(), dirName);
+                    FolderBean folderBean = (FolderBean) dirList.getObject(dirName);
+                    if (folderBean == null) {
+                        folderBean = new FolderBean(Objects.requireNonNull(f.getParentFile()).getName(), dirName);
                     }
                     if (fileType == DataID.MEDIA_TYPE_ID_VIDEO && MediaFile.isVideoFile(f.getAbsolutePath())) {
                         ///dirList.putString(f.getParent(), f.getParent());
                         ///fileList.putString(f.getName(), f.getAbsolutePath());
-                        dirList.addObject(f.getParent(), dirBean);
-                        dirBean.add(f.getAbsolutePath());
+                        dirList.addObject(f.getParent(), folderBean);
+                        folderBean.add(f.getAbsolutePath());
                     } else if (fileType == DataID.MEDIA_TYPE_ID_AUDIO && MediaFile.isAudioFile(f.getAbsolutePath())) {
                         ///dirList.putString(f.getParent(), f.getParent());
                         ///fileList.putString(f.getName(), f.getAbsolutePath());
-                        dirList.addObject(f.getParent(), dirBean);
-                        dirBean.add(f.getAbsolutePath());
+                        dirList.addObject(f.getParent(), folderBean);
+                        folderBean.add(f.getAbsolutePath());
                     } else if (fileType == DataID.MEDIA_TYPE_ID_AllFILE) {
                         ///dirList.putString(f.getParent(), f.getParent());
                         ///fileList.putString(f.getName(), f.getAbsolutePath());
-                        dirList.addObject(f.getParent(), dirBean);
-                        dirBean.add(f.getAbsolutePath());
+                        dirList.addObject(f.getParent(), folderBean);
+                        folderBean.add(f.getAbsolutePath());
                     }
                 } else {
                     ///dirList.putString(f.getName(), f.getAbsolutePath());
@@ -1411,21 +1442,28 @@ public class FileUtils {
 
         if (objectList.getCount() > 0) {
             for (HashMap.Entry<String, Object> entry : objectList.getAll().entrySet()) {
-                getSubDirList(entry.getValue().toString(), dirList, searchMode, fileType);
+                ///getSubDirList(entry.getValue().toString(), dirList, searchMode, fileType);
+                getSubDirList(((FolderBean) entry.getValue()).getPathName(), dirList, searchMode, fileType);
             }
         } else if (file.exists() && file.isDirectory()) {
             getSubDirList(file.getAbsolutePath(), dirList, searchMode, fileType);
         }
-        return dirList;
+        if (dirList.getCount() > 0) return dirList;
+        else return objectList;
     }
 
-    public static List<DirBean> getAllSubDirList(Context context, String topDir, int searchMode, int fileType) {//,int showMod
-        List<DirBean> list = new ArrayList<>();
+    public static List<FolderBean> getAllSubDirList(Context context, String topDir, int searchMode, int fileType) {//,int showMod
+        List<FolderBean> list = new ArrayList<>();
         ObjectList dirList = getAllSubMediaDirList(context, topDir, searchMode, fileType);
         for (Map.Entry<String, Object> entity : dirList.getAll().entrySet()) {
-            list.add((DirBean) entity.getValue());
+            list.add((FolderBean) entity.getValue());
         }
         return list;
+    }
+
+    public static ObjectList getAllSubDirList2(Context context, String topDir, int searchMode, int fileType) {//,int showMod
+        ObjectList dirList = getAllSubMediaDirList(context, topDir, searchMode, fileType);
+        return dirList;
     }
 
     public static boolean isExternalStorageDocument(Uri uri) {

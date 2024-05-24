@@ -55,6 +55,11 @@ public class VideoList {
         mRequestCallBack = null;
     }
 
+    public VideoList(String listName) {
+        this.mListName = listName;
+        mRequestCallBack = null;
+    }
+
     public VideoList(NormalCallback mRequestCallBack) {
         this.mRequestCallBack = mRequestCallBack;
     }
@@ -152,7 +157,7 @@ public class VideoList {
     public void update(OMedia oMedia) {
         if (oMedia == null) return;
         ///if (mFHashMap.containsKey(oMedia.md5())) return;
-        if (mFHashMap.size() == 0 || mFHashMap == null) mFirstItem = oMedia;
+        if (mFHashMap.size() == 0) mFirstItem = oMedia;
         if (mLastItem == null) mLastItem = oMedia;
         mFHashMap.put(oMedia.md5(), oMedia);
         if (mRequestCallBack != null) mRequestCallBack.onEventRequest(TAG, getCount());
@@ -160,7 +165,7 @@ public class VideoList {
 
     public void delete(OMedia oMedia) {
         if (oMedia == null) return;
-        OMedia oPre = oMedia.getPre();
+        OMedia oPre = oMedia.getPrev();
         OMedia oNext = oMedia.getNext();
         if (oPre != null) oPre.setNext(oNext);
         if (oNext != null) oNext.setPre(oPre);
@@ -249,7 +254,7 @@ public class VideoList {
         ooMedia = oMedia;//找下一个
         for (int i = 0; i < getCount(); i++) {
             if (ooMedia == null) break;
-            ooMedia = ooMedia.getPre();
+            ooMedia = ooMedia.getPrev();
             if ((ooMedia != null) && (ooMedia.isAvailable(null))) return ooMedia;
         }
         return null;
@@ -422,17 +427,6 @@ public class VideoList {
         ///if (oMedia.equals(mLastItem)) MMLog.log(TAG, "printFollow() done");
     }
 
-    public void loadFromDir(String dirPath, int FileType) {
-        if (mThreadLock) return;
-        new Thread() {
-            public void run() {
-                mThreadLock = true;
-                getMediaFiles(dirPath, FileType);
-                mThreadLock = false;
-            }
-        }.start();
-    }
-
     private void getMediaFiles(String FilePath, int fileType) {
         File path = new File(FilePath);
         File[] files = path.listFiles();
@@ -478,7 +472,7 @@ public class VideoList {
             String fileDir = String.valueOf(context.getCacheDir()) + "/";//"/sdcard/Octopus/";
             String filePathName = fileDir + fileName; //FileUtils.getDirBaseExternalStorageDirectory(".octopus") + "/" + fileName;
             FileUtils.MakeDirsExists(Objects.requireNonNull(fileDir));
-            MMLog.d(TAG, mListName + " save to " + filePathName);
+            ///MMLog.d(TAG, mListName + " save to " + filePathName);
             StringBuilder stringBuffer = new StringBuilder();
             FileWriter fw = new FileWriter(filePathName);
 
@@ -509,6 +503,24 @@ public class VideoList {
             for (String str : newList) {
                 this.add(str);
             }
+        }
+    }
+
+    public void loadFromDir(String dirPath, int FileType) {
+        if (mThreadLock) return;
+        new Thread() {
+            public void run() {
+                mThreadLock = true;
+                getMediaFiles(dirPath, FileType);
+                mThreadLock = false;
+            }
+        }.start();
+    }
+
+    public void loadFromStringList(List<String> filesList) {
+        clear();
+        for (String str : filesList) {
+            add(str);
         }
     }
 }

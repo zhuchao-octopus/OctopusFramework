@@ -311,10 +311,10 @@ public class TTask implements TTaskInterface {
             int result_status = properties.getInt("result_status", DataID.TASK_STATUS_FINISHED_STOP);
             doCallBackHandle(result_status);//任务完成回调用户接口
 
-            if (threadPoolCallback != null) {
+            if (threadPoolCallback != null) {//组后告诉线程池所有任务完成
                 //内部使用，当前任务已经完成，宿主任务终止
                 //（内部使用）任务结束、终止、停止不再需要运行，305
-                threadPoolCallback.onEventTask(TTask.this, DataID.TASK_STATUS_FINISHED_STOP);
+                threadPoolCallback.onEventTaskFinished(TTask.this, DataID.TASK_STATUS_FINISHED_STOP);
             } else {
                 //打印任务完成log
                 MMLog.log(TTask.this.TAG, "Ttask " + tName + " finished,invoked = " + invokedCount);
@@ -365,7 +365,7 @@ public class TTask implements TTaskInterface {
                 //e.printStackTrace();
             }
             if (taskCallback != null) {
-                taskCallback.onEventTask(this, status);
+                taskCallback.onEventTaskFinished(this, status);
             }
         }
     }

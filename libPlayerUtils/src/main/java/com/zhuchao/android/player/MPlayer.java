@@ -14,13 +14,16 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.zhuchao.android.fbase.MMLog;
-import com.zhuchao.android.fbase.ThreadUtils;
 import com.zhuchao.android.fbase.PlaybackEvent;
+import com.zhuchao.android.fbase.ThreadUtils;
 import com.zhuchao.android.fbase.eventinterface.PlayerCallback;
 
 import org.jetbrains.annotations.NotNull;
@@ -585,6 +588,8 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         playerStatusInfo.setVideoW(i);
         playerStatusInfo.setVideoH(i1);
         MMLog.log(TAG, "onVideoSizeChanged width=" + i + " height=" + i1 + ", SurfaceView.getWidth()=" + mSurfaceView.getWidth() + " SurfaceView.getHeight()=" + mSurfaceView.getHeight());
+        ///autoFitVideoSize(mSurfaceView, i, i1);
+        ///MMLog.log(TAG, "onVideoSizeChanged width=" + i + " height=" + i1 + ", SurfaceView.getWidth()=" + mSurfaceView.getWidth() + " SurfaceView.getHeight()=" + mSurfaceView.getHeight());
         if (mSurfaceView != null) {
             ThreadUtils.runOnMainUiThread(new Runnable() {
                 @Override
@@ -811,7 +816,7 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
         int deviceWidth = view.getWidth();//mContext.getResources().getDisplayMetrics().widthPixels;
         int deviceHeight = view.getHeight();//surfaceView.getHeight();// wgetResources().getDisplayMetrics().heightPixels;
         float devicePercent = 0;
-        MMLog.d(TAG, "autoFitVideoSize: deviceViewWidth=" + deviceWidth + "deviceViewHeight=" + deviceHeight);
+        ///MMLog.d(TAG, "autoFitVideoSize: deviceViewWidth=" + deviceWidth + " deviceViewHeight=" + deviceHeight);
 
         //下面进行求屏幕比例,因为横竖屏会改变屏幕宽度值,所以为了保持更小的值除更大的值.
         if (mContext.getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) { //竖屏
@@ -844,11 +849,25 @@ public class MPlayer extends PlayControl implements MediaPlayer.OnCompletionList
             }
         }
 
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) surfaceView.getLayoutParams();
-        layoutParams.width = videoWidth;
-        layoutParams.height = videoHeight;
-        layoutParams.verticalBias = 0.5f;
-        layoutParams.horizontalBias = 0.5f;
-        surfaceView.setLayoutParams(layoutParams);
+        ViewGroup.LayoutParams layoutParams = surfaceView.getLayoutParams();
+        if (layoutParams instanceof ConstraintLayout.LayoutParams) {
+            ConstraintLayout.LayoutParams constLayoutParams = (ConstraintLayout.LayoutParams) surfaceView.getLayoutParams();
+            constLayoutParams.width = videoWidth;
+            constLayoutParams.height = videoHeight;
+            constLayoutParams.verticalBias = 0.5f;
+            constLayoutParams.horizontalBias = 0.5f;
+            surfaceView.setLayoutParams(constLayoutParams);
+        } else if (layoutParams instanceof FrameLayout.LayoutParams) {
+            FrameLayout.LayoutParams frameLayoutParams = (FrameLayout.LayoutParams) surfaceView.getLayoutParams();
+            frameLayoutParams.width = videoWidth;
+            frameLayoutParams.height = videoHeight;
+            surfaceView.setLayoutParams(layoutParams);
+        }
+        else if (layoutParams instanceof LinearLayout.LayoutParams) {
+            LinearLayout.LayoutParams linearLayoutParams = (LinearLayout.LayoutParams) surfaceView.getLayoutParams();
+            linearLayoutParams.width = videoWidth;
+            linearLayoutParams.height = videoHeight;
+            surfaceView.setLayoutParams(layoutParams);
+        }
     }
 }

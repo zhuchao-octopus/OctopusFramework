@@ -134,7 +134,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
     }
 
     @Override
-    public void onEventTask(Object obj, int status) {
+    public void onEventTaskFinished(Object obj, int status) {
         TTask tTask = ((TTask) obj);
         if (existObject(tTask.tTag)) {
 
@@ -143,7 +143,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
 
             if (getTaskCounter() == getCount()) {
                 if (tTask.getCallBackHandler() != null) {
-                    tTask.getCallBackHandler().onEventTask(this, DataID.TASK_STATUS_FINISHED_ALL);//池中所有任务完成
+                    tTask.getCallBackHandler().onEventTaskFinished(this, DataID.TASK_STATUS_FINISHED_ALL);//池中所有任务完成
                 }
             }
             if (tTask.getTaskName().contains(ANONYMOUS_NAME)) {
@@ -165,7 +165,7 @@ public class TTaskThreadPool extends ObjectList implements TaskCallback {
         }
 
         @Override
-        public void onEventTask(Object obj, int status) {
+        public void onEventTaskFinished(Object obj, int status) {
             handlerThreadPool();
         }
 

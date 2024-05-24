@@ -100,9 +100,9 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                 intent2.setComponent(new ComponentName(MESSAGE_EVENT_AIDL_PACKAGE_NAME, MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME));
                 context.startService(intent2);
 
-                Intent intent3 = new Intent();
-                intent3.setComponent(new ComponentName(MESSAGE_EVENT_AIDL_PACKAGE_NAME, MESSAGE_EVENT_AIDL_RECORDER_CLASS_NAME));
-                context.startService(intent3);
+                ///Intent intent3 = new Intent();
+                ///intent3.setComponent(new ComponentName(MESSAGE_EVENT_AIDL_PACKAGE_NAME, MESSAGE_EVENT_AIDL_RECORDER_CLASS_NAME));
+                ///context.startService(intent3);
                 break;
             case MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_HELLO:
                 MMLog.mm(null);

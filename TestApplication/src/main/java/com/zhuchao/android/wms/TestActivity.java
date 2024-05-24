@@ -1,10 +1,11 @@
-package com.zhuchao.android.detect;
+package com.zhuchao.android.wms;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.zhuchao.android.detect.DetectionBasedTracker;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.libOpenDetection.R;
 
