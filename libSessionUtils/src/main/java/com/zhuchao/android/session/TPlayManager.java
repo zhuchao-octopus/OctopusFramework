@@ -1320,7 +1320,6 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     }
 
     public void disconnectedMyAidlService(Context context) {
-
         if (tIMyMediaAidlInterface != null) {///&& tIMyMediaAidlInterface.asBinder().isBinderAlive()
             try {
                 tIMyMediaAidlInterface.playStop();

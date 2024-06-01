@@ -403,7 +403,10 @@ public class TMediaLibraryManager implements SessionCallback {
     };
 
     public void singleTaskSearchLocalDisc() {
-        if (mContext == null) return;
+        if (mContext == null) {
+            MMLog.d(TAG, "Init Session From Local Disc mContext is null!");
+            return;
+        }
         TTask tTask = TTaskManager.getSingleTaskFor(TAG + ".LocalDisc").resetAll();
         if (!tTask.isBusy()) {
             tTask.invoke(tag -> {
