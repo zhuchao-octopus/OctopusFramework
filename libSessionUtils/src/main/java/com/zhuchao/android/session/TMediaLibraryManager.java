@@ -33,7 +33,7 @@ public class TMediaLibraryManager implements SessionCallback {
     private static final String TAG = "TMediaLibraryManager";
     public static final String ACTION_MEDIA_SCANNER_SCAN_DIR = "android.intent.action.MEDIA_SCANNER_SCAN_DIR";
     @SuppressLint("StaticFieldLeak")
-    private static Context mContext = null;
+    private  static Context mContext = null;
     private SessionCallback mUserSessionCallback = null;
     private final ObjectList mAllSessions = new ObjectList();//存储所有的分类
     private final LiveVideoSession mNetCategorySession = new LiveVideoSession(DataID.SESSION_SOURCE_NONE, null);//网络会话
@@ -55,12 +55,15 @@ public class TMediaLibraryManager implements SessionCallback {
     ///private boolean mThreadLock2 = false;
     ///private boolean mThreadLock3 = false;
     ///private int initStage = 0;//0 从网络， 1 //从本地, >=3 已经初始化完成
-    private TMediaLibraryManager tMediaLibraryManager = null;
+    @SuppressLint("StaticFieldLeak")
+    private static TMediaLibraryManager tMediaLibraryManager = null;
 
-    public synchronized TMediaLibraryManager getInstance(Context context) {
+    public static synchronized TMediaLibraryManager getInstance(Context context) {
         if (tMediaLibraryManager == null) {
-            if (context == null) tMediaLibraryManager = new TMediaLibraryManager();
-            else tMediaLibraryManager = new TMediaLibraryManager(context, null);
+            if (context == null)
+                tMediaLibraryManager = new TMediaLibraryManager();
+            else
+                tMediaLibraryManager = new TMediaLibraryManager(context, null);
         }
         if (mContext == null) mContext = context;
         return tMediaLibraryManager;
@@ -71,13 +74,13 @@ public class TMediaLibraryManager implements SessionCallback {
 
     public TMediaLibraryManager(Context context, SessionCallback sessionCallback) {
         this.mUserSessionCallback = sessionCallback;
-        Cabinet.getEventBus().registerEventObserver(this);
         mContext = context;
-        MMLog.d(TAG, "Initial TMediaManager from local!");
+        tMediaLibraryManager = this;
+        Cabinet.getEventBus().registerEventObserver(this);
     }
 
     @SuppressLint("SdCardPath")
-    public void updateLocalMedias() {
+    public void InitialLocalMedias() {
         //setUserSessionCallback(sessionCallback);
         initSessionFromLocal();
         initSessionFromMobileDisc();//usb
