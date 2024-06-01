@@ -7,7 +7,7 @@ ext {
     //GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libOpenC-CNN'
-    PUBLISH_VERSION = '0.2' //设备支持多接口
+    PUBLISH_VERSION = '1.0' //设备支持多接口
 }
 
 afterEvaluate {
