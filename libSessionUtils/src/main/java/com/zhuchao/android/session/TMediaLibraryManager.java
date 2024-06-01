@@ -58,37 +58,26 @@ public class TMediaLibraryManager implements SessionCallback {
     private TMediaLibraryManager tMediaLibraryManager = null;
 
     public synchronized TMediaLibraryManager getInstance(Context context) {
-        if (tMediaLibraryManager == null) tMediaLibraryManager = new TMediaLibraryManager(context, null);
-        if(mContext == null) mContext = context;
+        if (tMediaLibraryManager == null) {
+            if (context == null) tMediaLibraryManager = new TMediaLibraryManager();
+            else tMediaLibraryManager = new TMediaLibraryManager(context, null);
+        }
+        if (mContext == null) mContext = context;
         return tMediaLibraryManager;
     }
 
     public TMediaLibraryManager() {
-        ///this.mUserSessionCallback = sessionCallback;
-        ///mContext = context;
-        ///Cabinet.getEventBus().registerEventObserver(this); //this!=mContext
-        ///GlobalBroadcastReceiver.registerGlobalBroadcastReceiver(mContext);
-        ///registerUSBBroadcastReceiver();
-        ///Data.setOplayerSessionRootUrl(hostPath);
-        ///mCategorySession = new LiveVideoSession(DataID.SESSION_SOURCE_NONE, this);
-        ///mNetCategorySession.setUserSessionCallback(this);
-        ///MMLog.d(TAG, "Initial TMediaManager!");
     }
 
     public TMediaLibraryManager(Context context, SessionCallback sessionCallback) {
         this.mUserSessionCallback = sessionCallback;
+        Cabinet.getEventBus().registerEventObserver(this);
         mContext = context;
-        Cabinet.getEventBus().registerEventObserver(this); //this!=mContext
-        ///GlobalBroadcastReceiver.registerGlobalBroadcastReceiver(mContext);
-        ///registerUSBBroadcastReceiver();
-        ///Data.setOplayerSessionRootUrl(hostPath);
-        ///mCategorySession = new LiveVideoSession(DataID.SESSION_SOURCE_NONE, this);
-        ///mNetCategorySession.setUserSessionCallback(this);
-        MMLog.d(TAG, "Initial TMediaManager!");
+        MMLog.d(TAG, "Initial TMediaManager from local!");
     }
 
     @SuppressLint("SdCardPath")
-    public void updateMedias() {
+    public void updateLocalMedias() {
         //setUserSessionCallback(sessionCallback);
         initSessionFromLocal();
         initSessionFromMobileDisc();//usb
@@ -409,6 +398,7 @@ public class TMediaLibraryManager implements SessionCallback {
     };
 
     public void singleTaskSearchLocalDisc() {
+        if (mContext == null) return;
         TTask tTask = TTaskManager.getSingleTaskFor(TAG + ".LocalDisc").resetAll();
         if (!tTask.isBusy()) {
             tTask.invoke(tag -> {
@@ -472,6 +462,7 @@ public class TMediaLibraryManager implements SessionCallback {
         Uri data = null;
         switch (courierInterface.getId()) {
             case MessageEvent.MESSAGE_EVENT_USB_MOUNTED:
+                if (mContext == null) break;
                 mMobileUSBDiscs = FileUtils.getMobileDiscName(mContext);
                 ///printUSBList();
 
@@ -491,6 +482,7 @@ public class TMediaLibraryManager implements SessionCallback {
                 break;
 
             case MessageEvent.MESSAGE_EVENT_USB_UNMOUNT:
+                if (mContext == null) break;
                 mMobileUSBDiscs = FileUtils.getMobileDiscName(mContext);
                 String subName2 = null;
                 String usbName = null;
@@ -515,6 +507,7 @@ public class TMediaLibraryManager implements SessionCallback {
                 ///mMyHandler.sendEmptyMessage(MessageEvent.MESSAGE_EVENT_USB_UNMOUNT);
                 break;
             case MessageEvent.MESSAGE_EVENT_USB_SCANNING_FINISHED:
+                if (mContext == null) break;
                 intent = (Intent) courierInterface.getObj();
                 bundle = intent.getExtras();
                 data = intent.getData();

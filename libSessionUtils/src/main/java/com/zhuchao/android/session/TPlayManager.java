@@ -1375,7 +1375,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
             onTCourierSubscribeEventAidl(new PEventCourier(MessageEvent.MESSAGE_EVENT_MEDIA_LIBRARY));
         } else {///从本地媒体库初始化
             if (tTMediaLibraryManager == null) this.tTMediaLibraryManager = new TMediaLibraryManager(mContext, this);
-            tTMediaLibraryManager.updateMedias();
+            tTMediaLibraryManager.updateLocalMedias();
         }
     }
 
@@ -1383,7 +1383,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         if (hasPlayAidlProxy()) {
             onTCourierSubscribeEventAidl(new PEventCourier(MessageEvent.MESSAGE_EVENT_MEDIA_LIBRARY));
         } else if (tTMediaLibraryManager != null) {
-            tTMediaLibraryManager.updateMedias();
+            tTMediaLibraryManager.updateLocalMedias();
         }
     }
 
