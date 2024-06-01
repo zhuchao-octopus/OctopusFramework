@@ -186,9 +186,14 @@ public class TMediaLibraryManager implements SessionCallback {
 
     //第一次重置式初始化
     public void initSessionFromMobileDisc() {
-        mMobileUSBDiscs = FileUtils.getMobileDiscName(mContext);
-        for (Map.Entry<String, String> entry : mMobileUSBDiscs.entrySet()) {
-            singleTaskSearchMobileDisc(entry.getKey(), entry.getValue());
+        if(mContext != null) {
+            mMobileUSBDiscs = FileUtils.getMobileDiscName(mContext);
+            for (Map.Entry<String, String> entry : mMobileUSBDiscs.entrySet()) {
+                singleTaskSearchMobileDisc(entry.getKey(), entry.getValue());
+            }
+        }
+        else {
+            MMLog.d(TAG,"Init Session From Mobile Disc mContext is null!");
         }
     }
 
