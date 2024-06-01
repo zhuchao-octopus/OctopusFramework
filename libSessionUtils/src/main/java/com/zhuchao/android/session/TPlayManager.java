@@ -80,7 +80,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     private int videoOutHeight = 0;
     private final ObjectList allPlayLists = new ObjectList();
     ///private ObjectList mMediaMetadataList = new ObjectList();
-    private TMediaLibraryManager tTMediaLibraryManager = new TMediaLibraryManager();///由于代理的原因需要额外初始化
+    private TMediaLibraryManager tTMediaLibraryManager = TMediaLibraryManager.getInstance(null);///由于代理的原因需要额外初始化
 
     private boolean isClientProxy = false;
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1375,13 +1375,13 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
             ///从本地媒体库初始化
             MMLog.d(TAG, "Initial TMediaLibraryManager from aidl!");
             onTCourierSubscribeEventAidl(new PEventCourier(MessageEvent.MESSAGE_EVENT_MEDIA_LIBRARY));
-        } else if (tTMediaLibraryManager == null) {
+        } else ///if (tTMediaLibraryManager == null)
+        {
             MMLog.d(TAG, "Initial TMediaLibraryManager from local!");
             this.tTMediaLibraryManager = TMediaLibraryManager.getInstance(mContext);
             this.tTMediaLibraryManager.setUserSessionCallback(this);
             tTMediaLibraryManager.InitialLocalMedias();
         }
-
     }
 
     public void updateLocalMedias() {

@@ -33,7 +33,7 @@ public class TMediaLibraryManager implements SessionCallback {
     private static final String TAG = "TMediaLibraryManager";
     public static final String ACTION_MEDIA_SCANNER_SCAN_DIR = "android.intent.action.MEDIA_SCANNER_SCAN_DIR";
     @SuppressLint("StaticFieldLeak")
-    private  static Context mContext = null;
+    private static Context mContext = null;
     private SessionCallback mUserSessionCallback = null;
     private final ObjectList mAllSessions = new ObjectList();//存储所有的分类
     private final LiveVideoSession mNetCategorySession = new LiveVideoSession(DataID.SESSION_SOURCE_NONE, null);//网络会话
@@ -60,19 +60,17 @@ public class TMediaLibraryManager implements SessionCallback {
 
     public static synchronized TMediaLibraryManager getInstance(Context context) {
         if (tMediaLibraryManager == null) {
-            if (context == null)
-                tMediaLibraryManager = new TMediaLibraryManager();
-            else
-                tMediaLibraryManager = new TMediaLibraryManager(context, null);
+            if (context == null) tMediaLibraryManager = new TMediaLibraryManager();
+            else tMediaLibraryManager = new TMediaLibraryManager(context, null);
         }
         if (mContext == null) mContext = context;
         return tMediaLibraryManager;
     }
 
-    public TMediaLibraryManager() {
+    private TMediaLibraryManager() {
     }
 
-    public TMediaLibraryManager(Context context, SessionCallback sessionCallback) {
+    private TMediaLibraryManager(Context context, SessionCallback sessionCallback) {
         this.mUserSessionCallback = sessionCallback;
         mContext = context;
         tMediaLibraryManager = this;
@@ -189,14 +187,13 @@ public class TMediaLibraryManager implements SessionCallback {
 
     //第一次重置式初始化
     public void initSessionFromMobileDisc() {
-        if(mContext != null) {
+        if (mContext != null) {
             mMobileUSBDiscs = FileUtils.getMobileDiscName(mContext);
             for (Map.Entry<String, String> entry : mMobileUSBDiscs.entrySet()) {
                 singleTaskSearchMobileDisc(entry.getKey(), entry.getValue());
             }
-        }
-        else {
-            MMLog.d(TAG,"Init Session From Mobile Disc mContext is null!");
+        } else {
+            MMLog.d(TAG, "Init Session From Mobile Disc mContext is null!");
         }
     }
 
