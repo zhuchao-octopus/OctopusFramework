@@ -96,9 +96,9 @@ android {
 
 dependencies {
     implementation project(path: ':libOpenComputerVision')
-    implementation project(path: ':libFBaseUitls')
+    implementation project(path: ':libBaseUitls')
     implementation project(path: ':libSessionUtils')
-    implementation project(path: ':libICameraController')
+    implementation project(path: ':libCamera')
     implementation project(path: ':libOpenDetection')
 
     implementation 'androidx.appcompat:appcompat:1.6.1'

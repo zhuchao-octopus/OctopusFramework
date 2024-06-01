@@ -21,7 +21,11 @@ afterEvaluate {
         repositories {
             maven {
                 allowInsecureProtocol true
-                url GITHUB_REPO_PATH
+                url GITHUB_REPO_REMOTE_PATH
+            }
+            maven {
+                allowInsecureProtocol true
+                url GITHUB_REPO_LOCAL_PATH // 第二个仓库地址
             }
         }
     }
@@ -110,15 +114,15 @@ android {
 }
 
 dependencies {
+    implementation project(path: ':libBaseUitls')
+    implementation project(path: ':libFOSUtils')
+    implementation project(path: ':libDNetUtils')
+    implementation project(path: ':libGXMediaUtils')
     //implementation project(path: ':libEventInterface')
-    implementation project(path: ':libFBaseUitls')
-    implementation project(path: ':libJOSUtils')
-    implementation project(path: ':libINetUtils')
-    implementation project(path: ':libMediaUtils')
-    implementation project(path: ':libICameraController')
+    implementation project(path: ':libCamera')
     implementation project(path: ':libOpenDetection')
-    implementation project(path: ':libPlayerUtils')
-    implementation project(path: ':libGPersistUtils')
+    implementation project(path: ':libGXPlayerUtils')
+    implementation project(path: ':libFPersistUtils')
 
     implementation('androidx.appcompat:appcompat:1.6.1')
     implementation('androidx.media:media:1.6.0')

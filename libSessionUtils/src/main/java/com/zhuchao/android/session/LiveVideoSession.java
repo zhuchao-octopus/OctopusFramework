@@ -3,13 +3,14 @@ package com.zhuchao.android.session;
 import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
 import android.content.Context;
+import android.os.Build;
 
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MediaFile;
-import com.zhuchao.android.fbase.bean.LMusic;
-import com.zhuchao.android.fbase.bean.LVideo;
+import com.zhuchao.android.fbase.bean.AudioMetaFile;
+import com.zhuchao.android.fbase.bean.VideoMetaFile;
 import com.zhuchao.android.fbase.eventinterface.SessionCallback;
 import com.zhuchao.android.session.BeanItem.MovieListBean;
 import com.zhuchao.android.video.Movie;
@@ -194,29 +195,32 @@ public class LiveVideoSession implements SessionCallback {
 
     public void initMediasFromLocal(Context context, Integer fType) {
         if (fType == DataID.MEDIA_TYPE_ID_VIDEO) {
-            List<LVideo> lVideos = FileUtils.getLocalSystemVideos(context);
-            for (LVideo lVideo : lVideos) {
-                Movie movie = new Movie(lVideo.getPath());
-                ///String fileName = getFileName(movie.getSrcUrl());
-                ///if (NotEmptyString(fileName)) movie.setName(fileName);
-                movie.setName(lVideo.getName());
-                movie.setMovie_id(lVideo.getId());
+            List<VideoMetaFile> videoMetaFiles = FileUtils.getLocalSystemVideos(context);
+            for (VideoMetaFile videoMetaFile : videoMetaFiles) {
+                Movie movie = new Movie(videoMetaFile.getFilePathName());
+                movie.setTitle(videoMetaFile.getTitle());
+                movie.setName(videoMetaFile.getName());
+                movie.setMovieId(videoMetaFile.getId());
+                movie.setDuration(videoMetaFile.getDuration());
+                movie.setAlbum(null);
+                movie.setArtist(null);
                 OMedia oMedia = new OMedia(movie);
                 mVideoList.addRow(oMedia);
             }
         } else if (fType == DataID.MEDIA_TYPE_ID_AUDIO) {
-            List<LMusic> lMusics = FileUtils.getLocalSystemMusics(context);
-            for (LMusic lmusic : lMusics) {
-                Movie movie = new Movie(lmusic.getPath());
-                ///String fileName = getFileName(movie.getSrcUrl());
-                ///if (NotEmptyString(fileName)) movie.setName(fileName);
-                movie.setName(lmusic.getName());
-                movie.setMovie_id(lmusic.getId());
-                movie.setSource_id(lmusic.getAlbumId());
-                movie.setAlbum(lmusic.getAlbum());
-                movie.setArtist(lmusic.getArtist());
-                movie.setSize(lmusic.getSize());
-                movie.setDuration(lmusic.getDuration());
+            List<AudioMetaFile> audioMetaFiles = FileUtils.getLocalSystemMusics(context);
+            for (AudioMetaFile audioMetaFile : audioMetaFiles) {
+                Movie movie = new Movie(audioMetaFile.getFilePathName());
+                movie.setTitle(audioMetaFile.getTitle());
+                movie.setName(audioMetaFile.getName());
+                movie.setMovieId(audioMetaFile.getId());
+                movie.setSourceId(audioMetaFile.getAlbumId());
+                movie.setAlbum(audioMetaFile.getAlbum());
+                movie.setArtist(audioMetaFile.getArtist());
+                movie.setActor(audioMetaFile.getAuthor());
+                movie.setDescription(audioMetaFile.getGenre());
+                movie.setStudio(audioMetaFile.getAlbumArtist());
+                movie.setDuration(audioMetaFile.getDuration());
                 OMedia oMedia = new OMedia(movie);
                 mVideoList.update(oMedia);
             }
@@ -238,82 +242,74 @@ public class LiveVideoSession implements SessionCallback {
     public void initMediasFromUSB(Context context, String filePathName, Integer fType, LiveVideoSession videoSession, LiveVideoSession audioSession) {
         ///if (fType == DataID.MEDIA_TYPE_ID_AUDIO_VIDEO)
         {
-            List<LVideo> lVideos = FileUtils.getLocalSystemVideos(context);
+            List<VideoMetaFile> videoMetaFiles = FileUtils.getLocalSystemVideos(context);
             ///MMLog.d(TAG,"lVideos.count="+lVideos.size());
-            for (LVideo lVideo : lVideos) {
-                if (!lVideo.getPath().contains(filePathName)) continue;
-                Movie movie = new Movie(lVideo.getPath());
-                ///String fileName = getFileName(movie.getSrcUrl());
-                ///if (NotEmptyString(fileName)) movie.setName(fileName);
-                movie.setName(lVideo.getName());
-                movie.setMovie_id(lVideo.getId());
+            for (VideoMetaFile videoMetaFile : videoMetaFiles) {
+                if (!videoMetaFile.getFilePathName().contains(filePathName)) continue;
+                Movie movie = new Movie(videoMetaFile.getFilePathName());
+                movie.setTitle(videoMetaFile.getTitle());
+                movie.setName(videoMetaFile.getName());
+                movie.setMovieId(videoMetaFile.getId());
+                movie.setDuration(videoMetaFile.getDuration());
+                movie.setAlbum(null);
+                movie.setArtist(null);
                 OMedia oMedia = new OMedia(movie);
                 videoSession.getVideoList().add(oMedia);
             }
         }
         ///else if (fType == DataID.MEDIA_TYPE_ID_AUDIO)
         {
-            List<LMusic> lMusics = FileUtils.getLocalSystemMusics(context);
+            List<AudioMetaFile> audioMetaFiles = FileUtils.getLocalSystemMusics(context);
             ///MMLog.d(TAG,"lMusics.count="+lMusics.size());
-            for (LMusic lmusic : lMusics) {
-                if (!lmusic.getPath().contains(filePathName)) continue;
+            for (AudioMetaFile audioMetaFile : audioMetaFiles) {
+                if (!audioMetaFile.getFilePathName().contains(filePathName)) continue;
+                Movie movie = new Movie(audioMetaFile.getFilePathName());
+                movie.setTitle(audioMetaFile.getTitle());
+                movie.setName(audioMetaFile.getName());
+                movie.setMovieId(audioMetaFile.getId());
+                movie.setSourceId(audioMetaFile.getAlbumId());
+                movie.setAlbum(audioMetaFile.getAlbum());
+                movie.setArtist(audioMetaFile.getArtist());
+                movie.setActor(audioMetaFile.getAuthor());
+                movie.setDescription(audioMetaFile.getGenre());
+                movie.setStudio(audioMetaFile.getAlbumArtist());
+                movie.setDuration(audioMetaFile.getDuration());
 
-                Movie movie = new Movie(lmusic.getPath());
-                ///String fileName = getFileName(movie.getSrcUrl());
-                ///if (NotEmptyString(fileName)) movie.setName(fileName);
-                movie.setName(lmusic.getName());
-                movie.setMovie_id(lmusic.getId());
-                movie.setSource_id(lmusic.getAlbumId());
-                movie.setAlbum(lmusic.getAlbum());
-                movie.setArtist(lmusic.getArtist());
-                movie.setSize(lmusic.getSize());
-                movie.setDuration(lmusic.getDuration());
                 OMedia oMedia = new OMedia(movie);
                 audioSession.getVideoList().add(oMedia);
             }
         }
     }
 
-    public void initMediasFromPath(Context context, String FilePath, Integer fType, LiveVideoSession videoSession, LiveVideoSession audioSession) {
-        List<String> FileList = MediaFile.getMediaFiles(FilePath, fType);
-        List<String> list = null;
-        for (int i = 0; i < FileList.size(); i++) {
-            Movie movie = new Movie(FileList.get(i));
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                list = MediaFile.readMetadataFromMusic(movie.getSrcUrl());
-            }
-            String fileName = getFileName(movie.getSrcUrl());
-            if (NotEmptyString(fileName)) movie.setName(fileName);
-            if (list != null) {
-                movie.setArtist(list.get(0));
-                movie.setActor(list.get(1));
-                movie.setAlbum(list.get(2));
-            }
-            OMedia oMedia = new OMedia(movie);
-            if (oMedia.isVideo()) videoSession.getVideoList().add(oMedia);
-            else if (oMedia.isAudio()) audioSession.getVideoList().add(oMedia);
-            //mVideoList.add(oMedia);
-        }
-        FileList.clear();
-    }
-
     public void synchronizationInitMediasFromPath(Context context, String FilePath, Integer fType, LiveVideoSession videoSession, LiveVideoSession audioSession, LiveVideoSession syVideoSession, LiveVideoSession syAudioSession) {
         List<String> FileList = MediaFile.getMediaFiles(FilePath, fType);
-        List<String> list = null;
+        ///List<String> list = null;
         for (int i = 0; i < FileList.size(); i++) {
             Movie movie = new Movie(FileList.get(i));
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                list = MediaFile.readMetadataFromMusic(movie.getSrcUrl());
-            }
+            ///if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            /// list = MediaFile.readMetadataFromMusic(movie.getSrcUrl());
+            ///}
             String fileName = getFileName(movie.getSrcUrl());
             if (NotEmptyString(fileName)) movie.setName(fileName);
-            if (list != null) {
-                movie.setArtist(list.get(0));
-                movie.setActor(list.get(1));
-                movie.setAlbum(list.get(2));
-                ///movie.setDuration(Long.parseLong(list.get(3)));
-            }
+            ///if (list != null) {
+            ///movie.setArtist(list.get(0));
+            ///movie.setActor(list.get(1));
+            ///movie.setAlbum(list.get(2));
+            ///movie.setDuration(Long.parseLong(list.get(3)));
+            ///}
             if (MediaFile.isVideoFile(movie.getSrcUrl())) {
+                VideoMetaFile videoMetaFile = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    videoMetaFile = FileUtils.readMetadataFromVideo(context, movie.getSrcUrl());
+                }
+                if (videoMetaFile != null) {
+                    movie.setTitle(videoMetaFile.getTitle());
+                    movie.setName(videoMetaFile.getName());
+                    movie.setMovieId(videoMetaFile.getId());
+                    movie.setDuration(videoMetaFile.getDuration());
+                    movie.setAlbum(null);
+                    movie.setArtist(null);
+                }
                 OMedia oMedia_v = syVideoSession.getVideoList().findByPath(movie.getSrcUrl());
                 if (oMedia_v != null) {
                     videoSession.getVideoList().add(oMedia_v);
@@ -323,6 +319,22 @@ public class LiveVideoSession implements SessionCallback {
                     videoSession.getVideoList().add(oMedia);
                 }
             } else if (MediaFile.isAudioFile(movie.getSrcUrl())) {
+                AudioMetaFile audioMetaFile = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    audioMetaFile = FileUtils.readMetadataFromMusic(movie.getSrcUrl());
+                }
+                if (audioMetaFile != null) {
+                    movie.setTitle(audioMetaFile.getTitle());
+                    movie.setName(audioMetaFile.getName());
+                    movie.setMovieId(audioMetaFile.getId());
+                    movie.setSourceId(audioMetaFile.getAlbumId());
+                    movie.setAlbum(audioMetaFile.getAlbum());
+                    movie.setArtist(audioMetaFile.getArtist());
+                    movie.setActor(audioMetaFile.getAuthor());
+                    movie.setDescription(audioMetaFile.getGenre());
+                    movie.setStudio(audioMetaFile.getAlbumArtist());
+                    movie.setDuration(audioMetaFile.getDuration());
+                }
                 OMedia oMedia_a = syAudioSession.getVideoList().findByPath(movie.getSrcUrl());
                 if (oMedia_a != null) {
                     audioSession.getVideoList().add(oMedia_a);

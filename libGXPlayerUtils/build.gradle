@@ -1,27 +1,27 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
-configurations.maybeCreate("default")
-
-///def LIBVLC_AAR = 'libvlc-armv7-3.1.0.aar' //PUBLISH_VERSION = '1.3'
-///def LIBVLC_AAR = 'libvlc-3.5.4-armeabi-v7a-release.aar' //PUBLISH_VERSION = '1.4'
-///def LIBVLC_AAR = 'libvlc-3.5.4-armeabi-v7a-release.aar' //PUBLISH_VERSION = '1.5'
-def LIBVLC_AAR = 'libvlc-all-4.0.0-eap9.aar'//PUBLISH_VERSION = '1.6'
-artifacts.add("default", file(LIBVLC_AAR))
 
 ext {
     //GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
-    PUBLISH_ARTIFACT_ID = 'libDecodeCore'
-    PUBLISH_VERSION = '1.6'
+    PUBLISH_ARTIFACT_ID = 'libGXPlayerUtils'
+
+    //def LIBVLC_AAR = 'libvlc-armv7-3.1.0.aar' //PUBLISH_VERSION = '1.1'
+    //PUBLISH_VERSION = '2.5' //v2.5 stable
+
+    //def LIBVLC_AAR = 'libvlc-all-3.5.0-eap8.aar' //PUBLISH_VERSION = '>=1.2'
+    //PUBLISH_VERSION = '2.6' //v2.6 stable
+
+    ////PUBLISH_VERSION = '2.9' //libvlc-3.5.4-armeabi-v7a-release.aar
+
+    PUBLISH_VERSION = '3.0' //libvlc-all-4.0.0-eap9.aar
 }
 
 afterEvaluate {
-
     publishing {
         publications {
             release(MavenPublication) {
-                artifact LIBVLC_AAR
-                //from components.release
+                from components.release
                 groupId PUBLISH_GROUP_ID
                 artifactId PUBLISH_ARTIFACT_ID
                 version PUBLISH_VERSION
@@ -54,13 +54,13 @@ android {
     publishing {
         singleVariant('release') {
             withSourcesJar()
-            withJavadocJar()
+            //withJavadocJar()
         }
     }
     publishing {
         multipleVariants {
             withSourcesJar()
-            withJavadocJar()
+            //withJavadocJar()
             allVariants()
         }
     }
@@ -72,8 +72,24 @@ android {
         }
     }
 
-    namespace 'com.zhuchao.android.decode'
+    namespace 'com.zhuchao.android.player'
+
 }
 
 dependencies {
+    api files('libs/clink210.jar')
+    implementation project(path: ':libBaseUitls')
+    implementation project(path: ':libDNetUtils')
+    implementation project(path: ':libFOSUtils')
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    ///compileOnly files('libs/libvlc-3.5.4-armeabi-v7a-release.aar')
+    compileOnly files('libs/libvlc-all-4.0.0-eap9.aar')
+
+    ///implementation 'org.videolan.android:libvlc-all:4.0.0-eap9'
+    ///compileOnly 'org.videolan.android:libvlc-all:3.5.0-eap8'
+    ///implementation 'org.videolan.android:libvlc-all:3.3.1'
+    ///implementation group: 'org.videolan.android', name: 'libvlc-all', version: '4.0.0-eap8'
+    ///implementation group: 'org.videolan.android', name: 'libvlc-all', version: '3.5.1'
+    ///implementation project(path: ':libDecodeCore')
 }

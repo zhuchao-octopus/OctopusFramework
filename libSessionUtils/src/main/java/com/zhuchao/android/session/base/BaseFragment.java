@@ -45,6 +45,7 @@ public class BaseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        onFragmentVisible(true);
     }
 
     @Override
@@ -68,6 +69,17 @@ public class BaseFragment extends Fragment {
         super.onDestroy();
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        onFragmentVisible(!hidden);
+    }
+
+    public void onFragmentVisible(boolean isVisible) {
+
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void openLocalActivity(Class<?> cls) {
         Intent intent = new Intent(getActivity(), cls);
         ///intent.putExtra("EXTRA_DATA", "Some Data");  // 传递额外的数据

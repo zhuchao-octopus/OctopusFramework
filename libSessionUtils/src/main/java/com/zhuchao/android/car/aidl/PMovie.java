@@ -24,17 +24,16 @@ import com.zhuchao.android.video.Movie;
  */
 public class PMovie extends Movie implements Parcelable {
 
-
     public PMovie(String url) {
         super(url);
     }
 
-    public PMovie(int movie_id, int source_id, String name, String type, String artist, String album, String category, String actor, String studio, String language, String sharpness, String description, String bgImageUrl, String cardImageUrl, long duration, long size, String year, String date, String srcUrl, int status) {
-        super(movie_id, source_id, name, type, artist, album, category, actor, studio, language, sharpness, description, bgImageUrl, cardImageUrl, year, date, srcUrl, duration, size, status);
+    public PMovie(int movie_id, int source_id, String title, String name, String type, String artist, String album, String category, String actor, String studio, String language, String sharpness, String description, String bgImageUrl, String cardImageUrl, long duration, long size, String year, String date, String srcUrl, int status) {
+        super(movie_id, source_id, title, name, type, artist, album, category, actor, studio, language, sharpness, description, bgImageUrl, cardImageUrl, year, date, srcUrl, duration, size, status);
     }
 
     public PMovie(Movie movie) {
-        super(movie.getMovie_id(), movie.getSource_id(), movie.getName(), movie.getType(), movie.getArtist(), movie.getAlbum(), movie.getCategory(), movie.getActor(), movie.getStudio(), movie.getLanguage(), movie.getSharpness(), movie.getDescription(), movie.getBgImageUrl(), movie.getCardImageUrl(), movie.getYear(), movie.getDate(), movie.getSrcUrl(), movie.getDuration(), movie.getSize(), movie.getStatus());
+        super(movie.getMovieId(), movie.getSourceId(), movie.getTitle(), movie.getName(), movie.getType(), movie.getArtist(), movie.getAlbum(), movie.getCategory(), movie.getActor(), movie.getStudio(), movie.getLanguage(), movie.getSharpness(), movie.getDescription(), movie.getBgImageUrl(), movie.getCardImageUrl(), movie.getYear(), movie.getDate(), movie.getSrcUrl(), movie.getDuration(), movie.getSize(), movie.getStatus());
     }
 
     protected PMovie(Parcel in) {

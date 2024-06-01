@@ -10,17 +10,18 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/TestApplication" />
+            <option value="$PROJECT_DIR$/libBaseUitls" />
+            <option value="$PROJECT_DIR$/libCamera" />
+            <option value="$PROJECT_DIR$/libDNetUtils" />
             <option value="$PROJECT_DIR$/libDecodeCore" />
-            <option value="$PROJECT_DIR$/libFBaseUitls" />
-            <option value="$PROJECT_DIR$/libGPersistUtils" />
-            <option value="$PROJECT_DIR$/libICameraController" />
-            <option value="$PROJECT_DIR$/libINetUtils" />
-            <option value="$PROJECT_DIR$/libJOSUtils" />
-            <option value="$PROJECT_DIR$/libMediaUtils" />
-            <option value="$PROJECT_DIR$/libOC-CNN" />
+            <option value="$PROJECT_DIR$/libFOSUtils" />
+            <option value="$PROJECT_DIR$/libFPersistUtils" />
+            <option value="$PROJECT_DIR$/libGXMediaUtils" />
+            <option value="$PROJECT_DIR$/libGXPlayerUtils" />
+            <option value="$PROJECT_DIR$/libOpenC-CNN" />
             <option value="$PROJECT_DIR$/libOpenComputerVision" />
             <option value="$PROJECT_DIR$/libOpenDetection" />
-            <option value="$PROJECT_DIR$/libPlayerUtils" />
+            <option value="$PROJECT_DIR$/libOpenLargeModelDeepLearning" />
             <option value="$PROJECT_DIR$/libSessionUtils" />
           </set>
         </option>

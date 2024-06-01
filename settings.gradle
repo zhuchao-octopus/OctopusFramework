@@ -1,21 +1,19 @@
 include ':libDecodeCore'
-include ':libFBaseUitls'
-include ':libGPersistUtils'
-include ':libINetUtils'
-include ':libJOSUtils'
-
-include ':libOC-CNN'
-
-include ':libPlayerUtils'
-
-include ':libMediaUtils'
-
-include ':libSessionUtils'
-
-//include ':libEventInterface'
-include ':libICameraController'
+include ':libBaseUitls'
+include ':libFPersistUtils'
+include ':libFOSUtils'
+include ':libDNetUtils'
+include ':libCamera'
 include ':libOpenComputerVision'
 include ':libOpenDetection'
+include ':libOpenC-CNN'
+include ':libOpenLargeModelDeepLearning'
+
+
+include ':libGXMediaUtils'
+include ':libGXPlayerUtils'
+include ':libSessionUtils'
 
 include ':TestApplication'
+
 
