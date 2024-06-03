@@ -296,6 +296,24 @@ public class VideoList {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public VideoList getMusic() {
+        VideoList audioList1 = new VideoList();
+        for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
+            OMedia oMedia = (OMedia) oo.getValue();
+            if (oMedia.isAudio()) audioList1.addRow(oMedia);
+        }
+        return audioList1;
+    }
+
+    public VideoList getVideo() {
+        VideoList audioList1 = new VideoList();
+        for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
+            OMedia oMedia = (OMedia) oo.getValue();
+            if (oMedia.isVideo()) audioList1.addRow(oMedia);
+        }
+        return audioList1;
+    }
+
     public VideoList getMusicByArtist(@NonNull String artist) {
         VideoList audioList1 = new VideoList();
         for (HashMap.Entry<String, Object> oo : mFHashMap.entrySet()) {
@@ -408,6 +426,7 @@ public class VideoList {
         }
         return list;
     }
+
     @SuppressWarnings("unchecked")
     public <T> List<T> toListByArtist(String artist) {
         List<T> list = new ArrayList<T>();
@@ -417,6 +436,7 @@ public class VideoList {
         }
         return list;
     }
+
     public Object[] toArray() {
         return mFHashMap.values().toArray();
     }

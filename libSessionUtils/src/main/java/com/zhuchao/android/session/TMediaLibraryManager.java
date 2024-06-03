@@ -410,6 +410,8 @@ public class TMediaLibraryManager implements SessionCallback {
         TTask tTask = TTaskManager.getSingleTaskFor(TAG + ".LocalDisc").resetAll();
         if (!tTask.isBusy()) {
             tTask.invoke(tag -> {
+                mLocalVideoSession.clear();
+                mLocalAudioSession.clear();
                 mLocalVideoSession.initMediasFromLocal(mContext, DataID.MEDIA_TYPE_ID_VIDEO);
                 ///addLocalSessionToSessions("本地视频", mLocalVideoSession);
                 mLocalAudioSession.initMediasFromLocal(mContext, DataID.MEDIA_TYPE_ID_AUDIO);
@@ -438,8 +440,8 @@ public class TMediaLibraryManager implements SessionCallback {
         @SuppressLint("SdCardPath") String sd_path = "/sdcard/";
         if (!tTask.isBusy()) {
             tTask.invoke(tag -> {
-                mSDVideoSession.getAllVideos().clear();
-                mSDAudioSession.getAllVideos().clear();
+                mSDVideoSession.clear();
+                mSDAudioSession.clear();
                 ///mSDVideoSession.initMediasFromPath(mContext, sd_path, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO, mSDVideoSession, mSDAudioSession);
                 mSDVideoSession.synchronizationInitMediasFromPath(mContext, sd_path, DataID.MEDIA_TYPE_ID_AUDIO_VIDEO, mSDVideoSession, mSDAudioSession, mLocalVideoSession, mLocalAudioSession);
 

@@ -45,11 +45,6 @@ public class PMovie extends Movie implements Parcelable {
         super.writeToParcel(dest, flags);
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
     public static final Creator<PMovie> CREATOR = new Creator<PMovie>() {
         @Override
         public PMovie createFromParcel(Parcel in) {

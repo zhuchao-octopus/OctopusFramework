@@ -61,6 +61,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     private static final String TAG = "PlayManager";
     private final Context mContext;
     private SurfaceView surfaceView = null;
+    private OMedia oMediaToPlay = null;
     private OMedia oMediaPlaying = null;
     private OMedia oMediaSearching = null;
     ///private boolean oMediaLoading = false;
@@ -213,19 +214,6 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         else return isAidlProxyPlaying();
     }
 
-    public synchronized void restartPlay() {
-        boolean playingLock_old = playingLock;
-        if (oMediaPlaying == null) {
-            MMLog.log(TAG, "There is no media to restartPlay!");
-            return;
-        }
-        playingLock = false;//stopPlay();
-        MMLog.log(TAG, "restartPlay " + oMediaPlaying.getPathName());
-        oMediaPlaying.setRestorePlay(true);
-        startPlay(oMediaPlaying);
-        playingLock = playingLock_old;
-    }
-
     private void stopLocalPlayer() {
         if (isLocalPlaying()) oMediaPlaying.stop();
     }
@@ -240,6 +228,36 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
         } else if (oMediaPlaying != null) {
             oMediaPlaying.setTime(time);
         }
+    }
+
+    public synchronized void restartPlay() {
+        boolean playingLock_old = playingLock;
+        if (oMediaPlaying == null) {
+            MMLog.log(TAG, "There is no media to restartPlay!");
+            return;
+        }
+        playingLock = false;//stopPlay();
+        MMLog.log(TAG, "restartPlay " + oMediaPlaying.getPathName());
+        oMediaPlaying.setRestorePlay(true);
+        startPlay(oMediaPlaying);
+        playingLock = playingLock_old;
+    }
+
+    public synchronized void startToPlay() {
+        boolean playingLock_old = playingLock;
+        if (oMediaToPlay == null) {
+            MMLog.log(TAG, "There is no media to startToPlay!");
+            return;
+        }
+        if(isPlaying() && oMediaToPlay.equals(oMediaPlaying))
+        {
+            return;
+        }
+        playingLock = false;//stopPlay();
+        MMLog.log(TAG, "startToPlay " + oMediaToPlay.getPathName());
+        oMediaToPlay.setRestorePlay(true);
+        startPlay(oMediaToPlay);
+        playingLock = playingLock_old;
     }
 
     public synchronized void startPlay(OMedia oMedia) {
@@ -521,7 +539,7 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     }
 
     public void setMediaToPlay(OMedia oMediaPlaying) {
-        this.oMediaPlaying = oMediaPlaying;
+        this.oMediaToPlay = oMediaPlaying;
     }
 
     public OMedia getPlayingMedia() {
