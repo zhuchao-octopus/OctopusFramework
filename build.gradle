@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.2.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20"
         //classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         //classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
 
@@ -30,6 +30,6 @@ tasks.register('clean', Delete) {
 }
 
 ext {
-    GITHUB_REPO_REMOTE_PATH = "\\\\192.168.1.5\\smb\\OctopusFrameworkLibs"
+    GITHUB_REPO_REMOTE_PATH = "\\\\192.168.10.20\\smb\\OctopusFrameworkLibs"
     GITHUB_REPO_LOCAL_PATH = "\\\\DESKTOP-7HI3PEQ\\OctopusFrameworkLibs"
 }

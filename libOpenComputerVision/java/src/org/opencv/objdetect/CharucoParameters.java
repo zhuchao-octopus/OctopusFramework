@@ -10,19 +10,12 @@ import org.opencv.core.Mat;
 public class CharucoParameters {
 
     protected final long nativeObj;
+    protected CharucoParameters(long addr) { nativeObj = addr; }
 
-    protected CharucoParameters(long addr) {
-        nativeObj = addr;
-    }
-
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
+    public long getNativeObjAddr() { return nativeObj; }
 
     // internal usage only
-    public static CharucoParameters __fromPtr__(long addr) {
-        return new CharucoParameters(addr);
-    }
+    public static CharucoParameters __fromPtr__(long addr) { return new CharucoParameters(addr); }
 
     //
     // C++:   cv::aruco::CharucoParameters::CharucoParameters()
@@ -109,6 +102,7 @@ public class CharucoParameters {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:   cv::aruco::CharucoParameters::CharucoParameters()

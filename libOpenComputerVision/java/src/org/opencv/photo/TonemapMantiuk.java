@@ -3,25 +3,22 @@
 //
 package org.opencv.photo;
 
-// C++: class TonemapMantiuk
+import org.opencv.photo.Tonemap;
 
+// C++: class TonemapMantiuk
 /**
  * This algorithm transforms image to contrast using gradients on all levels of gaussian pyramid,
  * transforms contrast values to HVS response and scales the response. After this the image is
  * reconstructed from new contrast values.
- * <p>
+ *
  * For more information see CITE: MM06 .
  */
 public class TonemapMantiuk extends Tonemap {
 
-    protected TonemapMantiuk(long addr) {
-        super(addr);
-    }
+    protected TonemapMantiuk(long addr) { super(addr); }
 
     // internal usage only
-    public static TonemapMantiuk __fromPtr__(long addr) {
-        return new TonemapMantiuk(addr);
-    }
+    public static TonemapMantiuk __fromPtr__(long addr) { return new TonemapMantiuk(addr); }
 
     //
     // C++:  float cv::TonemapMantiuk::getScale()
@@ -63,6 +60,7 @@ public class TonemapMantiuk extends Tonemap {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:  float cv::TonemapMantiuk::getScale()

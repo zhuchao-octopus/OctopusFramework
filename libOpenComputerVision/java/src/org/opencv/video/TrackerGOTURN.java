@@ -3,11 +3,14 @@
 //
 package org.opencv.video;
 
-// C++: class TrackerGOTURN
+import org.opencv.video.Tracker;
+import org.opencv.video.TrackerGOTURN;
+import org.opencv.video.TrackerGOTURN_Params;
 
+// C++: class TrackerGOTURN
 /**
  * the GOTURN (Generic Object Tracking Using Regression Networks) tracker
- * <p>
+ *
  * GOTURN (CITE: GOTURN) is kind of trackers based on Convolutional Neural Networks (CNN). While taking all advantages of CNN trackers,
  * GOTURN is much faster due to offline training without online fine-tuning nature.
  * GOTURN tracker addresses the problem of single target tracking: given a bounding box label of an object in the first frame of the video,
@@ -23,14 +26,10 @@ package org.opencv.video;
  */
 public class TrackerGOTURN extends Tracker {
 
-    protected TrackerGOTURN(long addr) {
-        super(addr);
-    }
+    protected TrackerGOTURN(long addr) { super(addr); }
 
     // internal usage only
-    public static TrackerGOTURN __fromPtr__(long addr) {
-        return new TrackerGOTURN(addr);
-    }
+    public static TrackerGOTURN __fromPtr__(long addr) { return new TrackerGOTURN(addr); }
 
     //
     // C++: static Ptr_TrackerGOTURN cv::TrackerGOTURN::create(TrackerGOTURN_Params parameters = TrackerGOTURN::Params())
@@ -38,8 +37,7 @@ public class TrackerGOTURN extends Tracker {
 
     /**
      * Constructor
-     *
-     * @param parameters GOTURN parameters TrackerGOTURN::Params
+     *     @param parameters GOTURN parameters TrackerGOTURN::Params
      * @return automatically generated
      */
     public static TrackerGOTURN create(TrackerGOTURN_Params parameters) {
@@ -48,7 +46,6 @@ public class TrackerGOTURN extends Tracker {
 
     /**
      * Constructor
-     *
      * @return automatically generated
      */
     public static TrackerGOTURN create() {
@@ -62,9 +59,9 @@ public class TrackerGOTURN extends Tracker {
     }
 
 
+
     // C++: static Ptr_TrackerGOTURN cv::TrackerGOTURN::create(TrackerGOTURN_Params parameters = TrackerGOTURN::Params())
     private static native long create_0(long parameters_nativeObj);
-
     private static native long create_1();
 
     // native support for java finalize()

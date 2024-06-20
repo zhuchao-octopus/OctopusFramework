@@ -3,27 +3,26 @@
 //
 package org.opencv.calib3d;
 
+import org.opencv.calib3d.StereoBM;
+import org.opencv.calib3d.StereoMatcher;
 import org.opencv.core.Rect;
 
 // C++: class StereoBM
-
 /**
  * Class for computing stereo correspondence using the block matching algorithm, introduced and
  * contributed to OpenCV by K. Konolige.
  */
 public class StereoBM extends StereoMatcher {
 
-    protected StereoBM(long addr) {
-        super(addr);
-    }
+    protected StereoBM(long addr) { super(addr); }
 
     // internal usage only
-    public static StereoBM __fromPtr__(long addr) {
-        return new StereoBM(addr);
-    }
+    public static StereoBM __fromPtr__(long addr) { return new StereoBM(addr); }
 
     // C++: enum <unnamed>
-    public static final int PREFILTER_NORMALIZED_RESPONSE = 0, PREFILTER_XSOBEL = 1;
+    public static final int
+            PREFILTER_NORMALIZED_RESPONSE = 0,
+            PREFILTER_XSOBEL = 1;
 
 
     //
@@ -177,16 +176,16 @@ public class StereoBM extends StereoMatcher {
     /**
      * Creates StereoBM object
      *
-     * @param numDisparities the disparity search range. For each pixel algorithm will find the best
-     *                       disparity from 0 (default minimum disparity) to numDisparities. The search range can then be
-     *                       shifted by changing the minimum disparity.
-     * @param blockSize      the linear size of the blocks compared by the algorithm. The size should be odd
-     *                       (as the block is centered at the current pixel). Larger block size implies smoother, though less
-     *                       accurate disparity map. Smaller block size gives more detailed disparity map, but there is higher
-     *                       chance for algorithm to find a wrong correspondence.
-     *                       <p>
-     *                       The function create StereoBM object. You can then call StereoBM::compute() to compute disparity for
-     *                       a specific stereo pair.
+     *     @param numDisparities the disparity search range. For each pixel algorithm will find the best
+     *     disparity from 0 (default minimum disparity) to numDisparities. The search range can then be
+     *     shifted by changing the minimum disparity.
+     *     @param blockSize the linear size of the blocks compared by the algorithm. The size should be odd
+     *     (as the block is centered at the current pixel). Larger block size implies smoother, though less
+     *     accurate disparity map. Smaller block size gives more detailed disparity map, but there is higher
+     *     chance for algorithm to find a wrong correspondence.
+     *
+     *     The function create StereoBM object. You can then call StereoBM::compute() to compute disparity for
+     *     a specific stereo pair.
      * @return automatically generated
      */
     public static StereoBM create(int numDisparities, int blockSize) {
@@ -196,15 +195,15 @@ public class StereoBM extends StereoMatcher {
     /**
      * Creates StereoBM object
      *
-     * @param numDisparities the disparity search range. For each pixel algorithm will find the best
-     *                       disparity from 0 (default minimum disparity) to numDisparities. The search range can then be
-     *                       shifted by changing the minimum disparity.
-     *                       (as the block is centered at the current pixel). Larger block size implies smoother, though less
-     *                       accurate disparity map. Smaller block size gives more detailed disparity map, but there is higher
-     *                       chance for algorithm to find a wrong correspondence.
-     *                       <p>
-     *                       The function create StereoBM object. You can then call StereoBM::compute() to compute disparity for
-     *                       a specific stereo pair.
+     *     @param numDisparities the disparity search range. For each pixel algorithm will find the best
+     *     disparity from 0 (default minimum disparity) to numDisparities. The search range can then be
+     *     shifted by changing the minimum disparity.
+     *     (as the block is centered at the current pixel). Larger block size implies smoother, though less
+     *     accurate disparity map. Smaller block size gives more detailed disparity map, but there is higher
+     *     chance for algorithm to find a wrong correspondence.
+     *
+     *     The function create StereoBM object. You can then call StereoBM::compute() to compute disparity for
+     *     a specific stereo pair.
      * @return automatically generated
      */
     public static StereoBM create(int numDisparities) {
@@ -213,16 +212,15 @@ public class StereoBM extends StereoMatcher {
 
     /**
      * Creates StereoBM object
-     * <p>
-     * disparity from 0 (default minimum disparity) to numDisparities. The search range can then be
-     * shifted by changing the minimum disparity.
-     * (as the block is centered at the current pixel). Larger block size implies smoother, though less
-     * accurate disparity map. Smaller block size gives more detailed disparity map, but there is higher
-     * chance for algorithm to find a wrong correspondence.
-     * <p>
-     * The function create StereoBM object. You can then call StereoBM::compute() to compute disparity for
-     * a specific stereo pair.
      *
+     *     disparity from 0 (default minimum disparity) to numDisparities. The search range can then be
+     *     shifted by changing the minimum disparity.
+     *     (as the block is centered at the current pixel). Larger block size implies smoother, though less
+     *     accurate disparity map. Smaller block size gives more detailed disparity map, but there is higher
+     *     chance for algorithm to find a wrong correspondence.
+     *
+     *     The function create StereoBM object. You can then call StereoBM::compute() to compute disparity for
+     *     a specific stereo pair.
      * @return automatically generated
      */
     public static StereoBM create() {
@@ -234,6 +232,7 @@ public class StereoBM extends StereoMatcher {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:  int cv::StereoBM::getPreFilterType()
@@ -286,9 +285,7 @@ public class StereoBM extends StereoMatcher {
 
     // C++: static Ptr_StereoBM cv::StereoBM::create(int numDisparities = 0, int blockSize = 21)
     private static native long create_0(int numDisparities, int blockSize);
-
     private static native long create_1(int numDisparities);
-
     private static native long create_2();
 
     // native support for java finalize()

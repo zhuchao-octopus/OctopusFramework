@@ -6,10 +6,9 @@ package org.opencv.video;
 import org.opencv.core.Mat;
 
 // C++: class KalmanFilter
-
 /**
  * Kalman filter class.
- * <p>
+ *
  * The class implements a standard Kalman filter &lt;http://en.wikipedia.org/wiki/Kalman_filter&gt;,
  * CITE: Welch95 . However, you can modify transitionMatrix, controlMatrix, and measurementMatrix to get
  * an extended Kalman filter functionality.
@@ -19,19 +18,12 @@ import org.opencv.core.Mat;
 public class KalmanFilter {
 
     protected final long nativeObj;
+    protected KalmanFilter(long addr) { nativeObj = addr; }
 
-    protected KalmanFilter(long addr) {
-        nativeObj = addr;
-    }
-
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
+    public long getNativeObjAddr() { return nativeObj; }
 
     // internal usage only
-    public static KalmanFilter __fromPtr__(long addr) {
-        return new KalmanFilter(addr);
-    }
+    public static KalmanFilter __fromPtr__(long addr) { return new KalmanFilter(addr); }
 
     //
     // C++:   cv::KalmanFilter::KalmanFilter()
@@ -47,27 +39,30 @@ public class KalmanFilter {
     //
 
     /**
-     * @param dynamParams   Dimensionality of the state.
-     * @param measureParams Dimensionality of the measurement.
-     * @param controlParams Dimensionality of the control vector.
-     * @param type          Type of the created matrices that should be CV_32F or CV_64F.
+     *
+     *     @param dynamParams Dimensionality of the state.
+     *     @param measureParams Dimensionality of the measurement.
+     *     @param controlParams Dimensionality of the control vector.
+     *     @param type Type of the created matrices that should be CV_32F or CV_64F.
      */
     public KalmanFilter(int dynamParams, int measureParams, int controlParams, int type) {
         nativeObj = KalmanFilter_1(dynamParams, measureParams, controlParams, type);
     }
 
     /**
-     * @param dynamParams   Dimensionality of the state.
-     * @param measureParams Dimensionality of the measurement.
-     * @param controlParams Dimensionality of the control vector.
+     *
+     *     @param dynamParams Dimensionality of the state.
+     *     @param measureParams Dimensionality of the measurement.
+     *     @param controlParams Dimensionality of the control vector.
      */
     public KalmanFilter(int dynamParams, int measureParams, int controlParams) {
         nativeObj = KalmanFilter_2(dynamParams, measureParams, controlParams);
     }
 
     /**
-     * @param dynamParams   Dimensionality of the state.
-     * @param measureParams Dimensionality of the measurement.
+     *
+     *     @param dynamParams Dimensionality of the state.
+     *     @param measureParams Dimensionality of the measurement.
      */
     public KalmanFilter(int dynamParams, int measureParams) {
         nativeObj = KalmanFilter_3(dynamParams, measureParams);
@@ -81,7 +76,7 @@ public class KalmanFilter {
     /**
      * Computes a predicted state.
      *
-     * @param control The optional input control
+     *     @param control The optional input control
      * @return automatically generated
      */
     public Mat predict(Mat control) {
@@ -105,7 +100,7 @@ public class KalmanFilter {
     /**
      * Updates the predicted state from the measurement.
      *
-     * @param measurement The measured system parameters
+     *     @param measurement The measured system parameters
      * @return automatically generated
      */
     public Mat correct(Mat measurement) {
@@ -299,19 +294,17 @@ public class KalmanFilter {
     }
 
 
+
     // C++:   cv::KalmanFilter::KalmanFilter()
     private static native long KalmanFilter_0();
 
     // C++:   cv::KalmanFilter::KalmanFilter(int dynamParams, int measureParams, int controlParams = 0, int type = CV_32F)
     private static native long KalmanFilter_1(int dynamParams, int measureParams, int controlParams, int type);
-
     private static native long KalmanFilter_2(int dynamParams, int measureParams, int controlParams);
-
     private static native long KalmanFilter_3(int dynamParams, int measureParams);
 
     // C++:  Mat cv::KalmanFilter::predict(Mat control = Mat())
     private static native long predict_0(long nativeObj, long control_nativeObj);
-
     private static native long predict_1(long nativeObj);
 
     // C++:  Mat cv::KalmanFilter::correct(Mat measurement)

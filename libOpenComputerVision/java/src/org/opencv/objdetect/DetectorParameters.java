@@ -4,27 +4,20 @@
 package org.opencv.objdetect;
 
 
-// C++: class DetectorParameters
 
+// C++: class DetectorParameters
 /**
  * struct DetectorParameters is used by ArucoDetector
  */
 public class DetectorParameters {
 
     protected final long nativeObj;
+    protected DetectorParameters(long addr) { nativeObj = addr; }
 
-    protected DetectorParameters(long addr) {
-        nativeObj = addr;
-    }
-
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
+    public long getNativeObjAddr() { return nativeObj; }
 
     // internal usage only
-    public static DetectorParameters __fromPtr__(long addr) {
-        return new DetectorParameters(addr);
-    }
+    public static DetectorParameters __fromPtr__(long addr) { return new DetectorParameters(addr); }
 
     //
     // C++:   cv::aruco::DetectorParameters::DetectorParameters()
@@ -230,6 +223,24 @@ public class DetectorParameters {
 
 
     //
+    // C++: float DetectorParameters::minGroupDistance
+    //
+
+    public float get_minGroupDistance() {
+        return get_minGroupDistance_0(nativeObj);
+    }
+
+
+    //
+    // C++: void DetectorParameters::minGroupDistance
+    //
+
+    public void set_minGroupDistance(float minGroupDistance) {
+        set_minGroupDistance_0(nativeObj, minGroupDistance);
+    }
+
+
+    //
     // C++: int DetectorParameters::cornerRefinementMethod
     //
 
@@ -262,6 +273,24 @@ public class DetectorParameters {
 
     public void set_cornerRefinementWinSize(int cornerRefinementWinSize) {
         set_cornerRefinementWinSize_0(nativeObj, cornerRefinementWinSize);
+    }
+
+
+    //
+    // C++: float DetectorParameters::relativeCornerRefinmentWinSize
+    //
+
+    public float get_relativeCornerRefinmentWinSize() {
+        return get_relativeCornerRefinmentWinSize_0(nativeObj);
+    }
+
+
+    //
+    // C++: void DetectorParameters::relativeCornerRefinmentWinSize
+    //
+
+    public void set_relativeCornerRefinmentWinSize(float relativeCornerRefinmentWinSize) {
+        set_relativeCornerRefinmentWinSize_0(nativeObj, relativeCornerRefinmentWinSize);
     }
 
 
@@ -631,6 +660,7 @@ public class DetectorParameters {
     }
 
 
+
     // C++:   cv::aruco::DetectorParameters::DetectorParameters()
     private static native long DetectorParameters_0();
 
@@ -694,6 +724,12 @@ public class DetectorParameters {
     // C++: void DetectorParameters::minMarkerDistanceRate
     private static native void set_minMarkerDistanceRate_0(long nativeObj, double minMarkerDistanceRate);
 
+    // C++: float DetectorParameters::minGroupDistance
+    private static native float get_minGroupDistance_0(long nativeObj);
+
+    // C++: void DetectorParameters::minGroupDistance
+    private static native void set_minGroupDistance_0(long nativeObj, float minGroupDistance);
+
     // C++: int DetectorParameters::cornerRefinementMethod
     private static native int get_cornerRefinementMethod_0(long nativeObj);
 
@@ -705,6 +741,12 @@ public class DetectorParameters {
 
     // C++: void DetectorParameters::cornerRefinementWinSize
     private static native void set_cornerRefinementWinSize_0(long nativeObj, int cornerRefinementWinSize);
+
+    // C++: float DetectorParameters::relativeCornerRefinmentWinSize
+    private static native float get_relativeCornerRefinmentWinSize_0(long nativeObj);
+
+    // C++: void DetectorParameters::relativeCornerRefinmentWinSize
+    private static native void set_relativeCornerRefinmentWinSize_0(long nativeObj, float relativeCornerRefinmentWinSize);
 
     // C++: int DetectorParameters::cornerRefinementMaxIterations
     private static native int get_cornerRefinementMaxIterations_0(long nativeObj);

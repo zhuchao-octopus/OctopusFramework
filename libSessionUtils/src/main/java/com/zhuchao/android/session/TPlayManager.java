@@ -1220,7 +1220,6 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
     }
 
     private final ServiceConnection mMediaServiceConnection = new ServiceConnection() {
-
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             MMLog.d(TAG, "Connect to multimedia proxy successfully!");
@@ -1232,7 +1231,6 @@ public class TPlayManager implements PlayerCallback, SessionCallback {
                 MMLog.e(TAG, String.valueOf(e));
             }
         }
-
         @Override
         public void onServiceDisconnected(ComponentName name) {
             tIMyMediaAidlInterface = null;

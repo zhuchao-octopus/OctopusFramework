@@ -3,18 +3,17 @@
 //
 package org.opencv.objdetect;
 
+import org.opencv.objdetect.QRCodeDetectorAruco;
+import org.opencv.objdetect.QRCodeDetectorAruco_Params;
+
 // C++: class QRCodeDetectorAruco
 
 public class QRCodeDetectorAruco extends GraphicalCodeDetector {
 
-    protected QRCodeDetectorAruco(long addr) {
-        super(addr);
-    }
+    protected QRCodeDetectorAruco(long addr) { super(addr); }
 
     // internal usage only
-    public static QRCodeDetectorAruco __fromPtr__(long addr) {
-        return new QRCodeDetectorAruco(addr);
-    }
+    public static QRCodeDetectorAruco __fromPtr__(long addr) { return new QRCodeDetectorAruco(addr); }
 
     //
     // C++:   cv::QRCodeDetectorAruco::QRCodeDetectorAruco()
@@ -31,7 +30,6 @@ public class QRCodeDetectorAruco extends GraphicalCodeDetector {
 
     /**
      * QR code detector constructor for Aruco-based algorithm. See cv::QRCodeDetectorAruco::Params
-     *
      * @param params automatically generated
      */
     public QRCodeDetectorAruco(QRCodeDetectorAruco_Params params) {
@@ -45,7 +43,6 @@ public class QRCodeDetectorAruco extends GraphicalCodeDetector {
 
     /**
      * Detector parameters getter. See cv::QRCodeDetectorAruco::Params
-     *
      * @return automatically generated
      */
     public QRCodeDetectorAruco_Params getDetectorParameters() {
@@ -59,7 +56,6 @@ public class QRCodeDetectorAruco extends GraphicalCodeDetector {
 
     /**
      * Detector parameters setter. See cv::QRCodeDetectorAruco::Params
-     *
      * @param params automatically generated
      * @return automatically generated
      */
@@ -86,6 +82,7 @@ public class QRCodeDetectorAruco extends GraphicalCodeDetector {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:   cv::QRCodeDetectorAruco::QRCodeDetectorAruco()

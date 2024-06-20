@@ -7,9 +7,8 @@
 
 #include "../dnn.hpp"
 
-namespace cv {
-    namespace dnn {
-        CV__DNN_INLINE_NS_BEGIN
+namespace cv { namespace dnn {
+CV__DNN_INLINE_NS_BEGIN
 
 /**
  * @brief Skip model import after diagnostic run in readNet() functions.
@@ -17,12 +16,9 @@ namespace cv {
  *
  * This is an internal OpenCV function not intended for users.
  */
-        CV_EXPORTS
+CV_EXPORTS void skipModelImport(bool skip);
 
-        void skipModelImport(bool skip);
-
-    CV__DNN_INLINE_NS_END
-}
-} // namespace
+CV__DNN_INLINE_NS_END
+}} // namespace
 
 #endif // OPENCV_DNN_UTILS_DEBUG_UTILS_HPP

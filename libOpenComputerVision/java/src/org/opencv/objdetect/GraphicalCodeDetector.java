@@ -3,29 +3,22 @@
 //
 package org.opencv.objdetect;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.opencv.core.Mat;
 import org.opencv.utils.Converters;
-
-import java.util.List;
 
 // C++: class GraphicalCodeDetector
 
 public class GraphicalCodeDetector {
 
     protected final long nativeObj;
+    protected GraphicalCodeDetector(long addr) { nativeObj = addr; }
 
-    protected GraphicalCodeDetector(long addr) {
-        nativeObj = addr;
-    }
-
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
+    public long getNativeObjAddr() { return nativeObj; }
 
     // internal usage only
-    public static GraphicalCodeDetector __fromPtr__(long addr) {
-        return new GraphicalCodeDetector(addr);
-    }
+    public static GraphicalCodeDetector __fromPtr__(long addr) { return new GraphicalCodeDetector(addr); }
 
     //
     // C++:  bool cv::GraphicalCodeDetector::detect(Mat img, Mat& points)
@@ -33,9 +26,8 @@ public class GraphicalCodeDetector {
 
     /**
      * Detects graphical code in image and returns the quadrangle containing the code.
-     *
-     * @param img    grayscale or color (BGR) image containing (or not) graphical code.
-     * @param points Output vector of vertices of the minimum-area quadrangle containing the code.
+     *      @param img grayscale or color (BGR) image containing (or not) graphical code.
+     *      @param points Output vector of vertices of the minimum-area quadrangle containing the code.
      * @return automatically generated
      */
     public boolean detect(Mat img, Mat points) {
@@ -49,12 +41,11 @@ public class GraphicalCodeDetector {
 
     /**
      * Decodes graphical code in image once it's found by the detect() method.
-     * <p>
-     * Returns UTF8-encoded output string or empty string if the code cannot be decoded.
      *
-     * @param img           grayscale or color (BGR) image containing graphical code.
-     * @param points        Quadrangle vertices found by detect() method (or some other algorithm).
-     * @param straight_code The optional output image containing binarized code, will be empty if not found.
+     *      Returns UTF8-encoded output string or empty string if the code cannot be decoded.
+     *      @param img grayscale or color (BGR) image containing graphical code.
+     *      @param points Quadrangle vertices found by detect() method (or some other algorithm).
+     *      @param straight_code The optional output image containing binarized code, will be empty if not found.
      * @return automatically generated
      */
     public String decode(Mat img, Mat points, Mat straight_code) {
@@ -63,11 +54,10 @@ public class GraphicalCodeDetector {
 
     /**
      * Decodes graphical code in image once it's found by the detect() method.
-     * <p>
-     * Returns UTF8-encoded output string or empty string if the code cannot be decoded.
      *
-     * @param img    grayscale or color (BGR) image containing graphical code.
-     * @param points Quadrangle vertices found by detect() method (or some other algorithm).
+     *      Returns UTF8-encoded output string or empty string if the code cannot be decoded.
+     *      @param img grayscale or color (BGR) image containing graphical code.
+     *      @param points Quadrangle vertices found by detect() method (or some other algorithm).
      * @return automatically generated
      */
     public String decode(Mat img, Mat points) {
@@ -82,9 +72,9 @@ public class GraphicalCodeDetector {
     /**
      * Both detects and decodes graphical code
      *
-     * @param img           grayscale or color (BGR) image containing graphical code.
-     * @param points        optional output array of vertices of the found graphical code quadrangle, will be empty if not found.
-     * @param straight_code The optional output image containing binarized code
+     *      @param img grayscale or color (BGR) image containing graphical code.
+     *      @param points optional output array of vertices of the found graphical code quadrangle, will be empty if not found.
+     *      @param straight_code The optional output image containing binarized code
      * @return automatically generated
      */
     public String detectAndDecode(Mat img, Mat points, Mat straight_code) {
@@ -94,8 +84,8 @@ public class GraphicalCodeDetector {
     /**
      * Both detects and decodes graphical code
      *
-     * @param img    grayscale or color (BGR) image containing graphical code.
-     * @param points optional output array of vertices of the found graphical code quadrangle, will be empty if not found.
+     *      @param img grayscale or color (BGR) image containing graphical code.
+     *      @param points optional output array of vertices of the found graphical code quadrangle, will be empty if not found.
      * @return automatically generated
      */
     public String detectAndDecode(Mat img, Mat points) {
@@ -105,7 +95,7 @@ public class GraphicalCodeDetector {
     /**
      * Both detects and decodes graphical code
      *
-     * @param img grayscale or color (BGR) image containing graphical code.
+     *      @param img grayscale or color (BGR) image containing graphical code.
      * @return automatically generated
      */
     public String detectAndDecode(Mat img) {
@@ -119,9 +109,8 @@ public class GraphicalCodeDetector {
 
     /**
      * Detects graphical codes in image and returns the vector of the quadrangles containing the codes.
-     *
-     * @param img    grayscale or color (BGR) image containing (or not) graphical codes.
-     * @param points Output vector of vector of vertices of the minimum-area quadrangle containing the codes.
+     *      @param img grayscale or color (BGR) image containing (or not) graphical codes.
+     *      @param points Output vector of vector of vertices of the minimum-area quadrangle containing the codes.
      * @return automatically generated
      */
     public boolean detectMulti(Mat img, Mat points) {
@@ -135,11 +124,10 @@ public class GraphicalCodeDetector {
 
     /**
      * Decodes graphical codes in image once it's found by the detect() method.
-     *
-     * @param img           grayscale or color (BGR) image containing graphical codes.
-     * @param decoded_info  UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
-     * @param points        vector of Quadrangle vertices found by detect() method (or some other algorithm).
-     * @param straight_code The optional output vector of images containing binarized codes
+     *      @param img grayscale or color (BGR) image containing graphical codes.
+     *      @param decoded_info UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
+     *      @param points vector of Quadrangle vertices found by detect() method (or some other algorithm).
+     *      @param straight_code The optional output vector of images containing binarized codes
      * @return automatically generated
      */
     public boolean decodeMulti(Mat img, Mat points, List<String> decoded_info, List<Mat> straight_code) {
@@ -152,10 +140,9 @@ public class GraphicalCodeDetector {
 
     /**
      * Decodes graphical codes in image once it's found by the detect() method.
-     *
-     * @param img          grayscale or color (BGR) image containing graphical codes.
-     * @param decoded_info UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
-     * @param points       vector of Quadrangle vertices found by detect() method (or some other algorithm).
+     *      @param img grayscale or color (BGR) image containing graphical codes.
+     *      @param decoded_info UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
+     *      @param points vector of Quadrangle vertices found by detect() method (or some other algorithm).
      * @return automatically generated
      */
     public boolean decodeMulti(Mat img, Mat points, List<String> decoded_info) {
@@ -169,11 +156,18 @@ public class GraphicalCodeDetector {
 
     /**
      * Both detects and decodes graphical codes
+     *     @param img grayscale or color (BGR) image containing graphical codes.
+     *     @param decoded_info UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
+     *     @param points optional output vector of vertices of the found graphical code quadrangles. Will be empty if not found.
+     *     @param straight_code The optional vector of images containing binarized codes
      *
-     * @param img           grayscale or color (BGR) image containing graphical codes.
-     * @param decoded_info  UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
-     * @param points        optional output vector of vertices of the found graphical code quadrangles. Will be empty if not found.
-     * @param straight_code The optional vector of images containing binarized codes
+     * <ul>
+     *   <li>
+     *      If there are QR codes encoded with a Structured Append mode on the image and all of them detected and decoded correctly,
+     *     method writes a full message to position corresponds to 0-th code in a sequence. The rest of QR codes from the same sequence
+     *     have empty string.
+     *   </li>
+     * </ul>
      * @return automatically generated
      */
     public boolean detectAndDecodeMulti(Mat img, List<String> decoded_info, Mat points, List<Mat> straight_code) {
@@ -186,10 +180,17 @@ public class GraphicalCodeDetector {
 
     /**
      * Both detects and decodes graphical codes
+     *     @param img grayscale or color (BGR) image containing graphical codes.
+     *     @param decoded_info UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
+     *     @param points optional output vector of vertices of the found graphical code quadrangles. Will be empty if not found.
      *
-     * @param img          grayscale or color (BGR) image containing graphical codes.
-     * @param decoded_info UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
-     * @param points       optional output vector of vertices of the found graphical code quadrangles. Will be empty if not found.
+     * <ul>
+     *   <li>
+     *      If there are QR codes encoded with a Structured Append mode on the image and all of them detected and decoded correctly,
+     *     method writes a full message to position corresponds to 0-th code in a sequence. The rest of QR codes from the same sequence
+     *     have empty string.
+     *   </li>
+     * </ul>
      * @return automatically generated
      */
     public boolean detectAndDecodeMulti(Mat img, List<String> decoded_info, Mat points) {
@@ -198,9 +199,16 @@ public class GraphicalCodeDetector {
 
     /**
      * Both detects and decodes graphical codes
+     *     @param img grayscale or color (BGR) image containing graphical codes.
+     *     @param decoded_info UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
      *
-     * @param img          grayscale or color (BGR) image containing graphical codes.
-     * @param decoded_info UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
+     * <ul>
+     *   <li>
+     *      If there are QR codes encoded with a Structured Append mode on the image and all of them detected and decoded correctly,
+     *     method writes a full message to position corresponds to 0-th code in a sequence. The rest of QR codes from the same sequence
+     *     have empty string.
+     *   </li>
+     * </ul>
      * @return automatically generated
      */
     public boolean detectAndDecodeMulti(Mat img, List<String> decoded_info) {
@@ -214,19 +222,17 @@ public class GraphicalCodeDetector {
     }
 
 
+
     // C++:  bool cv::GraphicalCodeDetector::detect(Mat img, Mat& points)
     private static native boolean detect_0(long nativeObj, long img_nativeObj, long points_nativeObj);
 
     // C++:  string cv::GraphicalCodeDetector::decode(Mat img, Mat points, Mat& straight_code = Mat())
     private static native String decode_0(long nativeObj, long img_nativeObj, long points_nativeObj, long straight_code_nativeObj);
-
     private static native String decode_1(long nativeObj, long img_nativeObj, long points_nativeObj);
 
     // C++:  string cv::GraphicalCodeDetector::detectAndDecode(Mat img, Mat& points = Mat(), Mat& straight_code = Mat())
     private static native String detectAndDecode_0(long nativeObj, long img_nativeObj, long points_nativeObj, long straight_code_nativeObj);
-
     private static native String detectAndDecode_1(long nativeObj, long img_nativeObj, long points_nativeObj);
-
     private static native String detectAndDecode_2(long nativeObj, long img_nativeObj);
 
     // C++:  bool cv::GraphicalCodeDetector::detectMulti(Mat img, Mat& points)
@@ -234,14 +240,11 @@ public class GraphicalCodeDetector {
 
     // C++:  bool cv::GraphicalCodeDetector::decodeMulti(Mat img, Mat points, vector_string& decoded_info, vector_Mat& straight_code = vector_Mat())
     private static native boolean decodeMulti_0(long nativeObj, long img_nativeObj, long points_nativeObj, List<String> decoded_info, long straight_code_mat_nativeObj);
-
     private static native boolean decodeMulti_1(long nativeObj, long img_nativeObj, long points_nativeObj, List<String> decoded_info);
 
     // C++:  bool cv::GraphicalCodeDetector::detectAndDecodeMulti(Mat img, vector_string& decoded_info, Mat& points = Mat(), vector_Mat& straight_code = vector_Mat())
     private static native boolean detectAndDecodeMulti_0(long nativeObj, long img_nativeObj, List<String> decoded_info, long points_nativeObj, long straight_code_mat_nativeObj);
-
     private static native boolean detectAndDecodeMulti_1(long nativeObj, long img_nativeObj, List<String> decoded_info, long points_nativeObj);
-
     private static native boolean detectAndDecodeMulti_2(long nativeObj, long img_nativeObj, List<String> decoded_info);
 
     // native support for java finalize()

@@ -3,28 +3,28 @@
 //
 package org.opencv.objdetect;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint3f;
 import org.opencv.core.Size;
+import org.opencv.objdetect.Board;
+import org.opencv.objdetect.Dictionary;
+import org.opencv.utils.Converters;
 
 // C++: class CharucoBoard
-
 /**
  * ChArUco board is a planar chessboard where the markers are placed inside the white squares of a chessboard.
- * <p>
+ *
  * The benefits of ChArUco boards is that they provide both, ArUco markers versatility and chessboard corner precision,
  * which is important for calibration and pose estimation. The board image can be drawn using generateImage() method.
  */
 public class CharucoBoard extends Board {
 
-    protected CharucoBoard(long addr) {
-        super(addr);
-    }
+    protected CharucoBoard(long addr) { super(addr); }
 
     // internal usage only
-    public static CharucoBoard __fromPtr__(long addr) {
-        return new CharucoBoard(addr);
-    }
+    public static CharucoBoard __fromPtr__(long addr) { return new CharucoBoard(addr); }
 
     //
     // C++:   cv::aruco::CharucoBoard::CharucoBoard(Size size, float squareLength, float markerLength, Dictionary dictionary, Mat ids = Mat())
@@ -33,12 +33,12 @@ public class CharucoBoard extends Board {
     /**
      * CharucoBoard constructor
      *
-     * @param size         number of chessboard squares in x and y directions
+     * @param size number of chessboard squares in x and y directions
      * @param squareLength squareLength chessboard square side length (normally in meters)
      * @param markerLength marker side length (same unit than squareLength)
-     * @param dictionary   dictionary of markers indicating the type of markers
-     * @param ids          array of id used markers
-     *                     The first markers in the dictionary are used to fill the white chessboard squares.
+     * @param dictionary dictionary of markers indicating the type of markers
+     * @param ids array of id used markers
+     * The first markers in the dictionary are used to fill the white chessboard squares.
      */
     public CharucoBoard(Size size, float squareLength, float markerLength, Dictionary dictionary, Mat ids) {
         super(CharucoBoard_0(size.width, size.height, squareLength, markerLength, dictionary.nativeObj, ids.nativeObj));
@@ -47,11 +47,11 @@ public class CharucoBoard extends Board {
     /**
      * CharucoBoard constructor
      *
-     * @param size         number of chessboard squares in x and y directions
+     * @param size number of chessboard squares in x and y directions
      * @param squareLength squareLength chessboard square side length (normally in meters)
      * @param markerLength marker side length (same unit than squareLength)
-     * @param dictionary   dictionary of markers indicating the type of markers
-     *                     The first markers in the dictionary are used to fill the white chessboard squares.
+     * @param dictionary dictionary of markers indicating the type of markers
+     * The first markers in the dictionary are used to fill the white chessboard squares.
      */
     public CharucoBoard(Size size, float squareLength, float markerLength, Dictionary dictionary) {
         super(CharucoBoard_1(size.width, size.height, squareLength, markerLength, dictionary.nativeObj));
@@ -64,14 +64,13 @@ public class CharucoBoard extends Board {
 
     /**
      * set legacy chessboard pattern.
-     * <p>
+     *
      * Legacy setting creates chessboard patterns starting with a white box in the upper left corner
      * if there is an even row count of chessboard boxes, otherwise it starts with a black box.
      * This setting ensures compatibility to patterns created with OpenCV versions prior OpenCV 4.6.0.
      * See https://github.com/opencv/opencv/issues/23152.
-     * <p>
-     * Default value: false.
      *
+     * Default value: false.
      * @param legacyPattern automatically generated
      */
     public void setLegacyPattern(boolean legacyPattern) {
@@ -121,7 +120,6 @@ public class CharucoBoard extends Board {
 
     /**
      * get CharucoBoard::chessboardCorners
-     *
      * @return automatically generated
      */
     public MatOfPoint3f getChessboardCorners() {
@@ -139,7 +137,7 @@ public class CharucoBoard extends Board {
      * @param charucoIds list of identifiers for each corner in charucoCorners per frame.
      * @return bool value, 1 (true) if detected corners form a line, 0 (false) if they do not.
      * solvePnP, calibration functions will fail if the corners are collinear (true).
-     * <p>
+     *
      * The number of ids in charucoIDs should be &lt;= the number of chessboard corners in the board.
      * This functions checks whether the charuco corners are on a straight line (returns true, if so), or not (false).
      * Axis parallel, as well as diagonal and other straight lines detected.  Degenerate cases:
@@ -156,9 +154,9 @@ public class CharucoBoard extends Board {
     }
 
 
+
     // C++:   cv::aruco::CharucoBoard::CharucoBoard(Size size, float squareLength, float markerLength, Dictionary dictionary, Mat ids = Mat())
     private static native long CharucoBoard_0(double size_width, double size_height, float squareLength, float markerLength, long dictionary_nativeObj, long ids_nativeObj);
-
     private static native long CharucoBoard_1(double size_width, double size_height, float squareLength, float markerLength, long dictionary_nativeObj);
 
     // C++:  void cv::aruco::CharucoBoard::setLegacyPattern(bool legacyPattern)

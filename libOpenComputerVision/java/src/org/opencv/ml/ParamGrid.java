@@ -3,30 +3,24 @@
 //
 package org.opencv.ml;
 
-// C++: class ParamGrid
+import org.opencv.ml.ParamGrid;
 
+// C++: class ParamGrid
 /**
  * The structure represents the logarithmic grid range of statmodel parameters.
- * <p>
+ *
  * It is used for optimizing statmodel accuracy by varying model parameters, the accuracy estimate
  * being computed by cross-validation.
  */
 public class ParamGrid {
 
     protected final long nativeObj;
+    protected ParamGrid(long addr) { nativeObj = addr; }
 
-    protected ParamGrid(long addr) {
-        nativeObj = addr;
-    }
-
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
+    public long getNativeObjAddr() { return nativeObj; }
 
     // internal usage only
-    public static ParamGrid __fromPtr__(long addr) {
-        return new ParamGrid(addr);
-    }
+    public static ParamGrid __fromPtr__(long addr) { return new ParamGrid(addr); }
 
     //
     // C++: static Ptr_ParamGrid cv::ml::ParamGrid::create(double minVal = 0., double maxVal = 0., double logstep = 1.)
@@ -35,9 +29,9 @@ public class ParamGrid {
     /**
      * Creates a ParamGrid Ptr that can be given to the %SVM::trainAuto method
      *
-     * @param minVal  minimum value of the parameter grid
-     * @param maxVal  maximum value of the parameter grid
-     * @param logstep Logarithmic step for iterating the statmodel parameter
+     *     @param minVal minimum value of the parameter grid
+     *     @param maxVal maximum value of the parameter grid
+     *     @param logstep Logarithmic step for iterating the statmodel parameter
      * @return automatically generated
      */
     public static ParamGrid create(double minVal, double maxVal, double logstep) {
@@ -47,8 +41,8 @@ public class ParamGrid {
     /**
      * Creates a ParamGrid Ptr that can be given to the %SVM::trainAuto method
      *
-     * @param minVal minimum value of the parameter grid
-     * @param maxVal maximum value of the parameter grid
+     *     @param minVal minimum value of the parameter grid
+     *     @param maxVal maximum value of the parameter grid
      * @return automatically generated
      */
     public static ParamGrid create(double minVal, double maxVal) {
@@ -58,7 +52,7 @@ public class ParamGrid {
     /**
      * Creates a ParamGrid Ptr that can be given to the %SVM::trainAuto method
      *
-     * @param minVal minimum value of the parameter grid
+     *     @param minVal minimum value of the parameter grid
      * @return automatically generated
      */
     public static ParamGrid create(double minVal) {
@@ -135,13 +129,11 @@ public class ParamGrid {
     }
 
 
+
     // C++: static Ptr_ParamGrid cv::ml::ParamGrid::create(double minVal = 0., double maxVal = 0., double logstep = 1.)
     private static native long create_0(double minVal, double maxVal, double logstep);
-
     private static native long create_1(double minVal, double maxVal);
-
     private static native long create_2(double minVal);
-
     private static native long create_3();
 
     // C++: double ParamGrid::minVal

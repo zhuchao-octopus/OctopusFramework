@@ -3,23 +3,20 @@
 //
 package org.opencv.imgproc;
 
-// C++: class GeneralizedHoughGuil
+import org.opencv.imgproc.GeneralizedHough;
 
+// C++: class GeneralizedHoughGuil
 /**
  * finds arbitrary template in the grayscale image using Generalized Hough Transform
- * <p>
+ *
  * Detects position, translation and rotation CITE: Guil1999 .
  */
 public class GeneralizedHoughGuil extends GeneralizedHough {
 
-    protected GeneralizedHoughGuil(long addr) {
-        super(addr);
-    }
+    protected GeneralizedHoughGuil(long addr) { super(addr); }
 
     // internal usage only
-    public static GeneralizedHoughGuil __fromPtr__(long addr) {
-        return new GeneralizedHoughGuil(addr);
-    }
+    public static GeneralizedHoughGuil __fromPtr__(long addr) { return new GeneralizedHoughGuil(addr); }
 
     //
     // C++:  void cv::GeneralizedHoughGuil::setXi(double xi)
@@ -241,6 +238,7 @@ public class GeneralizedHoughGuil extends GeneralizedHough {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:  void cv::GeneralizedHoughGuil::setXi(double xi)

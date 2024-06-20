@@ -25,11 +25,11 @@
 #      - OpenCV_INCLUDE_DIRS             : The OpenCV include directories.
 #      - OpenCV_COMPUTE_CAPABILITIES     : The version of compute capability.
 #      - OpenCV_ANDROID_NATIVE_API_LEVEL : Minimum required level of Android API.
-#      - OpenCV_VERSION                  : The version of this OpenCV build: "4.8.1"
+#      - OpenCV_VERSION                  : The version of this OpenCV build: "4.10.0"
 #      - OpenCV_VERSION_MAJOR            : Major version part of OpenCV_VERSION: "4"
-#      - OpenCV_VERSION_MINOR            : Minor version part of OpenCV_VERSION: "8"
-#      - OpenCV_VERSION_PATCH            : Patch version part of OpenCV_VERSION: "1"
-#      - OpenCV_VERSION_STATUS           : Development status of this build: ""
+#      - OpenCV_VERSION_MINOR            : Minor version part of OpenCV_VERSION: "10"
+#      - OpenCV_VERSION_PATCH            : Patch version part of OpenCV_VERSION: "0"
+#      - OpenCV_VERSION_STATUS           : Development status of this build: "-dev"
 #
 #    Advanced variables:
 #      - OpenCV_SHARED                   : Use OpenCV as shared library
@@ -45,12 +45,12 @@
 # ======================================================
 #  Version variables:
 # ======================================================
-SET(OpenCV_VERSION 4.8.1)
+SET(OpenCV_VERSION 4.10.0)
 SET(OpenCV_VERSION_MAJOR  4)
-SET(OpenCV_VERSION_MINOR  8)
-SET(OpenCV_VERSION_PATCH  1)
+SET(OpenCV_VERSION_MINOR  10)
+SET(OpenCV_VERSION_PATCH  0)
 SET(OpenCV_VERSION_TWEAK  0)
-SET(OpenCV_VERSION_STATUS "")
+SET(OpenCV_VERSION_STATUS "-dev")
 
 include(FindPackageHandleStandardArgs)
 
@@ -118,8 +118,8 @@ set(OpenCV_SHARED OFF)
 # Enables mangled install paths, that help with side by side installs
 set(OpenCV_USE_MANGLED_PATHS FALSE)
 
-set(OpenCV_LIB_COMPONENTS opencv_calib3d;opencv_core;opencv_dnn;opencv_features2d;opencv_flann;opencv_gapi;opencv_highgui;opencv_imgcodecs;opencv_imgproc;opencv_ml;opencv_objdetect;opencv_photo;opencv_stitching;opencv_video;opencv_videoio;opencv_java)
-set(__OpenCV_INCLUDE_DIRS "${OpenCV_INSTALL_PATH}/libOpenComputerVision/native/jni/include")
+set(OpenCV_LIB_COMPONENTS opencv_calib3d;opencv_core;opencv_dnn;opencv_features2d;opencv_flann;opencv_gapi;opencv_highgui;opencv_imgcodecs;opencv_imgproc;opencv_ml;opencv_objdetect;opencv_photo;opencv_stitching;opencv_video;opencv_videoio;opencv_aruco;opencv_bgsegm;opencv_bioinspired;opencv_ccalib;opencv_datasets;opencv_dnn_objdetect;opencv_dnn_superres;opencv_dpm;opencv_face;opencv_fuzzy;opencv_hfs;opencv_img_hash;opencv_intensity_transform;opencv_line_descriptor;opencv_mcc;opencv_optflow;opencv_phase_unwrapping;opencv_plot;opencv_quality;opencv_rapid;opencv_reg;opencv_rgbd;opencv_saliency;opencv_shape;opencv_signal;opencv_stereo;opencv_structured_light;opencv_superres;opencv_surface_matching;opencv_text;opencv_tracking;opencv_videostab;opencv_wechat_qrcode;opencv_xfeatures2d;opencv_ximgproc;opencv_xobjdetect;opencv_xphoto;opencv_java)
+set(__OpenCV_INCLUDE_DIRS "${OpenCV_INSTALL_PATH}/sdk/native/jni/include")
 
 set(OpenCV_INCLUDE_DIRS "")
 foreach(d ${__OpenCV_INCLUDE_DIRS})

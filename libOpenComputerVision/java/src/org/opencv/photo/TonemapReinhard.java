@@ -3,26 +3,23 @@
 //
 package org.opencv.photo;
 
-// C++: class TonemapReinhard
+import org.opencv.photo.Tonemap;
 
+// C++: class TonemapReinhard
 /**
  * This is a global tonemapping operator that models human visual system.
- * <p>
+ *
  * Mapping function is controlled by adaptation parameter, that is computed using light adaptation and
  * color adaptation.
- * <p>
+ *
  * For more information see CITE: RD05 .
  */
 public class TonemapReinhard extends Tonemap {
 
-    protected TonemapReinhard(long addr) {
-        super(addr);
-    }
+    protected TonemapReinhard(long addr) { super(addr); }
 
     // internal usage only
-    public static TonemapReinhard __fromPtr__(long addr) {
-        return new TonemapReinhard(addr);
-    }
+    public static TonemapReinhard __fromPtr__(long addr) { return new TonemapReinhard(addr); }
 
     //
     // C++:  float cv::TonemapReinhard::getIntensity()
@@ -82,6 +79,7 @@ public class TonemapReinhard extends Tonemap {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:  float cv::TonemapReinhard::getIntensity()

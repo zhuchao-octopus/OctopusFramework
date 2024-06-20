@@ -63,7 +63,7 @@ android {
 }
 
 dependencies {
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+    implementation(platform('org.jetbrains.kotlin:kotlin-bom:2.0.0'))
     api('androidx.core:core:1.12.0')
     api('androidx.appcompat:appcompat:1.6.1')
     api('androidx.annotation:annotation:1.7.0-alpha02')
@@ -71,8 +71,8 @@ dependencies {
     api 'androidx.documentfile:documentfile:1.0.1'
 
     api('com.google.android.things:androidthings:1.0')
-    api('com.google.code.gson:gson:2.10.1')
+    api('com.google.code.gson:gson:2.11.0')
 
-    api('com.squareup.okhttp3:okhttp:5.0.0-alpha.11')
-    api('com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11')
+    api('com.squareup.okhttp3:okhttp:5.0.0-alpha.14')
+    api('com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.14')
 }

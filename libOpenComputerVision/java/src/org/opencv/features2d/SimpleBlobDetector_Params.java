@@ -4,24 +4,18 @@
 package org.opencv.features2d;
 
 
+
 // C++: class Params
 
 public class SimpleBlobDetector_Params {
 
     protected final long nativeObj;
+    protected SimpleBlobDetector_Params(long addr) { nativeObj = addr; }
 
-    protected SimpleBlobDetector_Params(long addr) {
-        nativeObj = addr;
-    }
-
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
+    public long getNativeObjAddr() { return nativeObj; }
 
     // internal usage only
-    public static SimpleBlobDetector_Params __fromPtr__(long addr) {
-        return new SimpleBlobDetector_Params(addr);
-    }
+    public static SimpleBlobDetector_Params __fromPtr__(long addr) { return new SimpleBlobDetector_Params(addr); }
 
     //
     // C++:   cv::SimpleBlobDetector::Params::Params()
@@ -392,6 +386,7 @@ public class SimpleBlobDetector_Params {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:   cv::SimpleBlobDetector::Params::Params()

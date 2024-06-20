@@ -3,24 +3,21 @@
 //
 package org.opencv.video;
 
-// C++: class BackgroundSubtractorKNN
+import org.opencv.video.BackgroundSubtractor;
 
+// C++: class BackgroundSubtractorKNN
 /**
  * K-nearest neighbours - based Background/Foreground Segmentation Algorithm.
- * <p>
+ *
  * The class implements the K-nearest neighbours background subtraction described in CITE: Zivkovic2006 .
  * Very efficient if number of foreground pixels is low.
  */
 public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
-    protected BackgroundSubtractorKNN(long addr) {
-        super(addr);
-    }
+    protected BackgroundSubtractorKNN(long addr) { super(addr); }
 
     // internal usage only
-    public static BackgroundSubtractorKNN __fromPtr__(long addr) {
-        return new BackgroundSubtractorKNN(addr);
-    }
+    public static BackgroundSubtractorKNN __fromPtr__(long addr) { return new BackgroundSubtractorKNN(addr); }
 
     //
     // C++:  int cv::BackgroundSubtractorKNN::getHistory()
@@ -28,7 +25,6 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
     /**
      * Returns the number of last frames that affect the background model
-     *
      * @return automatically generated
      */
     public int getHistory() {
@@ -42,7 +38,6 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
     /**
      * Sets the number of last frames that affect the background model
-     *
      * @param history automatically generated
      */
     public void setHistory(int history) {
@@ -56,7 +51,6 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
     /**
      * Returns the number of data samples in the background model
-     *
      * @return automatically generated
      */
     public int getNSamples() {
@@ -70,9 +64,8 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
     /**
      * Sets the number of data samples in the background model.
-     * <p>
-     * The model needs to be reinitalized to reserve memory.
      *
+     *     The model needs to be reinitalized to reserve memory.
      * @param _nN automatically generated
      */
     public void setNSamples(int _nN) {
@@ -86,10 +79,9 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
     /**
      * Returns the threshold on the squared distance between the pixel and the sample
-     * <p>
-     * The threshold on the squared distance between the pixel and the sample to decide whether a pixel is
-     * close to a data sample.
      *
+     *     The threshold on the squared distance between the pixel and the sample to decide whether a pixel is
+     *     close to a data sample.
      * @return automatically generated
      */
     public double getDist2Threshold() {
@@ -103,7 +95,6 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
     /**
      * Sets the threshold on the squared distance
-     *
      * @param _dist2Threshold automatically generated
      */
     public void setDist2Threshold(double _dist2Threshold) {
@@ -117,10 +108,9 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
     /**
      * Returns the number of neighbours, the k in the kNN.
-     * <p>
-     * K is the number of samples that need to be within dist2Threshold in order to decide that that
-     * pixel is matching the kNN background model.
      *
+     *     K is the number of samples that need to be within dist2Threshold in order to decide that that
+     *     pixel is matching the kNN background model.
      * @return automatically generated
      */
     public int getkNNSamples() {
@@ -134,7 +124,6 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
     /**
      * Sets the k in the kNN. How many nearest neighbours need to match.
-     *
      * @param _nkNN automatically generated
      */
     public void setkNNSamples(int _nkNN) {
@@ -148,10 +137,9 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
     /**
      * Returns the shadow detection flag
-     * <p>
-     * If true, the algorithm detects shadows and marks them. See createBackgroundSubtractorKNN for
-     * details.
      *
+     *     If true, the algorithm detects shadows and marks them. See createBackgroundSubtractorKNN for
+     *     details.
      * @return automatically generated
      */
     public boolean getDetectShadows() {
@@ -165,7 +153,6 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
     /**
      * Enables or disables shadow detection
-     *
      * @param detectShadows automatically generated
      */
     public void setDetectShadows(boolean detectShadows) {
@@ -179,10 +166,9 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
     /**
      * Returns the shadow value
-     * <p>
-     * Shadow value is the value used to mark shadows in the foreground mask. Default value is 127. Value 0
-     * in the mask always means background, 255 means foreground.
      *
+     *     Shadow value is the value used to mark shadows in the foreground mask. Default value is 127. Value 0
+     *     in the mask always means background, 255 means foreground.
      * @return automatically generated
      */
     public int getShadowValue() {
@@ -196,7 +182,6 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
     /**
      * Sets the shadow value
-     *
      * @param value automatically generated
      */
     public void setShadowValue(int value) {
@@ -210,12 +195,11 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
     /**
      * Returns the shadow threshold
-     * <p>
-     * A shadow is detected if pixel is a darker version of the background. The shadow threshold (Tau in
-     * the paper) is a threshold defining how much darker the shadow can be. Tau= 0.5 means that if a pixel
-     * is more than twice darker then it is not shadow. See Prati, Mikic, Trivedi and Cucchiara,
-     * Detecting Moving Shadows...*, IEEE PAMI,2003.
      *
+     *     A shadow is detected if pixel is a darker version of the background. The shadow threshold (Tau in
+     *     the paper) is a threshold defining how much darker the shadow can be. Tau= 0.5 means that if a pixel
+     *     is more than twice darker then it is not shadow. See Prati, Mikic, Trivedi and Cucchiara,
+     * Detecting Moving Shadows...*, IEEE PAMI,2003.
      * @return automatically generated
      */
     public double getShadowThreshold() {
@@ -229,7 +213,6 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
 
     /**
      * Sets the shadow threshold
-     *
      * @param threshold automatically generated
      */
     public void setShadowThreshold(double threshold) {
@@ -241,6 +224,7 @@ public class BackgroundSubtractorKNN extends BackgroundSubtractor {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:  int cv::BackgroundSubtractorKNN::getHistory()

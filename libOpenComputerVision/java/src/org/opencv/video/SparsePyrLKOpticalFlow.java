@@ -5,27 +5,24 @@ package org.opencv.video;
 
 import org.opencv.core.Size;
 import org.opencv.core.TermCriteria;
+import org.opencv.video.SparseOpticalFlow;
+import org.opencv.video.SparsePyrLKOpticalFlow;
 
 // C++: class SparsePyrLKOpticalFlow
-
 /**
  * Class used for calculating a sparse optical flow.
- * <p>
+ *
  * The class can calculate an optical flow for a sparse feature set using the
  * iterative Lucas-Kanade method with pyramids.
- * <p>
+ *
  * SEE: calcOpticalFlowPyrLK
  */
 public class SparsePyrLKOpticalFlow extends SparseOpticalFlow {
 
-    protected SparsePyrLKOpticalFlow(long addr) {
-        super(addr);
-    }
+    protected SparsePyrLKOpticalFlow(long addr) { super(addr); }
 
     // internal usage only
-    public static SparsePyrLKOpticalFlow __fromPtr__(long addr) {
-        return new SparsePyrLKOpticalFlow(addr);
-    }
+    public static SparsePyrLKOpticalFlow __fromPtr__(long addr) { return new SparsePyrLKOpticalFlow(addr); }
 
     //
     // C++:  Size cv::SparsePyrLKOpticalFlow::getWinSize()
@@ -152,6 +149,7 @@ public class SparsePyrLKOpticalFlow extends SparseOpticalFlow {
     }
 
 
+
     // C++:  Size cv::SparsePyrLKOpticalFlow::getWinSize()
     private static native double[] getWinSize_0(long nativeObj);
 
@@ -184,15 +182,10 @@ public class SparsePyrLKOpticalFlow extends SparseOpticalFlow {
 
     // C++: static Ptr_SparsePyrLKOpticalFlow cv::SparsePyrLKOpticalFlow::create(Size winSize = Size(21, 21), int maxLevel = 3, TermCriteria crit = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01), int flags = 0, double minEigThreshold = 1e-4)
     private static native long create_0(double winSize_width, double winSize_height, int maxLevel, int crit_type, int crit_maxCount, double crit_epsilon, int flags, double minEigThreshold);
-
     private static native long create_1(double winSize_width, double winSize_height, int maxLevel, int crit_type, int crit_maxCount, double crit_epsilon, int flags);
-
     private static native long create_2(double winSize_width, double winSize_height, int maxLevel, int crit_type, int crit_maxCount, double crit_epsilon);
-
     private static native long create_3(double winSize_width, double winSize_height, int maxLevel);
-
     private static native long create_4(double winSize_width, double winSize_height);
-
     private static native long create_5();
 
     // native support for java finalize()

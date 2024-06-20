@@ -3,15 +3,18 @@
 //
 package org.opencv.dnn;
 
-// C++: class TextDetectionModel_DB
+import org.opencv.dnn.Net;
+import org.opencv.dnn.TextDetectionModel;
+import org.opencv.dnn.TextDetectionModel_DB;
 
+// C++: class TextDetectionModel_DB
 /**
  * This class represents high-level API for text detection DL networks compatible with DB model.
- * <p>
+ *
  * Related publications: CITE: liao2020real
  * Paper: https://arxiv.org/abs/1911.08947
  * For more information about the hyper-parameters setting, please refer to https://github.com/MhLiao/DB
- * <p>
+ *
  * Configurable parameters:
  * - (float) binaryThreshold - The threshold of the binary map. It is usually set to 0.3.
  * - (float) polygonThreshold - The threshold of text polygons. It is usually set to 0.5, 0.6, and 0.7. Default is 0.5f
@@ -20,14 +23,10 @@ package org.opencv.dnn;
  */
 public class TextDetectionModel_DB extends TextDetectionModel {
 
-    protected TextDetectionModel_DB(long addr) {
-        super(addr);
-    }
+    protected TextDetectionModel_DB(long addr) { super(addr); }
 
     // internal usage only
-    public static TextDetectionModel_DB __fromPtr__(long addr) {
-        return new TextDetectionModel_DB(addr);
-    }
+    public static TextDetectionModel_DB __fromPtr__(long addr) { return new TextDetectionModel_DB(addr); }
 
     //
     // C++:   cv::dnn::TextDetectionModel_DB::TextDetectionModel_DB(Net network)
@@ -35,7 +34,6 @@ public class TextDetectionModel_DB extends TextDetectionModel {
 
     /**
      * Create text detection algorithm from deep learning network.
-     *
      * @param network Net object.
      */
     public TextDetectionModel_DB(Net network) {
@@ -50,8 +48,7 @@ public class TextDetectionModel_DB extends TextDetectionModel {
     /**
      * Create text detection model from network represented in one of the supported formats.
      * An order of {@code model} and {@code config} arguments does not matter.
-     *
-     * @param model  Binary file contains trained weights.
+     * @param model Binary file contains trained weights.
      * @param config Text file contains network configuration.
      */
     public TextDetectionModel_DB(String model, String config) {
@@ -61,7 +58,6 @@ public class TextDetectionModel_DB extends TextDetectionModel {
     /**
      * Create text detection model from network represented in one of the supported formats.
      * An order of {@code model} and {@code config} arguments does not matter.
-     *
      * @param model Binary file contains trained weights.
      */
     public TextDetectionModel_DB(String model) {
@@ -147,12 +143,12 @@ public class TextDetectionModel_DB extends TextDetectionModel {
     }
 
 
+
     // C++:   cv::dnn::TextDetectionModel_DB::TextDetectionModel_DB(Net network)
     private static native long TextDetectionModel_DB_0(long network_nativeObj);
 
     // C++:   cv::dnn::TextDetectionModel_DB::TextDetectionModel_DB(string model, string config = "")
     private static native long TextDetectionModel_DB_1(String model, String config);
-
     private static native long TextDetectionModel_DB_2(String model);
 
     // C++:  TextDetectionModel_DB cv::dnn::TextDetectionModel_DB::setBinaryThreshold(float binaryThreshold)

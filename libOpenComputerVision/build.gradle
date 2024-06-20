@@ -58,7 +58,7 @@
 //
 // - Use find_package() in app/CMakeLists.txt:
 //
-//   find_package(OpenCV 4.8 REQUIRED java)
+//   find_package(OpenCV 4.10 REQUIRED java)
 //   ...
 //   target_link_libraries(native-lib ${OpenCV_LIBRARIES})
 //
@@ -88,24 +88,18 @@
 //   }
 //
 
-//apply plugin: 'com.android.library'
-//apply plugin: 'kotlin-android'
-plugins {
-    id 'com.android.library'
-    id 'maven-publish'
-    id 'kotlin-android'
-}
-def openCVersionName = "4.8.1"
-def openCVersionCode = ((4 * 100 + 8) * 100 + 1) * 10 + 0
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+apply plugin: 'kotlin-android'
 
-println "OpenCV: " + openCVersionName + " " + project.buildscript.sourceFile
+def openCVersionName = "4.10.0-dev"
+def openCVersionCode = ((4 * 100 + 10) * 100 + 0) * 10 + 0
 
-
+println "OpenCV: " +openCVersionName + " " + project.buildscript.sourceFile
 ext {
-    //GITHUB_REPO_PATH = 'D:\\AndroidStudioProjects\\OctopusFrameworkLibs'
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libOpenComputerVision'
-    PUBLISH_VERSION = '1.0'
+    PUBLISH_VERSION = '1.1'
 }
 
 afterEvaluate {
@@ -125,18 +119,20 @@ afterEvaluate {
             }
             maven {
                 allowInsecureProtocol true
-                url GITHUB_REPO_LOCAL_PATH // 第二个仓库地址
+                url GITHUB_REPO_LOCAL_PATH
             }
         }
     }
 }
-
 android {
-
+    namespace 'org.opencv'
     compileSdk 34
     defaultConfig {
         minSdk 24
         targetSdk 34
+
+        versionCode openCVersionCode
+        versionName openCVersionName
 
         externalNativeBuild {
             cmake {
@@ -144,17 +140,12 @@ android {
                 targets "opencv_jni_shared"
             }
         }
-        ndk {
-            //noinspection ChromeOsAbiSupport
-            abiFilters  "armeabi-v7a", "arm64-v8a"
-        }
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-
 
     buildTypes {
         debug {
@@ -171,34 +162,39 @@ android {
         }
     }
 
+    buildFeatures {
+        prefabPublishing true
+        buildConfig true
+    }
+    prefab {
+        opencv_jni_shared {
+            headers "native/jni/include"
+        }
+    }
+
     sourceSets {
         main {
             jniLibs.srcDirs = ['native/libs']
             java.srcDirs = ['java/src']
-            aidl.srcDirs = ['java/src']
             res.srcDirs = ['java/res']
             manifest.srcFile 'java/AndroidManifest.xml'
         }
     }
 
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+
     externalNativeBuild {
         cmake {
-            path(project.projectDir.toString() + '/libcxx_helper/CMakeLists.txt')
+            path (project.projectDir.toString() + '/libcxx_helper/CMakeLists.txt')
         }
     }
-
-    packagingOptions {
-        resources {
-            pickFirsts += ['META-INF/native-image/android-x86_64/jnijavacpp/jni-config.json', 'META-INF/native-image/android-x86_64/jnijavacpp/reflect-config.json', 'META-INF/native-image/android-x86/jnijavacpp/jni-config.json', 'META-INF/native-image/android-x86/jnijavacpp/reflect-config.json', 'META-INF/native-image/android-arm64/jnijavacpp/jni-config.json', 'META-INF/native-image/android-arm64/jnijavacpp/reflect-config.json', 'META-INF/native-image/android-arm/jnijavacpp/jni-config.json', 'META-INF/native-image/android-arm/jnijavacpp/reflect-config.json', 'META-INF/native-image/ios-x86_64/jnijavacpp/reflect-config.json']
-        }
-    }
-
-    buildFeatures {
-        aidl true
-        buildConfig true
-    }
-    namespace 'org.opencv'
 }
+
 
 dependencies {
 }

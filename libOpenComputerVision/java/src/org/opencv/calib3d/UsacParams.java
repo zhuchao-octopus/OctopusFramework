@@ -4,24 +4,18 @@
 package org.opencv.calib3d;
 
 
+
 // C++: class UsacParams
 
 public class UsacParams {
 
     protected final long nativeObj;
+    protected UsacParams(long addr) { nativeObj = addr; }
 
-    protected UsacParams(long addr) {
-        nativeObj = addr;
-    }
-
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
+    public long getNativeObjAddr() { return nativeObj; }
 
     // internal usage only
-    public static UsacParams __fromPtr__(long addr) {
-        return new UsacParams(addr);
-    }
+    public static UsacParams __fromPtr__(long addr) { return new UsacParams(addr); }
 
     //
     // C++:   cv::UsacParams::UsacParams()
@@ -270,6 +264,7 @@ public class UsacParams {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
+
 
 
     // C++:   cv::UsacParams::UsacParams()

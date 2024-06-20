@@ -12,6 +12,7 @@ import com.zhuchao.android.fbase.MMLog;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Arrays;
 import java.util.HashSet;
 //import android.os.SystemProperties;
 
@@ -251,71 +252,9 @@ public class AppConfig {
     public static final String HIDE_CANBOX_ANSTART = "anstart";
     public static final String HIDE_CANBOX_SEATHEAT = "seatheat";
     public static final String HIDE_CANBOX_360 = "360";
-
     private static int mUsbDvd = 0;
 
-    private static void updateHideAppConboxVersion2(String appHide) {
-        String appShow = MachineConfig.getPropertyOnce(MachineConfig.KEY_CAN_BOX_SHOW_APP);
-
-        if (appShow == null || !appShow.contains(HIDE_CANBOX_SYNC)) {
-            mSetHideApp.add("com.focussync.MainActivity");
-        }
-        if (appShow == null || !appShow.contains(HIDE_CANBOX_SET)) {
-            mSetHideApp.add("com.canboxsetting.MainActivity");
-        }
-
-        if (appShow == null || !appShow.contains(HIDE_CANBOX_INFO)) {
-            mSetHideApp.add("com.canboxsetting.CarInfoActivity");
-        }
-
-        if (appShow == null || !appShow.contains(HIDE_CANBOX_AC) || (appHide != null && appHide.contains(HIDE_CANBOX_AC))) {
-            mSetHideApp.add("com.canboxsetting.CanAirControlActivity");
-        }
-
-        if (appShow == null || !appShow.contains(HIDE_CANBOX_CD)) {
-            mSetHideApp.add("com.canboxsetting.JeepCarCDPlayerActivity");
-        }
-
-        if (appShow == null || !appShow.contains(HIDE_CANBOX_TPMS)) {
-            mSetHideApp.add("com.canboxsetting.TPMSActivity");
-        }
-
-        if (appShow == null || !appShow.contains(HIDE_CANBOX_EQ)) {
-            mSetHideApp.add("com.canboxsetting.eqset.EQActivity");
-        }
-        if (appShow == null || !appShow.contains(HIDE_CANBOX_360)) {
-            mSetHideApp.add("com.canboxsetting.AVMActivity");
-        }
-
-        if (appShow == null || !appShow.contains(HIDE_CANBOX_RADIO)) {
-            mSetHideApp.add("com.canboxsetting.RadioActivity");
-        }
-        if (appShow == null || !appShow.contains(HIDE_CANBOX_COMPASS)) {
-            mSetHideApp.add("com.canboxsetting.CarCompassActivity");
-        }
-        if (appShow == null || !appShow.contains(HIDE_CANBOX_PLAYER)) {
-            mSetHideApp.add("com.canboxsetting.CarPlayerActivity");
-        }
-        if (appShow == null || !appShow.contains(HIDE_CANBOX_TIMESET)) {
-            mSetHideApp.add("com.canboxsetting.TimeSetActivity");
-        }
-        if (appShow == null || !appShow.contains(HIDE_CANBOX_ANSTART)) {
-            mSetHideApp.add("com.canboxsetting.AnStartActivity");
-        }
-        if (appShow == null || !appShow.contains(HIDE_CANBOX_SEATHEAT)) {
-            mSetHideApp.add("com.canboxsetting.SeatHeatActivity");
-        }
-        if (appShow != null && appShow.contains(HIDE_APP_AUX)) {
-            hideAuxin = true;
-        }
-
-        if (appShow != null && appShow.contains(HIDE_APP_FRONT_CMAERA)) {
-            hideFrontCamera = true;
-        }
-    }
-
     private static void updateHideAppConboxVersion1(String value, int mCarType, String appHide) {
-
         boolean hideSync = true;
         boolean hideConboxSetting = true;
         boolean hideCanboxCarInfo = true;
@@ -355,7 +294,6 @@ public class AppConfig {
             } else if (value.equals(MachineConfig.VALUE_CANBOX_OPEL) || value.equals(MachineConfig.VALUE_CANBOX_RAM_FIAT) || value.equals(MachineConfig.VALUE_CANBOX_MITSUBISHI_OUTLANDER_SIMPLE) || value.equals(MachineConfig.VALUE_CANBOX_CHERY_OD) || value.equals(MachineConfig.VALUE_CANBOX_NISSAN2013) || value.equals(MachineConfig.VALUE_CANBOX_HAFER_H2) || value.equals(MachineConfig.VALUE_CANBOX_SMART_HAOZHENG) || value.equals(MachineConfig.VALUE_CANBOX_MAZDA_CX5_SIMPLE) || value.equals(MachineConfig.VALUE_CANBOX_SUBARU_SIMPLE)) {
                 hideConboxSetting = false;
             } else if (value.equals(MachineConfig.VALUE_CANBOX_JEEP_SIMPLE)) {
-
                 if (mCarType == 0 || mCarType == 1 || mCarType == 4 || mCarType == 6 || mCarType == 7) {
                     hideCanboxAirControl = false;
                 }
@@ -461,8 +399,67 @@ public class AppConfig {
         }
     }
 
-    private static void updateHideAppConbox(String appHide) {
+    private static void updateHideAppConboxVersion2(String appHide) {
+        String appShow = MachineConfig.getPropertyOnce(MachineConfig.KEY_CAN_BOX_SHOW_APP);
 
+        if (appShow == null || !appShow.contains(HIDE_CANBOX_SYNC)) {
+            mSetHideApp.add("com.focussync.MainActivity");
+        }
+        if (appShow == null || !appShow.contains(HIDE_CANBOX_SET)) {
+            mSetHideApp.add("com.canboxsetting.MainActivity");
+        }
+
+        if (appShow == null || !appShow.contains(HIDE_CANBOX_INFO)) {
+            mSetHideApp.add("com.canboxsetting.CarInfoActivity");
+        }
+
+        if (appShow == null || !appShow.contains(HIDE_CANBOX_AC) || (appHide != null && appHide.contains(HIDE_CANBOX_AC))) {
+            mSetHideApp.add("com.canboxsetting.CanAirControlActivity");
+        }
+
+        if (appShow == null || !appShow.contains(HIDE_CANBOX_CD)) {
+            mSetHideApp.add("com.canboxsetting.JeepCarCDPlayerActivity");
+        }
+
+        if (appShow == null || !appShow.contains(HIDE_CANBOX_TPMS)) {
+            mSetHideApp.add("com.canboxsetting.TPMSActivity");
+        }
+
+        if (appShow == null || !appShow.contains(HIDE_CANBOX_EQ)) {
+            mSetHideApp.add("com.canboxsetting.eqset.EQActivity");
+        }
+        if (appShow == null || !appShow.contains(HIDE_CANBOX_360)) {
+            mSetHideApp.add("com.canboxsetting.AVMActivity");
+        }
+
+        if (appShow == null || !appShow.contains(HIDE_CANBOX_RADIO)) {
+            mSetHideApp.add("com.canboxsetting.RadioActivity");
+        }
+        if (appShow == null || !appShow.contains(HIDE_CANBOX_COMPASS)) {
+            mSetHideApp.add("com.canboxsetting.CarCompassActivity");
+        }
+        if (appShow == null || !appShow.contains(HIDE_CANBOX_PLAYER)) {
+            mSetHideApp.add("com.canboxsetting.CarPlayerActivity");
+        }
+        if (appShow == null || !appShow.contains(HIDE_CANBOX_TIMESET)) {
+            mSetHideApp.add("com.canboxsetting.TimeSetActivity");
+        }
+        if (appShow == null || !appShow.contains(HIDE_CANBOX_ANSTART)) {
+            mSetHideApp.add("com.canboxsetting.AnStartActivity");
+        }
+        if (appShow == null || !appShow.contains(HIDE_CANBOX_SEATHEAT)) {
+            mSetHideApp.add("com.canboxsetting.SeatHeatActivity");
+        }
+        if (appShow != null && appShow.contains(HIDE_APP_AUX)) {
+            hideAuxin = true;
+        }
+
+        if (appShow != null && appShow.contains(HIDE_APP_FRONT_CMAERA)) {
+            hideFrontCamera = true;
+        }
+    }
+
+    private static void updateHideAppConbox(String appHide) {
         String value = MachineConfig.getPropertyOnce(MachineConfig.KEY_CAN_BOX);
         int mCarType = 0;
         int mProVersion = 0;
@@ -473,15 +470,13 @@ public class AppConfig {
             for (int i = 1; i < ss.length; ++i) {
                 if (ss[i].startsWith(MachineConfig.KEY_SUB_CANBOX_CAR_TYPE)) {
                     try {
-                        mCarType = Integer.valueOf(ss[i].substring(1));
-                    } catch (Exception e) {
-
+                        mCarType = Integer.parseInt(ss[i].substring(1));
+                    } catch (Exception ignored) {
                     }
                 } else if (ss[i].startsWith(MachineConfig.KEY_SUB_CANBOX_PROTOCAL_VERSION)) {
                     try {
-                        mProVersion = Integer.valueOf(ss[i].substring(1));
-                    } catch (Exception e) {
-
+                        mProVersion = Integer.parseInt(ss[i].substring(1));
+                    } catch (Exception ignored) {
                     }
                 }
             }
@@ -489,12 +484,9 @@ public class AppConfig {
 
         if (value == null || MachineConfig.VALUE_CANBOX_NONE.equals(value) || mProVersion >= 2) {
             updateHideAppConboxVersion2(appHide); // in version2 the CANBOX APP
-            // SHOW set in
-            // CanboxSettings
         } else {
             updateHideAppConboxVersion1(value, mCarType, appHide);
         }
-
     }
 
     public static boolean hideAuxin = false;
@@ -606,20 +598,10 @@ public class AppConfig {
             mSetHideApp.add("com.my.frontcamera.FrontCameraActivity4");
         }
 
-        /// Log.d("updateHideAppConfig", mSetHideApp.size());
-        /// for (String s : mSetHideApp) {
-        /// Log.d("updateHideAppConfig", s);
-        /// }
-
         if (MachineConfig.getPropertyIntReadOnly(MachineConfig.KEY_SHOW_BACK_CAMERA) != 1) {
             mSetHideApp.add("com.my.frontcamera.BackCameraActivity");
         }
-
         addHiedAppForever();
-
-        ///for (String sss : mSetHideApp) {
-        ///Log.d(TAG, ":" + sss);
-        ///}
     }
 
     public static String getCanboxSetting() {
@@ -637,7 +619,6 @@ public class AppConfig {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -668,16 +649,13 @@ public class AppConfig {
             mWallpaperDrawable = wallpaperDrawable;
             v.setBackground(wallpaperDrawable);
         }
-
     }
 
     private static void addHiedAppForever() {
         String s = MachineConfig.getPropertyReadOnly(MachineConfig.KEY_APP_HIDE_FOREVER);
         if (s != null) {
             String[] ss = s.split(",");
-            for (String app : ss) {
-                mSetHideApp.add(app);
-            }
+            mSetHideApp.addAll(Arrays.asList(ss));
         }
     }
 
@@ -691,9 +669,7 @@ public class AppConfig {
 
                 if (!"1".equals(s)) {
                     ss = ss[1].split(",");
-                    for (String app : ss) {
-                        mSetHideApp.add(app);
-                    }
+                    mSetHideApp.addAll(Arrays.asList(ss));
                 }
             }
         }
@@ -704,6 +680,18 @@ public class AppConfig {
         addCustomHideApp(context);
     }
 
+    public static void printAppConfigInformation()
+    {
+        String appShow = MachineConfig.getPropertyOnce(MachineConfig.KEY_CAN_BOX_SHOW_APP);
+        String appHide = MachineConfig.getPropertyOnce(MachineConfig.KEY_APP_HIDE);
+        String canbox = MachineConfig.getPropertyOnce(MachineConfig.KEY_CAN_BOX);
+        MMLog.d(TAG,"appShow="+appShow);
+        MMLog.d(TAG,"appHide="+appHide);
+        MMLog.d(TAG,"canbox="+canbox);
+        for (String app : mSetHideApp) {
+            MMLog.d(TAG,app);
+        }
+    }
     // Drawable d = Drawable.createFromPath(AppConfig.CARUI_BACKGROUND);
     // // this.getWindow().getDecorView().setBackground(d);
     // getRootView(this).setBackground(d);
