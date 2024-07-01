@@ -606,11 +606,10 @@ public class Camera2Recorder {
     }
 
     private long getRemainAvailableSpace() {
-
         File dir = getOutputDir();
-
         boolean isDirectory = dir.isDirectory();
         boolean canWrite = dir.canWrite();
+
         if (!isDirectory || !canWrite) {
             if (DEBUG) MMLog.d(TAG, "getAvailableSpace() isDirectory=" + isDirectory + ", canWrite=" + canWrite);
             return 0;

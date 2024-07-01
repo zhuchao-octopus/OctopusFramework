@@ -21,7 +21,7 @@ public class VideoRecorder {
     private double mFrameRate;
     private int mOutputWidth;
     private int mOutputHeight;
-    LinkedBlockingQueue mFrameToRecordQueue = new LinkedBlockingQueue<>(10);
+    LinkedBlockingQueue<Object> mFrameToRecordQueue = new LinkedBlockingQueue<>(10);
     public VideoRecorder() {
         // 设置视频的分辨率和格式
         mOutputWidth = 640;

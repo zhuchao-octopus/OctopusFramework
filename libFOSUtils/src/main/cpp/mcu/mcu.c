@@ -126,7 +126,7 @@ static void *reverse_thread(void *arg) {
 
 /**/
 JNIEXPORT jint JNICALL
-Java_com_zhuchao_android_mcu_nativeSendCommand(JNIEnv *env, jobject thiz, jint cmd, jint param1, jbyteArray param2) {
+Java_com_zhuchao_android_car_hardware_Mcu_nativeSendCommand(JNIEnv *env, jobject thiz, jint cmd, jint param1, jbyteArray param2) {
     int ret = 0;
     //LOGD("Java_com_car_hardware_Mcu_nativeSendCommand cmd %d ", cmd);
     switch (cmd) {

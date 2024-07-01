@@ -17,12 +17,15 @@ Set(CMAKE VERBOSE MAKEFILE On)
 SET(BT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/main/cpp/bt)
 SET(MCU_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/main/cpp/mcu)
 SET(UART_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/main/cpp/uart)
-
+SET(DVD_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/main/cpp/dvd)
 
 include_directories(BT_PATH)
 include_directories(MCU_PATH)
 include_directories(UART_PATH)
+include_directories(DVD_PATH)
+
 
 ADD_SUBDIRECTORY(${BT_PATH})
 ADD_SUBDIRECTORY(${MCU_PATH})
 ADD_SUBDIRECTORY(${UART_PATH})
+ADD_SUBDIRECTORY(${DVD_PATH})

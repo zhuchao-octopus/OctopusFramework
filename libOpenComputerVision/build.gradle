@@ -124,6 +124,7 @@ afterEvaluate {
         }
     }
 }
+
 android {
     namespace 'org.opencv'
     compileSdk 34

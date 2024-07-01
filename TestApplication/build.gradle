@@ -43,6 +43,7 @@ android {
             //buildConfigField 'String', 'platform', '"rk3288"'
         }
     }
+
     flavorDimensions 'Flavors_Dimen1'
     buildFeatures {
         viewBinding true
@@ -62,8 +63,6 @@ android {
             pickFirsts += ['META-INF/native-image/android-x86_64/jnijavacpp/jni-config.json', 'META-INF/native-image/android-x86_64/jnijavacpp/reflect-config.json', 'META-INF/native-image/android-x86/jnijavacpp/jni-config.json', 'META-INF/native-image/android-x86/jnijavacpp/reflect-config.json', 'META-INF/native-image/android-arm64/jnijavacpp/jni-config.json', 'META-INF/native-image/android-arm64/jnijavacpp/reflect-config.json', 'META-INF/native-image/android-arm/jnijavacpp/jni-config.json', 'META-INF/native-image/android-arm/jnijavacpp/reflect-config.json', 'META-INF/native-image/ios-x86_64/jnijavacpp/reflect-config.json']
             excludes += ['META-INF/native-image/android-x86/jnijavacpp/jni-config.json', 'META-INF/native-image/android-x86_64/jnijavacpp/jni-config.json', 'META-INF/native-image/macosx-arm64/jnijavacpp/jni-config.json', 'META-INF/native-image/macosx-x86_64/jnijavacpp/jni-config.json', 'META-INF/native-image/ios-arm64/jnijavacpp/jni-config.json', 'META-INF/native-image/ios-x86_64/jnijavacpp/jni-config.json', 'META-INF/native-image/linux-arm64/jnijavacpp/jni-config.json', 'META-INF/native-image/linux-ppc64le/jnijavacpp/jni-config.json', 'META-INF/native-image/linux-x86/jnijavacpp/jni-config.json', 'META-INF/native-image/linux-x86_64/jnijavacpp/jni-config.json', 'META-INF/native-image/linux-armhf/jnijavacpp/jni-config.json', 'META-INF/native-image/windows-x86/jnijavacpp/jni-config.json', 'META-INF/native-image/windows-x86_64/jnijavacpp/jni-config.json', 'META-INF/native-image/windows-x86/jnijavacpp/reflect-config.json', 'META-INF/native-image/windows-x86_64/jnijavacpp/reflect-config.json', 'META-INF/native-image/macosx-x86_64/jnijavacpp/reflect-config.json', 'META-INF/native-image/macosx-arm64/jnijavacpp/reflect-config.json', 'META-INF/native-image/ios-arm64/jnijavacpp/reflect-config.json', 'META-INF/native-image/linux-armhf/jnijavacpp/reflect-config.json', 'META-INF/native-image/linux-x86/jnijavacpp/reflect-config.json', 'META-INF/native-image/linux-x86_64/jnijavacpp/reflect-config.json', 'META-INF/native-image/linux-ppc64le/jnijavacpp/reflect-config.json', 'META-INF/native-image/linux-arm64/jnijavacpp/reflect-config.json', 'META-INF/native-image/ios-x86_64/jnijavacpp/reflect-config.json']
         }
-
-
         ///exclude 'META-INF/native-image/android-arm/jnijavacpp/reflect-config.json'
     }
 }
@@ -81,5 +80,4 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     testImplementation 'junit:junit:4.13.2'
-
 }
