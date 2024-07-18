@@ -227,7 +227,6 @@ public class AppConfig {
     }
 
     public static String getTopActivity(int displayId) {
-
         String topPackageName = "";
         if (Util.isAndroidLaterP()) {
             try {

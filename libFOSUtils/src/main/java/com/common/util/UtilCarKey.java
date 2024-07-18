@@ -107,7 +107,7 @@ public class UtilCarKey {
                     try {
                         context.sendBroadcast(new Intent("txz.intent.action.smartwakeup.triggerRecordButton").setPackage("com.txznet.txz"));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        MMLog.e(TAG, String.valueOf(e));
                     }
                 } else if (isAKVoiceAssistantEnabled(context)) {
                     if (!UtilSystem.doRunActivity(context, "com.ak.speechrecog", "com.ak.speechrecog.MainActivity")) {
@@ -128,11 +128,11 @@ public class UtilCarKey {
         String car_play = Util.getProperty("car_play_connect");
         Log.d("UtilCarKey", "doKeyMicEx car_play::" + car_play);
         if ("1".equals(car_play)) {
-            //			String top = AppConfig.getTopActivity();
-            //			if (top != null && top.contains("com.suding.speedplay")) {
+            //String top = AppConfig.getTopActivity();
+            //if (top != null && top.contains("com.suding.speedplay")) {
             sendKeyToZlink(context, 1500);
             sendToCarPlay = true;
-            //			}
+            //}
         }
 
         if (!sendToCarPlay) {
@@ -141,7 +141,7 @@ public class UtilCarKey {
                 try {
                     context.sendBroadcast(new Intent("txz.intent.action.smartwakeup.triggerRecordButton").setPackage("com.txznet.txz"));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    MMLog.e(TAG, String.valueOf(e));
                 }
             } else if (isAKVoiceAssistantEnabled(context)) {
                 if (!UtilSystem.doRunActivity(context, "com.ak.speechrecog", "com.ak.speechrecog.MainActivity")) {
@@ -298,24 +298,20 @@ public class UtilCarKey {
         if (MachineConfig.getPropertyIntReadOnly(MachineConfig.KEY_DISPAUX_ENABLE) == 1) {
             String disp2Top = AppConfig.getTopActivity(1);
             // Log.d("allen", "disp2Top=" + disp2Top);
-            if (disp2Top != null && disp2Top.startsWith(pkgName + "/")) {
+            if (disp2Top.startsWith(pkgName + "/")) {
                 try {
                     Class<?> ClassAO = Class.forName("android.app.ActivityOptions");
-                    if (ClassAO != null) {
-                        Method method_makeBasic = ClassAO.getDeclaredMethod("makeBasic");
-                        if (method_makeBasic != null) {
-                            // options = ActivityOptions.makeBasic();
-                            ActivityOptions options = (ActivityOptions) method_makeBasic.invoke(ClassAO);
-                            if (options != null) {
-                                Class<?> ClassO = options.getClass();
-                                java.lang.reflect.Method setLaunchDisplayId = ClassO.getMethod("setLaunchDisplayId", int.class);
-                                setLaunchDisplayId.invoke(options, 0);
-                                // options.setLaunchDisplayId(0);
-                                Intent intent = new Intent();
-                                intent.setClassName(pkgName, clsName);
-                                context.startActivity(intent, options.toBundle());
-                            }
-                        }
+                    Method method_makeBasic = ClassAO.getDeclaredMethod("makeBasic");
+                    // options = ActivityOptions.makeBasic();
+                    ActivityOptions options = (ActivityOptions) method_makeBasic.invoke(ClassAO);
+                    if (options != null) {
+                        Class<?> ClassO = options.getClass();
+                        Method setLaunchDisplayId = ClassO.getMethod("setLaunchDisplayId", int.class);
+                        setLaunchDisplayId.invoke(options, 0);
+                        // options.setLaunchDisplayId(0);
+                        Intent intent = new Intent();
+                        intent.setClassName(pkgName, clsName);
+                        context.startActivity(intent, options.toBundle());
                     }
                 } catch (Exception e) {
                     Log.e("allen", "map to DEFAULT_DISPLAY failed: " + e);
@@ -362,7 +358,8 @@ public class UtilCarKey {
 
                     run = true;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    ///e.printStackTrace();
+                    MMLog.e(TAG, String.valueOf(e));
                 }
 
             }
