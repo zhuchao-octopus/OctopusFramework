@@ -3,6 +3,7 @@ package com.common.util;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.util.Log;
 
@@ -30,38 +31,34 @@ public class UtilCarKey {
 
     public static void doKeyAudio(Context context) {
         if (!AppConfig.CAR_UI_AUDIO.equals(AppConfig.getTopActivity())) {
-            UtilSystem.doRunActivity(context, AppConfig.PACKAGE_CAR_UI, "com.my.audio.MusicActivity");
+            UtilSystem.doRunActivity(context, AppConfig.getCarAppPackageName(context), AppConfig.getCarAppActivityClassName(context,"audio.MusicActivity"));
         }
     }
 
     public static void doKeyTV(Context context) {
         if (!AppConfig.CAR_DTV.equals(AppConfig.getTopActivity())) {
-            UtilSystem.doRunActivity(context, AppConfig.PACKAGE_CAR_UI, "com.my.tv.TVActivity");
+            UtilSystem.doRunActivity(context, AppConfig.getCarAppPackageName(context), AppConfig.getCarAppActivityClassName(context,"tv.TVActivity"));
         }
     }
 
     public static boolean isAKVoiceAssistantEnabled(Context c) {
         try {
             String enable = SystemConfig.getProperty(c, SystemConfig.KEY_ENABLE_AK_VIOCE_ASSISTANT);
-            if (enable != null && (enable.equals("1") || enable.equals("true"))) {
-                return true;
-            } else {
-                return false;
-            }
+            return enable != null && (enable.equals("1") || enable.equals("true"));
         } catch (Exception e) {
-            e.printStackTrace();
+            ///e.printStackTrace();
         }
         return false;
     }
 
     public static boolean isTXZViInstalled(Context c, String pkgName) {
-        List<PackageInfo> pkgs = c.getPackageManager().getInstalledPackages(0);
-        for (int i = 0; i < pkgs.size(); i++) {
-            PackageInfo pkgInfo = pkgs.get(i);
-            if ((pkgInfo.applicationInfo.flags & pkgInfo.applicationInfo.FLAG_SYSTEM) == 1) {
+        List<PackageInfo> packageInfoList = c.getPackageManager().getInstalledPackages(0);
+        for (int i = 0; i < packageInfoList.size(); i++) {
+            PackageInfo pkgInfo = packageInfoList.get(i);
+            if ((pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1) {
                 continue;
             }
-            if (pkgInfo != null && pkgInfo.applicationInfo != null && pkgInfo.applicationInfo.packageName != null) {
+            if (pkgInfo.applicationInfo.packageName != null) {
                 if (pkgName.equals(pkgInfo.applicationInfo.packageName)) {
                     if (pkgInfo.versionName != null)//	&& pkgInfo.versionName.toLowerCase().indexOf("vi") >= 0) //by allen
                         return true;
@@ -89,13 +86,11 @@ public class UtilCarKey {
         int mBTType = 0;
         if (s != null) {
             try {
-                mBTType = Integer.valueOf(s);
-            } catch (Exception e) {
-
+                mBTType = Integer.parseInt(s);
+            } catch (Exception ignored) {
             }
         }
-        if (mBTType != MachineConfig.VAULE_BT_TYPE_PARROT)
-        {
+        if (mBTType != MachineConfig.VAULE_BT_TYPE_PARROT) {
             boolean sendToCarPlay = false;
             String car_play = Util.getProperty("car_play_connect");
             Log.d("UtilCarKey", "car_play::" + car_play);
@@ -160,13 +155,13 @@ public class UtilCarKey {
 
     public static void doKeyVideo(Context context) {
         if (!AppConfig.CAR_UI_VIDEO.equals(AppConfig.getTopActivity())) {
-            UtilSystem.doRunActivity(context, AppConfig.PACKAGE_CAR_UI, "com.my.video.VideoActivity");
+            UtilSystem.doRunActivity(context, AppConfig.getCarAppPackageName(context), "com.my.video.VideoActivity");
         }
     }
 
     public static void doKeyAuxIn(Context context) {
         if (!AppConfig.CAR_UI_AUX_IN.equals(AppConfig.getTopActivity())) {
-            UtilSystem.doRunActivity(context, AppConfig.PACKAGE_CAR_UI, "com.my.auxplayer.AUXPlayer");
+            UtilSystem.doRunActivity(context, AppConfig.getCarAppPackageName(context), "com.my.auxplayer.AUXPlayer");
         }
     }
 
@@ -180,7 +175,7 @@ public class UtilCarKey {
 
     public static void doKeyBTMusicAlone(Context context) {
         if (!AppConfig.CAR_UI_BT_MUSIC.equals(AppConfig.getTopActivity())) {
-            UtilSystem.doRunActivity(context, AppConfig.PACKAGE_CAR_UI, "com.my.btmusic.BTMusicActivity");
+            UtilSystem.doRunActivity(context, AppConfig.getCarAppPackageName(context), AppConfig.getCarAppActivityClassName(context, "btmusic.BTMusicActivity"));
         }
     }
 
@@ -199,7 +194,7 @@ public class UtilCarKey {
     public static void doKeyDVD(Context context) {
         if (!AppConfig.isUSBDvd()) {
             if (!AppConfig.CAR_UI_DVD.equals(AppConfig.getTopActivity())) {
-                UtilSystem.doRunActivity(context, AppConfig.PACKAGE_CAR_UI, "com.my.dvd.DVDPlayer");
+                UtilSystem.doRunActivity(context, AppConfig.getCarAppPackageName(context), "com.my.dvd.DVDPlayer");
             }
         } else {
             if (!(AppConfig.getTopActivity().contains(AppConfig.USB_DVD))) {
@@ -242,7 +237,7 @@ public class UtilCarKey {
 
     public static boolean doKeyRadio(Context context) {
         if (!AppConfig.CAR_UI_RADIO.equals(AppConfig.getTopActivity())) {
-            UtilSystem.doRunActivity(context, AppConfig.PACKAGE_CAR_UI, "com.my.radio.RadioActivity");
+            UtilSystem.doRunActivity(context, AppConfig.getCarAppPackageName(context), AppConfig.getCarAppActivityClassName(context, "radio.RadioActivity"));
             return true;
         }
         return false;

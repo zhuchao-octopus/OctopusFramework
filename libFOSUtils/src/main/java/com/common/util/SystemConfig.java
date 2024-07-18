@@ -176,7 +176,7 @@ public class SystemConfig {
             } else {
                 s = Settings.System.getInt(c.getContentResolver(), name);
             }
-        } catch (Exception snfe) {
+        } catch (Exception e) {
             s = -1;
         }
         return s;
@@ -190,7 +190,7 @@ public class SystemConfig {
             } else {
                 ret = Settings.System.putInt(c.getContentResolver(), name, value);
             }
-        } catch (Exception snfe) {
+        } catch (Exception e) {
             ret = false;
         }
         //	Util.sudoExecNoCheck("sync");

@@ -62,7 +62,6 @@ public class Cabinet {
     private static IMyAidlInterface tIMyCarAidlInterface = null;
     public static ObjectList properties = new ObjectList();
     private static MediaBrowser mMediaBrowser;
-    private static MediaController mMediaController;
 
     public static Context getMyApplicationContext() {
         return MApplication.getAppContext();
@@ -97,22 +96,22 @@ public class Cabinet {
         return tCourierEventBus;
     }
 
+    public static synchronized void InitialBaseModules(@NotNull Context context) {
+        //MMLog.d(TAG, "Initial few modules for " + TAppProcessUtils.getCurrentProcessNameAndId(context) + " ");
+        try {
+            initialEventBus();
+            initialPlayManager(context);
+        } catch (Exception e) {
+            MMLog.e(TAG, e.toString());
+        }
+    }
+
     public static synchronized void InitialAllModules(@NotNull Context context) {
         //MMLog.d(TAG, "Initial all modules for " + TAppProcessUtils.getCurrentProcessNameAndId(context) + " ");
         try {
             initialEventBus();
             initialPlayManager(context);
             ///initialMyCarAidlInterface(context);
-        } catch (Exception e) {
-            MMLog.e(TAG, e.toString());
-        }
-    }
-
-    public static synchronized void InitialBaseModules(@NotNull Context context) {
-        //MMLog.d(TAG, "Initial few modules for " + TAppProcessUtils.getCurrentProcessNameAndId(context) + " ");
-        try {
-            initialEventBus();
-            initialPlayManager(context);
         } catch (Exception e) {
             MMLog.e(TAG, e.toString());
         }
@@ -254,7 +253,7 @@ public class Cabinet {
                 String mediaId = mMediaBrowser.getRoot();
                 mMediaBrowser.unsubscribe(mediaId);
                 mMediaBrowser.subscribe(mediaId, mBrowserSubscriptionCallback);
-                mMediaController = new MediaController(getMyApplicationContext(), mMediaBrowser.getSessionToken());
+                MediaController mMediaController = new MediaController(getMyApplicationContext(), mMediaBrowser.getSessionToken());
                 mMediaController.registerCallback(mMediaControllerCompatCallback);
                 if (mMediaController.getMetadata() != null) {
                 }

@@ -1,5 +1,7 @@
 package com.common.util;
 
+import static com.common.util.AppConfig.getCarServicePackageName;
+
 import android.content.Context;
 import android.content.Intent;
 
@@ -15,6 +17,7 @@ public class BroadcastUtil {
      * @param keyCode     MyCmd.Keycode
      * @param isNeedDelay 是否需要收到广播后延时处理.
      */
+
     public final static void sendKey(Context context, byte pressType, int keyCode, boolean isNeedDelay) {
         Intent it = new Intent(MyCmd.ACTION_KEY_PRESS);
         it.putExtra(MyCmd.EXTRAS_KEY_PRESS_TYPE, pressType);
@@ -48,18 +51,16 @@ public class BroadcastUtil {
     }
 
     public final static void sendToCarService(Context context, Intent it) {
-        it.setPackage(AppConfig.PACKAGE_CAR_SERVICE);
+        it.setPackage(getCarServicePackageName(context));
         context.sendBroadcast(it);
     }
 
     public final static void sendToCarService(Context context, int cmd, int data) {
         Intent it;
-
         it = new Intent(MyCmd.BROADCAST_CMD_TO_CAR_SERVICE);
-
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, data);
-        it.setPackage(AppConfig.PACKAGE_CAR_SERVICE);
+        it.setPackage(getCarServicePackageName(context));
         sendToCarService(context, it);
     }
 
@@ -71,7 +72,7 @@ public class BroadcastUtil {
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, data);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA2, data2);
-        it.setPackage(AppConfig.PACKAGE_CAR_SERVICE);
+        it.setPackage(getCarServicePackageName(context));
         sendToCarService(context, it);
     }
 
@@ -84,7 +85,7 @@ public class BroadcastUtil {
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, data);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA2, data2);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA3, data3);
-        it.setPackage(AppConfig.PACKAGE_CAR_SERVICE);
+        it.setPackage(getCarServicePackageName(context));
         sendToCarService(context, it);
     }
 

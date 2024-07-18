@@ -44,7 +44,6 @@ public class TAppUtils {
     public static final String INSTALL_ACTION = "INSTALL";
     public static final String SCANING_ACTION = "SCANING";
     public static final String SCANING_COMPLETE_ACTION = "SCANINGCOMPLETE";
-
     private final Context mContext;
     private AppChangedListener mAppChangedCallback = null;
     //private ExecutorService mExecutorService;

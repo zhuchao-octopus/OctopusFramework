@@ -262,7 +262,7 @@ extern "C" {
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_com_octopus_android_carapps_hardware_dvs_DVideoSpec_nativeSendMSCCommand
-  (JNIEnv *, jobject, jint);
+        (JNIEnv *, jobject, jint);
 
 /*
  * Class:     com_my_hardware_dvs_DVideoSpec
@@ -270,7 +270,7 @@ JNIEXPORT jint JNICALL Java_com_octopus_android_carapps_hardware_dvs_DVideoSpec_
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_com_octopus_android_carapps_hardware_dvs_DVideoSpec_nativeSendDVSCommand__I
-  (JNIEnv *, jobject, jint);
+        (JNIEnv *, jobject, jint);
 
 /*
  * Class:     com_my_hardware_dvs_DVideoSpec
@@ -278,7 +278,7 @@ JNIEXPORT jint JNICALL Java_com_octopus_android_carapps_hardware_dvs_DVideoSpec_
  * Signature: (III)I
  */
 JNIEXPORT jint JNICALL Java_com_octopus_android_carapps_hardware_dvs_DVideoSpec_nativeSendDVSCommand__III
-  (JNIEnv *, jobject, jint, jint, jint);
+        (JNIEnv *, jobject, jint, jint, jint);
 
 #ifdef __cplusplus
 }

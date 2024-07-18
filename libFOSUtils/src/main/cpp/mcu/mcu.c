@@ -82,7 +82,7 @@ static void *mcu_thread(void *arg) {
                     int len = (mcu->buff[0] & 0xff);
                     LogDebugBuf(mcu->buff, mcu->buff[0]);
                     jbyteArray bytes = (*env)->NewByteArray(env, len);
-                    (*env)->SetByteArrayRegion(env, bytes, 0, len, (jbyte * )(mcu->buff + 1));
+                    (*env)->SetByteArrayRegion(env, bytes, 0, len, (jbyte *) (mcu->buff + 1));
                     (*env)->CallVoidMethod(env, mcu->thiz, mcuCallback, bytes, len);
                     (*env)->DeleteLocalRef(env, bytes);
                 }
@@ -115,7 +115,7 @@ static void *reverse_thread(void *arg) {
             len = (buf[0] & 0xff) - 1;
 
             jbyteArray bytes = (*env)->NewByteArray(env, len);
-            (*env)->SetByteArrayRegion(env, bytes, 0, len, (jbyte * )(buf + 1));
+            (*env)->SetByteArrayRegion(env, bytes, 0, len, (jbyte *) (buf + 1));
             (*env)->CallVoidMethod(env, mcu->thiz, kernelCallback, bytes, len);
             (*env)->DeleteLocalRef(env, bytes);
         }

@@ -1,5 +1,7 @@
 package com.common.util;
 
+import android.annotation.SuppressLint;
+
 import java.lang.reflect.Method;
 
 public class SystemProperties {
@@ -16,6 +18,7 @@ public class SystemProperties {
      * @param val a value to set
      * @return
      */
+    @SuppressLint("PrivateApi")
     public static void set(final String key, final String val) {
         try {
             if (setMethod == null) {
@@ -35,6 +38,7 @@ public class SystemProperties {
      * @return the key parsed as an integer, or def if the key isn't found or
      * cannot be parsed
      */
+    @SuppressLint("PrivateApi")
     public static String get(final String key, final String def) {
         try {
             if (getMethod == null) {
@@ -55,6 +59,7 @@ public class SystemProperties {
      * @return the key parsed as an integer, or def if the key isn't found or
      * cannot be parsed
      */
+    @SuppressLint("PrivateApi")
     public static int getInt(final String key, final int def) {
         try {
             if (getIntMethod == null) {
@@ -75,6 +80,7 @@ public class SystemProperties {
      * @return the key parsed as an long, or def if the key isn't found or
      * cannot be parsed
      */
+    @SuppressLint("PrivateApi")
     public static long getLong(final String key, final long def) {
         try {
             if (getLongMethod == null) {
@@ -95,6 +101,7 @@ public class SystemProperties {
      * @return the key parsed as an boolean, or def if the key isn't found or
      * cannot be parsed
      */
+    @SuppressLint("PrivateApi")
     public static boolean getBoolean(final String key, final boolean def) {
         try {
             if (getBooleanMethod == null) {

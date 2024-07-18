@@ -18,7 +18,7 @@ add_library( # Specifies the name of the library.
 
         # Provides a relative path to your source file(s).
         videodisc.c
-        )
+)
 
 find_library( # Sets the name of the path variable.
         log-lib
@@ -41,4 +41,4 @@ target_link_libraries( # Specifies the target library.
         # Links the target library to the log library
         # included in the NDK.
         ${log-lib}
-        )
+)

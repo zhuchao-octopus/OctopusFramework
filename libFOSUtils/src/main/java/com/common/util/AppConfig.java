@@ -9,6 +9,7 @@ import android.media.AudioManager;
 import android.view.View;
 
 import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.TAppUtils;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -36,35 +37,21 @@ public class AppConfig {
     public static final String SETTINGS_KEY_MEDIA_VOLUME = "key_media_volume";
     public final static String SETTINGS_KEY_DVR_RECORD_SOUND = "key_dvr_record_sound";
 
-    public final static String PACKAGE_CAR_SERVICE = "com.my.out";
+    public static String mCarAppsPackageName = null;
+    public static String mLauncherPackage = null;
+    public static String mCarServicePackageName = null;
+
+    //public final static String PACKAGE_CAR_SERVICE = "com.my.out";
     public final static String PACKAGE_RADIO = "com.my.radio";
     public final static String PACKAGE_AUDIO = "com.my.audio";
     public final static String PACKAGE_EQ = "com.eqset";
     public final static String PACKAGE_LAUNCHER = "com.android.launcher";
 
-    public static String mLauncherPackage = null;
-
-    public static String getLauncherPackage() {
-        if (mLauncherPackage == null) {
-            String s = MachineConfig.getPropertyReadOnly(MachineConfig.KEY_HIDE_LAUNCHER);
-            if (s == null || !s.contains("Launcher2")) {
-                mLauncherPackage = "com.android.launcher";
-            } else {
-                mLauncherPackage = "com.android.launcher3";
-            }
-        }
-        return mLauncherPackage;
-    }
-
-    public final static String PACKAGE_CAR_UI = "com.car.ui";
-
     public final static String CARUI_PATH = "/system/etc/carui/";
     public final static String CARUI_BACKGROUND = CARUI_PATH + "background.png";
 
     public final static String[] PACKAGE_SAVE_DRIVE = {"com.car.ui", "com.my.filemanager", "com.canboxsetting"};
-
     public final static String[] PACKAGE_NAME = {"com.car.ui", "com.eqset", "com.android.settings", "com.my.audio", "com.my.video", "com.my.setting", "com.my.bt", "net.easyconn", "com.my.out", "com.my.filemanager", "com.canboxsetting", "com.focussync"};
-
     public final static String CAR_UI = PACKAGE_NAME[0];
 
     public final static String CAR_UI_AUDIO = "com.car.ui/com.my.audio.MusicActivity";
@@ -78,8 +65,41 @@ public class AppConfig {
     public final static String CAR_EQ = "com.eqset/com.eqset.EQActivity";
     public final static String CAR_AUXIN = "com.car.ui/com.my.auxplayer.AUXPlayer";
     public final static String CAR_DTV = "com.car.ui/com.my.tv.TVActivity";
-
     public final static String USB_DVD = "com.car.dvdplayer.DVDPlayerActivity";
+
+    public static String getLauncherPackage() {
+        if (mLauncherPackage == null) {
+            String s = MachineConfig.getPropertyReadOnly(MachineConfig.KEY_HIDE_LAUNCHER);
+            if (s == null || !s.contains("Launcher2")) {
+                mLauncherPackage = "com.android.launcher";
+            } else {
+                mLauncherPackage = "com.android.launcher3";
+            }
+        }
+        return mLauncherPackage;
+    }
+
+    public static String getCarAppPackageName(Context context) {
+        if (mCarAppsPackageName == null) {
+            if (TAppUtils.isAppInstalled(context, "com.octopus.android.carapps")) mCarAppsPackageName = "com.octopus.android.carapps";
+            else mCarAppsPackageName = "com.car.ui";
+        }
+        return mCarAppsPackageName;
+    }
+
+    public static String getCarAppActivityClassName(Context context, String activityName) {
+        getCarAppPackageName(context);
+        if ("com.octopus.android.carapps".equals(mCarAppsPackageName)) return mCarAppsPackageName + "." + activityName;
+        else return "com.my." + activityName;
+    }
+
+    public static String getCarServicePackageName(Context context) {
+        if (mCarServicePackageName == null) {
+            if (TAppUtils.isAppInstalled(context, "com.zhuchao.android.car")) mCarServicePackageName = "com.zhuchao.android.car";
+            else mCarServicePackageName = "com.my.out";
+        }
+        return mCarServicePackageName;
+    }
 
     // public final static String CAR_UI_ = PACKAGE_NAME[0];
     public static boolean isPackageSaveSpecApp(String packageName) {
@@ -680,16 +700,15 @@ public class AppConfig {
         addCustomHideApp(context);
     }
 
-    public static void printAppConfigInformation()
-    {
+    public static void printAppConfigInformation() {
         String appShow = MachineConfig.getPropertyOnce(MachineConfig.KEY_CAN_BOX_SHOW_APP);
         String appHide = MachineConfig.getPropertyOnce(MachineConfig.KEY_APP_HIDE);
         String canbox = MachineConfig.getPropertyOnce(MachineConfig.KEY_CAN_BOX);
-        MMLog.d(TAG,"appShow="+appShow);
-        MMLog.d(TAG,"appHide="+appHide);
-        MMLog.d(TAG,"canbox="+canbox);
+        MMLog.d(TAG, "appShow=" + appShow);
+        MMLog.d(TAG, "appHide=" + appHide);
+        MMLog.d(TAG, "canbox=" + canbox);
         for (String app : mSetHideApp) {
-            MMLog.d(TAG,app);
+            MMLog.d(TAG, app);
         }
     }
     // Drawable d = Drawable.createFromPath(AppConfig.CARUI_BACKGROUND);

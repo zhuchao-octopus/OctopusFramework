@@ -23,7 +23,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -35,6 +34,7 @@ import java.nio.channels.FileChannel;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -44,27 +44,25 @@ public class Util {
     private final static String tag = "Util";
 
     public static void byteArrayCopy(byte[] dest, byte[] src, int dStart, int sStart, int len) {
-        for (int i = 0; i < len; i++) {
-            dest[i + dStart] = src[sStart + i];
-        }
+        if (len >= 0) System.arraycopy(src, sStart, dest, dStart, len);
     }
 
     // 十六进制转十进制
     public static int HToO(String a) {
         a = a.toLowerCase();
-        return (Integer.valueOf(toD(a, 16)));
+        return (Integer.parseInt(toD(a, 16)));
     }
 
     // 十六进制转二进制
     public static String HToB(String a) {
-        String b = Integer.toBinaryString(Integer.valueOf(toD(a, 16)));
+        String b = Integer.toBinaryString(Integer.parseInt(toD(a, 16)));
         return b;
     }
 
     // 二进制转十六进制
     public static String BToH(String a) {
         // 将二进制转为十进制再从十进制转为十六进制
-        String b = Integer.toHexString(Integer.valueOf(toD(a, 2)));
+        String b = Integer.toHexString(Integer.parseInt(toD(a, 2)));
         return b;
     }
 
@@ -134,9 +132,7 @@ public class Util {
 
     public static void clearBuf(byte[] buf) {
         if (buf != null) {
-            for (int i = 0; i < buf.length; ++i) {
-                buf[i] = 0;
-            }
+            Arrays.fill(buf, (byte) 0);
         }
     }
 
@@ -163,11 +159,8 @@ public class Util {
             if (!file.exists()) {
                 return;
             }
-            StringBuffer buf = new StringBuffer();
 
-            buf.append(value);
-
-            String writeString = buf.toString();
+            String writeString = String.valueOf(value);
             FileOutputStream fos = new FileOutputStream(file);
             PrintWriter pw = new PrintWriter(fos);
             pw.write(writeString);
@@ -189,9 +182,6 @@ public class Util {
                 dis.write(buffer);
                 dis.close();
                 is.close();
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                Log.e(tag, "" + e);
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 Log.e(tag, "" + e);
@@ -209,9 +199,6 @@ public class Util {
                 dis.write(buffer);
                 dis.close();
                 is.close();
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                Log.e(tag, "" + e);
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 Log.e(tag, "" + e);
@@ -230,7 +217,7 @@ public class Util {
             topPackageName = reader.readLine();
             reader.close();
             fr.close();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         return topPackageName;
@@ -260,7 +247,6 @@ public class Util {
                 Log.e(tag, "" + e);
                 ret = -1;
             }
-
         } catch (Exception e) {
             Log.e(tag, "" + e);
         }
