@@ -70,7 +70,6 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
 
     private final static String Action_SystemShutdown1 = "action.uniwin.shutdown";
     private final static String Action_SystemReboot1 = "action.uniwin.reboot.receiver";
-
     private final static String Action_SystemAdjustTouchTscal = "org.zeroxlab.util.tscal";
     private final static String Action_SystemAdjustTouchCalibration = "org.zeroxlab.util.tscal.TSCalibration";
     private final static String Action_SystemResolution = "action.ktv.settings.receiver";
@@ -396,7 +395,6 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
     }
 
     private void Action_SilentInstallComplete(String apkFilePath) {
-
         if (installedDeleteFile) {
             boolean b = FileUtils.deleteFile(apkFilePath);
             if (b) MMLog.i(TAG, "delete file successfully! ---> " + apkFilePath);
@@ -409,7 +407,6 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
         if (installedReboot) {
             Action_SystemReboot();
         }
-
     }
 
     private void Action_SetAudioOutputChannel(String channel) {

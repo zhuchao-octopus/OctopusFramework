@@ -1,16 +1,18 @@
 package com.zhuchao.android.fbase;
 
+import static com.zhuchao.android.fbase.DataID.DATA_ID_MAX;
+
 public class MessageEvent {
     ////////////////////////////////////////////////////////////////////////////////////
-    public static final int MESSAGE_EVENT_TEST = 2000;
-    public static final int MESSAGE_EVENT_USB_MOUNTED = 2001;//USB 存储器挂载成功
-    public static final int MESSAGE_EVENT_USB_UNMOUNT = 2002;//USB 存储器卸载完成
-    public static final int MESSAGE_EVENT_USB_CHECKING = 2003;//USB 磁盘检测中
-    public static final int MESSAGE_EVENT_USB_EJECT = 2004;//USB 存储器卸载
-    public static final int MESSAGE_EVENT_USB_ATTACHED = 2005;//USB 插上
-    public static final int MESSAGE_EVENT_USB_REMOVED = 2006;////USB 完全拔出
-    public static final int MESSAGE_EVENT_USB_DETACHED = 2007;//USB 完全拔出
-    public static final int MESSAGE_EVENT_USB_SCANNING_FINISHED = 2008;//USB
+    public static final int MESSAGE_EVENT_BASE = DATA_ID_MAX;//2000
+    public static final int MESSAGE_EVENT_USB_MOUNTED = MESSAGE_EVENT_BASE+1;//USB 存储器挂载成功
+    public static final int MESSAGE_EVENT_USB_UNMOUNT = MESSAGE_EVENT_BASE+2;//USB 存储器卸载完成
+    public static final int MESSAGE_EVENT_USB_CHECKING = MESSAGE_EVENT_BASE+3;//USB 磁盘检测中
+    public static final int MESSAGE_EVENT_USB_EJECT = MESSAGE_EVENT_BASE+4;//USB 存储器卸载
+    public static final int MESSAGE_EVENT_USB_ATTACHED = MESSAGE_EVENT_BASE+5;//USB 插上
+    public static final int MESSAGE_EVENT_USB_REMOVED = MESSAGE_EVENT_BASE+6;////USB 完全拔出
+    public static final int MESSAGE_EVENT_USB_DETACHED = MESSAGE_EVENT_BASE+7;//USB 完全拔出
+    public static final int MESSAGE_EVENT_USB_SCANNING_FINISHED = MESSAGE_EVENT_BASE+8;//USB
     ////////////////////////////////////////////////////////////////////////////////////
     public static final int MESSAGE_EVENT_MEDIA_LIBRARY = 3000; //媒体库
     public static final int MESSAGE_EVENT_LOCAL_VIDEO = 3001;   //本地媒体库视频更新
@@ -57,6 +59,8 @@ public class MessageEvent {
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_RECORDER = "com.octopus.android.action.RECORDER";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_RECORDER_START = "com.octopus.android.action.RECORDER.START";
     public static final String MESSAGE_EVENT_OCTOPUS_ACTION_RECORDER_STOP = "com.octopus.android.action.RECORDER.STOP";
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///第三方消息事件
     public final static String MESSAGE_EVENT_LINK_Z = "com.zjinnova.zlink";
@@ -67,11 +71,12 @@ public class MessageEvent {
     public final static String OCTOPUS_COMPONENT_NAME_MIDDLE_SERVICE = "com.zhuchao.android.car.service";
     public final static String MESSAGE_EVENT_AIDL_PROCESS_SERVICE_NAME = "com.zhuchao.android.car";
     public final static String MESSAGE_EVENT_AIDL_PACKAGE_NAME = "com.zhuchao.android.car";
+
     //public final static String MESSAGE_EVENT_AIDL_CANBOX_CLASS_NAME = "com.zhuchao.android.car.service.CanboxService";
     public final static String MESSAGE_EVENT_AIDL_CANBOX_CLASS_NAME = "com.zhuchao.android.car.service.MyCarService";
     public final static String MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME = "com.zhuchao.android.car.service.MultimService";
     public final static String MESSAGE_EVENT_AIDL_BT_CLASS_NAME = "com.zhuchao.android.car.service.BtService";
     public final static String MESSAGE_EVENT_AIDL_RECORDER_CLASS_NAME = "com.zhuchao.android.car.service.RecordService";
-
+    public final static String MESSAGE_EVENT_AIDL_NOTICE_CENTER_CLASS_NAME = "com.zhuchao.android.car.service.NoticeCenter";
 
 }

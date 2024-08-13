@@ -381,10 +381,10 @@ public class TAppUtils {
         context.startActivity(intent);
     }
 
-    public synchronized static boolean installSilent(Context context, String apkPath) {
+    public synchronized static boolean installSilent(Context context, String apkFilePathName) {
         boolean ret = false;
-        File file = new File(apkPath);
-        String apkName = apkPath.substring(apkPath.lastIndexOf(File.separator) + 1, apkPath.lastIndexOf(".apk"));
+        File file = new File(apkFilePathName);
+        String apkName = apkFilePathName.substring(apkFilePathName.lastIndexOf(File.separator) + 1, apkFilePathName.lastIndexOf(".apk"));
         PackageManager packageManager = context.getPackageManager();
         PackageInstaller packageInstaller = packageManager.getPackageInstaller();
         PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL);
@@ -411,7 +411,7 @@ public class TAppUtils {
 
             Intent intent = new Intent();
             intent.setAction("android.intent.action.SILENT_INSTALL_PACKAGE_COMPLETE");
-            intent.putExtra("apkFilePath", apkPath);
+            intent.putExtra("apkFilePathName", apkFilePathName);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
             IntentSender intentSender = pendingIntent.getIntentSender();
             session.commit(intentSender);//提交启动安装
@@ -443,7 +443,7 @@ public class TAppUtils {
 
     public synchronized static void uninstallApk(String packageName) {
         try {
-            MMLog.i(TAG, "going to uninstall app packageName=" + packageName);
+            MMLog.d(TAG, "going to uninstall app packageName=" + packageName);
             String[] args = {"pm", "uninstall", "-k", "--user", "0", packageName};
             ProcessBuilder processBuilder = new ProcessBuilder(args);
             Process process = processBuilder.start();
@@ -466,8 +466,8 @@ public class TAppUtils {
                     MMLog.i(TAG, "uninstall " + successMsg.toString());
                 }
             } catch (Exception e) {
-                //MMLog.e(TAG, e.toString());
-                e.printStackTrace();
+                MMLog.e(TAG, String.valueOf(e));
+                ///e.printStackTrace();
             } finally {
                 try {
                     if (successResult != null) {
@@ -495,8 +495,8 @@ public class TAppUtils {
                 }
             }
         } catch (Exception e) {
-            //MMLog.e(TAG, e.toString());
-            e.printStackTrace();
+            MMLog.e(TAG, String.valueOf(e));
+            ///e.printStackTrace();
         }
     }
 

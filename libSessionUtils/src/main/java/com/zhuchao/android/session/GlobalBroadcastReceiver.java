@@ -2,6 +2,7 @@ package com.zhuchao.android.session;
 
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_CANBOX_CLASS_NAME;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_MUSIC_CLASS_NAME;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_NOTICE_CENTER_CLASS_NAME;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_PACKAGE_NAME;
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_RECORDER_CLASS_NAME;
 
@@ -103,6 +104,10 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                 ///Intent intent3 = new Intent();
                 ///intent3.setComponent(new ComponentName(MESSAGE_EVENT_AIDL_PACKAGE_NAME, MESSAGE_EVENT_AIDL_RECORDER_CLASS_NAME));
                 ///context.startService(intent3);
+
+                Intent intent4 = new Intent();
+                intent4.setComponent(new ComponentName(MESSAGE_EVENT_AIDL_PACKAGE_NAME, MESSAGE_EVENT_AIDL_NOTICE_CENTER_CLASS_NAME));
+                context.startService(intent4);
                 break;
             case MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_HELLO:
                 MMLog.mm(null);
@@ -122,7 +127,6 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                 Cabinet.getEventBus().post(eventCourier2);
                 break;
             case Intent.ACTION_MEDIA_EJECT:
-                ///Bundle bundle = intent.getExtras();
                 ///Uri data = intent.getData();
                 ///if (bundle != null) {
                 ///    for (String key : bundle.keySet())

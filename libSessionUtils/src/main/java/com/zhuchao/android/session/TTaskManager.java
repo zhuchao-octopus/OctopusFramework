@@ -2,7 +2,11 @@ package com.zhuchao.android.session;
 
 import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 
+import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 
 import androidx.annotation.RequiresApi;
 
@@ -29,22 +33,28 @@ import java.util.concurrent.locks.LockSupport;
 public class TTaskManager {
     private static final String TAG = "TTaskManager";
     private static final TTaskThreadPool tTaskThreadPool = new TTaskThreadPool();
+    private static Context mContext = null;
 
     ///private boolean stopContinue = true;
     ///private boolean reDownload = true;
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    /*private static final Handler TimerTaskHandler = new Handler(Looper.myLooper()) {
-        public void handleMessage(Message msg) {
-            TransactionProcessing(msg.obj);
-        }
-    };*/
+    public TTaskManager with(Context context) {
+        mContext = context;
+        return this;
+    }
 
-    /*private static final Handler taskMainLooperHandler = new Handler(Looper.getMainLooper()) {
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    private static final Handler TimerTaskHandler = new Handler(Looper.myLooper()) {
         public void handleMessage(Message msg) {
             TransactionProcessing(msg.obj);
         }
-    };*/
+    };
+
+    private static final Handler taskMainLooperHandler = new Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message msg) {
+            TransactionProcessing(msg.obj);
+        }
+    };
 
     private static synchronized void TransactionProcessing(Object obj) {
         if (obj == null) return;
@@ -345,10 +355,9 @@ public class TTaskManager {
                     if ((System.currentTimeMillis() - lStartTick) >= period) {
                         lCounter++;
                         tTask.getProperties().putInt("status", lCounter);
-                        ///Message msg = TimerTaskHandler.obtainMessage();
-                        ///msg.obj = tTask;
-                        ///TimerTaskHandler.sendMessage(msg);
-
+                        Message msg = TimerTaskHandler.obtainMessage();
+                        msg.obj = tTask;
+                        TimerTaskHandler.sendMessage(msg);
                         lStartTick = System.currentTimeMillis();
                     }
                     try {
@@ -372,9 +381,9 @@ public class TTaskManager {
                 while (tTask.getCallBackHandler() != null) {
                     if ((System.currentTimeMillis() - lStartTick) >= period) {
                         lCounter++;
-                        ///Message msg = taskMainLooperHandler.obtainMessage();
-                        ///msg.obj = tTask;
-                        ///taskMainLooperHandler.sendMessage(msg);
+                        Message msg = taskMainLooperHandler.obtainMessage();
+                        msg.obj = tTask;
+                        taskMainLooperHandler.sendMessage(msg);
                         tTask.getProperties().putInt("status", lCounter);
                         lStartTick = System.currentTimeMillis();
                     }
@@ -417,7 +426,7 @@ public class TTaskManager {
                             MMLog.e(TAG, "requestGet " + result);
                         }
 
-                        /*if (tTask.getCallBackHandler() != null) {//回调传递给task
+                        if (tTask.getCallBackHandler() != null) {//回调传递给task
                             Message msg = taskMainLooperHandler.obtainMessage();
                             tTask.getProperties().putString("tag", tag);
                             tTask.getProperties().putString("fromUrl", fromUrl);
@@ -434,7 +443,7 @@ public class TTaskManager {
                             ///MMLog.d(TAG, "requestGet " + fromUrl + "," + result);
                         } else {
                             //deleteTask(tTask);//没有回调任务，直接清除tTask//无需删除，给调用者删除
-                        }*/
+                        }
                     }
                 });
             }
@@ -461,7 +470,7 @@ public class TTaskManager {
                             MMLog.e(TAG, "requestPost " + fromUrl + "," + result);
                         }
                         if (tTask.getCallBackHandler() != null) {
-                            /*Message msg = taskMainLooperHandler.obtainMessage();
+                            Message msg = taskMainLooperHandler.obtainMessage();
                             msg.obj = tTask;
                             tTask.getProperties().putString("tag", tag);
                             tTask.getProperties().putString("fromUrl", fromUrl);
@@ -471,7 +480,7 @@ public class TTaskManager {
                             tTask.getProperties().putString("result", result);
                             tTask.getProperties().putInt("status", status);
                             taskMainLooperHandler.sendMessage(msg);
-                            tTask.free();*/
+                            tTask.free();
                         } else {
                             deleteTask(tTask);//没有回调任务，直接清除tTask
                         }
@@ -502,7 +511,7 @@ public class TTaskManager {
                             MMLog.e(TAG, "requestPut " + fromUrl + "," + result);
                         }
                         if (tTask.getCallBackHandler() != null) {//记得回调传递给task
-                            /*Message msg = taskMainLooperHandler.obtainMessage();
+                            Message msg = taskMainLooperHandler.obtainMessage();
                             msg.obj = tTask;
                             tTask.getProperties().putString("tag", tag);
                             tTask.getProperties().putString("fromUrl", fromUrl);
@@ -511,7 +520,7 @@ public class TTaskManager {
                             tTask.getProperties().putLong("total", total);
                             tTask.getProperties().putString("result", result);
                             tTask.getProperties().putInt("status", status);
-                            taskMainLooperHandler.sendMessage(msg);*/
+                            taskMainLooperHandler.sendMessage(msg);
                             //taskMainLooperHandler.sendMessage(msg)后
                             //tTask.getProperties().getString("fromUrl")有可能被清空
                             tTask.free();//释放线程tTask.run
@@ -657,7 +666,7 @@ public class TTaskManager {
             if (FileUtils.existFile(localPathFileName)) {
                 MMLog.log(TAG, "download stop,file already exist --> " + localPathFileName);
                 //tTask.free();
-                /*if (tTask.getCallBackHandler() != null) {
+                if (tTask.getCallBackHandler() != null) {
                     Message msg = taskMainLooperHandler.obtainMessage();
                     msg.obj = tTask;
                     tTask.getProperties().putString("tag", tag);
@@ -668,7 +677,7 @@ public class TTaskManager {
                     tTask.getProperties().putString("result", "ok");
                     tTask.getProperties().putInt("status", DataID.TASK_STATUS_SUCCESS);
                     taskMainLooperHandler.sendMessage(msg);
-                }*/
+                }
                 return;//已经完成下载，不再重复下载
             }
         } else {//重新下载
@@ -699,7 +708,8 @@ public class TTaskManager {
                 //String f2 = toUrl.substring(0, toUrl.length() - D_EXT_NAME.length());
                 switch (status) {
                     case DataID.TASK_STATUS_ERROR:
-                        MMLog.log(TAG, "downloading file failed from " + fromUrl + ",result = " + result);
+                        MMLog.log(TAG, "downloading file failed from " + fromUrl);
+                        MMLog.log(TAG, result);
                         tTask.free();//下载出错，释放任务
                         //break;下载错误也执行下面代码
                     case DataID.TASK_STATUS_PROGRESSING:
@@ -723,7 +733,7 @@ public class TTaskManager {
                             //  MMLog.log(TAG, "skip md5 checking");
                         }
 
-                        /*if (tTask.getCallBackHandler() != null) {
+                        if (tTask.getCallBackHandler() != null) {
                             Message msg = taskMainLooperHandler.obtainMessage();
                             msg.obj = tTask;
                             tTask.getProperties().putString("tag", tag);
@@ -734,7 +744,7 @@ public class TTaskManager {
                             tTask.getProperties().putString("result", result);
                             tTask.getProperties().putInt("status", status);
                             taskMainLooperHandler.sendMessage(msg);
-                        }*/
+                        }
                         break;
                 }
             }

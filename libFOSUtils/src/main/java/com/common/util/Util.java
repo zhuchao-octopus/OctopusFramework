@@ -2,6 +2,7 @@ package com.common.util;
 
 import static com.common.util.MachineConfig.VENDOR_DIR;
 
+import android.annotation.SuppressLint;
 import android.app.Instrumentation;
 import android.content.ComponentName;
 import android.content.Context;
@@ -264,9 +265,10 @@ public class Util {
         }
     }
 
+    @SuppressLint("PrivateApi")
     public static int setProperty(String key, String value) {
         try {
-            MMLog.d("Util", key + "=" + value);
+            MMLog.d("Util", "SystemProperties " + key + "=" + value);
             Class<?> c = Class.forName("android.os.SystemProperties");
             Method set = c.getMethod("set", String.class, String.class);
             set.invoke(c, key, value);
@@ -277,6 +279,7 @@ public class Util {
         return -1;
     }
 
+    @SuppressLint("PrivateApi")
     public static String getProperty(String key) {
         try {
             Class<?> c = Class.forName("android.os.SystemProperties");

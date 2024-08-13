@@ -93,6 +93,8 @@ public class DataID {
     public static final int DEVICE_EVENT_I2C_WRITE = DEVICE_EVENT_I2C_READ + 1;
     public static final int DEVICE_EVENT_GPIO_STATUS = DEVICE_EVENT_I2C_WRITE + 1;
 
+    public static final int DATA_ID_MAX = 2000;
+
     public static String getRequestUrl(String fromUrl, ObjectList requestParams) {
         StringBuilder builder = new StringBuilder();
         builder.append(fromUrl);

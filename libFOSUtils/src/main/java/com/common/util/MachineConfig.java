@@ -337,10 +337,10 @@ public class MachineConfig {
     public final static String VALUE_CANBOX_ZHONGXING_OD = "zhongxing_od";
 
     public final static String VALUE_CANBOX_MAZDA_RAISE = "mazda_raise";
-
     public final static String VALUE_CANBOX_TOYOTA_RAISE = "toyota_raise";
     public final static String VALUE_CANBOX_MINI_HAOZHENG = "mini_haozheng";
 
+    public final static String VALUE_CANBOX_SLIMKEY2 = "slim_key_2";
 
     public final static String VALUE_CANBOX_PRO = "pro"; //this for new pro version >= 3
 

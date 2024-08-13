@@ -130,4 +130,13 @@ public class ByteUtils {
         }
         return result;
     }
+
+    public static byte[] HexStr2Bytes(String src) {
+        int l = src.length() / 2;
+        byte[] ret = new byte[l];
+        for (int i = 0; i < l; i++) {
+            ret[i] = (byte) Integer.valueOf(src.substring(i * 2, i * 2 + 2), 16).byteValue();
+        }
+        return ret;
+    }
 }
