@@ -1,6 +1,14 @@
 package com.zhuchao.android.session.base;
 
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_PACKAGE_NAME;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_CAR_CLIENT;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_CAR_SERVICE;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_CAR_CLIENT;
+import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_CAR_SERVICE;
+
 import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -22,8 +30,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.zhuchao.android.fbase.EventCourier;
+import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.MessageEvent;
 import com.zhuchao.android.session.Cabinet;
+import com.zhuchao.android.session.MApplication;
 
 import java.util.Map;
 
@@ -97,7 +109,41 @@ public class BaseActivity extends AppCompatActivity {
     public void openLocalActivity(Class<?> cls) {
         Intent intent = new Intent(this, cls);
         ///intent.putExtra("EXTRA_DATA", "Some Data");  // 传递额外的数据
-        startActivity(intent);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            MMLog.e(getLocalClassName(), String.valueOf(e));
+        }
+    }
+
+    public void openLocalActivity(Class<?> cls, Bundle bundle) {
+        Intent intent = new Intent(this, cls);
+        ///intent.putExtra("EXTRA_DATA", "Some Data");  // 传递额外的数据
+        intent.putExtras(bundle);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            MMLog.e(getLocalClassName(), String.valueOf(e));
+        }
+    }
+
+    public void openActivity(String targetPackageName, String targetActivityClassName) {
+        Intent intent = new Intent();
+        ComponentName cn = new ComponentName(targetPackageName, targetActivityClassName);
+        intent.setComponent(cn);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            MMLog.e(getLocalClassName(), String.valueOf(e));
+        }
+    }
+
+    public void SendMessage(String action, String packageName, Bundle bundle) {
+        Intent intent = new Intent();
+        intent.setAction(action);
+        if (bundle != null) intent.putExtras(bundle);
+        if (FileUtils.NotEmptyString(packageName)) intent.setPackage(packageName);
+        sendBroadcast(intent);
     }
 
     public void setColor(TextView textView, int colorResId) {

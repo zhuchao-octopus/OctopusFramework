@@ -11,6 +11,7 @@ import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_CAR_C
 import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_CAR_SERVICE;
 
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +34,7 @@ import com.zhuchao.android.car.aidl.PEventCourier;
 import com.zhuchao.android.car.aidl.PMovie;
 import com.zhuchao.android.fbase.DataID;
 import com.zhuchao.android.fbase.EventCourier;
+import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MessageEvent;
 import com.zhuchao.android.fbase.ObjectList;
@@ -333,4 +335,29 @@ public class Cabinet {
 
         }
     };
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //public method
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void openActivity(Context context, String targetPackageName, String targetActivityClassName) {
+        Intent intent = new Intent();
+        ComponentName cn = new ComponentName(targetPackageName, targetActivityClassName);
+        intent.setComponent(cn);
+        try {
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            MMLog.e(TAG, String.valueOf(e));
+        }
+    }
+
+    public static void SendMessage(Context context, String action, String packageName, Bundle bundle) {
+        Intent intent = new Intent();
+        intent.setAction(action);
+        if (bundle != null) intent.putExtras(bundle);
+        if (FileUtils.NotEmptyString(packageName)) intent.setPackage(packageName);
+        context.sendBroadcast(intent);
+    }
 }
