@@ -154,11 +154,11 @@ public class TUartFile extends TDevice implements TCourierEventListener {
         return serialPort.isDeviceReady() && readThread.isAlive() && parserThread.isAlive();
     }
 
-    public int getFrame_size() {
+    public int getFrameMiniSize() {
         return frame_size;
     }
 
-    public void setFrame_size(int frame_size) {
+    public void setFrameMiniSize(int frame_size) {
         this.frame_size = frame_size;
     }
 
@@ -179,11 +179,11 @@ public class TUartFile extends TDevice implements TCourierEventListener {
     }
 
 
-    public String getF_separator() {
+    public String getSeparator() {
         return f_separator;
     }
 
-    public void setF_separator(String f_separator) {
+    public void setSeparator(String f_separator) {
         this.f_separator = f_separator;
     }
 
@@ -343,7 +343,7 @@ public class TUartFile extends TDevice implements TCourierEventListener {
                     appendByte(aByte);
                     endFrame = byteArrayList.get(byteArrayList.size() - 1);
 
-                    if (startHeadCode <= 0 && frameHeadCodeList.size() > 0) {
+                    if (startHeadCode <= 0 && !frameHeadCodeList.isEmpty()) {
                         starFrame0 = starFrame1;
                         starFrame1 = byteArrayList.get(byteArrayList.size() - 1);
                         startHeadCode = ByteUtils.DoubleBytesToInt(starFrame0, starFrame1);
@@ -371,7 +371,7 @@ public class TUartFile extends TDevice implements TCourierEventListener {
                         ok_going = true;
                     } else if (timeout >= readTimeout_millis && frameHeadCodeList.contains(startHeadCode)) {
                         ok_going = true;
-                    } else if (frameHeadCodeList.size() == 0 && frameEndCodeList.size() == 0) {
+                    } else if (frameHeadCodeList.isEmpty() && frameEndCodeList.isEmpty()) {
                         if (byteArrayList.size() >= 10 || timeout >= readTimeout_millis) ok_going = true;
                     } else {
                         startHeadCode = 0;

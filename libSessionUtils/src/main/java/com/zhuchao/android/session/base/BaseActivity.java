@@ -34,13 +34,17 @@ import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.MessageEvent;
+import com.zhuchao.android.net.NetworkInformation;
+import com.zhuchao.android.net.TNetUtils;
 import com.zhuchao.android.session.Cabinet;
 import com.zhuchao.android.session.MApplication;
 
 import java.util.Map;
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity implements TNetUtils.NetworkStatusListener {
     private ActivityResultLauncher<String[]> requestMultiplePermissionsLauncher;
+    private static final String ACTION_SHOW_STATUS_BAR = "android.intent.action.ACTION_SHOW_STATUS_BAR";
+    private static final String ACTION_HIDE_STATUS_BAR = "android.intent.action.ACTION_HIDE_STATUS_BAR";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -157,6 +161,16 @@ public class BaseActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    public void hideStatusBar()
+    {
+        SendMessage(ACTION_HIDE_STATUS_BAR,null,null);
+    }
+
+    public void showStatusBar()
+    {
+        SendMessage(ACTION_SHOW_STATUS_BAR,null,null);
+    }
+
     public void switchFragment(@IdRes int containerViewId, @NonNull Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -169,4 +183,8 @@ public class BaseActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    @Override
+    public void onNetStatusChanged(NetworkInformation networkInformation) {
+
+    }
 }

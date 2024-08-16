@@ -685,7 +685,7 @@ public class TWatchManService extends Service implements TNetUtils.NetworkStatus
                 jsonObj.put("mac", networkInformation.getMAC());
                 if (NotEmptyString(networkInformation.getInternetIP())) {
                     jsonObj.put("ip", networkInformation.getInternetIP());
-                    jsonObj.put("region", networkInformation.regionToJson());
+                    jsonObj.put("region", networkInformation.toJson());
                 } else {
                     jsonObj.put("ip", null);
                     jsonObj.put("region", null);

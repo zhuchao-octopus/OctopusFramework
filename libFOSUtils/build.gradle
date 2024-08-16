@@ -6,7 +6,7 @@ ext {
     PUBLISH_GROUP_ID = 'com.zhuchao.android'
     PUBLISH_ARTIFACT_ID = 'libFOSUtils'
     //PUBLISH_VERSION = '1.2'
-    PUBLISH_VERSION = '1.4' //设备支持多接口
+    PUBLISH_VERSION = '1.4.1' //设备支持多接口
 }
 
 afterEvaluate {

@@ -3,17 +3,16 @@ package com.zhuchao.android.fbase;
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
-import android.util.Log;
 
 import java.util.Locale;
 
-public class TtsUtils {
+public class TTS {
 
     private static final String TAG = "TtsUtils";
     private TextToSpeech textToSpeech;
     private final Context context;
 
-    public TtsUtils(Context context) {
+    public TTS(Context context) {
         this.context = context;
         initTextToSpeech();
     }

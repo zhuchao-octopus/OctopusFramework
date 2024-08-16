@@ -49,7 +49,7 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
     private NetworkStatusListener networkStatusListener;
     private final NetworkInformation networkInformation;
     private final TTask tTask_ParseExternalIP = new TTask("getInternetStatus");
-    private final TTask tTask_NetworkCallback = new TTask("NetworkCallback ");
+    private final TTask tTask_NetworkCallback = new TTask("NetworkCallback");
 
     public interface NetworkStatusListener {
         void onNetStatusChanged(NetworkInformation networkInformation);
@@ -58,28 +58,28 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
     @Override
     public void onAvailable(@NonNull Network network) {
         super.onAvailable(network);
-        MMLog.log(TAG, "onAvailable()");
+        //MMLog.log(TAG, "onAvailable()");
         networkInformation.setAction(NetworkInformation.NetworkInformation_onAvailable);
     }
 
     @Override
     public void onLosing(@NonNull Network network, int maxMsToLive) {
         super.onLosing(network, maxMsToLive);
-        MMLog.log(TAG, "onLosing()");
+        //MMLog.log(TAG, "onLosing()");
         networkInformation.setAction(NetworkInformation.NetworkInformation_onLosing);
     }
 
     @Override
     public void onLost(@NonNull Network network) {
         super.onLost(network);
-        MMLog.log(TAG, "onLost()");
+        //MMLog.log(TAG, "onLost()");
         networkInformation.setAction(NetworkInformation.NetworkInformation_onLost);
     }
 
     @Override
     public void onUnavailable() {
         super.onUnavailable();
-        MMLog.log(TAG, "onUnavailable()");
+        //MMLog.log(TAG, "onUnavailable()");
         networkInformation.setAction(NetworkInformation.NetworkInformation_onUnavailable);
     }
 
@@ -622,6 +622,14 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public NetworkInformation getNetworkInformation() {
         return networkInformation;
+    }
+
+    public void printNetworkInformation() {
+        MMLog.d(TAG, "MAC ADDRESS     :" + getDeviceMAC());
+        MMLog.d(TAG, "WIFI MAC ADDRESS:" + getWiFiMacAddress());
+        MMLog.d(TAG, "LOCAL IP ADDRESS:" + getLocalIpAddress());
+        MMLog.d(TAG, "UUID  :" + getDeviceUUID());
+        MMLog.d(TAG, "CPU-ID:" + getCPUSerialCode());
     }
 
     //把拼音的省份改成中文

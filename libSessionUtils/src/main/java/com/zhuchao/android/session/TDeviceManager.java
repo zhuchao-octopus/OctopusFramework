@@ -41,9 +41,8 @@ public class TDeviceManager {
             return null;
         }
         TUartFile tUartFile = getDevice(devicePath, baudrate);
-        if (tUartFile != null) {
-            tUartFile.startPollingRead();
-        } else MMLog.log(TAG, "get device failed " + devicePath);
+        if (tUartFile != null) tUartFile.startPollingRead();
+        else MMLog.log(TAG, "get device failed " + devicePath);
         return tUartFile;
     }
 

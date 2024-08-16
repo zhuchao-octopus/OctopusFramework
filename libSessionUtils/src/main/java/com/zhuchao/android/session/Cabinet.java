@@ -40,9 +40,11 @@ import com.zhuchao.android.fbase.MessageEvent;
 import com.zhuchao.android.fbase.ObjectList;
 import com.zhuchao.android.fbase.TAppUtils;
 import com.zhuchao.android.fbase.TCourierEventBus;
+import com.zhuchao.android.fbase.TTS;
 import com.zhuchao.android.fbase.eventinterface.TCourierEventBusInterface;
 import com.zhuchao.android.net.TNetUtils;
 import com.zhuchao.android.persist.TPersistent;
+import com.zhuchao.android.serialport.TUartFile;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -64,6 +66,8 @@ public class Cabinet {
     private static IMyAidlInterface tIMyCarAidlInterface = null;
     public static ObjectList properties = new ObjectList();
     private static MediaBrowser mMediaBrowser;
+    @SuppressLint("StaticFieldLeak")
+    private static TTS tTts = null;
 
     public static Context getMyApplicationContext() {
         return MApplication.getAppContext();
@@ -75,22 +79,46 @@ public class Cabinet {
         }
     }
 
-    public synchronized static void initialPlayManager(Context context) {
+    public static synchronized void initialPlayManager(Context context) {
         tPlayManager = TPlayManager.getInstance(context);
         tPlayManager.setPlayOrder(DataID.PLAY_MANAGER_PLAY_ORDER2);//循环顺序播放
         tPlayManager.setAutoPlaySource(DataID.SESSION_SOURCE_FAVORITELIST);//自动播放源列表
     }
 
-    public synchronized static TPlayManager getPlayManager() {
+    public static synchronized TPlayManager getPlayManager() {
         tPlayManager = TPlayManager.getInstance(MApplication.getAppContext());
         ///tPlayManager.setPlayOrder(DataID.PLAY_MANAGER_PLAY_ORDER2);//循环顺序播放
         ///tPlayManager.setAutoPlaySource(DataID.SESSION_SOURCE_FAVORITELIST);//自动播放源列表
         return tPlayManager;
     }
 
-    public synchronized TPersistent getPersistent(Context context) {
+    public static synchronized TPersistent getPersistent(Context context) {
         if (tPersistent == null) return new TPersistent(context, context.getPackageName());
         else return tPersistent;
+    }
+
+    public static synchronized TDeviceManager getDeviceManager() {
+        if (tDeviceManager == null) tDeviceManager = new TDeviceManager();
+        return tDeviceManager;
+    }
+
+    public static synchronized TUartFile getUartDevice(String devicePath, int baudRate) {
+        return getDeviceManager().getDevice(devicePath, baudRate);
+    }
+
+    public static synchronized TTS getTTS(Context context) {
+        if (tTts == null) tTts = new TTS(context);
+        return tTts;
+    }
+
+    public static synchronized TNetUtils getNet(Context context) {
+        if (tNetUtils == null) tNetUtils = new TNetUtils(context);
+        return tNetUtils;
+    }
+
+    public static synchronized TNetUtils getNetUtils(Context context) {
+        if (tNetUtils == null) tNetUtils = new TNetUtils(context);
+        return tNetUtils;
     }
 
     public static synchronized TCourierEventBusInterface getEventBus() {
@@ -129,6 +157,7 @@ public class Cabinet {
             if (tPersistent != null) tPersistent.commit();//持久化数据
             if (tAppUtils != null) tAppUtils.free();
             if (tIMyCarAidlInterface != null) disconnectedMyAidlService(context);
+            if (tTts != null) tTts.shutdown();
         } catch (Exception e) {
             //e.printStackTrace();
         }

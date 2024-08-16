@@ -188,36 +188,26 @@ public class NetworkInformation {
         return str;
     }
 
-    public String regionToJson() {
+    public String toJson() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("localIP", localIP);
-            jsonObject.put("internetIP", internetIP);
-            jsonObject.put("country", country);
-            jsonObject.put("regionName", regionName);
-            jsonObject.put("timezone", timezone);
-            jsonObject.put("city", city);
-            jsonObject.put("organization", organization);
-            jsonObject.put("isp", isp);
-            jsonObject.put("lon", lon);
-            jsonObject.put("lat", lat);
+            jsonObject.put("MAC", MAC);
+            jsonObject.put("WifiMAC", wifiMAC);
+            jsonObject.put("NetType", netType);
+            jsonObject.put("LocalIP", localIP);
+            jsonObject.put("InternetIP", internetIP);
+            jsonObject.put("Country", country);
+            jsonObject.put("RegionName", regionName);
+            jsonObject.put("Timezone", timezone);
+            jsonObject.put("City", city);
+            jsonObject.put("Organization", organization);
+            jsonObject.put("Isp", isp);
+            jsonObject.put("Lon", lon);
+            jsonObject.put("Lat", lat);
         } catch (JSONException e) {
             //e.printStackTrace();
         }
         return jsonObject.toString();
-    }
-
-    public String toJson() {
-        //JSONObject jsonObject = new JSONObject();
-        //jsonObject.put()
-        try {
-            Gson gson = new GsonBuilder().serializeNulls().disableHtmlEscaping().create();
-            return gson.toJson(this);
-        } catch (JsonSyntaxException e) {
-            //e.printStackTrace();
-            MMLog.e(TAG, e.getMessage());
-        }
-        return "null";
     }
 
 }
