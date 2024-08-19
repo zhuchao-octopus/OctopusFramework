@@ -21,27 +21,14 @@ public class MMLog {
         if (mDebugLogOnOff) Log.v(MTAG + "." + TAG, logMsg);
     }
 
-    public static void log(String TAG, String logMsg) {
-        if (mDebugLogOnOff) Log.d(MTAG + "." + TAG, logMsg);
-    }
-
     public static void d(String TAG, String logMsg) {
         if (mDebugLogOnOff) Log.d(MTAG + "." + TAG, logMsg);
     }
+
+    public static void log(String TAG, String logMsg) {if (mDebugLogOnOff) Log.d(MTAG + "." + TAG, logMsg);}
+
     public static void debug(String TAG, String logMsg) {
         if (mDebugLogOnOff) Log.d(MTAG + "." + TAG, logMsg);
-    }
-    public static void mm(String logMsg) {
-        if (logMsg == null) mStringBuffer.setLength(0);
-        else {
-            String line = System.getProperty("line.separator");
-            mStringBuffer.append(logMsg).append(line);
-        }
-    }
-
-    public static void m(String TAG) {
-        d(TAG, mStringBuffer.toString());
-        mStringBuffer.setLength(0);
     }
 
     public static void i(String TAG, String logMsg) {
@@ -55,4 +42,19 @@ public class MMLog {
     public static void e(String TAG, String logMsg) {
         if (mDebugLogOnOff) Log.e(MTAG + "." + TAG, logMsg);
     }
+
+    public static void add(String logMsg) {
+        if (logMsg == null) mStringBuffer.setLength(0);
+        else {
+            String line = System.lineSeparator();
+            mStringBuffer.append(logMsg).append(line);
+        }
+    }
+
+    public static void print(String TAG) {
+        d(TAG, mStringBuffer.toString());
+        mStringBuffer.setLength(0);
+    }
+
+
 }

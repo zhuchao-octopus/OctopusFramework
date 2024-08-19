@@ -110,11 +110,11 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                 context.startService(intent4);
                 break;
             case MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_HELLO:
-                MMLog.mm(null);
-                MMLog.mm("*Hello " + TAppProcessUtils.getCurrentProcessNameAndId(context));
+                MMLog.add(null);
+                MMLog.add("*Hello " + TAppProcessUtils.getCurrentProcessNameAndId(context));
                 //Cabinet.getEventBus().printAllEventListener();
-                MMLog.mm(Cabinet.getEventBus().getEventListeners());
-                MMLog.m(TAG);
+                MMLog.add(Cabinet.getEventBus().getEventListeners());
+                MMLog.print(TAG);
                 break;
             case Intent.ACTION_MEDIA_MOUNTED:
                 EventCourier eventCourier1 = new EventCourier(mGlobalBroadcastReceiver.getClass(), MessageEvent.MESSAGE_EVENT_USB_MOUNTED);

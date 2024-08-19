@@ -268,7 +268,7 @@ public class Util {
     @SuppressLint("PrivateApi")
     public static int setProperty(String key, String value) {
         try {
-            MMLog.d("Util", "SystemProperties " + key + "=" + value);
+            MMLog.d("Util", "Set SystemProperties " + key + "=" + value);
             Class<?> c = Class.forName("android.os.SystemProperties");
             Method set = c.getMethod("set", String.class, String.class);
             set.invoke(c, key, value);

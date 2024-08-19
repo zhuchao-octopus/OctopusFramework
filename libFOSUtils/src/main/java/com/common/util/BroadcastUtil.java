@@ -18,7 +18,7 @@ public class BroadcastUtil {
      * @param isNeedDelay 是否需要收到广播后延时处理.
      */
 
-    public final static void sendKey(Context context, byte pressType, int keyCode, boolean isNeedDelay) {
+    public static void sendKey(Context context, byte pressType, int keyCode, boolean isNeedDelay) {
         Intent it = new Intent(MyCmd.ACTION_KEY_PRESS);
         it.putExtra(MyCmd.EXTRAS_KEY_PRESS_TYPE, pressType);
         it.putExtra(MyCmd.EXTRAS_KEY_CODE, keyCode);
@@ -26,21 +26,21 @@ public class BroadcastUtil {
         context.sendBroadcast(it);
     }
 
-    public final static void sendKey(Context context, int keyCode) {
+    public static void sendKey(Context context, int keyCode) {
         Intent it = new Intent(MyCmd.ACTION_KEY_PRESS);
         it.putExtra(MyCmd.EXTRAS_KEY_PRESS_TYPE, MyCmd.KeyPressType.SHORT_PRESS);
         it.putExtra(MyCmd.EXTRAS_KEY_CODE, keyCode);
         context.sendBroadcast(it);
     }
 
-    public final static void sendKey(Context context, int keyCode, byte target) {
+    public static void sendKey(Context context, int keyCode, byte target) {
         Intent it = new Intent(MyCmd.ACTION_KEY_PRESS);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, target);
         it.putExtra(MyCmd.EXTRAS_KEY_CODE, keyCode);
         context.sendBroadcast(it);
     }
 
-    public final static void sendKey(Context context, String packageName, int keyCode) {
+    public static void sendKey(Context context, String packageName, int keyCode) {
         Intent it = new Intent(MyCmd.ACTION_KEY_PRESS);
         it.putExtra(MyCmd.EXTRAS_KEY_PRESS_TYPE, MyCmd.KeyPressType.SHORT_PRESS);
         it.putExtra(MyCmd.EXTRAS_KEY_CODE, keyCode);
@@ -50,12 +50,12 @@ public class BroadcastUtil {
         context.sendBroadcast(it);
     }
 
-    public final static void sendToCarService(Context context, Intent it) {
+    public static void sendToCarService(Context context, Intent it) {
         it.setPackage(getCarServicePackageName(context));
         context.sendBroadcast(it);
     }
 
-    public final static void sendToCarService(Context context, int cmd, int data) {
+    public static void sendToCarService(Context context, int cmd, int data) {
         Intent it;
         it = new Intent(MyCmd.BROADCAST_CMD_TO_CAR_SERVICE);
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
@@ -64,11 +64,9 @@ public class BroadcastUtil {
         sendToCarService(context, it);
     }
 
-    public final static void sendToCarService(Context context, int cmd, int data, int data2) {
+    public static void sendToCarService(Context context, int cmd, int data, int data2) {
         Intent it;
-
         it = new Intent(MyCmd.BROADCAST_CMD_TO_CAR_SERVICE);
-
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, data);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA2, data2);
@@ -76,11 +74,9 @@ public class BroadcastUtil {
         sendToCarService(context, it);
     }
 
-    public final static void sendToCarService(Context context, int cmd, int data, int data2, int data3) {
+    public static void sendToCarService(Context context, int cmd, int data, int data2, int data3) {
         Intent it;
-
         it = new Intent(MyCmd.BROADCAST_CMD_TO_CAR_SERVICE);
-
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, data);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA2, data2);
@@ -89,82 +85,48 @@ public class BroadcastUtil {
         sendToCarService(context, it);
     }
 
-    //	private static int mUserID = -1;
-    //	private static boolean isSystemIDPackage(Context context){
-    //		if(mUserID == -1){
-    //			PackageManager packageManager = context.getPackageManager();
-    //		       // 在Activity中可以直接调用getPackageName()，获取安装包全名。
-    //		       String packageName = context.getPackageName();
-    //		       // flags提供了10种选项，及其组合，如果只是获取版本号，flags=0即可
-    //		       int flags = 0;
-    //		       PackageInfo packageInfo = null;
-    //
-    //		       try {
-    //		           // 通过packageInfo即可获取AndroidManifest.xml中的信息。
-    //		           packageInfo = packageManager.getPackageInfo(packageName, flags);
-    //		           mUserID = packageInfo.applicationInfo.uid;
-    //		           Log.d("tt", ""+packageInfo.applicationInfo.uid);
-    ////
-    ////		           Log.d("tt", ""+packageInfo.toString());
-    ////		           Log.d("tt", ""+packageInfo.applicationInfo.toString());
-    //		       } catch (NameNotFoundException e) {
-    //		           e.printStackTrace();
-    //		       }
-    //		}
-    //
-    //
-    //		if(mUserID == 1000){
-    //			return true;
-    //		}
-    //		return false;
-    //	}
-
-
     /* mcu data start */
-    public final static void sendToCarServiceSetSource(Context context, int source) {
+    public static void sendToCarServiceSetSource(Context context, int source) {
         sendToCarService(context, MyCmd.Cmd.SET_SOURCE, source);
     }
 
     /* mcu data end */
 
-    public final static void sendToCarServiceMcuRadio(Context context, int subId, int param1) {
+    public static void sendToCarServiceMcuRadio(Context context, int subId, int param1) {
         sendToCarService(context, MyCmd.Cmd.MCU_RADIO_SEND_CMD, subId, param1);
     }
 
-    public final static void sendToCarServiceMcuRadio(Context context, int subId, int param1, int param2) {
+    public static void sendToCarServiceMcuRadio(Context context, int subId, int param1, int param2) {
         sendToCarService(context, MyCmd.Cmd.MCU_RADIO_SEND_CMD, subId, param1, param2);
 
     }
 
-    public final static void sendToCarServiceMcuRds(Context context, int subId, int param1) {
+    public static void sendToCarServiceMcuRds(Context context, int subId, int param1) {
         sendToCarService(context, MyCmd.Cmd.MCU_RDS_SEND_CMD, subId, param1);
     }
 
-    public final static void sendToCarServiceMcuRds(Context context, int subId, int param1, int param2) {
+    public static void sendToCarServiceMcuRds(Context context, int subId, int param1, int param2) {
         sendToCarService(context, MyCmd.Cmd.MCU_RDS_SEND_CMD, subId, param1, param2);
 
     }
 
-    public final static void sendToCarServiceMcuEQ(Context context, int subId, int param1) {
+    public static void sendToCarServiceMcuEQ(Context context, int subId, int param1) {
         sendToCarService(context, MyCmd.Cmd.MCU_AUDIO_SEND_CMD, subId, param1);
     }
 
-    public final static void sendToCarServiceMcuEQ(Context context, int subId, int param1, int param2) {
+    public static void sendToCarServiceMcuEQ(Context context, int subId, int param1, int param2) {
         sendToCarService(context, MyCmd.Cmd.MCU_AUDIO_SEND_CMD, subId, param1, param2);
-
     }
 
-    public final static void sendToCarServiceMcuDVD(Context context, int subId, int param1, int param2) {
+    public static void sendToCarServiceMcuDVD(Context context, int subId, int param1, int param2) {
         sendToCarService(context, MyCmd.Cmd.MCU_DVD_SEND_CMD, subId, param1, param2);
-
     }
 
-    public final static void sendToCarServiceMcuDVD(Context context, int subId, int param1) {
+    public static void sendToCarServiceMcuDVD(Context context, int subId, int param1) {
         sendToCarService(context, MyCmd.Cmd.MCU_DVD_SEND_CMD, subId, param1);
-
     }
 
-    public final static void sendCanboxInfo(Context context, String name, int value1, int value2, int value3) {
+    public static void sendCanboxInfo(Context context, String name, int value1, int value2, int value3) {
         Intent i = new Intent(name);
         i.putExtra("value1", value1);
         i.putExtra("value2", value2);
@@ -172,14 +134,14 @@ public class BroadcastUtil {
         sendToCarService(context, i);
     }
 
-    public final static void sendCanboxInfo(Context context, byte[] buf) {
+    public static void sendCanboxInfo(Context context, byte[] buf) {
         Intent i = new Intent(MyCmd.BROADCAST_SEND_TO_CAN);
         i.putExtra("buf", buf);
         sendToCarService(context, i);
     }
 
     // only car service send this.
-    public final static void sendByCarService(Context context, String packageName, int cmd) {
+    public static void sendByCarService(Context context, String packageName, int cmd) {
         Intent it = new Intent(MyCmd.BROADCAST_CAR_SERVICE_SEND);
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         if (packageName != null) {
@@ -188,7 +150,7 @@ public class BroadcastUtil {
         context.sendBroadcast(it);
     }
 
-    public final static void sendByCarService(Context context, String packageName, int cmd, String s) {
+    public static void sendByCarService(Context context, String packageName, int cmd, String s) {
         Intent it = new Intent(MyCmd.BROADCAST_CAR_SERVICE_SEND);
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, s);
@@ -198,7 +160,7 @@ public class BroadcastUtil {
         context.sendBroadcast(it);
     }
 
-    public final static void sendByCarService(Context context, String packageName, int cmd, byte[] buf) {
+    public static void sendByCarService(Context context, String packageName, int cmd, byte[] buf) {
         Intent it = new Intent(MyCmd.BROADCAST_CAR_SERVICE_SEND);
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, buf);
@@ -208,7 +170,7 @@ public class BroadcastUtil {
         context.sendBroadcast(it);
     }
 
-    public final static void sendByCarService(Context context, String packageName, int cmd, int buf) {
+    public static void sendByCarService(Context context, String packageName, int cmd, int buf) {
         Intent it = new Intent(MyCmd.BROADCAST_CAR_SERVICE_SEND);
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, buf);
@@ -218,7 +180,7 @@ public class BroadcastUtil {
         context.sendBroadcast(it);
     }
 
-    public final static void sendByCarService(Context context, String[] packageName, int cmd, byte[] buf) {
+    public static void sendByCarService(Context context, String[] packageName, int cmd, byte[] buf) {
         Intent it = new Intent(MyCmd.BROADCAST_CAR_SERVICE_SEND);
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, buf);
@@ -228,21 +190,21 @@ public class BroadcastUtil {
         }
     }
 
-    public final static void sendByCarServicePemission(Context context, String pemission, int cmd, byte[] buf) {
+    public static void sendByCarServicePermission(Context context, String permission, int cmd, byte[] buf) {
         Intent it = new Intent(MyCmd.BROADCAST_CAR_SERVICE_SEND);
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, buf);
-        context.sendBroadcast(it, pemission);
+        context.sendBroadcast(it, permission);
     }
 
-    public final static void sendByCarService(Context context, int cmd, int data) {
+    public static void sendByCarService(Context context, int cmd, int data) {
         Intent it = new Intent(MyCmd.BROADCAST_CAR_SERVICE_SEND);
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, data);
         context.sendBroadcast(it);
     }
 
-    public final static void sendByCarService(Context context, int cmd, int data, int data2) {
+    public static void sendByCarService(Context context, int cmd, int data, int data2) {
         Intent it = new Intent(MyCmd.BROADCAST_CAR_SERVICE_SEND);
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, data);
@@ -250,7 +212,7 @@ public class BroadcastUtil {
         context.sendBroadcast(it);
     }
 
-    public final static void sendByCarService(Context context, int cmd, int data, Object obj) {
+    public static void sendByCarService(Context context, int cmd, int data, Object obj) {
         Intent it = new Intent(MyCmd.BROADCAST_CAR_SERVICE_SEND);
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, data);
