@@ -1,6 +1,6 @@
-package com.common.util;
+package com.common.utils;
 
-import static com.common.util.MachineConfig.VENDOR_DIR;
+import static com.common.utils.MachineConfig.VENDOR_DIR;
 
 import android.annotation.SuppressLint;
 import android.app.Instrumentation;
@@ -268,7 +268,7 @@ public class Util {
     @SuppressLint("PrivateApi")
     public static int setProperty(String key, String value) {
         try {
-            MMLog.d("Util", "Set SystemProperties " + key + "=" + value);
+            MMLog.d("Util", "SystemProperties set " + key + "=" + value);
             Class<?> c = Class.forName("android.os.SystemProperties");
             Method set = c.getMethod("set", String.class, String.class);
             set.invoke(c, key, value);
@@ -307,7 +307,7 @@ public class Util {
     }
 
     public static int sudoExec(String cmd) {
-        Log.e("Util", "sudoExec:" + cmd);
+        ///Log.e("Util", "sudoExec:" + cmd);
         if (Build.VERSION.SDK_INT >= 25) {
             cmd = "akd:" + cmd;
             setProperty("ctl.start", cmd);

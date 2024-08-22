@@ -1,4 +1,4 @@
-package com.common.util.decode;
+package com.common.utils.decode;
 
 
 import java.io.ByteArrayInputStream;

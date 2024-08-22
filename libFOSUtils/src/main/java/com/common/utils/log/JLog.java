@@ -1,4 +1,4 @@
-package com.common.util.log;
+package com.common.utils.log;
 
 import android.util.Log;
 

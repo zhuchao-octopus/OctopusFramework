@@ -1,4 +1,4 @@
-package com.common.util;
+package com.common.utils;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -27,7 +27,6 @@ import java.util.List;
 public class UtilSystem {
     private final static String TAG = "UtilSystem";
 
-
     public static void setStatusBarTransparent(Activity context) {
         if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             Window window = context.getWindow();
@@ -42,8 +41,7 @@ public class UtilSystem {
     public static boolean isTopActivity(Context context, String packageName) { // < 4.3 can used
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<RunningTaskInfo> tasksInfo = activityManager.getRunningTasks(1);
-        if (tasksInfo.size() > 0) {
-
+        if (!tasksInfo.isEmpty()) {
             if (packageName.equals(tasksInfo.get(0).topActivity.getPackageName())) {
                 return true;
             }
@@ -76,42 +74,36 @@ public class UtilSystem {
     }
 
     public static void killProcess(String name) {
-
+        BufferedReader bufferedReader = null;
         try {
-
             Process psProcess = Runtime.getRuntime().exec("ps | grep " + name);
-
             psProcess.waitFor();
-
             InputStream inputStream = psProcess.getInputStream();
             InputStreamReader buInputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(buInputStreamReader);
+            bufferedReader = new BufferedReader(buInputStreamReader);
             String str = null;
 
             str = bufferedReader.readLine();
             str = bufferedReader.readLine();
-
 
             String[] ss = str.split(" ");
 
             int j = 0;
             int i = 0;
             for (; i < ss.length; ++i) {
-                if (ss[i].length() > 0) {
+                if (!ss[i].isEmpty()) {
                     ++j;
                 }
                 if (j == 2) {
                     break;
                 }
             }
-            //			int memory = Integer.parseInt(ss[i]);
-
+            //int memory = Integer.parseInt(ss[i]);
             str = ss[i];
 
             Util.sudoExec("kill:" + str);
 
-        } catch (Exception e) {
-
+        } catch (Exception ignored) {
         }
     }
     //	public static void sendActivityStatus(Context context, int status) {
@@ -151,19 +143,14 @@ public class UtilSystem {
                 List<Object> VolumeInfo = (List<Object>) getVolumeList.invoke(storageManager, params);
 
                 if (VolumeInfo != null) {
-                    for (Object volumeinfo : VolumeInfo) {
-
-                        Method getPath = volumeinfo.getClass().getMethod("getPath", new Class[0]);
-
-                        File path = (File) getPath.invoke(volumeinfo, new Object[0]);
-
-                        Method getDisk = volumeinfo.getClass().getMethod("getDisk", new Class[0]);
-
-                        Object diskinfo = getDisk.invoke(volumeinfo, new Object[0]);
+                    for (Object volumeInfo : VolumeInfo) {
+                        Method getPath = volumeInfo.getClass().getMethod("getPath", new Class[0]);
+                        File path = (File) getPath.invoke(volumeInfo, new Object[0]);
+                        Method getDisk = volumeInfo.getClass().getMethod("getDisk", new Class[0]);
+                        Object diskinfo = getDisk.invoke(volumeInfo, new Object[0]);
                         int type = StorageInfo.TYPE_INTERAL;
                         if (diskinfo != null) {
                             Method isSd = diskinfo.getClass().getMethod("isSd", new Class[0]);
-
                             type = ((Boolean) isSd.invoke(diskinfo, new Object[0])) ? StorageInfo.TYPE_SD : StorageInfo.TYPE_USB;
                             if (path != null) {
                                 StorageInfo si = new StorageInfo(path.toString(), type);
@@ -206,12 +193,12 @@ public class UtilSystem {
                 Object[] params = {};
                 List<Object> VolumeInfo = (List<Object>) getVolumeList.invoke(storageManager, params);
                 if (VolumeInfo != null) {
-                    for (Object volumeinfo : VolumeInfo) {
-                        Method getPath = volumeinfo.getClass().getMethod("getPath", new Class[0]);
-                        File path = (File) getPath.invoke(volumeinfo, new Object[0]);
-                        Method getDisk = volumeinfo.getClass().getMethod("getDisk", new Class[0]);
+                    for (Object volumeInfo : VolumeInfo) {
+                        Method getPath = volumeInfo.getClass().getMethod("getPath", new Class[0]);
+                        File path = (File) getPath.invoke(volumeInfo, new Object[0]);
+                        Method getDisk = volumeInfo.getClass().getMethod("getDisk", new Class[0]);
 
-                        Object diskinfo = getDisk.invoke(volumeinfo, new Object[0]);
+                        Object diskinfo = getDisk.invoke(volumeInfo, new Object[0]);
                         int type = StorageInfo.TYPE_INTERAL;
                         if (diskinfo != null) {
                             Method isSd = diskinfo.getClass().getMethod("isSd", new Class[0]);

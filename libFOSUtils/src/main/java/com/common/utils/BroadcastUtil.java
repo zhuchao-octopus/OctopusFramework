@@ -1,6 +1,6 @@
-package com.common.util;
+package com.common.utils;
 
-import static com.common.util.AppConfig.getCarServicePackageName;
+import static com.common.utils.AppConfig.getCarServicePackageName;
 
 import android.content.Context;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package com.common.util;
+package com.common.utils;
 
 import static com.zhuchao.android.TPlatform.systemPropertiesGet;
 

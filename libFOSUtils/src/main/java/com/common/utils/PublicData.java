@@ -1,6 +1,6 @@
-package com.common.util;
+package com.common.utils;
 
-import static com.common.util.MachineConfig.VENDOR_DIR;
+import static com.common.utils.MachineConfig.VENDOR_DIR;
 
 import android.util.Log;
 

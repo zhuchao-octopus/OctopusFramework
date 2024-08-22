@@ -1,4 +1,4 @@
-package com.common.util;
+package com.common.utils;
 
 import android.os.Build;
 
@@ -18,12 +18,10 @@ public class MachineConfig {
     public final static String KEY_STATUSBAR_POWER = "key_statusbar_power";
     public final static String KEY_ARM_MEMORY_FOR_MCU = "key_memory_for_mcu";
     public final static String KEY_CALIBRATION = "key_calibration";
-
     public final static String KEY_GPS_PACKAGE = "key_gps_package";
     public final static String KEY_GPS_CLASS = "key_gps_class";
     public final static String KEY_GPS_UID = "key_gps_uid";
     public final static String KEY_GPS_VOLUME_CHANNEL = "key_gps_volume_channel";
-
     public final static String KEY_IFLY_PACKAGE = "ifly_package";
     public final static String KEY_MEDIA_PATH1 = "media_path1";
     public final static String KEY_MEDIA_PATH2 = "media_path2";
@@ -36,120 +34,73 @@ public class MachineConfig {
     public final static String KEY_SAVE_DRIVER = "save_driver";
     public final static String KEY_SAVE_DRIVER_PACKAGE = "save_driver_package";
     public final static String KEY_MODE_DELAY_TIME = "key_mode_delay_time";
-
-
     public final static String KEY_SETTINGS_SHOW_EXT = "settings_show_ext";
     public final static String KEY_SETTINGS_HIDE_EXT = "settings_hide_ext";
-
     public static final String KEY_SWITCH_TO_FRONT_CAMER = "switch_to_front_camera";
-
     public static final String KEY_FCAMERA_SHOW_USBCMAERA = "fcamera_show_usbcamera";
     public static final String KEY_SHOW_CAMERA_IN_BACKRADAR = "show_camera_in_backradar";
-
     public final static String KEY_LED_TYPE = "key_led_type";
     public final static String KEY_DVR_MIRROR = "key_dvr_mirror";
-
-
     public final static String KEY_UPDATE_NAME = "key_update_name";
     public final static String KEY_CAR_SETTING_TYPE = "key_car_setting_type";
-
     public final static String KEY_TOUCH_KEY_TYPE = "key_touch_key_type";
-
     public final static String KEY_DVR_FOLDER = "key_dvr_folder";
     public final static String KEY_BT_MIC_GAIN = "key_bt_mic_gain";
-
     public final static String FACTROY_PASSWD = "factroy_passwd";
     public final static String DRIVING_SET_PASSWD = "driving_set_passwd";
-
-
     public final static String ANDROID_VERSION_SHOW = "android_version_show";
-
     public final static String KEY_DVR_MODE = "key_dvr_mode";
-
     public final static String KEY_NO_REVERSE = "key_no_reverse";
-
-
     public final static String KEY_ACC_DELAY_OFF = "key_acc_delay_off";
-
     public final static String KEY_CAMERA_TYPE = "key_camera_type";
     public final static String KEY_AVM_CAMERA_MODE = "cam_mode";
-
     public final static String KEY_WIFI_TYPE = "wifi_type";
-
     public final static String KEY_AVM_UI = "avm_ui";
     public final static String KEY_AVM_DISABLE_360 = "avm_disable_360";
-
     public final static String KEY_SUPPORT_FIXED_AD_STD = "support_fixed_std";
     public final static String KEY_AD_STD = "ad_std";
-
     public final static String KEY_RADIO_BUTTON_TYPE = "key_radio_button_type";    //1992: 1.长按搜索键搜索
-
     public final static String KEY_USB_DVD = "key_usb_dvd";
-
     public final static String MCU_ILLUM_ACC_NODE = "MCU_ILLUM_ACC_NODE";
-
-    public static final int VAULE_CAMERA_FRONT = 0;
-    public static final int VAULE_CAMERA4 = 1;
-    public static final int VAULE_CAMERA_HIDEBUTTON = 2;
-
     public final static String KEY_MODE_KEY_STYLE = "key_mode_key_style";
-
     public final static String KEY_IFLY_CHANNEL = "key_ifly_channel";
     //	public final static String KEY_DVR_RECORD_SOUND = "key_dvr_record_sound"; //use system setting instead
     public final static String KEY_CUSTOMER_NAME = "key_customer_name";
     public final static String KEY_BOOTANIM_PATH = "bootanim_path";
-
     public final static String KEY_SCREEN_W = "disp_w";
     public final static String KEY_SCREEN_H = "disp_h";
-
     public final static String KEY_SCREEN1_W = "aux_disp_w";
     public final static String KEY_SCREEN1_H = "aux_disp_h";
     //	public final static String KEY_SCREEN_WALLPAPER_NAME = "key_screen1_wallpaper";
-
     public final static String KEY_RADIO_SWITCH = "radio_switch";
     public final static String KEY_RADIO_FREQ = "radio_freq";
-
     public final static String KEY_THIRD_APP_SOUND_FIRST = "key_3rd_app_snd_first";
     public final static String KEY_CAN_BOX = "key_can_box";
     public final static String KEY_CAN_BOX_EX = "key_can_box_ex";
     public final static String KEY_APP_HIDE = "key_app_hide";
     public final static String KEY_APP_HIDE3 = "key_app_hide3";
     public final static String KEY_CAN_BOX_SHOW_APP = "key_can_box_show_app";
-
     public final static String KEY_CAN_BOX_PG_SWITCH = "key_lr_reverse_switch";
-
-
     public final static String KEY_EXTERNAL_BOX = "key_external_box";
     public final static String KEY_SUDING_MIC_GAIN = "persist.suding.mic.gainlevel.default";
-
     public final static String KEY_TV_TYPE = "tv_type"; //0:default hdme, other is cvbs custom code. 2 bytes
     public final static String KEY_TPMS_TYPE = "tpms_type";
     public final static String KEY_FTJ_TYPE = "key_ftj";
-
     public final static String KEY_LOGO_PATH = "logo_path";
     public final static String KEY_LOGO_PATH_K = "logo_path_kernel";
-
     public final static String KEY_TP_X_INV = "tp_x_inv";
     public final static String KEY_TP_Y_INV = "tp_y_inv";
     public final static String KEY_TP_CALIB = "tp_calib";
-
-
     public final static String KEY_SCREEN1_VIEW = "screen1_view";
-
     public final static String KEY_RUDDER = "rudder";
-
     public final static String KEY_VIDEO_ON_DRIVING = "mcu_video_on_driving";
     public final static String KEY_MCU_BEEP = "mcu_beep";
-
     public final static String KEY_DISP2_ENABLE = "disp2_enable";
-
     public final static String KEY_GPS_CONFIG_LIST = "gps_config_list";
-
     public final static String KEY_SCREEN1_BT = "screen1_bt";
     public final static String KEY_SCREEN1_REVERSE = "screen1_reverse";
     public final static String KEY_SCREEN1_VOLUME = "screen1_volume";
     public final static String KEY_SCREEN1_CANBOX_AIR = "screen1_canbox_air";
-
     public final static String KEY_ACC_SPLASH_PIC = "acc_splash_pic";
     //only in parameter. read only
     //	public final static String KEY_LAUNCHER_SHOW_HOTSEAT_ALLAPPP = "show_hoteat_in_allapp";
@@ -157,53 +108,37 @@ public class MachineConfig {
 
     // hide_widget_page,icon_type,show_hoteat_in_allapp
     public final static String KEY_LAUNCHER_CONFIG = "launcher_config";
-
     public final static String KEY_APP_HIDE_FOREVER = "key_app_hide_forever";
-
     public final static String KEY_APP_HIDE_APPINFO = "key_app_hide_appinfo";    //ww+,for settings appinfo hide app
-
     public final static String KEY_PANEL_KEY_DEF_CONFIG = "panel_key_defcfg";
     public final static String KEY_SWC_KEY_DEF_CONFIG = "swc_key_defcfg";
-
     //no use
     public final static String KEY_DVR_PATH = "dvr_path"; //move to SystemConfig
     public final static String KEY_DVR_TIME = "dvr_time";
     public final static String KEY_DVR_RECORDING = "key_dvr_recording";
     //no use end
     // bootanim_path=/mnt/parameter/bootanim_kry.zip
-
     public final static String KEY_DEFAULT_GPS = "default_gps";
     public final static String KEY_DEFAULT_360 = "default_360";
-
     public final static String KEY_HIDE_BT_MUSIC_CONNECT_INFO = "key_hide_bt_music_connect_info";
     public final static String KEY_MODEL = "key_model";
     public final static String KEY_MCU_PREFIX = "key_mcu_prefix";
     public final static String KEY_TOUCH3_IDENTIFY = "key_touch3_identify";
-
     public final static String KEY_FACTORY_AUDIO_GAIN = "key_factory_audio_gain";
     public final static String KEY_USER_AUDIO_GAIN = "key_user_audio_gain";
-
     public final static String KEY_LOCALES = "key_locales";
-
     public final static String KEY_MODEL_VA = "model_va";
-
     public final static String KEY_DISPAUX_ENABLE = "dispaux_enable";                    //.config_properties
     public final static String KEY_DISPAUX_APPAUTO_DISABLE = "dispaux_appauto_disable";    //settings
-
     public final static String KEY_PASSWD_UNINSTALL = "passwd_uninstall";    //settings apps uninstall
-
-
     public final static String KEY_PASSWD_CUSTOMER_SERVICE_MODE = "passwd_customer_service_mode";    //
     public final static String KEY_CUSTOMER_SERVICE_MODE_SWITCH = "customer_service_mode_switch";    //
-
     public final static String KEY_PASSWD_CUSTOMER_SERVICE_MODE_EX = "passwd_customer_service_mode_ex";    //
 
     public final static String VALUE_SCREEN1_VIEW_BT = "bt";
     public final static String VALUE_SCREEN1_VIEW_REVERSE = "reverse";
-
     public final static String VALUE_CUSTOM_NAME_YX = "yx";
     public final static String VALUE_CUSTOM_NAME_CZL = "czl";
-
     public final static String VALUE_CAR_TYPE_BENZ = "benz";
     public final static String VALUE_CAR_TYPE_BMW = "bmw";
     public final static String VALUE_CAR_TYPE_AUDIQ5 = "audiQ5";
@@ -217,7 +152,6 @@ public class MachineConfig {
     public final static String VALUE_BOOTANIM_AUDI1024 = "audi1024.zip";
     public final static String VALUE_BOOTANIM_BENZ = "benz.zip";
     public final static String VALUE_BOOTANIM_BMW = "bmw.zip";
-
     // gm use
     public final static String VALUE_BOOTANIM_GM = "gm.zip";
     public final static String VALUE_BOOTANIM_VOLVO = "volvo.zip";
@@ -225,19 +159,15 @@ public class MachineConfig {
     public final static String VALUE_BOOTANIM_PEUGEOT = "peugeot.zip";
     public final static String VALUE_BOOTANIM_CITROEN = "citroen.zip";
     public final static String VALUE_BOOTANIM_DONGFENG = "dongfeng.zip";
-
     public final static String VALUE_BOOTANIM_PORSCHE = "porsche.zip";
     public final static String VALUE_BOOTANIM_JAGUAR = "jaguar.zip";
     public final static String VALUE_BOOTANIM_CADILLAC = "cadillac.zip";
     public final static String VALUE_BOOTANIM_LANDLOVER = "landlover.zip";
     public final static String VALUE_BOOTANIM_OTHER = "other.zip";
     public final static String VALUE_BOOTANIM_OTHER1024 = "other1024.zip";
-
     public final static String VALUE_LOGO_PATH = "/mnt/paramter/logo/";
-
     public final static String VALUE_CUSTOMER_YX = "yx";
     public final static String VALUE_BOOTANIM_CZL = "czl";
-
     public final static String VALUE_ON = "1";
     public final static String VALUE_OFF = "0";
 
@@ -282,44 +212,27 @@ public class MachineConfig {
     public final static String VALUE_CANBOX_TOUAREG_HIWORLD = "touareg_hiworld";
     public final static String VALUE_CANBOX_DACIA_SIMPLE = "dacia_simple";
     public final static String VALUE_CANBOX_BENZ_VITO_SIMPLE = "benz_vito_simple";
-
     public final static String VALUE_CANBOX_NISSAN_RAISE = "nissan_raise";
     public final static String VALUE_CANBOX_PETGEO_RAISE = "petgeo_raise";
-
     public final static String VALUE_CANBOX_EX_HY = "ford_simple";
-
-
     public final static String VALUE_CANBOX_FORD_EXPLORER_SIMPLE = "for_explorer_simple";
-
     public final static String VALUE_CANBOX_ACCORD_BINARYTEK = "accord_binarytek";
     public final static String VALUE_CANBOX_AUDI_SIMPLE = "audi_simple";
     public final static String VALUE_CANBOX_SUBARU_ODS = "subaru_ods";
     public final static String VALUE_CANBOX_MINI_HIWORD = "mini_hiword";
-
-
     public final static String VALUE_CANBOX_NISSAN_BINARYTEK = "nissan_binarytek";
-
     public final static String VALUE_CANBOX_VW_MQB_RAISE = "vw_mqb_raise";
-
-
     public final static String VALUE_CANBOX_CHERY_OD = "chery_od";
-
     public final static String VALUE_CANBOX_CHRYSLER_SIMPLE = "chrysler_simple";
     public final static String VALUE_CANBOX_MAZDA3_SIMPLE = "mszda3_simple";
-
-
     public final static String VALUE_CANBOX_OBD_BINARUI = "obd_binarytek";
     public final static String VALUE_CANBOX_HAFER_H2 = "hafer_h2";
-
     public final static String VALUE_CANBOX_HONDA_RAISE = "honda_da_raise";
-
     public final static String VALUE_CANBOX_PETGEO_SCREEN_RAISE = "petgeo_screen_raise";
-
     public final static String VALUE_CANBOX_FORD_RAISE = "ford_raise";
     public final static String VALUE_CANBOX_SMART_HAOZHENG = "smart_haozheng";
     public final static String VALUE_CANBOX_LANDROVER_HAOZHENG = "landrover_haozheng";
     public final static String VALUE_CANBOX_PEUGEOT307_UNION = "peugeot307_union";
-
     public final static String VALUE_CANBOX_MAZDA_CX5_SIMPLE = "mazda_cx5_simple";
     public final static String VALUE_CANBOX_RX330_HAOZHENG = "rx33_haozheng";
     public final static String VALUE_CANBOX_PSA206_SIMPLE = "psa_206_simple";
@@ -332,19 +245,13 @@ public class MachineConfig {
     public final static String VALUE_CANBOX_ALPHA_BAGOO = "alpha_bagoo";
     public final static String VALUE_CANBOX_SUBARU_SIMPLE = "subaru_simple";
     public final static String VALUE_CANBOX_ZHONGXING_SIMPLE = "zhongxing_simple";
-
     public final static String VALUE_CANBOX_GM_OD = "gm_od";
     public final static String VALUE_CANBOX_ZHONGXING_OD = "zhongxing_od";
-
     public final static String VALUE_CANBOX_MAZDA_RAISE = "mazda_raise";
     public final static String VALUE_CANBOX_TOYOTA_RAISE = "toyota_raise";
     public final static String VALUE_CANBOX_MINI_HAOZHENG = "mini_haozheng";
-
     public final static String VALUE_CANBOX_SLIMKEY2 = "slim_key_2";
-
     public final static String VALUE_CANBOX_PRO = "pro"; //this for new pro version >= 3
-
-
     public final static String KEY_SUB_CANBOX_AIR_CONDITION = "a";
     public final static String KEY_SUB_CANBOX_CHANGE_KEY = "c";
     public final static String KEY_SUB_CANBOX_EQ = "e";
@@ -363,6 +270,16 @@ public class MachineConfig {
     public final static String KEY_SUB_CANBOX_PROTOCAL_VERSION = "v";
     public final static String KEY_SUB_CANBOX_PROTOCAL_INDEX = "z"; //version>=3 support
 
+    public final static String KEY_HIDE_SCREEN_SHOT = "hide_screen_shot";
+    public final static String KEY_BT_TYPE = "bt_type";
+    public final static String KEY_HIDE_LAUNCHER = "hide_launcher";
+    public final static String KEY_LAUNCHER_UI = "launcher_ui";
+    public final static String KEY_SHOW_BACK_CAMERA = "show_back_camera";
+    public final static String KEY_SHOW_DARK_MODE = "show_dark_mode";
+    public final static String KEY_MODE_KEY_CONTENT = "mode_key_content";
+    public final static String KEY_1992_LIST_COLOR = "1992_list_color";
+    public final static String KEY_EXT_UI = "key_ext_ui";
+    public final static String KEY_SYSTEM_UI = "system_ui";
 
     public final static int VALUE_CANBOX_OTHER_RADAR_BEEP = 0x2;
     public final static int VALUE_CANBOX_OTHER_RADAR_UI = 0x4;
@@ -371,35 +288,13 @@ public class MachineConfig {
     public final static int VALUE_CANBOX_OTHER_HOUR_MINUS_1 = 0x32;
     public final static int VALUE_CANBOX_OTHER_RIGHT_CAMERA = ((0x1) << 6);
     public final static int VALUE_CANBOX_OTHER_DATA_DISTRIBUTION = ((0x1) << 7);
-    //	public final static String DEFAULT_GPS_PACKAGE = "com.autonavi.amapauto";
-    //	public final static String DEFAULT_GPS_CLASS = "com.autonavi.auto.remote.fill.UsbFillActivity";
-    //
+    public final static int VAULE_BT_TYPE_IVT = 0;
+    public final static int VAULE_BT_TYPE_PARROT = 1;
+    public final static int VAULE_BT_TYPE_GOC = 2;
+    public final static int VAULE_BT_TYPE_GOC_8761 = 3;
+    public final static int VAULE_BT_TYPE_GOC_RF210 = 4;
+    public final static int VAULE_BT_TYPE_SD_816 = 5;
 
-    public static String DEFAULT_GPS_PACKAGE = "none";
-    public static String DEFAULT_GPS_CLASS = "none";
-
-    public final static String KEY_HIDE_SCREEN_SHOT = "hide_screen_shot";
-    public final static String KEY_BT_TYPE = "bt_type";
-    public final static String KEY_HIDE_LAUNCHER = "hide_launcher";
-    public final static String KEY_LAUNCHER_UI = "launcher_ui";
-
-
-    public final static String KEY_SHOW_BACK_CAMERA = "show_back_camera";
-    public final static String KEY_SHOW_DARK_MODE = "show_dark_mode";
-    public final static String KEY_MODE_KEY_CONTENT = "mode_key_content";
-
-    public static final int VAULE_BT_TYPE_IVT = 0;
-    public static final int VAULE_BT_TYPE_PARROT = 1;
-    public static final int VAULE_BT_TYPE_GOC = 2;
-    public static final int VAULE_BT_TYPE_GOC_8761 = 3;
-    public static final int VAULE_BT_TYPE_GOC_RF210 = 4;
-    public static final int VAULE_BT_TYPE_SD_816 = 5;
-
-    public final static String KEY_1992_LIST_COLOR = "1992_list_color";
-
-    public final static String KEY_EXT_UI = "key_ext_ui";
-    //read only in /mnt/parameter/.config_properties
-    public final static String KEY_SYSTEM_UI = "system_ui";
     public final static String VALUE_SYSTEM_UI_KLD1 = "kld20170831";    //800-> sw322dp , 1024->sw323dp 2605ui launcher only
     public final static String VALUE_SYSTEM_UI_KLD2 = "kld20171124";    //800-> sw324dp , 1024->sw325dp skv2
     public final static String VALUE_SYSTEM_UI_KLD3 = "kld20171125";    //800-> sw326dp , 1024->sw327dp this app with all app
@@ -435,17 +330,14 @@ public class MachineConfig {
     public final static String VALUE_SYSTEM_UI44_KLD007 = "kld007";
     public final static String VALUE_SYSTEM_UI45_8702_2 = "8702_2";
     public final static String VALUE_SYSTEM_UI_887_90 = "887_90";    //800-> sw334dp , 1024->sw335dp this launcher only
-
     public final static String VALUE_EQ_UI_8586B = "8586b";
     public final static String VALUE_SYSTEM_UI_KLD047 = "kld047";
-
     public final static String VALUE_SYSTEM_UI_927_1 = "927_1";
     public final static String VALUE_SYSTEM_UI_1050_2 = "1050_2";
     public final static String VALUE_SYSTEM_UI_710 = "710";
     public final static String VALUE_SYSTEM_UI_PX30_1 = "px30_1";
     public final static String VALUE_SYSTEM_UI_KLD002 = "kld002";
     public final static String VALUE_SYSTEM_UI_KLD006 = "kld006";
-
     public final static String VALUE_SYSTEM_UI_8586B = "kld8586b";
     public final static String VALUE_SYSTEM_UI_9813 = "kld9813";
     public final static String VALUE_SYSTEM_UI_YJ = "yj";
@@ -467,9 +359,7 @@ public class MachineConfig {
 
 
     public final static String KEY_HIDE_LAUNCHER_CE_BUTTON = "hide_ce_button";
-
     public final static String KEY_HIDE_ADD_LANGUAGE = "key_hide_add_language";
-
     public final static String KEY_LAUNCHER_TRANSITION = "key_launcher_transition";
 
     public final static String KEY_SCREEN_BRIGHTNESS = "screen_brightness";
@@ -487,40 +377,49 @@ public class MachineConfig {
     public final static String KEY_CAMERA_HUE = "camera_hue";
     public final static String KEY_CAMERA_SHARPNESS = "camera_sharpness";
     public final static String KEY_SCREEN_PARAM_INDEX = "screen_param_index";
-
     public final static String KEY_TOUCH_ASSISTANT = "touch_assistant";
 
-    private static Properties mProperties = new Properties();
-    private static Properties mPropertiesReadOnly;
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private final static String PROJECT_CONFIG_FILENAME = ".config_properties";
+    public static String DEFAULT_GPS_PACKAGE = "none";
+    public static String DEFAULT_GPS_CLASS = "none";
+
+    public final static int VAULE_CAMERA_FRONT = 0;
+    public final static int VAULE_CAMERA4 = 1;
+    public final static int VAULE_CAMERA_HIDEBUTTON = 2;
+
+    public final static String PROJECT_CONFIG_FILENAME = ".config_properties";
     public final static String VENDOR_DIR = "/mnt/vendor/";// test  // 7.1
     public final static String PARAMETER_DIR = "/mnt/paramter/";
-    private final static String SYSTEM_CONFIG = VENDOR_DIR + PROJECT_CONFIG_FILENAME;
-    private final static String PARAMETER_CONFIG = PARAMETER_DIR + PROJECT_CONFIG_FILENAME;
+    public final static String VENDOR_CONFIG = VENDOR_DIR + PROJECT_CONFIG_FILENAME;
+    public final static String PARAMETER_CONFIG = PARAMETER_DIR + PROJECT_CONFIG_FILENAME;
+    public final static String PARAMETER_PATH_KEY = "parameter_path";
 
-    private static String mParameterPath = PARAMETER_DIR;
-    private final static String KEY_PARAMETER_PATH = "parameter_path";
+    private static Properties mProperties = new Properties();//存储目录VENDOR_CONFIG可读可写
+    private static Properties mPropertiesReadOnly;//只读属性，用于保存默认值
+    private static String mParameterPath = PARAMETER_DIR;//默认参数路径
+
 
     static {
         InputStream inputStream = null;
         File configFile = new File(PARAMETER_CONFIG);
         if (configFile.exists()) {
             try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) inputStream = Files.newInputStream(configFile.toPath());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    inputStream = Files.newInputStream(configFile.toPath());
                 else inputStream = new FileInputStream(configFile);
 
                 Properties pt = new Properties();
                 pt.load(inputStream);
                 inputStream.close();
-                String s = pt.getProperty(KEY_PARAMETER_PATH);
+                String s = pt.getProperty(PARAMETER_PATH_KEY);
                 if (s != null) {
-                    mParameterPath = s;
+                    mParameterPath = s;//重定向参数配置文件位置
                     MMLog.d(TAG, "Parameter Path changed to " + mParameterPath);
                 }
                 pt = null;
             } catch (Exception e) {
-                e.printStackTrace();
+                MMLog.d(TAG, String.valueOf(e));
             }
         }
 
@@ -535,59 +434,12 @@ public class MachineConfig {
         }
     }
 
-    public static String getParameterPath() {
+    public static String getParameterPathKey() {
         return mParameterPath;
     }
 
-    // only CarService use these functions below. other use Settings
-    private static void getConfigProperties() {
-        InputStream inputStream = null;
-        File configFile = new File(SYSTEM_CONFIG);
-        if (configFile.exists()) {
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) inputStream = Files.newInputStream(configFile.toPath());
-                else inputStream = new FileInputStream(configFile);
-
-                mProperties.clear();
-                mProperties.load(inputStream);
-                inputStream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static void initConfigProperties() {
-        if (mProperties.size() == 0) {
-            getConfigProperties();
-        }
-    }
-
-    public static void updateConfigProperties() {
-
-        File file = new File(SYSTEM_CONFIG);
-        try {
-            if (!file.exists()) {
-                file.createNewFile();
-                //FileUtils.setPermissions(SYSTEM_CONFIG, FileUtils.S_IRWXU | FileUtils.S_IRWXG | FileUtils.S_IRWXO, -1, -1);
-            }
-            //FileUtils.setPermissions(SYSTEM_CONFIG, FileUtils.S_IRWXU | FileUtils.S_IRWXG | FileUtils.S_IRWXO, -1, -1);
-
-            Util.sudoExec("chmod:666:" + SYSTEM_CONFIG);
-            FileOutputStream out = new FileOutputStream(file);
-            mProperties.store(out, "");
-            out.flush();
-            out.getFD().sync();
-            out.close();
-            ///	if (!Util.isAndroidR())
-            ///	Util.sudoExec("sync");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public static String getProperty(String name) {
-        initConfigProperties();
+        loadConfigProperties();
         return mProperties.getProperty(name);
     }
 
@@ -609,7 +461,7 @@ public class MachineConfig {
         return ret;
     }
 
-    public static int getPropertyIntOnce(String name) {
+    public static int getPropertyIntOnce(String name) {//重新载入所有属性再读取
         int ret = 0;
         try {
             return Integer.parseInt(getPropertyOnce(name));
@@ -618,55 +470,14 @@ public class MachineConfig {
         return ret;
     }
 
-    public static Object setProperty(String name, String value) {
-        Object ret;
-        initConfigProperties();
-        if (value == null) {
-            ret = mProperties.remove(name);
-        } else {
-            ret = mProperties.setProperty(name, value);
-        }
-        updateConfigProperties();
-        return ret;
-    }
-
-    public static void setIntProperty(String name, int value) {
-        setProperty(name, "" + value);
-    }
-
     public static String getPropertyOnce(String name) {
-        getConfigProperties();
+        getVendorConfigProperties();//重新载入所有属性再读取
         return mProperties.getProperty(name);
     }
 
     public static String getPropertyForce(String name) {
-        getConfigProperties();
+        getVendorConfigProperties();//重新载入所有属性再读取
         return mProperties.getProperty(name);
-    }
-
-    public static String getPropertyReadOnly(String name) {
-        if (mPropertiesReadOnly == null) {
-            InputStream inputStream = null;
-            File configFile = new File(getParameterPath() + PROJECT_CONFIG_FILENAME);
-            if (configFile.exists()) {
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) inputStream = Files.newInputStream(configFile.toPath());
-                    else inputStream = new FileInputStream(configFile);
-
-                    if (mPropertiesReadOnly == null) {
-                        mPropertiesReadOnly = new Properties();
-                        mPropertiesReadOnly.load(inputStream);
-                    }
-                    inputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        if (mPropertiesReadOnly != null) {
-            return mPropertiesReadOnly.getProperty(name);
-        }
-        return null;
     }
 
     public static int getPropertyIntReadOnly(String name) {
@@ -676,6 +487,47 @@ public class MachineConfig {
         } catch (Exception ignored) {
         }
         return ret;
+    }
+
+    public static String getPropertyReadOnly(String name) {
+        if (mPropertiesReadOnly == null) {
+            InputStream inputStream = null;
+            File configFile = new File(getParameterPathKey() + PROJECT_CONFIG_FILENAME);
+            if (configFile.exists()) {
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                        inputStream = Files.newInputStream(configFile.toPath());
+                    else inputStream = new FileInputStream(configFile);
+
+                    if (mPropertiesReadOnly == null) {
+                        mPropertiesReadOnly = new Properties();
+                        mPropertiesReadOnly.load(inputStream);
+                    }
+                    inputStream.close();
+                } catch (Exception e) {
+                    MMLog.d(TAG, String.valueOf(e));
+                }
+            }
+        }
+        if (mPropertiesReadOnly != null) {
+            return mPropertiesReadOnly.getProperty(name);
+        }
+        return null;
+    }
+
+    public static void setIntProperty(String name, int value) {
+        setProperty(name, "" + value);
+    }
+
+    public static void setProperty(String name, String value) {
+        Object ret;
+        loadConfigProperties();
+        if (value == null) {
+            ret = mProperties.remove(name);
+        } else {
+            ret = mProperties.setProperty(name, value);
+        }
+        updateConfigProperties();
     }
 
     public static Properties exportProperties() {
@@ -688,4 +540,52 @@ public class MachineConfig {
         updateConfigProperties();
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    private static void loadConfigProperties() {
+        if (mProperties.isEmpty()) {
+            getVendorConfigProperties();
+        }
+    }
+
+    // only CarService use these functions below. other use Settings
+    private static void getVendorConfigProperties() {
+        InputStream inputStream = null;
+        File configFile = new File(VENDOR_CONFIG);
+        if (configFile.exists()) {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    inputStream = Files.newInputStream(configFile.toPath());
+                else inputStream = new FileInputStream(configFile);
+
+                mProperties.clear();
+                mProperties.load(inputStream);
+                inputStream.close();
+            } catch (Exception e) {
+                MMLog.d(TAG, String.valueOf(e));
+            }
+        }
+    }
+
+    private static void updateConfigProperties() {
+        File file = new File(VENDOR_CONFIG);
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+                //FileUtils.setPermissions(SYSTEM_CONFIG, FileUtils.S_IRWXU | FileUtils.S_IRWXG | FileUtils.S_IRWXO, -1, -1);
+            }
+            //FileUtils.setPermissions(SYSTEM_CONFIG, FileUtils.S_IRWXU | FileUtils.S_IRWXG | FileUtils.S_IRWXO, -1, -1);
+
+            Util.sudoExec("chmod:666:" + VENDOR_CONFIG);
+            FileOutputStream out = new FileOutputStream(file);
+            mProperties.store(out, "");
+            out.flush();
+            out.getFD().sync();
+            out.close();
+            ///	if (!Util.isAndroidR())
+            ///	Util.sudoExec("sync");
+        } catch (Exception e) {
+            ///e.printStackTrace();
+            MMLog.d(TAG, String.valueOf(e));
+        }
+    }
 }

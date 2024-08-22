@@ -1,4 +1,4 @@
-package com.common.util;
+package com.common.utils;
 
 /**
  * 计算两个字符串的编辑距离。

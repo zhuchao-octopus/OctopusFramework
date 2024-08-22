@@ -1,4 +1,4 @@
-package com.common.util;
+package com.common.utils;
 
 public class ProtocolAk47 {
 

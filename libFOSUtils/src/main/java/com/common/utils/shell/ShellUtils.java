@@ -1,4 +1,4 @@
-package com.common.util.shell;
+package com.common.utils.shell;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

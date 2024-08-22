@@ -362,7 +362,7 @@ public class ObjectList {
         try {
             FileUtils.MakeDirsExists(Objects.requireNonNull(dir));
             String filePathName = dir + "/properties";
-            String line = System.getProperty("line.separator");
+            String line = System.lineSeparator();
             StringBuilder stringBuffer = new StringBuilder();
             FileWriter fw = new FileWriter(filePathName);
 
@@ -398,13 +398,14 @@ public class ObjectList {
         } catch (IOException e) {
             MMLog.e(TAG, e.getMessage()); //e.printStackTrace();
         } catch (JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.d(TAG, String.valueOf(e));
         }
     }
 
     public void saveToFile() {
         try {
-            String line = System.getProperty("line.separator");
+            String line = System.lineSeparator();
             String filePathName = FileUtils.getDirBaseExternalStorageDirectory(".com.zhuchao") + "/properties";
             String parentDir = FileUtils.getFilePathFromPathName(filePathName);
             FileUtils.MakeDirsExists(Objects.requireNonNull(parentDir));

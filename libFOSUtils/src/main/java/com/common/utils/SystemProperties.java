@@ -1,10 +1,11 @@
-package com.common.util;
+package com.common.utils;
 
 import android.annotation.SuppressLint;
-
+import com.zhuchao.android.fbase.MMLog;
 import java.lang.reflect.Method;
 
 public class SystemProperties {
+    private static final String TAG = "SystemProperties";
     private static Method setMethod = null;
     private static Method getMethod = null;
     private static Method getIntMethod = null;
@@ -26,7 +27,8 @@ public class SystemProperties {
             }
             setMethod.invoke(null, key, val);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.d(TAG, String.valueOf(e));
         }
     }
 
@@ -46,7 +48,8 @@ public class SystemProperties {
             }
             return (String) getMethod.invoke(null, key, def);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.d(TAG, String.valueOf(e));
         }
         return def;
     }
@@ -67,7 +70,8 @@ public class SystemProperties {
             }
             return (Integer) getIntMethod.invoke(null, key, def);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.d(TAG, String.valueOf(e));
         }
         return def;
     }
@@ -86,9 +90,10 @@ public class SystemProperties {
             if (getLongMethod == null) {
                 getLongMethod = Class.forName("android.os.SystemProperties").getMethod("getLong", String.class, long.class);
             }
-            return ((Long) getLongMethod.invoke(null, key, def)).longValue();
+            return (Long) getLongMethod.invoke(null, key, def);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.d(TAG, String.valueOf(e));
         }
         return def;
     }
@@ -109,7 +114,8 @@ public class SystemProperties {
             }
             return (Boolean) getBooleanMethod.invoke(null, key, def);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            MMLog.d(TAG, String.valueOf(e));
         }
         return def;
     }
