@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
 
-public class SystemConfig {
+public class SettingProperties {
 
     public final static String KEY_ACC_DELAY_OFF = "key_acc_delay_off";
     public final static String KEY_ACC_DELAY_OFF_DVR = "key_acc_delay_off_dvr";

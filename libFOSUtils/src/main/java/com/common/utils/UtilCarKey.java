@@ -43,7 +43,7 @@ public class UtilCarKey {
 
     public static boolean isAKVoiceAssistantEnabled(Context c) {
         try {
-            String enable = SystemConfig.getProperty(c, SystemConfig.KEY_ENABLE_AK_VIOCE_ASSISTANT);
+            String enable = SettingProperties.getProperty(c, SettingProperties.KEY_ENABLE_AK_VIOCE_ASSISTANT);
             return enable != null && (enable.equals("1") || enable.equals("true"));
         } catch (Exception e) {
             ///e.printStackTrace();
@@ -329,8 +329,8 @@ public class UtilCarKey {
 
         boolean ret = false;
 
-        String packageName = SystemConfig.getProperty(context, MachineConfig.KEY_GPS_PACKAGE);
-        String className = SystemConfig.getProperty(context, MachineConfig.KEY_GPS_CLASS);
+        String packageName = SettingProperties.getProperty(context, MachineConfig.KEY_GPS_PACKAGE);
+        String className = SettingProperties.getProperty(context, MachineConfig.KEY_GPS_CLASS);
 
         //		Log.d("allen", "doKeyGpsEx: " + packageName + "/" + className);
         if (packageName == null || className == null) {

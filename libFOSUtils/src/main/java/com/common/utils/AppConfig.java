@@ -190,7 +190,7 @@ public class AppConfig {
     }
 
     public static boolean isGpsApp(Context context, String packageName) {
-        String gps = SystemConfig.getProperty(context, MachineConfig.KEY_GPS_PACKAGE);
+        String gps = SettingProperties.getProperty(context, MachineConfig.KEY_GPS_PACKAGE);
         if (gps == null) {
             gps = MachineConfig.DEFAULT_GPS_PACKAGE;
         }
@@ -684,7 +684,7 @@ public class AppConfig {
         if (s != null) {
             String[] ss = s.split(";");
             if (ss.length > 1) {
-                s = SystemConfig.getProperty(context, MachineConfig.KEY_PASSWD_CUSTOMER_SERVICE_MODE_EX);
+                s = SettingProperties.getProperty(context, MachineConfig.KEY_PASSWD_CUSTOMER_SERVICE_MODE_EX);
 
                 if (!"1".equals(s)) {
                     ss = ss[1].split(",");

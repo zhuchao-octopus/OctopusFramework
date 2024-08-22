@@ -2,6 +2,7 @@ package com.common.utils;
 
 import android.os.Build;
 
+import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
 
 import java.io.File;
@@ -388,21 +389,22 @@ public class MachineConfig {
     public final static int VAULE_CAMERA4 = 1;
     public final static int VAULE_CAMERA_HIDEBUTTON = 2;
 
-    public final static String PROJECT_CONFIG_FILENAME = ".config_properties";
+    private final static String PARAMETER_PATH_KEY = "parameter.path";
+    private final static String PROJECT_CONFIG_FILENAME = ".config_properties";
+
     public final static String VENDOR_DIR = "/mnt/vendor/";// test  // 7.1
     public final static String PARAMETER_DIR = "/mnt/paramter/";
+    public final static String PARAMETER_DIR2 = "/mnt/parameters/";
     public final static String VENDOR_CONFIG = VENDOR_DIR + PROJECT_CONFIG_FILENAME;
-    public final static String PARAMETER_CONFIG = PARAMETER_DIR + PROJECT_CONFIG_FILENAME;
-    public final static String PARAMETER_PATH_KEY = "parameter_path";
+    public final static String DEFAULT_PARAMETER_CONFIG_FILE = PARAMETER_DIR + PROJECT_CONFIG_FILENAME;
+    public final static String DEFAULT_PARAMETER_CONFIG_FILE2 = PARAMETER_DIR2 + PROJECT_CONFIG_FILENAME;
 
     private static Properties mProperties = new Properties();//存储目录VENDOR_CONFIG可读可写
-    private static Properties mPropertiesReadOnly;//只读属性，用于保存默认值到PARAMETER_CONFIG
-    private static String mParameterPath = PARAMETER_DIR;//默认参数路径
+    private static Properties mPropertiesReadOnly = new Properties();//只读属性，用于保存默认值到PARAMETER_CONFIG
+    private static String mReadOnlyDefaultParameterConfigFilePath = DEFAULT_PARAMETER_CONFIG_FILE;//只读属性，默认参数路径
 
-    ///private static String getParameterPathKey() {
-    ///    return mParameterPath;
-    ///}
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public static String getProperty(String name) {
         loadConfigProperties();
         return mProperties.getProperty(name);
@@ -522,28 +524,7 @@ public class MachineConfig {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //读默认配置文件
-    static {///载入只读属性
-        InputStream inputStream = null;
-        File configFile = new File(PARAMETER_CONFIG);
-        if (configFile.exists()) {
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    inputStream = Files.newInputStream(configFile.toPath());
-                else inputStream = new FileInputStream(configFile);
-
-                Properties pt = new Properties();
-                pt.load(inputStream);
-                inputStream.close();
-                String s = pt.getProperty(PARAMETER_PATH_KEY);
-                if (s != null) {
-                    mParameterPath = s;//重定向参数配置文件位置
-                    MMLog.d(TAG, "Parameter Path changed to " + mParameterPath);
-                }
-                pt = null;
-            } catch (Exception e) {
-                MMLog.d(TAG, String.valueOf(e));
-            }
-        }
+    public static void loadDefaultGPSConfig() {
         //load default gps APK
         String s = getPropertyReadOnly(KEY_DEFAULT_GPS);
         if (s != null) {
@@ -551,6 +532,27 @@ public class MachineConfig {
             if (ss.length > 1) {
                 DEFAULT_GPS_PACKAGE = ss[0];
                 DEFAULT_GPS_CLASS = ss[1];
+            }
+        }
+    }
+
+    public static void loadDefaultParametersConfig(String defaultConfigFilePathName) {
+        if (mPropertiesReadOnly == null) {
+            mPropertiesReadOnly = new Properties();
+        }
+        InputStream inputStream = null;
+        File configFile = new File(defaultConfigFilePathName);
+        if (configFile.exists()) {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    inputStream = Files.newInputStream(configFile.toPath());
+                else inputStream = new FileInputStream(configFile);
+
+                mPropertiesReadOnly.load(inputStream);
+                inputStream.close();
+                MMLog.d(TAG, "Load default parameter from file  " + defaultConfigFilePathName);
+            } catch (Exception e) {
+                MMLog.d(TAG, String.valueOf(e));
             }
         }
     }
@@ -565,29 +567,61 @@ public class MachineConfig {
     }
 
     public static String getPropertyReadOnly(String name) {
-        if (mPropertiesReadOnly == null) {
-            InputStream inputStream = null;
-            String readOnlyParameterFilePathName = mParameterPath;
-            File configFile = new File(readOnlyParameterFilePathName + PROJECT_CONFIG_FILENAME);
-            if (configFile.exists()) {
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                        inputStream = Files.newInputStream(configFile.toPath());
-                    else inputStream = new FileInputStream(configFile);
-
-                    if (mPropertiesReadOnly == null) {
-                        mPropertiesReadOnly = new Properties();
-                        mPropertiesReadOnly.load(inputStream);
-                    }
-                    inputStream.close();
-                } catch (Exception e) {
-                    MMLog.d(TAG, String.valueOf(e));
-                }
-            }
-        }
         if (mPropertiesReadOnly != null) {
             return mPropertiesReadOnly.getProperty(name);
         }
         return null;
+    }
+
+    private static void updateDefaultParametersConfigFilePathName(String defaultPathName) {
+        InputStream inputStream = null;
+        File parameterConfigFile = new File(defaultPathName);
+        ///boolean bret = false;
+        if (parameterConfigFile.exists()) {
+            mReadOnlyDefaultParameterConfigFilePath = defaultPathName;
+            //MMLog.d(TAG, "Default parameter file path name changed to " + defaultPathName);
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    inputStream = Files.newInputStream(parameterConfigFile.toPath());
+                else inputStream = new FileInputStream(parameterConfigFile);
+
+                Properties properties = new Properties();
+                properties.load(inputStream);
+                inputStream.close();
+                String str = properties.getProperty(PARAMETER_PATH_KEY);//重定向参数配置文件位置
+                if (FileUtils.NotEmptyString(str)) {
+                    if (FileUtils.existFile(str)) {
+                        mReadOnlyDefaultParameterConfigFilePath = str;
+                    } else if (FileUtils.existDirectory(str)) {
+                        str = str + "/" + PROJECT_CONFIG_FILENAME;
+                        if (FileUtils.existFile(str))
+                            mReadOnlyDefaultParameterConfigFilePath = str;
+                    }
+
+                    MMLog.d(TAG, "Default parameter file path name changed to " + str);
+                    ///bret = true;
+                }
+                //properties = null;
+            } catch (Exception e) {
+                MMLog.d(TAG, String.valueOf(e));
+            }
+        }
+        ///return bret;
+    }
+
+    static {///载入只读属性
+        if (FileUtils.existFile(DEFAULT_PARAMETER_CONFIG_FILE2)) {
+            updateDefaultParametersConfigFilePathName(DEFAULT_PARAMETER_CONFIG_FILE2);
+        } else {
+            updateDefaultParametersConfigFilePathName(DEFAULT_PARAMETER_CONFIG_FILE);
+        }
+        if (!DEFAULT_PARAMETER_CONFIG_FILE.equals(mReadOnlyDefaultParameterConfigFilePath) &&
+                !DEFAULT_PARAMETER_CONFIG_FILE2.equals(mReadOnlyDefaultParameterConfigFilePath)) {
+            loadDefaultParametersConfig(mReadOnlyDefaultParameterConfigFilePath);
+        } else {
+            loadDefaultParametersConfig(DEFAULT_PARAMETER_CONFIG_FILE);
+            loadDefaultParametersConfig(DEFAULT_PARAMETER_CONFIG_FILE2);
+        }
+        loadDefaultGPSConfig();
     }
 }
