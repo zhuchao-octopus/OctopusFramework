@@ -358,7 +358,6 @@ public class MachineConfig {
     public final static String KEY_DASHBOARD_USE_OBD = "dashboard_use_obd";
     public final static String KEY_DASHBOARD_UI = "dashboard_ui";
 
-
     public final static String KEY_HIDE_LAUNCHER_CE_BUTTON = "hide_ce_button";
     public final static String KEY_HIDE_ADD_LANGUAGE = "key_hide_add_language";
     public final static String KEY_LAUNCHER_TRANSITION = "key_launcher_transition";
@@ -401,7 +400,7 @@ public class MachineConfig {
 
     private static Properties mProperties = new Properties();//存储目录VENDOR_CONFIG可读可写
     private static Properties mPropertiesReadOnly = new Properties();//只读属性，用于保存默认值到PARAMETER_CONFIG
-    private static String mReadOnlyDefaultParameterConfigFilePath = DEFAULT_PARAMETER_CONFIG_FILE;//只读属性，默认参数路径
+    private static String mReadOnlyDefaultParameterConfigFilePathName = DEFAULT_PARAMETER_CONFIG_FILE;//只读属性，默认参数路径
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -578,7 +577,7 @@ public class MachineConfig {
         File parameterConfigFile = new File(defaultPathName);
         ///boolean bret = false;
         if (parameterConfigFile.exists()) {
-            mReadOnlyDefaultParameterConfigFilePath = defaultPathName;
+            mReadOnlyDefaultParameterConfigFilePathName = defaultPathName;
             //MMLog.d(TAG, "Default parameter file path name changed to " + defaultPathName);
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -591,11 +590,11 @@ public class MachineConfig {
                 String str = properties.getProperty(PARAMETER_PATH_KEY);//重定向参数配置文件位置
                 if (FileUtils.NotEmptyString(str)) {
                     if (FileUtils.existFile(str)) {
-                        mReadOnlyDefaultParameterConfigFilePath = str;
+                        mReadOnlyDefaultParameterConfigFilePathName = str;
                     } else if (FileUtils.existDirectory(str)) {
                         str = str + "/" + PROJECT_CONFIG_FILENAME;
                         if (FileUtils.existFile(str))
-                            mReadOnlyDefaultParameterConfigFilePath = str;
+                            mReadOnlyDefaultParameterConfigFilePathName = str;
                     }
 
                     MMLog.d(TAG, "Default parameter file path name changed to " + str);
@@ -609,15 +608,33 @@ public class MachineConfig {
         ///return bret;
     }
 
+    public static String getDefaultParameterConfigPath() {//返回配置文件所在的目录
+        String DefaultParameterConfigFilePath = null;
+        if (FileUtils.existFile(mReadOnlyDefaultParameterConfigFilePathName))
+            DefaultParameterConfigFilePath = FileUtils.getFilePathFromPathName(mReadOnlyDefaultParameterConfigFilePathName);
+        else
+            DefaultParameterConfigFilePath = mReadOnlyDefaultParameterConfigFilePathName;
+
+        assert DefaultParameterConfigFilePath != null;
+        if (DefaultParameterConfigFilePath.endsWith("/"))
+            return DefaultParameterConfigFilePath;
+        else
+            return DefaultParameterConfigFilePath + "/";
+    }
+
+    public static String getDefaultParameterConfigPathName() {//返回默认配置文件名
+        return mReadOnlyDefaultParameterConfigFilePathName;
+    }
+
     static {///载入只读属性
         if (FileUtils.existFile(DEFAULT_PARAMETER_CONFIG_FILE2)) {
             updateDefaultParametersConfigFilePathName(DEFAULT_PARAMETER_CONFIG_FILE2);
         } else {
             updateDefaultParametersConfigFilePathName(DEFAULT_PARAMETER_CONFIG_FILE);
         }
-        if (!DEFAULT_PARAMETER_CONFIG_FILE.equals(mReadOnlyDefaultParameterConfigFilePath) &&
-                !DEFAULT_PARAMETER_CONFIG_FILE2.equals(mReadOnlyDefaultParameterConfigFilePath)) {
-            loadDefaultParametersConfig(mReadOnlyDefaultParameterConfigFilePath);
+        if (!DEFAULT_PARAMETER_CONFIG_FILE.equals(mReadOnlyDefaultParameterConfigFilePathName) &&
+                !DEFAULT_PARAMETER_CONFIG_FILE2.equals(mReadOnlyDefaultParameterConfigFilePathName)) {
+            loadDefaultParametersConfig(mReadOnlyDefaultParameterConfigFilePathName);
         } else {
             loadDefaultParametersConfig(DEFAULT_PARAMETER_CONFIG_FILE);
             loadDefaultParametersConfig(DEFAULT_PARAMETER_CONFIG_FILE2);
