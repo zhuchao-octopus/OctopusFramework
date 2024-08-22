@@ -396,47 +396,12 @@ public class MachineConfig {
     public final static String PARAMETER_PATH_KEY = "parameter_path";
 
     private static Properties mProperties = new Properties();//存储目录VENDOR_CONFIG可读可写
-    private static Properties mPropertiesReadOnly;//只读属性，用于保存默认值
+    private static Properties mPropertiesReadOnly;//只读属性，用于保存默认值到PARAMETER_CONFIG
     private static String mParameterPath = PARAMETER_DIR;//默认参数路径
 
-
-    static {
-        InputStream inputStream = null;
-        File configFile = new File(PARAMETER_CONFIG);
-        if (configFile.exists()) {
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    inputStream = Files.newInputStream(configFile.toPath());
-                else inputStream = new FileInputStream(configFile);
-
-                Properties pt = new Properties();
-                pt.load(inputStream);
-                inputStream.close();
-                String s = pt.getProperty(PARAMETER_PATH_KEY);
-                if (s != null) {
-                    mParameterPath = s;//重定向参数配置文件位置
-                    MMLog.d(TAG, "Parameter Path changed to " + mParameterPath);
-                }
-                pt = null;
-            } catch (Exception e) {
-                MMLog.d(TAG, String.valueOf(e));
-            }
-        }
-
-        //load default gps APK
-        String s = getPropertyReadOnly(KEY_DEFAULT_GPS);
-        if (s != null) {
-            String[] ss = s.split("/");
-            if (ss.length > 1) {
-                DEFAULT_GPS_PACKAGE = ss[0];
-                DEFAULT_GPS_CLASS = ss[1];
-            }
-        }
-    }
-
-    public static String getParameterPathKey() {
-        return mParameterPath;
-    }
+    ///private static String getParameterPathKey() {
+    ///    return mParameterPath;
+    ///}
 
     public static String getProperty(String name) {
         loadConfigProperties();
@@ -478,41 +443,6 @@ public class MachineConfig {
     public static String getPropertyForce(String name) {
         getVendorConfigProperties();//重新载入所有属性再读取
         return mProperties.getProperty(name);
-    }
-
-    public static int getPropertyIntReadOnly(String name) {
-        int ret = 0;
-        try {
-            return Integer.parseInt(Objects.requireNonNull(getPropertyReadOnly(name)));
-        } catch (Exception ignored) {
-        }
-        return ret;
-    }
-
-    public static String getPropertyReadOnly(String name) {
-        if (mPropertiesReadOnly == null) {
-            InputStream inputStream = null;
-            File configFile = new File(getParameterPathKey() + PROJECT_CONFIG_FILENAME);
-            if (configFile.exists()) {
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                        inputStream = Files.newInputStream(configFile.toPath());
-                    else inputStream = new FileInputStream(configFile);
-
-                    if (mPropertiesReadOnly == null) {
-                        mPropertiesReadOnly = new Properties();
-                        mPropertiesReadOnly.load(inputStream);
-                    }
-                    inputStream.close();
-                } catch (Exception e) {
-                    MMLog.d(TAG, String.valueOf(e));
-                }
-            }
-        }
-        if (mPropertiesReadOnly != null) {
-            return mPropertiesReadOnly.getProperty(name);
-        }
-        return null;
     }
 
     public static void setIntProperty(String name, int value) {
@@ -570,7 +500,7 @@ public class MachineConfig {
         File file = new File(VENDOR_CONFIG);
         try {
             if (!file.exists()) {
-                file.createNewFile();
+                boolean ret = file.createNewFile();
                 //FileUtils.setPermissions(SYSTEM_CONFIG, FileUtils.S_IRWXU | FileUtils.S_IRWXG | FileUtils.S_IRWXO, -1, -1);
             }
             //FileUtils.setPermissions(SYSTEM_CONFIG, FileUtils.S_IRWXU | FileUtils.S_IRWXG | FileUtils.S_IRWXO, -1, -1);
@@ -587,5 +517,77 @@ public class MachineConfig {
             ///e.printStackTrace();
             MMLog.d(TAG, String.valueOf(e));
         }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //读默认配置文件
+    static {///载入只读属性
+        InputStream inputStream = null;
+        File configFile = new File(PARAMETER_CONFIG);
+        if (configFile.exists()) {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    inputStream = Files.newInputStream(configFile.toPath());
+                else inputStream = new FileInputStream(configFile);
+
+                Properties pt = new Properties();
+                pt.load(inputStream);
+                inputStream.close();
+                String s = pt.getProperty(PARAMETER_PATH_KEY);
+                if (s != null) {
+                    mParameterPath = s;//重定向参数配置文件位置
+                    MMLog.d(TAG, "Parameter Path changed to " + mParameterPath);
+                }
+                pt = null;
+            } catch (Exception e) {
+                MMLog.d(TAG, String.valueOf(e));
+            }
+        }
+        //load default gps APK
+        String s = getPropertyReadOnly(KEY_DEFAULT_GPS);
+        if (s != null) {
+            String[] ss = s.split("/");
+            if (ss.length > 1) {
+                DEFAULT_GPS_PACKAGE = ss[0];
+                DEFAULT_GPS_CLASS = ss[1];
+            }
+        }
+    }
+
+    public static int getPropertyIntReadOnly(String name) {
+        int ret = 0;
+        try {
+            return Integer.parseInt(Objects.requireNonNull(getPropertyReadOnly(name)));
+        } catch (Exception ignored) {
+        }
+        return ret;
+    }
+
+    public static String getPropertyReadOnly(String name) {
+        if (mPropertiesReadOnly == null) {
+            InputStream inputStream = null;
+            String readOnlyParameterFilePathName = mParameterPath;
+            File configFile = new File(readOnlyParameterFilePathName + PROJECT_CONFIG_FILENAME);
+            if (configFile.exists()) {
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                        inputStream = Files.newInputStream(configFile.toPath());
+                    else inputStream = new FileInputStream(configFile);
+
+                    if (mPropertiesReadOnly == null) {
+                        mPropertiesReadOnly = new Properties();
+                        mPropertiesReadOnly.load(inputStream);
+                    }
+                    inputStream.close();
+                } catch (Exception e) {
+                    MMLog.d(TAG, String.valueOf(e));
+                }
+            }
+        }
+        if (mPropertiesReadOnly != null) {
+            return mPropertiesReadOnly.getProperty(name);
+        }
+        return null;
     }
 }
