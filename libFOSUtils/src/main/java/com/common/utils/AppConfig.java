@@ -87,14 +87,17 @@ public class AppConfig {
     public static final String HIDE_CANBOX_SEATHEAT = "seatheat";
     public static final String HIDE_CANBOX_360 = "360";
 
-    private static int mUsbDvd = 0;
+
     private static final HashSet<String> mSetHideApp = new HashSet<String>();
+    private static String mCarAppsPackageName = null;
+    private static String mLauncherPackage = null;
+    private static String mCarServicePackageName = null;
+    private static int mUsbDvd = 0;
+    private static boolean hideAuxin = false;
+    private static boolean hideFrontCamera = false;
+    private static Drawable mWallpaperDrawable;
 
-    public static String mCarAppsPackageName = null;
-    public static String mLauncherPackage = null;
-    public static String mCarServicePackageName = null;
-
-    public final static String[] PACKAGE_NAME_LAUNCHER_BACKGROUND = {
+    private final static String[] PACKAGE_NAME_LAUNCHER_BACKGROUND = {
             "com.car.ui", "com.eqset",
             // "com.android.settings",
             "com.my.bt", "com.my.dvr",
@@ -261,10 +264,9 @@ public class AppConfig {
             }
         }
         return topPackageName == null ? "" : topPackageName;
-
     }
 
-    private static void updateHideAppConboxVersion1(String value, int mCarType, String appHide) {
+    private static void updateHideAppCanboxVersion1(String value, int mCarType, String appHide) {
         boolean hideSync = true;
         boolean hideConboxSetting = true;
         boolean hideCanboxCarInfo = true;
@@ -409,7 +411,7 @@ public class AppConfig {
         }
     }
 
-    private static void updateHideAppConboxVersion2(String appHide) {
+    private static void updateHideAppCanboxVersion2(String appHide) {
         String appShow = MachineConfig.getPropertyOnce(MachineConfig.KEY_CAN_BOX_SHOW_APP);
 
         if (appShow == null || !appShow.contains(HIDE_CANBOX_SYNC)) {
@@ -469,7 +471,7 @@ public class AppConfig {
         }
     }
 
-    private static void updateHideAppConbox(String appHide) {
+    private static void updateHideAppCanbox(String appHide) {
         String value = MachineConfig.getPropertyOnce(MachineConfig.KEY_CAN_BOX);
         int mCarType = 0;
         int mProVersion = 0;
@@ -493,15 +495,13 @@ public class AppConfig {
         }
 
         if (value == null || MachineConfig.VALUE_CANBOX_NONE.equals(value) || mProVersion >= 2) {
-            updateHideAppConboxVersion2(appHide); // in version2 the CANBOX APP
+            updateHideAppCanboxVersion2(appHide); // in version2 the CANBOX APP
         } else {
-            updateHideAppConboxVersion1(value, mCarType, appHide);
+            updateHideAppCanboxVersion1(value, mCarType, appHide);
         }
     }
 
-    public static boolean hideAuxin = false;
-    public static boolean hideFrontCamera = false;
-
+    //入口在Launcher中调用
     public static void updateHideAppConfig() {
         hideAuxin = false;
         hideFrontCamera = false;
@@ -583,7 +583,8 @@ public class AppConfig {
         mSetHideApp.add("com.canboxsetting.AVMActivity");
         mSetHideApp.add("com.android.deskclock.DeskClock");
 
-        updateHideAppConbox(appHide);
+        updateHideAppCanbox(appHide);
+
         if (hideAuxin) {
             mSetHideApp.add("com.my.auxplayer.AUXPlayer");
         }
@@ -610,16 +611,22 @@ public class AppConfig {
         addHiedAppForever();
     }
 
-    public static String getCanboxSetting() {
-        String mCanboxType = MachineConfig.getPropertyOnce(MachineConfig.KEY_CAN_BOX);
-        if (mCanboxType != null) {
-            String[] ss = mCanboxType.split(",");
-            mCanboxType = ss[0];
-        }
-        return mCanboxType;
-    }
+    //入口
+    ///public static void updateHideAppConfigEx(Context context) {
+    ///    updateHideAppConfig();
+    ///    addCustomHideApp(context);
+    ///}
 
-    public static boolean isHidePackage(String pn) {
+    ///private static String getCanboxSetting() {
+    ///    String mCanboxType = MachineConfig.getPropertyOnce(MachineConfig.KEY_CAN_BOX);
+    ///    if (mCanboxType != null) {
+    ///        String[] ss = mCanboxType.split(",");
+    ///        mCanboxType = ss[0];
+    ///    }
+    ///    return mCanboxType;
+    ///}
+
+    private static boolean isHidePackage(String pn) {
         for (String s : mSetHideApp) {
             if (pn.equalsIgnoreCase(s)) {
                 return true;
@@ -645,9 +652,7 @@ public class AppConfig {
         return ret;
     }
 
-    public static Drawable mWallpaperDrawable;
-
-    public static void updateSystemBackground(Context mContext, View v) {
+    private static void updateSystemBackground(Context mContext, View v) {
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
         Drawable wallpaperDrawable = wallpaperManager.getDrawable();
         if (wallpaperDrawable != null && mWallpaperDrawable != wallpaperDrawable) {
@@ -664,7 +669,7 @@ public class AppConfig {
         }
     }
 
-    public static void addCustomHideApp(Context context) {
+    private static void addCustomHideApp(Context context) {
         String s;
         s = MachineConfig.getPropertyReadOnly(MachineConfig.KEY_PASSWD_CUSTOMER_SERVICE_MODE_EX);
         if (s != null) {
@@ -680,11 +685,6 @@ public class AppConfig {
         }
     }
 
-    public static void updateHideAppConfigEx(Context context) {
-        updateHideAppConfig();
-        addCustomHideApp(context);
-    }
-
     public static void printAppConfigInformation() {
         String appShow = MachineConfig.getPropertyOnce(MachineConfig.KEY_CAN_BOX_SHOW_APP);
         String appHide = MachineConfig.getPropertyOnce(MachineConfig.KEY_APP_HIDE);
@@ -696,6 +696,7 @@ public class AppConfig {
             MMLog.d(TAG, app);
         }
     }
+
     // Drawable d = Drawable.createFromPath(AppConfig.CARUI_BACKGROUND);
     // // this.getWindow().getDecorView().setBackground(d);
     // getRootView(this).setBackground(d);
