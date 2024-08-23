@@ -171,7 +171,53 @@ public class MachineConfig {
     public final static String VALUE_BOOTANIM_CZL = "czl";
     public final static String VALUE_ON = "1";
     public final static String VALUE_OFF = "0";
-
+    //system ui
+    public final static String VALUE_SYSTEM_UI_KLD1 = "kld20170831";    //800-> sw322dp , 1024->sw323dp 2605ui launcher only
+    public final static String VALUE_SYSTEM_UI_KLD2 = "kld20171124";    //800-> sw324dp , 1024->sw325dp skv2
+    public final static String VALUE_SYSTEM_UI_KLD3 = "kld20171125";    //800-> sw326dp , 1024->sw327dp this app with all app
+    public final static String VALUE_SYSTEM_UI_KLD5 = "kld20180131";    //800-> sw328dp , 1024->sw329dp launcher only
+    public final static String VALUE_SYSTEM_UI_KLD7_1992 = "kld5_1992_20180423"; //800-> sw330dp , 1024->sw331dp from 2605ui launcher only
+    public final static String VALUE_SYSTEM_UI_KLD3_8702 = "kld6_8702";    //800-> sw332dp , 1024->sw333dp this app with all app
+    public final static String VALUE_SYSTEM_UI_KLD10_887 = "kld10_887";    //800-> sw334dp , 1024->sw335dp this launcher only
+    public final static String VALUE_SYSTEM_UI_KLD11_200 = "kld11_200";
+    public final static String VALUE_SYSTEM_UI_KLD12_80 = "kld12_80";    //800-> sw334dp , 1024->sw335dp this launcher only
+    public final static String VALUE_SYSTEM_UI_KLD15_6413 = "kld15_6413";    //800-> sw334dp , 1024->sw335dp this launcher only
+    public final static String VALUE_SYSTEM_UI19_KLD1 = "kld1";
+    public final static String VALUE_SYSTEM_UI20_RM10_1 = "kld20_rm10_1";
+    public final static String VALUE_SYSTEM_UI21_RM10_2 = "kld21_rm10_2";
+    public final static String VALUE_SYSTEM_UI21_RM12 = "rm12";
+    public final static String VALUE_SYSTEM_UI22_1050 = "kld22_1050";
+    public final static String VALUE_SYSTEM_UI16_7099 = "7099";
+    public final static String VALUE_SYSTEM_UI24_616 = "616";
+    public final static String VALUE_SYSTEM_UI28_7451 = "7451";
+    public final static String VALUE_SYSTEM_UI31_KLD7 = "kld7";
+    public final static String VALUE_SYSTEM_UI32_KLD8 = "kld8";
+    public final static String VALUE_SYSTEM_UI33_IXB = "ixb";
+    public final static String VALUE_SYSTEM_UI34_KLD9 = "kld9";
+    public final static String VALUE_SYSTEM_UI35_KLD813 = "kld813";
+    public final static String VALUE_SYSTEM_UI35_KLD813_2 = "kld813_2";
+    public final static String VALUE_SYSTEM_UI36_664 = "664";
+    public final static String VALUE_SYSTEM_UI37_KLD10 = "kld10";
+    public final static String VALUE_SYSTEM_UI40_KLD90 = "kld90";
+    public final static String VALUE_SYSTEM_UI41_2007 = "2007";
+    public final static String VALUE_SYSTEM_UI42_13 = "13";     //old 913
+    public final static String VALUE_SYSTEM_UI42_913 = "913";
+    public final static String VALUE_SYSTEM_UI43_3300 = "3300";
+    public final static String VALUE_SYSTEM_UI43_3300_1 = "3300_1";
+    public final static String VALUE_SYSTEM_UI44_KLD007 = "kld007";
+    public final static String VALUE_SYSTEM_UI45_8702_2 = "8702_2";
+    public final static String VALUE_SYSTEM_UI_887_90 = "887_90";    //800-> sw334dp , 1024->sw335dp this launcher only
+    public final static String VALUE_EQ_UI_8586B = "8586b";
+    public final static String VALUE_SYSTEM_UI_KLD047 = "kld047";
+    public final static String VALUE_SYSTEM_UI_927_1 = "927_1";
+    public final static String VALUE_SYSTEM_UI_1050_2 = "1050_2";
+    public final static String VALUE_SYSTEM_UI_710 = "710";
+    public final static String VALUE_SYSTEM_UI_PX30_1 = "px30_1";
+    public final static String VALUE_SYSTEM_UI_KLD002 = "kld002";
+    public final static String VALUE_SYSTEM_UI_KLD006 = "kld006";
+    public final static String VALUE_SYSTEM_UI_8586B = "kld8586b";
+    public final static String VALUE_SYSTEM_UI_9813 = "kld9813";
+    public final static String VALUE_SYSTEM_UI_YJ = "yj";
     // can box
     public final static String VALUE_CANBOX_NONE = "none";
     public final static String VALUE_CANBOX_HY = "hy";
@@ -247,12 +293,28 @@ public class MachineConfig {
     public final static String VALUE_CANBOX_SUBARU_SIMPLE = "subaru_simple";
     public final static String VALUE_CANBOX_ZHONGXING_SIMPLE = "zhongxing_simple";
     public final static String VALUE_CANBOX_GM_OD = "gm_od";
-    public final static String VALUE_CANBOX_ZHONGXING_OD = "zhongxing_od";
     public final static String VALUE_CANBOX_MAZDA_RAISE = "mazda_raise";
     public final static String VALUE_CANBOX_TOYOTA_RAISE = "toyota_raise";
     public final static String VALUE_CANBOX_MINI_HAOZHENG = "mini_haozheng";
-    public final static String VALUE_CANBOX_SLIMKEY2 = "slim_key_2";
     public final static String VALUE_CANBOX_PRO = "pro"; //this for new pro version >= 3
+    public final static String VALUE_CANBOX_SLIMKEY2 = "slim_key_2";
+    public final static String VALUE_CANBOX_ZHONGXING_OD = "zhongxing_od";
+    public final static String VALUE_CANBOX_HIWORLD_DF08 = "Hiworld_df08";
+
+    public final static int VALUE_CANBOX_OTHER_RADAR_BEEP = 0x2;
+    public final static int VALUE_CANBOX_OTHER_RADAR_UI = 0x4;
+    public final static int VALUE_CANBOX_OTHER_RADAR_UI_ONLY_IN_REVERSE = 0x8;
+    public final static int VALUE_CANBOX_OTHER_HOUR_ADD_1 = 0x16;
+    public final static int VALUE_CANBOX_OTHER_HOUR_MINUS_1 = 0x32;
+    public final static int VALUE_CANBOX_OTHER_RIGHT_CAMERA = ((0x1) << 6);
+    public final static int VALUE_CANBOX_OTHER_DATA_DISTRIBUTION = ((0x1) << 7);
+    public final static int VAULE_BT_TYPE_IVT = 0;
+    public final static int VAULE_BT_TYPE_PARROT = 1;
+    public final static int VAULE_BT_TYPE_GOC = 2;
+    public final static int VAULE_BT_TYPE_GOC_8761 = 3;
+    public final static int VAULE_BT_TYPE_GOC_RF210 = 4;
+    public final static int VAULE_BT_TYPE_SD_816 = 5;
+
     public final static String KEY_SUB_CANBOX_AIR_CONDITION = "a";
     public final static String KEY_SUB_CANBOX_CHANGE_KEY = "c";
     public final static String KEY_SUB_CANBOX_EQ = "e";
@@ -281,67 +343,6 @@ public class MachineConfig {
     public final static String KEY_1992_LIST_COLOR = "1992_list_color";
     public final static String KEY_EXT_UI = "key_ext_ui";
     public final static String KEY_SYSTEM_UI = "system_ui";
-
-    public final static int VALUE_CANBOX_OTHER_RADAR_BEEP = 0x2;
-    public final static int VALUE_CANBOX_OTHER_RADAR_UI = 0x4;
-    public final static int VALUE_CANBOX_OTHER_RADAR_UI_ONLY_IN_REVERSE = 0x8;
-    public final static int VALUE_CANBOX_OTHER_HOUR_ADD_1 = 0x16;
-    public final static int VALUE_CANBOX_OTHER_HOUR_MINUS_1 = 0x32;
-    public final static int VALUE_CANBOX_OTHER_RIGHT_CAMERA = ((0x1) << 6);
-    public final static int VALUE_CANBOX_OTHER_DATA_DISTRIBUTION = ((0x1) << 7);
-    public final static int VAULE_BT_TYPE_IVT = 0;
-    public final static int VAULE_BT_TYPE_PARROT = 1;
-    public final static int VAULE_BT_TYPE_GOC = 2;
-    public final static int VAULE_BT_TYPE_GOC_8761 = 3;
-    public final static int VAULE_BT_TYPE_GOC_RF210 = 4;
-    public final static int VAULE_BT_TYPE_SD_816 = 5;
-
-    public final static String VALUE_SYSTEM_UI_KLD1 = "kld20170831";    //800-> sw322dp , 1024->sw323dp 2605ui launcher only
-    public final static String VALUE_SYSTEM_UI_KLD2 = "kld20171124";    //800-> sw324dp , 1024->sw325dp skv2
-    public final static String VALUE_SYSTEM_UI_KLD3 = "kld20171125";    //800-> sw326dp , 1024->sw327dp this app with all app
-    public final static String VALUE_SYSTEM_UI_KLD5 = "kld20180131";    //800-> sw328dp , 1024->sw329dp launcher only
-    public final static String VALUE_SYSTEM_UI_KLD7_1992 = "kld5_1992_20180423"; //800-> sw330dp , 1024->sw331dp from 2605ui launcher only
-    public final static String VALUE_SYSTEM_UI_KLD3_8702 = "kld6_8702";    //800-> sw332dp , 1024->sw333dp this app with all app
-    public final static String VALUE_SYSTEM_UI_KLD10_887 = "kld10_887";    //800-> sw334dp , 1024->sw335dp this launcher only
-    public final static String VALUE_SYSTEM_UI_KLD11_200 = "kld11_200";
-    public final static String VALUE_SYSTEM_UI_KLD12_80 = "kld12_80";    //800-> sw334dp , 1024->sw335dp this launcher only
-    public final static String VALUE_SYSTEM_UI_KLD15_6413 = "kld15_6413";    //800-> sw334dp , 1024->sw335dp this launcher only
-    public final static String VALUE_SYSTEM_UI19_KLD1 = "kld1";
-    public final static String VALUE_SYSTEM_UI20_RM10_1 = "kld20_rm10_1";
-    public final static String VALUE_SYSTEM_UI21_RM10_2 = "kld21_rm10_2";
-    public final static String VALUE_SYSTEM_UI21_RM12 = "rm12";
-    public final static String VALUE_SYSTEM_UI22_1050 = "kld22_1050";
-    public final static String VALUE_SYSTEM_UI16_7099 = "7099";
-    public final static String VALUE_SYSTEM_UI24_616 = "616";
-    public final static String VALUE_SYSTEM_UI28_7451 = "7451";
-    public final static String VALUE_SYSTEM_UI31_KLD7 = "kld7";
-    public final static String VALUE_SYSTEM_UI32_KLD8 = "kld8";
-    public final static String VALUE_SYSTEM_UI33_IXB = "ixb";
-    public final static String VALUE_SYSTEM_UI34_KLD9 = "kld9";
-    public final static String VALUE_SYSTEM_UI35_KLD813 = "kld813";
-    public final static String VALUE_SYSTEM_UI35_KLD813_2 = "kld813_2";
-    public final static String VALUE_SYSTEM_UI36_664 = "664";
-    public final static String VALUE_SYSTEM_UI37_KLD10 = "kld10";
-    public final static String VALUE_SYSTEM_UI40_KLD90 = "kld90";
-    public final static String VALUE_SYSTEM_UI41_2007 = "2007";
-    public final static String VALUE_SYSTEM_UI42_13 = "13";     //old 913
-    public final static String VALUE_SYSTEM_UI42_913 = "913";
-    public final static String VALUE_SYSTEM_UI43_3300 = "3300";
-    public final static String VALUE_SYSTEM_UI43_3300_1 = "3300_1";
-    public final static String VALUE_SYSTEM_UI44_KLD007 = "kld007";
-    public final static String VALUE_SYSTEM_UI45_8702_2 = "8702_2";
-    public final static String VALUE_SYSTEM_UI_887_90 = "887_90";    //800-> sw334dp , 1024->sw335dp this launcher only
-    public final static String VALUE_EQ_UI_8586B = "8586b";
-    public final static String VALUE_SYSTEM_UI_KLD047 = "kld047";
-    public final static String VALUE_SYSTEM_UI_927_1 = "927_1";
-    public final static String VALUE_SYSTEM_UI_1050_2 = "1050_2";
-    public final static String VALUE_SYSTEM_UI_710 = "710";
-    public final static String VALUE_SYSTEM_UI_PX30_1 = "px30_1";
-    public final static String VALUE_SYSTEM_UI_KLD002 = "kld002";
-    public final static String VALUE_SYSTEM_UI_KLD006 = "kld006";
-    public final static String VALUE_SYSTEM_UI_8586B = "kld8586b";
-    public final static String VALUE_SYSTEM_UI_9813 = "kld9813";
-    public final static String VALUE_SYSTEM_UI_YJ = "yj";
 
     public final static String KEY_BT_SUPPORT_MACTALK = "bt_support_mactalk"; //for 200 mactalk
     public final static String KEY_BT_FAVORITE = "bt_favorite";
@@ -380,7 +381,7 @@ public class MachineConfig {
     public final static String KEY_TOUCH_ASSISTANT = "touch_assistant";
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public static String DEFAULT_GPS_PACKAGE = "none";
     public static String DEFAULT_GPS_CLASS = "none";
 
