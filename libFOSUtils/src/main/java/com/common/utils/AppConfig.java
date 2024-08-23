@@ -21,25 +21,16 @@ public class AppConfig {
     private final static String TAG = "AppConfig";
 
     public static final int MEDIA_SOUND_CHANNEL = AudioManager.STREAM_MUSIC;
-
     // public static final int NAVI_SOUND_CHANNEL =
     // AudioManager.STREAM_NOTIFICATION;
     // public static final int IFLY_SOUND_CHANNEL = AudioManager.STREAM_MUSIC;;
-
-    public static final int MEDIA_SOUND_VOLUME = 15;
-
-    public static final int[] IFLY_SOUND_STEP = new int[]{8, 9, 11, 13};
-    public static final int[] MAP_SOUND_STEP = new int[]{1, 2, 3, 4};
-
-    public static final int SOUND_DEFAULT_STEP = 2;
-
-    public static final String SETTINGS_KEY_SOUND_DEFAULT_STEP = "key_gps_volume";
-    public static final String SETTINGS_KEY_MEDIA_VOLUME = "key_media_volume";
+    public final static int MEDIA_SOUND_VOLUME = 15;
+    public final static int[] IFLY_SOUND_STEP = new int[]{8, 9, 11, 13};
+    public final static int[] MAP_SOUND_STEP = new int[]{1, 2, 3, 4};
+    public final static int SOUND_DEFAULT_STEP = 2;
+    public final static String SETTINGS_KEY_SOUND_DEFAULT_STEP = "key_gps_volume";
+    public final static String SETTINGS_KEY_MEDIA_VOLUME = "key_media_volume";
     public final static String SETTINGS_KEY_DVR_RECORD_SOUND = "key_dvr_record_sound";
-
-    public static String mCarAppsPackageName = null;
-    public static String mLauncherPackage = null;
-    public static String mCarServicePackageName = null;
 
     //public final static String PACKAGE_CAR_SERVICE = "com.my.out";
     public final static String PACKAGE_RADIO = "com.my.radio";
@@ -67,6 +58,54 @@ public class AppConfig {
     public final static String CAR_DTV = "com.car.ui/com.my.tv.TVActivity";
     public final static String USB_DVD = "com.car.dvdplayer.DVDPlayerActivity";
 
+    // these set for hide
+    public static final String HIDE_APP_DVD = "DVD";
+    public static final String HIDE_APP_AUX = "AUX";
+    public static final String HIDE_USB_DVD = "USBDISC";
+    public static final String HIDE_APP_FRONT_CMAERA = "FCAM";
+    public static final String HIDE_APP_VIDEO_OUT = "VOUT";
+    public static final String HIDE_APP_DVR = "DVR";
+    public static final String HIDE_APP_VIOCE_CONTROL = "VOICE";
+
+    public static final String HIDE_APP_JOYSTUDY = "JOYSTUDY";
+    public static final String HIDE_APP_WHEELKEYSTUDY = "WHEELKEYSTUDY";
+    public static final String HIDE_TPMS = "TPMS";
+    public static final String HIDE_BACK_CAMERA = "BACKCAM";
+    // these set for show
+    public static final String HIDE_CANBOX_AC = "ac";
+    public static final String HIDE_CANBOX_INFO = "info";
+    public static final String HIDE_CANBOX_SET = "set";
+    public static final String HIDE_CANBOX_CD = "cd";
+    public static final String HIDE_CANBOX_TPMS = "tpms";
+    public static final String HIDE_CANBOX_EQ = "eq";
+    public static final String HIDE_CANBOX_SYNC = "sync";
+    public static final String HIDE_CANBOX_RADIO = "radio";
+    public static final String HIDE_CANBOX_COMPASS = "compass";
+    public static final String HIDE_CANBOX_PLAYER = "player";
+    public static final String HIDE_CANBOX_TIMESET = "time";
+    public static final String HIDE_CANBOX_ANSTART = "anstart";
+    public static final String HIDE_CANBOX_SEATHEAT = "seatheat";
+    public static final String HIDE_CANBOX_360 = "360";
+
+    private static int mUsbDvd = 0;
+    private static final HashSet<String> mSetHideApp = new HashSet<String>();
+
+    public static String mCarAppsPackageName = null;
+    public static String mLauncherPackage = null;
+    public static String mCarServicePackageName = null;
+
+    public final static String[] PACKAGE_NAME_LAUNCHER_BACKGROUND = {
+            "com.car.ui", "com.eqset",
+            // "com.android.settings",
+            "com.my.bt", "com.my.dvr",
+            // "com.my.tv",
+            "com.SwcApplication",
+            // "com.canboxsetting",
+            // "com.android.browser", "com.android.gallery3d",
+            // "com.my.filemanager", "com.focussync" , "com.my.instructions",
+            // "com.android.calculator2", "com.android.deskclock",
+    };
+
     public static String getLauncherPackage() {
         if (mLauncherPackage == null) {
             String s = MachineConfig.getPropertyReadOnly(MachineConfig.KEY_HIDE_LAUNCHER);
@@ -81,7 +120,8 @@ public class AppConfig {
 
     public static String getCarAppPackageName(Context context) {
         if (mCarAppsPackageName == null) {
-            if (TAppUtils.isAppInstalled(context, "com.octopus.android.carapps")) mCarAppsPackageName = "com.octopus.android.carapps";
+            if (TAppUtils.isAppInstalled(context, "com.octopus.android.carapps"))
+                mCarAppsPackageName = "com.octopus.android.carapps";
             else mCarAppsPackageName = "com.car.ui";
         }
         return mCarAppsPackageName;
@@ -89,13 +129,15 @@ public class AppConfig {
 
     public static String getCarAppActivityClassName(Context context, String activityName) {
         getCarAppPackageName(context);
-        if ("com.octopus.android.carapps".equals(mCarAppsPackageName)) return mCarAppsPackageName + "." + activityName;
+        if ("com.octopus.android.carapps".equals(mCarAppsPackageName))
+            return mCarAppsPackageName + "." + activityName;
         else return "com.my." + activityName;
     }
 
     public static String getCarServicePackageName(Context context) {
         if (mCarServicePackageName == null) {
-            if (TAppUtils.isAppInstalled(context, "com.zhuchao.android.car")) mCarServicePackageName = "com.zhuchao.android.car";
+            if (TAppUtils.isAppInstalled(context, "com.zhuchao.android.car"))
+                mCarServicePackageName = "com.zhuchao.android.car";
             else mCarServicePackageName = "com.my.out";
         }
         return mCarServicePackageName;
@@ -115,24 +157,6 @@ public class AppConfig {
         }
         return false;
     }
-
-    public final static String[] PACKAGE_NAME_LAUNCHER_BACKGROUND = {
-
-            "com.car.ui", "com.eqset",
-            /* "com.android.settings", */
-            "com.my.bt", "com.my.dvr",
-            /* "com.my.tv", */
-            "com.SwcApplication",
-            /* "com.canboxsetting", */
-            /*
-             * "com.android.browser", "com.android.gallery3d",
-             */
-            /*
-             * "com.my.filemanager", "com.focussync" , "com.my.instructions",
-             * "com.android.calculator2", "com.android.deskclock",
-             */
-
-    };
 
     public static boolean isNoNeedLauncherBackground(String packageName) {
 
@@ -239,39 +263,6 @@ public class AppConfig {
         return topPackageName == null ? "" : topPackageName;
 
     }
-
-    private static final HashSet<String> mSetHideApp = new HashSet<String>();
-    // these set for hide
-    public static final String HIDE_APP_DVD = "DVD";
-    public static final String HIDE_APP_AUX = "AUX";
-    public static final String HIDE_USB_DVD = "USBDISC";
-    public static final String HIDE_APP_FRONT_CMAERA = "FCAM";
-    public static final String HIDE_APP_VIDEO_OUT = "VOUT";
-    public static final String HIDE_APP_DVR = "DVR";
-    public static final String HIDE_APP_VIOCE_CONTROL = "VOICE";
-
-    public static final String HIDE_APP_JOYSTUDY = "JOYSTUDY";
-    public static final String HIDE_APP_WHEELKEYSTUDY = "WHEELKEYSTUDY";
-
-    public static final String HIDE_TPMS = "TPMS";
-
-    public static final String HIDE_BACK_CAMERA = "BACKCAM";
-    // these set for show
-    public static final String HIDE_CANBOX_AC = "ac";
-    public static final String HIDE_CANBOX_INFO = "info";
-    public static final String HIDE_CANBOX_SET = "set";
-    public static final String HIDE_CANBOX_CD = "cd";
-    public static final String HIDE_CANBOX_TPMS = "tpms";
-    public static final String HIDE_CANBOX_EQ = "eq";
-    public static final String HIDE_CANBOX_SYNC = "sync";
-    public static final String HIDE_CANBOX_RADIO = "radio";
-    public static final String HIDE_CANBOX_COMPASS = "compass";
-    public static final String HIDE_CANBOX_PLAYER = "player";
-    public static final String HIDE_CANBOX_TIMESET = "time";
-    public static final String HIDE_CANBOX_ANSTART = "anstart";
-    public static final String HIDE_CANBOX_SEATHEAT = "seatheat";
-    public static final String HIDE_CANBOX_360 = "360";
-    private static int mUsbDvd = 0;
 
     private static void updateHideAppConboxVersion1(String value, int mCarType, String appHide) {
         boolean hideSync = true;
@@ -573,7 +564,6 @@ public class AppConfig {
             try {
                 mBTType = Integer.parseInt(s);
             } catch (Exception ignored) {
-
             }
         }
         if (mBTType != MachineConfig.VAULE_BT_TYPE_PARROT || (value != null && value.contains(HIDE_APP_VIOCE_CONTROL))) {
@@ -590,13 +580,10 @@ public class AppConfig {
         mSetHideApp.add("am.radiogr.SplashScreenActivity");
         mSetHideApp.add("tunein.ui.activities.TuneInHomeActivity");
         mSetHideApp.add("tunein.ui.activities.SplashScreenActivity");
-
         mSetHideApp.add("com.canboxsetting.AVMActivity");
-
         mSetHideApp.add("com.android.deskclock.DeskClock");
 
         updateHideAppConbox(appHide);
-
         if (hideAuxin) {
             mSetHideApp.add("com.my.auxplayer.AUXPlayer");
         }
@@ -655,7 +642,6 @@ public class AppConfig {
                 ret = true;
             }
         }
-
         return ret;
     }
 

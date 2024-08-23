@@ -1,7 +1,5 @@
 package com.common.utils;
 
-import static com.common.utils.AppConfig.getCarServicePackageName;
-
 import android.content.Context;
 import android.content.Intent;
 
@@ -51,16 +49,25 @@ public class BroadcastUtil {
     }
 
     public static void sendToCarService(Context context, Intent it) {
-        it.setPackage(getCarServicePackageName(context));
+        it.setPackage(AppConfig.getCarServicePackageName(context));
         context.sendBroadcast(it);
     }
 
-    public static void sendToCarService(Context context, int cmd, int data) {
+    public static void sendToCarServiceCmd(Context context, int cmd) {
+        Intent it;
+        it = new Intent(MyCmd.BROADCAST_CMD_TO_CAR_SERVICE);
+        it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
+        it.setPackage(AppConfig.getCarServicePackageName(context));
+        sendToCarService(context, it);
+    }
+
+
+    public final static void sendToCarService(Context context, int cmd, int data) {
         Intent it;
         it = new Intent(MyCmd.BROADCAST_CMD_TO_CAR_SERVICE);
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, data);
-        it.setPackage(getCarServicePackageName(context));
+        it.setPackage(AppConfig.getCarServicePackageName(context));
         sendToCarService(context, it);
     }
 
@@ -70,7 +77,7 @@ public class BroadcastUtil {
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, data);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA2, data2);
-        it.setPackage(getCarServicePackageName(context));
+        it.setPackage(AppConfig.getCarServicePackageName(context));
         sendToCarService(context, it);
     }
 
@@ -81,7 +88,7 @@ public class BroadcastUtil {
         it.putExtra(MyCmd.EXTRA_COMMON_DATA, data);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA2, data2);
         it.putExtra(MyCmd.EXTRA_COMMON_DATA3, data3);
-        it.setPackage(getCarServicePackageName(context));
+        it.setPackage(AppConfig.getCarServicePackageName(context));
         sendToCarService(context, it);
     }
 
