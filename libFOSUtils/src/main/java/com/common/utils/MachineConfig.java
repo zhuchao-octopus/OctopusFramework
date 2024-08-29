@@ -299,7 +299,7 @@ public class MachineConfig {
     public final static String VALUE_CANBOX_PRO = "pro"; //this for new pro version >= 3
     public final static String VALUE_CANBOX_SLIMKEY2 = "slim_key_2";
     public final static String VALUE_CANBOX_ZHONGXING_OD = "zhongxing_od";
-    public final static String VALUE_CANBOX_HIWORLD_DF08 = "Hiworld_df08";
+    public final static String VALUE_CANBOX_HIWORLD_DF08 = "hiworld_df08";
 
     public final static int VALUE_CANBOX_OTHER_RADAR_BEEP = 0x2;
     public final static int VALUE_CANBOX_OTHER_RADAR_UI = 0x4;

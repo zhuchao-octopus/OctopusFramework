@@ -1,14 +1,10 @@
 package com.zhuchao.android.session.base;
 
-import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_AIDL_PACKAGE_NAME;
-import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_CAR_CLIENT;
-import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_ACTION_CAR_SERVICE;
-import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_CAR_CLIENT;
-import static com.zhuchao.android.fbase.MessageEvent.MESSAGE_EVENT_OCTOPUS_CAR_SERVICE;
-
 import android.Manifest;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -25,26 +21,29 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.zhuchao.android.fbase.EventCourier;
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
-import com.zhuchao.android.fbase.MessageEvent;
+import com.zhuchao.android.fbase.eventinterface.PermissionListener;
 import com.zhuchao.android.net.NetworkInformation;
 import com.zhuchao.android.net.TNetUtils;
 import com.zhuchao.android.session.Cabinet;
-import com.zhuchao.android.session.MApplication;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class BaseActivity extends AppCompatActivity implements TNetUtils.NetworkStatusListener {
     private ActivityResultLauncher<String[]> requestMultiplePermissionsLauncher;
     private static final String ACTION_SHOW_STATUS_BAR = "android.intent.action.ACTION_SHOW_STATUS_BAR";
     private static final String ACTION_HIDE_STATUS_BAR = "android.intent.action.ACTION_HIDE_STATUS_BAR";
+    private static final int REQUEST_PERMISSION_CODE = 1024;
+    private PermissionListener mPermissionListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,8 +66,8 @@ public class BaseActivity extends AppCompatActivity implements TNetUtils.Network
                 }
             }
         });
-        if (!hasPermissions()) {
-            requestPermissions();
+        if (!hasStoragePermissions()) {
+            requestStoragePermissions();
         }
     }
 
@@ -87,27 +86,6 @@ public class BaseActivity extends AppCompatActivity implements TNetUtils.Network
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-    }
-
-    private boolean hasPermissions() {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermissions() {
-        requestMultiplePermissionsLauncher.launch(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE});
-    }
-
-    private void showPermissionsDeniedDialog() {
-        new AlertDialog.Builder(this).setTitle("Permissions Required").setMessage("This app needs storage permissions to function correctly. Please grant the required permissions in the app settings.").setPositiveButton("Go to Settings", (dialog, which) -> {
-            // Redirect to app settings
-            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            Uri uri = Uri.fromParts("package", getPackageName(), null);
-            intent.setData(uri);
-            startActivity(intent);
-        }).setNegativeButton("Cancel", (dialog, which) -> {
-            // User chose to cancel
-            Toast.makeText(BaseActivity.this, "Permissions denied. The app may not function correctly.", Toast.LENGTH_SHORT).show();
-        }).show();
     }
 
     public void openLocalActivity(Class<?> cls) {
@@ -161,14 +139,12 @@ public class BaseActivity extends AppCompatActivity implements TNetUtils.Network
         fragmentTransaction.commit();
     }
 
-    public void hideStatusBar()
-    {
-        SendMessage(ACTION_HIDE_STATUS_BAR,null,null);
+    public void hideStatusBar() {
+        SendMessage(ACTION_HIDE_STATUS_BAR, null, null);
     }
 
-    public void showStatusBar()
-    {
-        SendMessage(ACTION_SHOW_STATUS_BAR,null,null);
+    public void showStatusBar() {
+        SendMessage(ACTION_SHOW_STATUS_BAR, null, null);
     }
 
     public void switchFragment(@IdRes int containerViewId, @NonNull Fragment fragment) {
@@ -181,6 +157,75 @@ public class BaseActivity extends AppCompatActivity implements TNetUtils.Network
             fragmentTransaction.add(containerViewId, fragment);
         }
         fragmentTransaction.commit();
+    }
+
+    public void requestRuntimePermission(Context context, String[] permissions, PermissionListener permissionListener) {
+        mPermissionListener = permissionListener;
+        List<String> permissionList = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                if (!permissionList.contains(permission)) {
+                    permissionList.add(permission);
+                }
+            }
+        }
+
+        if (!permissionList.isEmpty()) {
+            ActivityCompat.requestPermissions((Activity) context, permissionList.toArray(new String[0]), REQUEST_PERMISSION_CODE);
+        } else {
+            if (mPermissionListener != null) {
+                mPermissionListener.onGranted();  //权限都被授予了回调
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        List<String> deniedPermissionList = new ArrayList<>();
+        switch (requestCode) {
+            case REQUEST_PERMISSION_CODE:
+                if (grantResults.length > 0) {
+                    for (int i = 0; i < grantResults.length; i++) {
+                        String permission = permissions[i];
+                        int grantResult = grantResults[i];
+                        if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                            if (!deniedPermissionList.contains(permission)) {
+                                deniedPermissionList.add(permission);
+                            }
+                        }
+                    }
+                    if (deniedPermissionList.isEmpty()) {
+                        if (mPermissionListener != null)
+                            mPermissionListener.onGranted();
+
+                    } else if (mPermissionListener != null) {
+                        mPermissionListener.onDenied(deniedPermissionList);
+                    }
+                }
+                break;
+        }
+    }
+
+    public boolean hasStoragePermissions() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void requestStoragePermissions() {
+        requestMultiplePermissionsLauncher.launch(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE});
+    }
+
+    public void showPermissionsDeniedDialog() {
+        new AlertDialog.Builder(this).setTitle("Permissions Required").setMessage("This app needs storage permissions to function correctly. Please grant the required permissions in the app settings.").setPositiveButton("Go to Settings", (dialog, which) -> {
+            // Redirect to app settings
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", getPackageName(), null);
+            intent.setData(uri);
+            startActivity(intent);
+        }).setNegativeButton("Cancel", (dialog, which) -> {
+            // User chose to cancel
+            Toast.makeText(BaseActivity.this, "Permissions denied. The app may not function correctly.", Toast.LENGTH_SHORT).show();
+        }).show();
     }
 
     @Override

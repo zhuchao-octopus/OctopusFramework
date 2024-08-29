@@ -588,7 +588,7 @@ public class BLEManager {
             return false;
         }
 
-        boolean b = mWriteCharacteristic.setValue(ByteUtils.HexStr2Bytes(msg));
+        boolean b = mWriteCharacteristic.setValue(ByteUtils.HexStrToBytes(msg));
         MMLog.d(TAG, "WriteCharacteristic：" + b);
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling

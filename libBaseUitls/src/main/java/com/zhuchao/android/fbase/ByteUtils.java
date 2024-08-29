@@ -52,30 +52,40 @@ public class ByteUtils {
     }
 
     //16转十进制
-    public static long Hex2Long(String hex) {
+    public static long HexToLong(String hex) {
         return Long.parseLong(hex, 16);
     }
 
-    //-------------------------------------------------------
     //1字节转2个Hex字符
-    public static String Byte2Hex(Byte inByte) {
+    public static String ByteToHex(Byte inByte) {
         return String.format("%02x", inByte).toUpperCase();
     }
 
-    public static byte BytesAdd(byte[] inBytArr, int count) {
+    public static byte BytesAdd(byte[] bytes, int count) {
         byte aa = 0;
         for (int i = 0; i < count; i++)
-            aa = (byte) (aa + inBytArr[i]);
+            aa = (byte) (aa + bytes[i]);
         // aa = (byte) (aa + Byte.valueOf(inBytArr[i]));
         return aa;
     }
 
-    //-------------------------------------------------------
+    public static String intToHexStr(int a, int len) {
+        len <<= 1;
+        String hexString = Integer.toHexString(a);
+        int b = len - hexString.length();
+        if (b > 0) {
+            for (int i = 0; i < b; i++) {
+                hexString = "0" + hexString;
+            }
+        }
+        return hexString.toUpperCase();
+    }
+
     //字节数组转转hex字符串
     public static String BuffToHexStr(byte[] bytes, String separatorChars) {
         StringBuilder strBuilder = new StringBuilder();
         for (byte valueOf : bytes) {
-            strBuilder.append(Byte2Hex(valueOf));
+            strBuilder.append(ByteToHex(valueOf));
             strBuilder.append(separatorChars);
         }
         return strBuilder.toString();
@@ -84,7 +94,7 @@ public class ByteUtils {
     public static String BuffToHexStr(byte[] bytes) {
         StringBuilder strBuilder = new StringBuilder();
         for (byte valueOf : bytes) {
-            strBuilder.append(Byte2Hex(valueOf));
+            strBuilder.append(ByteToHex(valueOf));
             strBuilder.append(" ");
         }
         return strBuilder.toString();
@@ -93,7 +103,7 @@ public class ByteUtils {
     public static String BytesToHexStr(byte[] bytes) {
         StringBuilder strBuilder = new StringBuilder();
         for (byte valueOf : bytes) {
-            strBuilder.append(Byte2Hex(valueOf));
+            strBuilder.append(ByteToHex(valueOf));
             strBuilder.append(" ");
         }
         return strBuilder.toString();
@@ -101,41 +111,41 @@ public class ByteUtils {
 
     //-------------------------------------------------------
     //字节数组转转hex字符串，可选长度
-    public static String ByteArrToHexStr(byte[] inBytArr, int offset, int byteCount) {
+    public static String BytesToHexStr(byte[] bytes, int offset, int byteCount) {
         StringBuilder strBuilder = new StringBuilder();
         int j = byteCount;
         for (int i = offset; i < j; i++) {
             //strBuilder.append(Byte2Hex(Byte.valueOf(inBytArr[i])));
-            strBuilder.append(Byte2Hex(inBytArr[i]));
+            strBuilder.append(ByteToHex(bytes[i]));
         }
         return strBuilder.toString();
     }
 
     //-------------------------------------------------------
     //把hex字符串转字节数组
-    public static byte[] HexToByteArr(String inHex) {
+    public static byte[] HexStrToByteArray(String hexStr) {
         byte[] result;
-        int hexlen = inHex.length();
+        int hexlen = hexStr.length();
         if (isOdd(hexlen) == 1) {
             hexlen++;
             result = new byte[(hexlen / 2)];
-            inHex = "0" + inHex;
+            hexStr = "0" + hexStr;
         } else {
             result = new byte[(hexlen / 2)];
         }
         int j = 0;
         for (int i = 0; i < hexlen; i += 2) {
-            result[j] = HexToByte(inHex.substring(i, i + 2));
+            result[j] = HexToByte(hexStr.substring(i, i + 2));
             j++;
         }
         return result;
     }
 
-    public static byte[] HexStr2Bytes(String src) {
-        int l = src.length() / 2;
+    public static byte[] HexStrToBytes(String hexStr) {
+        int l = hexStr.length() / 2;
         byte[] ret = new byte[l];
         for (int i = 0; i < l; i++) {
-            ret[i] = (byte) Integer.valueOf(src.substring(i * 2, i * 2 + 2), 16).byteValue();
+            ret[i] = (byte) Integer.valueOf(hexStr.substring(i * 2, i * 2 + 2), 16).byteValue();
         }
         return ret;
     }

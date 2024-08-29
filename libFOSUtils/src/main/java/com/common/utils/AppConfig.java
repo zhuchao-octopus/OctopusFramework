@@ -617,16 +617,16 @@ public class AppConfig {
     ///    addCustomHideApp(context);
     ///}
 
-    ///private static String getCanboxSetting() {
-    ///    String mCanboxType = MachineConfig.getPropertyOnce(MachineConfig.KEY_CAN_BOX);
-    ///    if (mCanboxType != null) {
-    ///        String[] ss = mCanboxType.split(",");
-    ///        mCanboxType = ss[0];
-    ///    }
-    ///    return mCanboxType;
-    ///}
+    public static String getCanboxSetting() {
+        String mCanboxType = MachineConfig.getPropertyOnce(MachineConfig.KEY_CAN_BOX);
+        if (mCanboxType != null) {
+            String[] ss = mCanboxType.split(",");
+            mCanboxType = ss[0];
+        }
+        return mCanboxType;
+    }
 
-    private static boolean isHidePackage(String pn) {
+    public static boolean isHidePackage(String pn) {
         for (String s : mSetHideApp) {
             if (pn.equalsIgnoreCase(s)) {
                 return true;
@@ -643,6 +643,7 @@ public class AppConfig {
             for (String s : mSetHideApp) {
                 if (CAR_UI_DVD.equalsIgnoreCase(s)) {
                     hideDvd = true;
+                    break;
                 }
             }
             if (!hideDvd) {
