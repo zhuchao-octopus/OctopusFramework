@@ -265,6 +265,7 @@ public class MachineConfig {
     public final static String VALUE_CANBOX_FORD_EXPLORER_SIMPLE = "for_explorer_simple";
     public final static String VALUE_CANBOX_ACCORD_BINARYTEK = "accord_binarytek";
     public final static String VALUE_CANBOX_AUDI_SIMPLE = "audi_simple";
+    public final static String VALUE_CANBOX_AUDI_RAISE = "audi_raise";
     public final static String VALUE_CANBOX_SUBARU_ODS = "subaru_ods";
     public final static String VALUE_CANBOX_MINI_HIWORD = "mini_hiword";
     public final static String VALUE_CANBOX_NISSAN_BINARYTEK = "nissan_binarytek";
