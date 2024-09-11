@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.view.View;
 
+import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
 import com.zhuchao.android.fbase.TAppUtils;
 
@@ -108,6 +109,18 @@ public class AppConfig {
             // "com.my.filemanager", "com.focussync" , "com.my.instructions",
             // "com.android.calculator2", "com.android.deskclock",
     };
+
+    public void addHideApp(String packageName) {
+        if (FileUtils.NotEmptyString(packageName))
+            if (!mSetHideApp.contains(packageName))
+                mSetHideApp.add(packageName);
+    }
+
+    public void removeHideApp(String packageName) {
+        if (FileUtils.NotEmptyString(packageName))
+            if (mSetHideApp.contains(packageName))
+                mSetHideApp.remove(packageName);
+    }
 
     public static String getLauncherPackage() {
         if (mLauncherPackage == null) {
