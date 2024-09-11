@@ -110,13 +110,13 @@ public class AppConfig {
             // "com.android.calculator2", "com.android.deskclock",
     };
 
-    public void addHideApp(String packageName) {
+    public static void addHideApp(String packageName) {
         if (FileUtils.NotEmptyString(packageName))
             if (!mSetHideApp.contains(packageName))
                 mSetHideApp.add(packageName);
     }
 
-    public void removeHideApp(String packageName) {
+    public static void removeHideApp(String packageName) {
         if (FileUtils.NotEmptyString(packageName))
             if (mSetHideApp.contains(packageName))
                 mSetHideApp.remove(packageName);
@@ -683,7 +683,7 @@ public class AppConfig {
         }
     }
 
-    private static void addCustomHideApp(Context context) {
+    public static void addCustomHideApp(Context context) {
         String s;
         s = MachineConfig.getPropertyReadOnly(MachineConfig.KEY_PASSWD_CUSTOMER_SERVICE_MODE_EX);
         if (s != null) {
