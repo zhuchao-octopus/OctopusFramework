@@ -531,31 +531,31 @@ public class AppConfig {
         String appHide = value;
         if (null != value) {
             if (value.contains("DTV")) {
-                mSetHideApp.add("com.my.tv.TVActivity");
+                mSetHideApp.add("com.octopus.android.carapps.tv.TVActivity");
             }
             if (value.contains(HIDE_APP_AUX)) {
                 // mSetHideApp.add("com.my.auxplayer.AUXPlayer");
                 hideAuxin = true;
             }
             if (value.contains("BT")) {
-                mSetHideApp.add("com.my.bt.ATBluetoothActivity");
+                mSetHideApp.add("com.octopus.android.carapps.bt.ATBluetoothActivity");
             }
             if (value.contains(HIDE_APP_DVD)) {
-                mSetHideApp.add("com.my.dvd.DVDPlayer");
+                mSetHideApp.add("com.octopus.android.carapps.dvd.DVDPlayer");
             }
             // if (value.contains(HIDE_USB_DVD)) {
             // mSetHideApp.add("com.car.dvdplayer.DVDPlayerActivity");
             // }
 
             if (value.contains(HIDE_APP_FRONT_CMAERA)) {
-                // mSetHideApp.add("com.my.frontcamera.FrontCameraActivity");
+                mSetHideApp.add("com.octopus.android.carapps.frontcamera.FrontCameraActivity");
                 hideFrontCamera = true;
             }
             if (value.contains(HIDE_APP_VIDEO_OUT)) {
-                mSetHideApp.add("com.my.videoout.VideoOutActivity");
+                mSetHideApp.add("com.octopus.android.carapps.videoout.VideoOutActivity");
             }
             if (value.contains(HIDE_APP_DVR)) {
-                mSetHideApp.add("com.my.dvr.MainActivity");
+                mSetHideApp.add("com.octopus.android.carapps.dvr.MainActivity");
             }
             if (value.contains(HIDE_APP_JOYSTUDY)) {
                 mSetHideApp.add("com.SwcApplication.JoyActivity");
@@ -567,7 +567,7 @@ public class AppConfig {
                 mSetHideApp.add("com.ak.tpms.ActivityMain");
             }
         } else {
-            mSetHideApp.add("com.my.tv.TVActivity");
+            mSetHideApp.add("com.octopus.android.carapps.tv.TVActivity");
             mSetHideApp.add("com.SwcApplication.JoyActivity");
         }
 
