@@ -88,7 +88,7 @@ public class BaseActivity extends AppCompatActivity implements TNetUtils.Network
         super.onBackPressed();
     }
 
-    public void openLocalActivity(Class<?> cls) {
+    public void startLocalActivity(Class<?> cls) {
         Intent intent = new Intent(this, cls);
         ///intent.putExtra("EXTRA_DATA", "Some Data");  // 传递额外的数据
         try {
@@ -98,7 +98,7 @@ public class BaseActivity extends AppCompatActivity implements TNetUtils.Network
         }
     }
 
-    public void openLocalActivity(Class<?> cls, Bundle bundle) {
+    public void startLocalActivity(Class<?> cls, Bundle bundle) {
         Intent intent = new Intent(this, cls);
         ///intent.putExtra("EXTRA_DATA", "Some Data");  // 传递额外的数据
         intent.putExtras(bundle);
@@ -109,7 +109,7 @@ public class BaseActivity extends AppCompatActivity implements TNetUtils.Network
         }
     }
 
-    public void openActivity(String targetPackageName, String targetActivityClassName) {
+    public void startRemoteActivity(String targetPackageName, String targetActivityClassName) {
         Intent intent = new Intent();
         ComponentName cn = new ComponentName(targetPackageName, targetActivityClassName);
         intent.setComponent(cn);

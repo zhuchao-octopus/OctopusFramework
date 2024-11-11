@@ -307,7 +307,7 @@ public class Util {
     }
 
     public static int sudoExec(String cmd) {
-        ///Log.e("Util", "sudoExec:" + cmd);
+        MMLog.d("Util", "sudoExec:" + cmd);
         if (Build.VERSION.SDK_INT >= 25) {
             cmd = "akd:" + cmd;
             setProperty("ctl.start", cmd);
@@ -319,11 +319,11 @@ public class Util {
     }
 
     public static int sudoExecNoCheck(String cmd) {
-        Log.e("Util", "sudoExecNoCheck:" + cmd);
+        MMLog.d("Util", "sudoExecNoCheck:" + cmd);
         if (Build.VERSION.SDK_INT >= 25) {
             cmd = "akd:" + cmd;
             setProperty("ctl.start", cmd);
-            //		checkAKDRunning();
+            //checkAKDRunning();
             return 0;
         } else {
             return do_exec("start akd:" + cmd + "");

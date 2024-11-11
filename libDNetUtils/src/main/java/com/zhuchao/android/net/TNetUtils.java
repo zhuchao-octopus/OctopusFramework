@@ -4,6 +4,7 @@ import static com.zhuchao.android.fbase.FileUtils.EmptyString;
 import static com.zhuchao.android.fbase.FileUtils.NotEmptyString;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,8 +14,10 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -35,6 +38,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -616,6 +620,23 @@ public class TNetUtils extends ConnectivityManager.NetworkCallback {
         } catch (JsonSyntaxException e) {
             //MMLog.e(TAG, "fromJson failed!");
             return null;
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    public static void disableHotspot(Context context) {
+        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ;//wifiManager.stopSoftAp();
+        } else {
+            // 适用于Android 8.0之前的设备，关闭热点
+            try {
+                Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
+                method.invoke(wifiManager, null, false);  // 关闭热点
+            } catch (Exception e) {
+                ///e.printStackTrace();
+                MMLog.e(TAG, "disableHotspot " + e.toString());
+            }
         }
     }
 

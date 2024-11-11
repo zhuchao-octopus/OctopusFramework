@@ -4,11 +4,14 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 
 public class TAppProcessUtils {
-    private static final String TAG="TAppProcessUtils";
+    private static final String TAG = "TAppProcessUtils";
+
     public static String getCurrentProcessNameAndId(Context context) {
         int pid = getProcessId();//Process.myPid();
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -16,12 +19,13 @@ public class TAppProcessUtils {
             for (ActivityManager.RunningAppProcessInfo processInfo : activityManager.getRunningAppProcesses()) {
                 if (processInfo.pid == pid) {
                     //MMLog.d(TAG,"ProcessId="+pid+" processName="+processInfo.processName);
-                    return processInfo.processName+" "+pid;
+                    return processInfo.processName + " " + pid;
                 }
             }
         }
         return null;
     }
+
     public static int getProcessId() {
         return android.os.Process.myPid();
     }
@@ -105,5 +109,17 @@ public class TAppProcessUtils {
             }
         }
         return isRunning;
+    }
+
+    public synchronized static void killApplication(Context context, String packageName) {
+        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        Method method = null;
+        try {
+            method = Class.forName("android.app.ActivityManager").getMethod("forceStopPackage", String.class);
+            method.invoke(mActivityManager, packageName);
+            MMLog.d(TAG, "Kill application: " + packageName);
+        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+            MMLog.log(TAG, e.toString());//e.printStackTrace();
+        }
     }
 }

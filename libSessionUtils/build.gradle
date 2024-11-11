@@ -19,10 +19,10 @@ afterEvaluate {
             }
         }
         repositories {
-            maven {
-                allowInsecureProtocol true
-                url GITHUB_REPO_REMOTE_PATH
-            }
+            ///maven {
+                //allowInsecureProtocol true
+                ///url GITHUB_REPO_REMOTE_PATH
+            ///}
             maven {
                 allowInsecureProtocol true
                 url GITHUB_REPO_LOCAL_PATH // 第二个仓库地址
