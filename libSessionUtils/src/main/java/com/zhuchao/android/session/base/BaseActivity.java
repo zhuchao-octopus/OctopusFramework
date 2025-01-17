@@ -29,7 +29,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.zhuchao.android.fbase.FileUtils;
 import com.zhuchao.android.fbase.MMLog;
+import com.zhuchao.android.fbase.eventinterface.EventCourierInterface;
 import com.zhuchao.android.fbase.eventinterface.PermissionListener;
+import com.zhuchao.android.fbase.eventinterface.TCourierEventListener;
 import com.zhuchao.android.net.NetworkInformation;
 import com.zhuchao.android.net.TNetUtils;
 import com.zhuchao.android.session.Cabinet;
@@ -38,7 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BaseActivity extends AppCompatActivity implements TNetUtils.NetworkStatusListener {
+public class BaseActivity extends AppCompatActivity implements TNetUtils.NetworkStatusListener,TCourierEventListener {
+
     private ActivityResultLauncher<String[]> requestMultiplePermissionsLauncher;
     private static final String ACTION_SHOW_STATUS_BAR = "android.intent.action.ACTION_SHOW_STATUS_BAR";
     private static final String ACTION_HIDE_STATUS_BAR = "android.intent.action.ACTION_HIDE_STATUS_BAR";
@@ -231,5 +234,10 @@ public class BaseActivity extends AppCompatActivity implements TNetUtils.Network
     @Override
     public void onNetStatusChanged(NetworkInformation networkInformation) {
 
+    }
+
+    @Override
+    public boolean onCourierEvent(EventCourierInterface eventCourier) {
+        return false;
     }
 }

@@ -508,7 +508,7 @@ public class MachineConfig {
             }
             //FileUtils.setPermissions(SYSTEM_CONFIG, FileUtils.S_IRWXU | FileUtils.S_IRWXG | FileUtils.S_IRWXO, -1, -1);
 
-            Util.sudoExec("chmod:666:" + VENDOR_CONFIG);
+            /////Util.sudoExec("chmod:666:" + VENDOR_CONFIG);
             FileOutputStream out = new FileOutputStream(file);
             mProperties.store(out, "");
             out.flush();
@@ -629,6 +629,7 @@ public class MachineConfig {
     }
 
     static {///载入只读属性
+        Util.sudoExec("chmod:666:" + VENDOR_CONFIG);
         if (FileUtils.existFile(DEFAULT_PARAMETER_CONFIG_FILE2)) {
             updateDefaultParametersConfigFilePathName(DEFAULT_PARAMETER_CONFIG_FILE2);
         } else {

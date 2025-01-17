@@ -433,6 +433,10 @@ public class MyCmd {
 
         public static final byte MULT_SPEECH_MODE = (byte) 0xF2;
         public static final byte KEY_SPEECH_CARPLAY = (byte) 0xF3;
+
+        public static final byte KEY_PHONE_LINK = (byte) 0xf4;
+        public static final byte KEY_DAB_Z = (byte) 0xf5;
+
         public static final int EX_KEY2_MAIN = (byte) 0xFE;//ex key byte 3, data in byte 1~2
         //		public static final int MULT_RECENT_AND_BT = 0x101;
 
@@ -938,7 +942,6 @@ public class MyCmd {
     public static final String BROADCAST_ILL_STATUS = "com.my.out.BROADCAST_ILL_STATUS";
 
     // will del
-
     public static final String BROADCAST_ACTIVITY_STATUS = "com.my.android.ACTIVITY_STATUS";
 
     @SuppressLint("SdCardPath")

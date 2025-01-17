@@ -204,6 +204,13 @@ public class BroadcastUtil {
         context.sendBroadcast(it, permission);
     }
 
+    public static void sendByCarServiceUserData(Context context, int cmd, byte[] buf) {
+        Intent it = new Intent("android.intent.action.USER_DATA");
+        it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);
+        it.putExtra(MyCmd.EXTRA_COMMON_DATA, buf);
+        context.sendBroadcast(it);
+    }
+
     public static void sendByCarService(Context context, int cmd, int data) {
         Intent it = new Intent(MyCmd.BROADCAST_CAR_SERVICE_SEND);
         it.putExtra(MyCmd.EXTRA_COMMON_CMD, cmd);

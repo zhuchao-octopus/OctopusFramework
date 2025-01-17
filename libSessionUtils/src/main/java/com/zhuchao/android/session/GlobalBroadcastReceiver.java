@@ -190,9 +190,8 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                 MMLog.debug(TAG, "ACTION_PAIRING_REQUEST  pinNumber = " + pinNumber);
                 break;
             case ACTION_PAIRING_CANCEL://BluetoothDevice.ACTION_PAIRING_CANCEL: //蓝牙取消配对
-                MMLog.debug(TAG, "ACTION_PAIRING_CANCEL ！");
+                MMLog.debug(TAG, "ACTION_PAIRING_CANCEL!");
                 break;
-
         }
     }
 
