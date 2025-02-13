@@ -600,6 +600,7 @@ public class MyCmd {
         public final static int CANBOX_RETURN_DRIVE_DATA = 0x7e;
 
         public final static int CANBOX_VOICE_CONTROL = 0x7f;
+        public final static int KEY_ENTER_REVERSE = 0x80;
 
         public final static int AUTO_TEST_SHOW_UI = 0x100; //data use source
         public final static int AUTO_TEST_START = 0x101; //
@@ -767,6 +768,7 @@ public class MyCmd {
     public final static String EXTRAS_KEY_PRESS_TYPE = "extras_key_press_type";
     public final static String EXTRAS_KEY_CODE = "extras_key_code";
     public final static String EXTRAS_IS_NEED_DELAY = "extras_is_need_delay";
+
 
     public static final String BROADCAST_CMD_TO_CAR_SERVICE = "com.my.car.service.BROADCAST_CMD_TO_CAR_SERVICE";
     public static final String BROADCAST_CMD_TO_CAR_SERVICE_SYSTEM_ID = "com.my.car.service.BROADCAST_CMD_TO_CAR_SERVICE_SYSTEM_ID";
