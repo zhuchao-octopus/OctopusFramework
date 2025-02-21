@@ -3,19 +3,20 @@ package com.zhuchao.android.zero;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.ToneGenerator;
-import android.util.Log;
+
+import com.zhuchao.android.fbase.MMLog;
 
 public class BuzzerManager {
-    private static final String TAG="BuzzerManager";
+    private static final String TAG = "BuzzerManager";
     @SuppressLint("StaticFieldLeak")
     private static BuzzerManager instance;
     private Thread thread;
     private int sleepTime;
     private Context mContent;
-    private ToneGenerator toneGenerator;
+    private final ToneGenerator toneGenerator;
     boolean isRun = false;
 
-    private OneTimeBuzzer oneTimeBuzzer;
+    private final OneTimeBuzzer oneTimeBuzzer;
 
     private BuzzerManager(Context context) {
         this.mContent = context;
@@ -27,12 +28,11 @@ public class BuzzerManager {
         if (instance == null) {
             instance = new BuzzerManager(context);
         }
-
         return instance;
     }
 
     public void playBeep(int sleep) {
-        Log.d("TAG", "playBeep: oneTimeBuzzer.isPlaying = " + this.oneTimeBuzzer.isPlaying);
+        MMLog.d(TAG, "playBeep: oneTimeBuzzer.isPlaying=" + this.oneTimeBuzzer.isPlaying + " sleep=" + sleep);
         if (sleep == 0) {
             this.sleepTime = 0;
             if (this.thread != null && this.thread.isAlive()) {
@@ -53,36 +53,36 @@ public class BuzzerManager {
 
             this.thread = new Thread(new Runnable() {
                 public void run() {
-                    while(BuzzerManager.this.isRun) {
+                    while (BuzzerManager.this.isRun) {
                         BuzzerManager.this.toneGenerator.startTone(25, 5000);
 
                         try {
-                            Thread.sleep((long)BuzzerManager.this.sleepTime);
-                        } catch (InterruptedException var2) {
-                            InterruptedException e = var2;
-                            throw new RuntimeException(e);
+                            Thread.sleep((long) BuzzerManager.this.sleepTime);
+                        } catch (InterruptedException ignored) {
                         }
                     }
-
                 }
             });
             this.thread.start();
         }
-
     }
 
     public void playLongBeep(int time, int hz) {
         this.playBeep(0);
-        this.oneTimeBuzzer.duration = (double)time;
+        this.oneTimeBuzzer.duration = (double) time;
         this.oneTimeBuzzer.volume = 70;
-        this.oneTimeBuzzer.toneFreqInHz = (double)hz;
+        this.oneTimeBuzzer.toneFreqInHz = (double) hz;
         this.oneTimeBuzzer.play();
     }
 
     public void stop() {
-        if (this.toneGenerator != null) {
+        if (this.oneTimeBuzzer != null) {
             this.oneTimeBuzzer.stop();
-            ///this.toneGenerator.stopTone();
+        }
+
+        if (this.toneGenerator != null) {
+            playBeep(0);
+            //this.toneGenerator.stopTone();
         }
     }
 
