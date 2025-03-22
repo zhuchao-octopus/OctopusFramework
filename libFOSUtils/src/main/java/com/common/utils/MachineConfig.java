@@ -106,7 +106,10 @@ public class MachineConfig {
     //only in parameter. read only
     //	public final static String KEY_LAUNCHER_SHOW_HOTSEAT_ALLAPPP = "show_hoteat_in_allapp";
     //	public final static String KEY_LAUNCHER_HIDE_WIDGET = "hide_widget_page";
-    public final static String KEY_ENTER_REVERSE = "key_enter_reverse";
+    public final static String KEY_REVERSE_ENTER = "key_enter_reverse";
+    public final static String KEY_REVERSE_VOLUME = "key_reverse_volume";
+    public final static String KEY_FACTORY_FLAG = "key_factory_flag";
+
     // hide_widget_page,icon_type,show_hoteat_in_allapp
     public final static String KEY_LAUNCHER_CONFIG = "launcher_config";
     public final static String KEY_APP_HIDE_FOREVER = "key_app_hide_forever";

@@ -41,13 +41,13 @@ public class BuzzerManager {
             }
         } else if (this.thread != null && this.thread.isAlive()) {
             this.sleepTime = sleep;
-            if (this.oneTimeBuzzer != null && this.oneTimeBuzzer.isPlaying) {
+            if (this.oneTimeBuzzer.isPlaying) {
                 this.oneTimeBuzzer.stop();
             }
         } else {
             this.isRun = true;
             this.sleepTime = sleep;
-            if (this.oneTimeBuzzer != null && this.oneTimeBuzzer.isPlaying) {
+            if (this.oneTimeBuzzer.isPlaying) {
                 this.oneTimeBuzzer.stop();
             }
 
@@ -76,20 +76,14 @@ public class BuzzerManager {
     }
 
     public void stop() {
-        if (this.oneTimeBuzzer != null) {
-            this.oneTimeBuzzer.stop();
-        }
+        this.oneTimeBuzzer.stop();
 
-        if (this.toneGenerator != null) {
-            playBeep(0);
-            //this.toneGenerator.stopTone();
-        }
+        playBeep(0);
+        //this.toneGenerator.stopTone();
     }
 
     public void release() {
-        if (this.toneGenerator != null) {
-            this.toneGenerator.release();
-        }
+        this.toneGenerator.release();
     }
 
 }
