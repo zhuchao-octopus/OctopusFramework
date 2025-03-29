@@ -2,6 +2,7 @@ package com.zhuchao.android.zero;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.ToneGenerator;
 
 import com.zhuchao.android.fbase.MMLog;
@@ -20,7 +21,7 @@ public class BuzzerManager {
 
     private BuzzerManager(Context context) {
         this.mContent = context;
-        this.toneGenerator = new ToneGenerator(5, 100);
+        this.toneGenerator = new ToneGenerator(AudioManager.STREAM_SYSTEM, 100);
         this.oneTimeBuzzer = new OneTimeBuzzer();
     }
 

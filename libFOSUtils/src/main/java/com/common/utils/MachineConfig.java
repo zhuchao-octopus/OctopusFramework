@@ -407,7 +407,6 @@ public class MachineConfig {
     private static Properties mPropertiesReadOnly = new Properties();//只读属性，用于保存默认值到PARAMETER_CONFIG
     private static String mReadOnlyDefaultParameterConfigFilePathName = DEFAULT_PARAMETER_CONFIG_FILE;//只读属性，默认参数路径
 
-
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public static String getProperty(String name) {
         loadConfigProperties();

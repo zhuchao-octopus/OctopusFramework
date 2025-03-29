@@ -1,6 +1,9 @@
 package com.zhuchao.android.zero;
 
 
+import static android.media.AudioManager.STREAM_ALARM;
+
+import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.util.Log;
 
@@ -148,11 +151,11 @@ public abstract class TonePlayer {
     }
 
     protected void playSound(int sampleRate, byte[] soundData) {
-        MMLog.d(TAG, "playSound: sampleRate = " + sampleRate + "   size = " + Arrays.toString(soundData));
+        MMLog.d(TAG, "playSound: sampleRate=" + sampleRate + "  size = " + Arrays.toString(soundData));
         try {
             int bufferSize = AudioTrack.getMinBufferSize(sampleRate, 4, 2);
             if (bufferSize != this.audTrackBufferSize || this.audioTrack == null) {
-                this.audioTrack = new AudioTrack(3, sampleRate, 4, 2, bufferSize, 1);
+                this.audioTrack = new AudioTrack(AudioManager.STREAM_SYSTEM, sampleRate, 4, 2, bufferSize, 1);
                 this.audTrackBufferSize = bufferSize;
             }
 
